@@ -57,11 +57,12 @@ jobs:
 
       - name: Run Frontend tests
         run: |
+          cd frontend
           flutter test --coverage 
 
       - name: Frontend test coverage
         run: |
-          cd ../scripts 
+          cd scripts 
           ./frontendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
 
       
