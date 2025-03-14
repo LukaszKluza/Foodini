@@ -36,13 +36,15 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Backend test coverage
-        run: |
-          coverage run -m pytest
-          coverage report --fail-under=${{ env.TEST_COVERAGE_THRESHOLD }}
       - name: Test with pytest
         run: |
-          pytest
+          cd backend
+          coverage run -m pytest
+      - name: Backend test coverage
+        run: |
+          cd scripts 
+          chmod +x ./backendTestCoverage.sh
+          ./backendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
 
       # Frontend Setup Steps
       - name: Set up Frontend

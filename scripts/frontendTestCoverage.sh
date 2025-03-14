@@ -5,6 +5,7 @@ COVERAGE_FILE="${2:-../frontend/coverage/lcov.info}"
 
 if [ ! -f "$COVERAGE_FILE" ]; then
   echo "File ($COVERAGE_FILE) doesn't exist."
+  echo "Please run 'flutter test --coverage' in /frontend directory."
   exit 1
 fi
 
