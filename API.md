@@ -6,7 +6,7 @@
 - `[POST] v1/auth/forgot-password` – Send email with reset password link
   
 ## Users controller
-- `[GET] v1/users/{userId}}` get detalis about user by _userId_ 
+- `[GET] v1/users/{userId}}` get details about user by _userId_ 
 - `[PUT] v1/users/{userId}}` update user data by _userId_ 
 - `[DELETE] v1/users/{userId}` – Delete user account
 - `[POST] v1/users/{userId}/change-password` – Change user password
