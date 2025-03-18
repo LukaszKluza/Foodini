@@ -168,6 +168,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+/frontend/coverage/
 /report.html
 
 #VSCode configuration file
