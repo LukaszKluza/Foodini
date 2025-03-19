@@ -171,8 +171,11 @@ cython_debug/
 /frontend/coverage/
 /report.html
 
-#VSCode configuration file
+#VSCode configuration files
 .vscode/
 
 #SQLtools configuration file
 *.session.sql
+
+#ruff configuration files
+.ruff_cache
