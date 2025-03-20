@@ -11,6 +11,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserUpdate(BaseModel):
     user_id = int
     name: str = None
@@ -20,13 +21,16 @@ class UserUpdate(BaseModel):
     city: str = None
     address: str = None
 
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserLogout(BaseModel):
     id: int
     email: EmailStr
+
 
 class UserResponse(BaseModel):
     id: int
