@@ -1,4 +1,4 @@
 from user_service import UserService
 
 
-user_crud = UserService()
+user_service = UserService()
