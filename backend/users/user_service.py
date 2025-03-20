@@ -1,7 +1,7 @@
 from backend.users.schemas import UserCreate, UserLogin, UserUpdate
 
 
-class UserCrud:
+class UserService:
     def __init__(self):
         pass
 
