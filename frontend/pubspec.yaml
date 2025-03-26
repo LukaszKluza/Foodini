@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
   go_router: ^13.0.1
 
   # The following adds the Cupertino Icons font to your application.

@@ -103,13 +103,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: _validateConfirmPassword,
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(onPressed: _register, child: Text(AppConfig.register)),
+                  ElevatedButton(
+                    onPressed: _register,
+                    child: Text(AppConfig.register),
+                  ),
                   TextButton(
                     onPressed: () => context.go('/login'),
                     child: Text(AppConfig.alreadyHaveAnAccount),
                   ),
-                  TextButton(onPressed: () => context.go('/'), child: Text(AppConfig.home))
-              ])),
+                  TextButton(
+                    onPressed: () => context.go('/'),
+                    child: Text(AppConfig.home),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
