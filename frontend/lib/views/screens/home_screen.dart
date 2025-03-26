@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/config/app_config.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,7 +11,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Foodini home page',
+            AppConfig.homePage,
             style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
           ),
         ),
@@ -20,13 +21,13 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Welcome in Foodini',
+              AppConfig.welcome,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.go('/register'),
-              child: Text('Register now!'),
+              child: Text(AppConfig.register),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/config/app_config.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,50 +17,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Registered successfully')));
+      ).showSnackBar(SnackBar(content: Text(AppConfig.succesfullyRegistered)));
     }
   }
 
-  String? _validateFirstname(String? value) {
+  String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'First name is required';
-    }
-    return null;
-  }
-
-  String? _validateLastname(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Last name is required';
+      return AppConfig.requiredName;
     }
     return null;
   }
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'E-mail is required';
+      return AppConfig.requiredEmail;
     }
     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return 'Enter valid e-mail';
+      return AppConfig.invalidEmail;
     }
     return null;
   }
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password is required';
+      return AppConfig.requiredPassword;
     }
-    if (value.length < 8) {
-      return 'Password must have at least 8 characters';
+    if (value.length < AppConfig.minPasswordLength) {
+      return AppConfig.minimalPasswordLegth;
     }
     return null;
   }
 
   String? _validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password confirmation is required';
+      return AppConfig.requiredPasswordConfirmation;
     }
     if (value != _passwordController.text) {
-      return 'Passwords must be the same';
+      return AppConfig.samePasswords;
     }
     return null;
   }
@@ -70,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Register',
+            AppConfig.register,
             style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
           ),
         ),
@@ -86,11 +80,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   TextFormField(
                     decoration: InputDecoration(labelText: 'First name'),
-                    validator: _validateFirstname,
+                    validator: _validateName,
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Last name'),
-                    validator: _validateLastname,
+                    validator: _validateName,
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'E-mail'),
@@ -109,12 +103,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: _validateConfirmPassword,
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(onPressed: _register, child: Text('Register')),
+                  ElevatedButton(onPressed: _register, child: Text(AppConfig.register)),
                   TextButton(
                     onPressed: () => context.go('/login'),
-                    child: Text('Already have an account? Login'),
+                    child: Text(AppConfig.alreadyHaveAnAccount),
                   ),
-                  TextButton(onPressed: () => context.go('/'), child: Text('Home'))
+                  TextButton(onPressed: () => context.go('/'), child: Text(AppConfig.home))
               ])),
           ),
         ],
