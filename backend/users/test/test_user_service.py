@@ -1,10 +1,28 @@
 import pytest
+import sys
 from fastapi import HTTPException
-from unittest.mock import MagicMock
-
-from backend.users.user_repository import UserRepository
-from backend.users.user_service import UserService
+from unittest.mock import MagicMock, AsyncMock, patch
 from backend.users.schemas import UserCreate, UserLogin, UserUpdate
+
+with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
+    from backend.users.user_service import UserService
+
+
+@pytest.fixture
+def mock_user_repository():
+    repo = MagicMock()
+    repo.get_user_by_email = AsyncMock()
+    repo.create_user = AsyncMock()
+    repo.get_user_by_id = AsyncMock()
+    repo.update_user = AsyncMock()
+    repo.delete_user = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def user_service(mock_user_repository):
+    return UserService(user_repository=mock_user_repository)
+
 
 user_create = UserCreate(
     name="test_name",
@@ -14,16 +32,6 @@ user_create = UserCreate(
     email="test@example.com",
     password="password",
 )
-
-
-@pytest.fixture
-def mock_user_repository():
-    return MagicMock(spec=UserRepository)
-
-
-@pytest.fixture
-def user_service(mock_user_repository):
-    return UserService(user_repository=mock_user_repository)
 
 
 @pytest.mark.asyncio
