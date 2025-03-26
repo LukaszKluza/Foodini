@@ -79,26 +79,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'First name'),
+                    decoration: InputDecoration(labelText: AppConfig.firstName),
                     validator: _validateName,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Last name'),
+                    decoration: InputDecoration(labelText: AppConfig.lastName),
                     validator: _validateName,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'E-mail'),
+                    decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
                     validator: _validateEmail,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: InputDecoration(labelText: AppConfig.password),
                     obscureText: true,
                     controller: _passwordController,
                     validator: _validatePassword,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Confirm password'),
+                    decoration: InputDecoration(labelText: AppConfig.confirmPassword),
                     obscureText: true,
                     validator: _validateConfirmPassword,
                   ),

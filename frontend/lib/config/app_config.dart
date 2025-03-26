@@ -18,4 +18,9 @@ class AppConfig {
   static const String home = 'Home';
   static const String homePage = 'Foodini Home Page';
   static const String welcome = 'Welcome in Foodini';
+  static const String firstName = 'First name';
+  static const String lastName = 'Last name';
+  static const String email = 'E-mail';
+  static const String password = 'Password';
+  static const String confirmPassword = 'Confirm password';
 }
