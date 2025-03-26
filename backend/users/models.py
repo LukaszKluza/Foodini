@@ -23,6 +23,6 @@ class BodyParameters(SQLModel, table=True):
     weight_kg: float = Field(nullable=False)
     gender: str = Field(max_length=50, nullable=False)
     activity_level: str = Field(max_length=50, nullable=False)
-    number_of_meals: str = Field(max_length=50, nullable=False)
+    number_of_meals: int = Field(nullable=False)
     cooking_skills: str = Field(max_length=50, nullable=False)
     goal: str = Field(max_length=50, nullable=False)
