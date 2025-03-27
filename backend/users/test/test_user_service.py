@@ -2,6 +2,8 @@ import pytest
 import sys
 from fastapi import HTTPException
 from unittest.mock import MagicMock, AsyncMock, patch
+
+from backend.core.status_code import AuthErrorCode
 from backend.users.schemas import UserCreate, UserLogin, UserUpdate
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
@@ -44,7 +46,7 @@ async def test_register_user_existing(mock_user_repository, user_service):
         await user_service.register(user_create)
 
     # Then
-    assert exc_info.value.status_code == 400
+    assert exc_info.value.status_code == AuthErrorCode.BAD_REQUEST.value
     assert exc_info.value.detail == "User already exists"
 
 
@@ -75,7 +77,7 @@ async def test_login_user_not_found(mock_user_repository, user_service):
         await user_service.login(user_login)
 
     # Then
-    assert exc_info.value.status_code == 400
+    assert exc_info.value.status_code == AuthErrorCode.BAD_REQUEST.value
     assert exc_info.value.detail == "Incorrect credentials"
 
 
@@ -92,7 +94,7 @@ async def test_login_user_incorrect_password(mock_user_repository, user_service)
         await user_service.login(user_login)
 
     # Then
-    assert exc_info.value.status_code == 401
+    assert exc_info.value.status_code == AuthErrorCode.UNAUTHORIZED.value
     assert exc_info.value.detail == "Incorrect password"
 
 
@@ -123,7 +125,7 @@ async def test_logout_user_not_found(mock_user_repository, user_service):
         await user_service.logout(1)
 
     # Then
-    assert exc_info.value.status_code == 404
+    assert exc_info.value.status_code == AuthErrorCode.NOT_FOUND.value
     assert exc_info.value.detail == "User with this ID does not exist"
 
 
@@ -136,7 +138,7 @@ async def test_logout_user_success(mock_user_repository, user_service):
     response = await user_service.logout(1)
 
     # Then
-    assert response.status_code == 200
+    assert response.status_code == AuthErrorCode.OK.value
     assert response.detail == "Logged out"
 
 
@@ -151,7 +153,7 @@ async def test_update_user_not_found(mock_user_repository, user_service):
         await user_service.update(user_update)
 
     # Then
-    assert exc_info.value.status_code == 404
+    assert exc_info.value.status_code == AuthErrorCode.NOT_FOUND.value
     assert exc_info.value.detail == "User with this ID does not exist"
 
 
@@ -184,7 +186,7 @@ async def test_delete_user_not_found(mock_user_repository, user_service):
         await user_service.delete(1)
 
     # Then
-    assert exc_info.value.status_code == 404
+    assert exc_info.value.status_code == AuthErrorCode.NOT_FOUND.value
     assert exc_info.value.detail == "User with this ID does not exist"
 
 
