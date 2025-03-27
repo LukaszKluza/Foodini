@@ -1,6 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from backend.users.user_router import user_router
+import psycopg2
 
 app = FastAPI()
+app.include_router(user_router)
+
+
+@app.exception_handler(psycopg2.OperationalError)
+@app.exception_handler(OSError)
+async def db_connection_error_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Database connection failed", "detail": str(exc)},
+    )
 
 
 @app.get("/")
@@ -8,6 +21,6 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}

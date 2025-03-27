@@ -9,8 +9,8 @@ class User(SQLModel, table=True):
     last_name: str = Field(nullable=False)
     age: int = Field(nullable=False)
     country: str = Field(nullable=False)
-    email: str = Field(unique=True)
-    password: str
+    email: str = Field(unique=True, nullable=False)
+    password: str = Field(nullable=False)
 
 
 class BodyParameters(SQLModel, table=True):
