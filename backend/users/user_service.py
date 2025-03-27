@@ -1,7 +1,6 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from fastapi.params import Depends
 
-from backend.core.status_code import AuthErrorCode
 from .schemas import UserCreate, UserLogin, UserUpdate
 from .user_repository import UserRepository, get_user_repository
 
@@ -14,7 +13,7 @@ class UserService:
         existing_user = await self.user_repository.get_user_by_email(user.email)
         if existing_user:
             raise HTTPException(
-                status_code=AuthErrorCode.BAD_REQUEST.value,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User already exists",
             )
 
@@ -25,12 +24,12 @@ class UserService:
         user_ = await self.user_repository.get_user_by_email(user.email)
         if not user_:
             raise HTTPException(
-                status_code=AuthErrorCode.BAD_REQUEST.value,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incorrect credentials",
             )
         if user.password != user_.password:
             raise HTTPException(
-                status_code=AuthErrorCode.UNAUTHORIZED.value,
+                status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
             )
         return user_
@@ -39,17 +38,17 @@ class UserService:
         user_ = await self.user_repository.get_user_by_id(user_id)
         if not user_:
             raise HTTPException(
-                status_code=AuthErrorCode.NOT_FOUND.value,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
             )
 
-        return HTTPException(status_code=AuthErrorCode.OK.value, detail="Logged out")
+        return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
 
     async def update(self, user: UserUpdate):
         user_ = await self.user_repository.get_user_by_id(user.user_id)
         if not user_:
             raise HTTPException(
-                status_code=AuthErrorCode.NOT_FOUND.value,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
             )
 
@@ -59,7 +58,7 @@ class UserService:
         user_ = await self.user_repository.get_user_by_id(user_id)
         if not user_:
             raise HTTPException(
-                status_code=AuthErrorCode.NOT_FOUND.value,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
             )
 
