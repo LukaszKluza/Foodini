@@ -9,3 +9,4 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
+    token: str | None = None
