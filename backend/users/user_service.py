@@ -37,6 +37,7 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incorrect credentials",
             )
+
         if await verify_password(user.password, user_.password):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

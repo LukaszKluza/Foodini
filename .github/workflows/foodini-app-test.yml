@@ -8,7 +8,7 @@ env:
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "*" ]
 
 permissions:
   contents: read
@@ -38,7 +38,6 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          cd backend
           coverage run -m pytest
       - name: Backend test coverage
         run: |

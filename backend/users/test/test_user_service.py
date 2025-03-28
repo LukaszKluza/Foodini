@@ -184,6 +184,7 @@ async def test_delete_user_not_found(mock_user_repository, user_service):
     with pytest.raises(HTTPException) as exc_info:
         await user_service.delete(1, 1)
 
+
     # Then
     assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
     assert exc_info.value.detail == "User with this ID does not exist"
