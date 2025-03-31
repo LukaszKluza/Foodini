@@ -67,7 +67,7 @@ class AuthorizationService:
         token = await AuthorizationService.get_payload_from_token(credentials)
         stored_token = await redis_tokens.get(token.get("id"))
 
-        if stored_token.decode("utf-8") != credentials:
+        if stored_token.decode("utf-8") != credentials.credentials:
             raise HTTPException(status_code=401, detail="Token revoked")
 
         try:
