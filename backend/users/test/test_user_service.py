@@ -26,9 +26,9 @@ def mock_verify_password():
 
 
 @pytest.fixture
-def mock_create_access_token():
+def mock_create_tokens():
     with patch.object(
-        AuthorizationService, "create_access_token", new_callable=AsyncMock
+        AuthorizationService, "create_tokens", new_callable=AsyncMock
     ) as mock:
         yield mock
 
@@ -131,7 +131,7 @@ async def test_login_user_incorrect_password(
 
 @pytest.mark.asyncio
 async def test_login_user_success(
-    mock_verify_password, mock_create_access_token, mock_user_repository, user_service
+    mock_verify_password, mock_create_tokens, mock_user_repository, user_service
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
@@ -139,7 +139,7 @@ async def test_login_user_success(
     )
     user_login = UserLogin(email="test@example.com", password="password")
     mock_verify_password.return_value = True
-    mock_create_access_token.return_value = "token"
+    mock_create_tokens.return_value = ("access_token", "refresh_token")
 
     # When
     logged_in_user = await user_service.login(user_login)
@@ -148,7 +148,7 @@ async def test_login_user_success(
     assert logged_in_user.email == "test@example.com"
     mock_user_repository.get_user_by_email.assert_called_once_with(user_login.email)
     mock_verify_password.assert_called_once_with("password", "hashed_password")
-    mock_create_access_token.assert_called_once_with({"sub": user_login.email, "id": 1})
+    mock_create_tokens.assert_called_once_with({"sub": user_login.email, "id": 1})
 
 
 # Test logout_user

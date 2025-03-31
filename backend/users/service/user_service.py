@@ -3,7 +3,13 @@ from fastapi.params import Depends
 
 from backend.users.service.authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
-from backend.users.schemas import UserCreate, UserLogin, UserUpdate, UserResponse
+from backend.users.schemas import (
+    UserCreate,
+    UserLogin,
+    UserUpdate,
+    UserResponse,
+    LoginUserResponse,
+)
 from backend.users.user_repository import UserRepository, get_user_repository
 
 
@@ -42,11 +48,16 @@ class UserService:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
             )
-        access_token = await AuthorizationService.create_access_token(
+        access_token, refresh_token = await AuthorizationService.create_tokens(
             {"sub": user_.email, "id": user_.id}
         )
 
-        return UserResponse(id=user_.id, email=user_.email, token=access_token)
+        return LoginUserResponse(
+            id=user_.id,
+            email=user_.email,
+            access_token=access_token,
+            refresh_token=refresh_token,
+        )
 
     async def logout(self, user_id: int):
         user_ = await self.user_repository.get_user_by_id(user_id)

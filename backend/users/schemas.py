@@ -31,4 +31,10 @@ class UserLogout(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
-    token: str | None = None
+
+
+class LoginUserResponse(UserResponse):
+    id: int
+    email: EmailStr
+    access_token: str
+    refresh_token: str
