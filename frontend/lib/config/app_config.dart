@@ -5,6 +5,8 @@ class AppConfig {
   //Texts
   static const String succesfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
+  static const String requiredAge = ' Select your age';
+  static const String requiredCountry = ' Select your country';
   static const String requiredEmail = 'E-mail is required';
   static const String requiredPassword = 'Password is required';
   static const String requiredPasswordConfirmation =
@@ -20,7 +22,22 @@ class AppConfig {
   static const String welcome = 'Welcome in Foodini';
   static const String firstName = 'First name';
   static const String lastName = 'Last name';
+  static const String age = 'Age';
+  static const String country = 'Country';
   static const String email = 'E-mail';
   static const String password = 'Password';
   static const String confirmPassword = 'Confirm password';
+  static const String registrationFailed = 'Registration failed';
+
+  static const String login = 'Login';
+  static const String dontHaveAccount = 'Do not have an account';
+  static const String successfullyLoggedIn = 'Succesfully logged in';
+  static const String loginFailed = 'Login failed';
+
+  //Lists
+  static final List<int> ages = List.generate(100, (index) => index + 1);
+
+  // URLs
+  static const String registerUrl = 'http://127.0.0.1:8000/v1/users/register';
+  static const String loginUrl = 'http://127.0.0.1:8000/v1/users/login';
 }

@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:http/http.dart' as http;
+import 'package:country_picker/country_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,14 +14,84 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  void _register() {
-    if (_formKey.currentState!.validate()) {
+  int? _selectedAge;
+  String? _selectedCountry;
+
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  void _pickCountry(BuildContext context) {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: false,
+      onSelect: (Country country) {
+        setState(() {
+          _selectedCountry = country.name;
+          _countryController.text = _selectedCountry ?? '';
+        });
+      },
+    );
+  }
+
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final response = await http.post(
+      Uri.parse(AppConfig.registerUrl),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "name": _firstNameController.text,
+        "last_name": _lastNameController.text,
+        "age": _selectedAge,
+        "country": _selectedCountry,
+        "email": _emailController.text,
+        "password": _passwordController.text,
+      }),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response.statusCode == 200) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(AppConfig.succesfullyRegistered)));
+      context.go('/home'); //TODO
+    } else {
+      final responseBody = jsonDecode(response.body);
+      setState(() {
+        _errorMessage = responseBody["detail"] ?? AppConfig.registrationFailed;
+      });
     }
+  }
+
+  String? _validateAge(int? value) {
+    if (value == null) {
+      return AppConfig.requiredAge;
+    }
+    return null;
+  }
+
+  String? _validateCountry(String? value) {
+    if (_selectedCountry == null || _selectedCountry!.isEmpty) {
+    return AppConfig.requiredCountry;
+  }
+    return null;
   }
 
   String? _validateName(String? value) {
@@ -79,34 +152,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _firstNameController,
                     decoration: InputDecoration(labelText: AppConfig.firstName),
                     validator: _validateName,
                   ),
                   TextFormField(
+                    controller: _lastNameController,
                     decoration: InputDecoration(labelText: AppConfig.lastName),
                     validator: _validateName,
                   ),
+                  DropdownButtonFormField<int>(
+                    value: _selectedAge,
+                    decoration: InputDecoration(labelText: AppConfig.age),
+                    items:
+                        AppConfig.ages.map((int age) {
+                          return DropdownMenuItem<int>(
+                            value: age,
+                            child: Text(age.toString()),
+                          );
+                        }).toList(),
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        _selectedAge = newValue;
+                      });
+                    },
+                    validator: (value) => _validateAge(value),
+                  ),
                   TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(labelText: AppConfig.country),
+                    controller: _countryController,
+                    onTap:
+                        () => _pickCountry(
+                          context,
+                        ),
+                    validator: _validateCountry,
+                  ),
+                  TextFormField(
+                    controller: _emailController,
                     decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
                     validator: _validateEmail,
                   ),
                   TextFormField(
+                    controller: _passwordController,
                     decoration: InputDecoration(labelText: AppConfig.password),
                     obscureText: true,
-                    controller: _passwordController,
                     validator: _validatePassword,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: AppConfig.confirmPassword),
+                    controller: _confirmPasswordController,
+                    decoration: InputDecoration(
+                      labelText: AppConfig.confirmPassword,
+                    ),
                     obscureText: true,
                     validator: _validateConfirmPassword,
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _register,
-                    child: Text(AppConfig.register),
-                  ),
+                  _isLoading
+                      ? CircularProgressIndicator()
+                      : ElevatedButton(
+                        onPressed: _register,
+                        child: Text(AppConfig.register),
+                      ),
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   TextButton(
                     onPressed: () => context.go('/login'),
                     child: Text(AppConfig.alreadyHaveAnAccount),
