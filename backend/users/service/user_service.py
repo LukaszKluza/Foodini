@@ -1,11 +1,10 @@
 from fastapi import HTTPException, status
 from fastapi.params import Depends
 
-from .auth import create_access_token
-from .password import hash_password
-from .schemas import UserCreate, UserLogin, UserUpdate, UserResponse
-from .user_repository import UserRepository, get_user_repository
-from .password import verify_password
+from backend.users.service.authorisation_service import AuthorizationService
+from backend.users.service.password_service import PasswordService
+from backend.users.schemas import UserCreate, UserLogin, UserUpdate, UserResponse
+from backend.users.user_repository import UserRepository, get_user_repository
 
 
 async def check_user_permission(user_id_from_token: int, user_id: int):
@@ -26,7 +25,7 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User already exists",
             )
-        user.password = await hash_password(user.password)
+        user.password = await PasswordService.hash_password(user.password)
         new_user = await self.user_repository.create_user(user)
         return new_user
 
@@ -38,12 +37,14 @@ class UserService:
                 detail="Incorrect credentials",
             )
 
-        if await verify_password(user.password, user_.password):
+        if not await PasswordService.verify_password(user.password, user_.password):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
             )
-        access_token = await create_access_token({"sub": user_.email, "id": user_.id})
+        access_token = await AuthorizationService.create_access_token(
+            {"sub": user_.email, "id": user_.id}
+        )
 
         return UserResponse(id=user_.id, email=user_.email, token=access_token)
 

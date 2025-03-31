@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, status, HTTPException
-from .auth import verify_token
+from fastapi import APIRouter, Depends, status
+from backend.users.service.authorisation_service import AuthorizationService
 from .schemas import UserCreate, UserResponse, UserUpdate, UserLogin
-from .user_service import UserService, get_user_service
+from backend.users.service.user_service import UserService, get_user_service
 
 user_router = APIRouter(prefix="/v1/users")
 
@@ -31,7 +31,7 @@ async def logout_user(
 async def update_user(
     user: UserUpdate,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_token),
 ):
     user_id_from_token = token_payload.get("id")
     return await user_service.update(user_id_from_token, user)
@@ -41,7 +41,7 @@ async def update_user(
 async def delete_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_token),
 ):
     user_id_from_token = token_payload.get("id")
     return await user_service.delete(user_id_from_token, user_id)
