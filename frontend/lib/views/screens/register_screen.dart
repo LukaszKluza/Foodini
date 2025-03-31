@@ -89,8 +89,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? _validateCountry(String? value) {
     if (_selectedCountry == null || _selectedCountry!.isEmpty) {
-    return AppConfig.requiredCountry;
-  }
+      return AppConfig.requiredCountry;
+    }
     return null;
   }
 
@@ -142,100 +142,95 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(35.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _firstNameController,
-                    decoration: InputDecoration(labelText: AppConfig.firstName),
-                    validator: _validateName,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(35.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _firstNameController,
+                  decoration: InputDecoration(labelText: AppConfig.firstName),
+                  validator: _validateName,
+                ),
+                TextFormField(
+                  controller: _lastNameController,
+                  decoration: InputDecoration(labelText: AppConfig.lastName),
+                  validator: _validateName,
+                ),
+                DropdownButtonFormField<int>(
+                  key: Key('ageDropdown'),
+                  value: _selectedAge,
+                  decoration: InputDecoration(labelText: AppConfig.age),
+                  items:
+                      AppConfig.ages.map((int age) {
+                        return DropdownMenuItem<int>(
+                          value: age,
+                          child: Text(age.toString()),
+                        );
+                      }).toList(),
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      _selectedAge = newValue;
+                    });
+                  },
+                  validator: (value) => _validateAge(value),
+                ),
+                TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(labelText: AppConfig.country),
+                  controller: _countryController,
+                  onTap: () => _pickCountry(context),
+                  validator: _validateCountry,
+                ),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(labelText: AppConfig.email),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: _validateEmail,
+                ),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: AppConfig.password),
+                  obscureText: true,
+                  validator: _validatePassword,
+                ),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  decoration: InputDecoration(
+                    labelText: AppConfig.confirmPassword,
                   ),
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: InputDecoration(labelText: AppConfig.lastName),
-                    validator: _validateName,
-                  ),
-                  DropdownButtonFormField<int>(
-                    value: _selectedAge,
-                    decoration: InputDecoration(labelText: AppConfig.age),
-                    items:
-                        AppConfig.ages.map((int age) {
-                          return DropdownMenuItem<int>(
-                            value: age,
-                            child: Text(age.toString()),
-                          );
-                        }).toList(),
-                    onChanged: (int? newValue) {
-                      setState(() {
-                        _selectedAge = newValue;
-                      });
-                    },
-                    validator: (value) => _validateAge(value),
-                  ),
-                  TextFormField(
-                    readOnly: true,
-                    decoration: InputDecoration(labelText: AppConfig.country),
-                    controller: _countryController,
-                    onTap:
-                        () => _pickCountry(
-                          context,
-                        ),
-                    validator: _validateCountry,
-                  ),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(labelText: AppConfig.email),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: _validateEmail,
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: AppConfig.password),
-                    obscureText: true,
-                    validator: _validatePassword,
-                  ),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: InputDecoration(
-                      labelText: AppConfig.confirmPassword,
+                  obscureText: true,
+                  validator: _validateConfirmPassword,
+                ),
+                SizedBox(height: 20),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                      onPressed: _register,
+                      child: Text(AppConfig.register),
                     ),
-                    obscureText: true,
-                    validator: _validateConfirmPassword,
-                  ),
-                  SizedBox(height: 20),
-                  _isLoading
-                      ? CircularProgressIndicator()
-                      : ElevatedButton(
-                        onPressed: _register,
-                        child: Text(AppConfig.register),
-                      ),
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(color: Colors.red),
-                      ),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red),
                     ),
-                  TextButton(
-                    onPressed: () => context.go('/login'),
-                    child: Text(AppConfig.alreadyHaveAnAccount),
                   ),
-                  TextButton(
-                    onPressed: () => context.go('/'),
-                    child: Text(AppConfig.home),
-                  ),
-                ],
-              ),
+                TextButton(
+                  onPressed: () => context.go('/login'),
+                  child: Text(AppConfig.alreadyHaveAnAccount),
+                ),
+                TextButton(
+                  onPressed: () => context.go('/'),
+                  child: Text(AppConfig.home),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
