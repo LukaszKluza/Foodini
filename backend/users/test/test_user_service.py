@@ -69,7 +69,7 @@ async def test_register_user_new(mock_user_repository, user_service):
 async def test_login_user_not_found(mock_user_repository, user_service):
     # Given
     mock_user_repository.get_user_by_email.return_value = None
-    user_login = UserLogin(email="test@example.com", password="password")
+    user_login = UserLogin(email="test@example.com", password="Password123")
 
     # When
     with pytest.raises(HTTPException) as exc_info:
@@ -84,9 +84,9 @@ async def test_login_user_not_found(mock_user_repository, user_service):
 async def test_login_user_incorrect_password(mock_user_repository, user_service):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        email="test@example.com", password="wrongpassword"
+        email="test@example.com", password="Wrongpassword123"
     )
-    user_login = UserLogin(email="test@example.com", password="password")
+    user_login = UserLogin(email="test@example.com", password="Password123")
 
     # When
     with pytest.raises(HTTPException) as exc_info:
@@ -101,9 +101,9 @@ async def test_login_user_incorrect_password(mock_user_repository, user_service)
 async def test_login_user_success(mock_user_repository, user_service):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        email="test@example.com", password="password"
+        email="test@example.com", password="Password123"
     )
-    user_login = UserLogin(email="test@example.com", password="password")
+    user_login = UserLogin(email="test@example.com", password="Password123")
 
     # When
     logged_in_user = await user_service.login(user_login)
