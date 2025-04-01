@@ -187,7 +187,7 @@ async def test_update_user_not_found(mock_user_repository, user_service):
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_service.update(1, user_update)
+        await user_service.update(1, 1, user_update)
 
     # Then
     assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
@@ -203,14 +203,12 @@ async def test_update_user_success(mock_user_repository, user_service):
     )
 
     # When
-    user_update = UserUpdate(user_id=1, email="new@example.com")
-    updated_user = await user_service.update(1, user_update)
+    user_update = UserUpdate(country="Spain")
+    updated_user = await user_service.update(1, 1, user_update)
 
     # Then
     assert updated_user.email == "new@example.com"
-    mock_user_repository.update_user.assert_called_once_with(
-        user_update.user_id, user_update
-    )
+    mock_user_repository.update_user.assert_called_once_with(1, user_update)
 
 
 @pytest.mark.asyncio

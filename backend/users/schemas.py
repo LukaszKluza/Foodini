@@ -11,7 +11,6 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    user_id: int
     name: str = None
     last_name: str = None
     age: int = None

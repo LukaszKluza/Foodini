@@ -3,7 +3,7 @@ from unittest.mock import patch, AsyncMock
 
 import pytest
 import redis.asyncio as aioredis
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
 from backend.Settings import ACCESS_TOKEN_EXPIRE_MINUTES
@@ -16,14 +16,6 @@ def mock_redis():
     mock_redis_instance.setex = AsyncMock(return_value=None)
     mock_redis_instance.get = AsyncMock(return_value=b"test_token")
     return mock_redis_instance
-
-
-@pytest.fixture
-def mock_get_redis(mock_redis):
-    with patch(
-        "backend.users.service.authorisation_service.get_redis", return_value=mock_redis
-    ):
-        yield mock_redis
 
 
 @pytest.fixture
@@ -42,15 +34,16 @@ async def test_create_tokens(mock_redis, mock_jwt):
     mock_jwt[1].return_value = "encoded_token"
     data = {"id": 1, "username": "test_user"}
 
-    access_token, refresh_token = await AuthorizationService.create_tokens(
-        data, mock_redis
-    )
+    with patch(
+        "backend.users.service.authorisation_service.get_redis", return_value=mock_redis
+    ):
+        access_token, refresh_token = await AuthorizationService.create_tokens(data)
 
-    assert access_token == "encoded_token"
-    assert refresh_token == "encoded_token"
-    mock_redis.setex.assert_called_once_with(
-        1, ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
-    )
+        assert access_token == "encoded_token"
+        assert refresh_token == "encoded_token"
+        mock_redis.setex.assert_called_once_with(
+            1, ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
+        )
 
 
 @pytest.mark.asyncio
@@ -88,5 +81,5 @@ async def test_verify_token_revoked(mock_redis, mock_jwt, credentials):
     with pytest.raises(HTTPException) as excinfo:
         await AuthorizationService.verify_token(credentials, mock_redis)
 
-    assert excinfo.value.status_code == 401
-    assert excinfo.value.detail == "Token revoked"
+    assert excinfo.value.status_code == status.HTTP_401_UNAUTHORIZED
+    assert excinfo.value.detail == "Invalid or revoked token"

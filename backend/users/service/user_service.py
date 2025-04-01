@@ -68,16 +68,18 @@ class UserService:
 
         return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
 
-    async def update(self, user_id_from_token: int, user: UserUpdate):
-        await check_user_permission(user_id_from_token, user.user_id)
-        user_ = await self.user_repository.get_user_by_id(user.user_id)
-        if not user_:
+    async def update(
+        self, user_id_from_token: int, user_id_from_request, user: UserUpdate
+    ):
+        await check_user_permission(user_id_from_token, user_id_from_request)
+        user_ = await self.user_repository.get_user_by_id(user_id_from_request)
+        if not user_ or user_.id != user_id_from_request:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
             )
 
-        return await self.user_repository.update_user(user.user_id, user)
+        return await self.user_repository.update_user(user_id_from_request, user)
 
     async def delete(self, user_id_from_token: int, user_id: int):
         await check_user_permission(user_id_from_token, user_id)

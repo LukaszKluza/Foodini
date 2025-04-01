@@ -17,5 +17,5 @@ async def get_db():
         yield db
 
 
-async def get_redis():
-    yield redis_tokens
+async def get_redis() -> aioredis:
+    return redis_tokens

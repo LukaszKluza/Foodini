@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import redis.asyncio as aioredis
 import jwt
-from fastapi import HTTPException, Security
+from fastapi import HTTPException, Security, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from backend.Settings import (
@@ -18,9 +18,15 @@ security = HTTPBearer()
 
 class AuthorizationService:
     @staticmethod
-    async def create_tokens(
-        data: dict, redis_tokens: aioredis.Redis = Depends(get_redis)
-    ):
+    async def create_tokens(data: dict):
+        redis_tokens = await get_redis()
+
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+
         access_token_expire = datetime.utcnow() + timedelta(
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
         )
@@ -52,7 +58,9 @@ class AuthorizationService:
         user_id = payload.get("id")
 
         if not await redis_tokens.get(user_id):
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )
 
         access_token_expire = datetime.utcnow() + timedelta(
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
@@ -73,26 +81,23 @@ class AuthorizationService:
         token = await AuthorizationService.get_payload_from_token(credentials)
         stored_token = await redis_tokens.get(token.get("id"))
 
-        if stored_token.decode("utf-8") != credentials.credentials:
-            raise HTTPException(status_code=401, detail="Token revoked")
+        if not stored_token or stored_token.decode("utf-8") != credentials.credentials:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or revoked token",
+            )
 
-        try:
-            return token
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Token expired")
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
+        return token
 
     @staticmethod
     async def get_payload_from_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        credentials = credentials.credentials
-        token = jwt.decode(credentials, SECRET_KEY, algorithms=[ALGORITHM])
-
         try:
-            return token
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Token expired")
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            return jwt.decode(
+                credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
+            )
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )

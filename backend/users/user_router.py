@@ -38,14 +38,15 @@ async def refresh_access_token(
     return {"refreshed_access_token": token_payload}
 
 
-@user_router.patch("/update", response_model=UserResponse)
+@user_router.patch("/update/{user_id}", response_model=UserResponse)
 async def update_user(
+    user_id: int,
     user: UserUpdate,
     user_service: UserService = Depends(get_user_service),
     token_payload: dict = Depends(AuthorizationService.verify_token),
 ):
     user_id_from_token = token_payload.get("id")
-    return await user_service.update(user_id_from_token, user)
+    return await user_service.update(user_id_from_token, user_id, user)
 
 
 @user_router.delete("/delete/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
