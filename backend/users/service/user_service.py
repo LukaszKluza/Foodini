@@ -7,7 +7,6 @@ from backend.users.schemas import (
     UserCreate,
     UserLogin,
     UserUpdate,
-    UserResponse,
     LoginUserResponse,
 )
 from backend.users.user_repository import UserRepository, get_user_repository

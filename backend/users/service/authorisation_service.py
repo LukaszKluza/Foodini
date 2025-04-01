@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
+import redis.asyncio as aioredis
 import jwt
 from fastapi import HTTPException, Security
+from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from backend.Settings import (
     SECRET_KEY,
@@ -9,14 +11,16 @@ from backend.Settings import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     REFRESH_TOKEN_EXPIRE_HOURS,
 )
-from backend.core.database import redis_tokens
+from backend.core.database import get_redis
 
 security = HTTPBearer()
 
 
 class AuthorizationService:
     @staticmethod
-    async def create_tokens(data: dict):
+    async def create_tokens(
+        data: dict, redis_tokens: aioredis.Redis = Depends(get_redis)
+    ):
         access_token_expire = datetime.utcnow() + timedelta(
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
         )
@@ -42,6 +46,7 @@ class AuthorizationService:
     @staticmethod
     async def refresh_access_token(
         refresh_token: HTTPAuthorizationCredentials = Security(security),
+        redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
         payload = await AuthorizationService.get_payload_from_token(refresh_token)
         user_id = payload.get("id")
@@ -63,6 +68,7 @@ class AuthorizationService:
     @staticmethod
     async def verify_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
+        redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
         token = await AuthorizationService.get_payload_from_token(credentials)
         stored_token = await redis_tokens.get(token.get("id"))

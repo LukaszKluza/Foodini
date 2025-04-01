@@ -15,3 +15,7 @@ redis_tokens = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 async def get_db():
     async with SessionLocal() as db:
         yield db
+
+
+async def get_redis():
+    yield redis_tokens
