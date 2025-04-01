@@ -6,12 +6,10 @@ import 'package:integration_test/integration_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Register screen elements are displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RegisterScreen(),
-      ),
-    );
+  testWidgets('Register screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
@@ -20,11 +18,7 @@ void main() {
   });
 
   testWidgets('Country picker opens on tap', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RegisterScreen(),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
     final countryField = find.byType(TextFormField).at(2);
 
@@ -32,16 +26,17 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('Register button triggers registration process', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RegisterScreen(),
-      ),
-    );
+  testWidgets('Register button triggers registration process', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
     await tester.enterText(find.byType(TextFormField).at(0), 'John');
     await tester.enterText(find.byType(TextFormField).at(1), 'Doe');
-    await tester.enterText(find.byType(TextFormField).at(3), 'john@example.com');
+    await tester.enterText(
+      find.byType(TextFormField).at(3),
+      'john@example.com',
+    );
     await tester.enterText(find.byType(TextFormField).at(4), 'password123');
     await tester.enterText(find.byType(TextFormField).at(5), 'password123');
 
@@ -52,14 +47,10 @@ void main() {
 
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
-});
+  });
 
   testWidgets('Registration without filled form', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RegisterScreen(),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
@@ -72,12 +63,10 @@ void main() {
     expect(find.text('Password confirmation is required'), findsOneWidget);
   });
 
-  testWidgets('Registration with different passwords', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RegisterScreen(),
-      ),
-    );
+  testWidgets('Registration with different passwords', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
     await tester.enterText(find.byType(TextFormField).at(4), 'password123');
     await tester.enterText(find.byType(TextFormField).at(5), '321drowddap');

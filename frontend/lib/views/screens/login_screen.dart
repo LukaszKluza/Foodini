@@ -107,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _isLoading
                       ? CircularProgressIndicator()
                       : ElevatedButton(
+                        key: Key('login button'),
                         onPressed: _login,
                         child: Text(AppConfig.login),
                       ),
