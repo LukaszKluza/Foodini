@@ -11,7 +11,6 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    user_id: int
     name: str = None
     last_name: str = None
     age: int = None
@@ -31,3 +30,10 @@ class UserLogout(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
+
+
+class LoginUserResponse(UserResponse):
+    id: int
+    email: EmailStr
+    access_token: str
+    refresh_token: str
