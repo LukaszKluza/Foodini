@@ -50,12 +50,12 @@ def user_service(mock_user_repository):
 
 
 user_create = UserCreate(
-    name="test_name",
-    last_name="test_last_name",
+    name="Testname",
+    last_name="Testlastname",
     age=19,
     country="Poland",
     email="test@example.com",
-    password="password",
+    password="Password123",
 )
 
 
@@ -90,14 +90,14 @@ async def test_register_user_new(
     # Then
     assert new_user.email == "test@example.com"
     mock_user_repository.create_user.assert_called_once_with(user_create)
-    mock_hash_password.assert_called_once_with("password")
+    mock_hash_password.assert_called_once_with("Password123")
 
 
 @pytest.mark.asyncio
 async def test_login_user_not_found(mock_user_repository, user_service):
     # Given
     mock_user_repository.get_user_by_email.return_value = None
-    user_login = UserLogin(email="test@example.com", password="password")
+    user_login = UserLogin(email="test@example.com", password="Password123")
 
     # When
     with pytest.raises(HTTPException) as exc_info:
@@ -114,10 +114,10 @@ async def test_login_user_incorrect_password(
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        email="test@example.com", password="hashed_password"
+        email="test@example.com", password="Wrongpassword123"
     )
+    user_login = UserLogin(email="test@example.com", password="Password123")
     mock_verify_password.return_value = False
-    user_login = UserLogin(email="test@example.com", password="password")
 
     # When
     with pytest.raises(HTTPException) as exc_info:
@@ -126,7 +126,7 @@ async def test_login_user_incorrect_password(
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
     assert exc_info.value.detail == "Incorrect password"
-    mock_verify_password.assert_called_once_with("password", "hashed_password")
+    mock_verify_password.assert_called_once_with("Wrongpassword123", "Password123")
 
 
 @pytest.mark.asyncio
@@ -135,9 +135,9 @@ async def test_login_user_success(
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        id=1, email="test@example.com", password="hashed_password"
+        email="test@example.com", password="Password123"
     )
-    user_login = UserLogin(email="test@example.com", password="password")
+    user_login = UserLogin(email="test@example.com", password="Password123")
     mock_verify_password.return_value = True
     mock_create_tokens.return_value = ("access_token", "refresh_token")
 
@@ -147,11 +147,10 @@ async def test_login_user_success(
     # Then
     assert logged_in_user.email == "test@example.com"
     mock_user_repository.get_user_by_email.assert_called_once_with(user_login.email)
-    mock_verify_password.assert_called_once_with("password", "hashed_password")
+    mock_verify_password.assert_called_once_with("Password123", "Password123")
     mock_create_tokens.assert_called_once_with({"sub": user_login.email, "id": 1})
 
 
-# Test logout_user
 @pytest.mark.asyncio
 async def test_logout_user_not_found(mock_user_repository, user_service):
     # Given

@@ -1,34 +1,40 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from .mixins import PasswordValidationMixin, CountryValidationMixin
 
 
-class UserCreate(BaseModel):
-    name: str
-    last_name: str
-    age: int
-    country: str
+class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
+    name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z]+$")
+    last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
+    age: int = Field(..., gt=12, lt=120)
+    country: str = Field(..., min_length=2, max_length=50)
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=8, max_length=64)
 
 
-class UserUpdate(BaseModel):
-    name: str = None
-    last_name: str = None
-    age: int = None
-    country: str = None
+class UserUpdate(CountryValidationMixin, BaseModel):
+    name: Optional[str] = Field(
+        None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$"
+    )
+    last_name: Optional[str] = Field(
+        None, min_length=2, max_length=50, pattern="^[a-zA-Z-]+$"
+    )
+    age: Optional[int] = Field(None, gt=12, lt=120)
+    country: Optional[str] = Field(None, min_length=2, max_length=50)
 
 
-class UserLogin(BaseModel):
+class UserLogin(PasswordValidationMixin, BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=8, max_length=64)
 
 
 class UserLogout(BaseModel):
-    id: int
+    id: int = Field(..., gt=0)
     email: EmailStr
 
 
 class UserResponse(BaseModel):
-    id: int
+    id: int = Field(..., gt=0)
     email: EmailStr
 
 
