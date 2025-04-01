@@ -1,9 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-import re
+from .mixins import PasswordValidationMixin, CountryValidationMixin
 
 
-class UserCreate(BaseModel):
+class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z]+$")
     last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
     age: int = Field(..., gt=12, lt=120)
@@ -11,18 +11,8 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
 
-    @field_validator("password")
-    def password_complexity(cls, v):
-        if not re.search(r"[A-Z]", v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not re.search(r"[a-z]", v):
-            raise ValueError("Password must contain at least one lowercase letter")
-        if not re.search(r"[0-9]", v):
-            raise ValueError("Password must contain at least one digit")
-        return v
 
-
-class UserUpdate(BaseModel):
+class UserUpdate(CountryValidationMixin, BaseModel):
     user_id: int = Field(..., gt=0)
     name: Optional[str] = Field(
         None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$"
@@ -34,19 +24,9 @@ class UserUpdate(BaseModel):
     country: Optional[str] = Field(None, min_length=2, max_length=50)
 
 
-class UserLogin(BaseModel):
+class UserLogin(PasswordValidationMixin, BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
-
-    @field_validator("password")
-    def password_complexity(cls, v):
-        if not re.search(r"[A-Z]", v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not re.search(r"[a-z]", v):
-            raise ValueError("Password must contain at least one lowercase letter")
-        if not re.search(r"[0-9]", v):
-            raise ValueError("Password must contain at least one digit")
-        return v
 
 
 class UserLogout(BaseModel):
