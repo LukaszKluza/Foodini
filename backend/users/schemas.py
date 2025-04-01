@@ -13,7 +13,6 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 
 class UserUpdate(CountryValidationMixin, BaseModel):
-    user_id: int = Field(..., gt=0)
     name: Optional[str] = Field(
         None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$"
     )
@@ -37,3 +36,10 @@ class UserLogout(BaseModel):
 class UserResponse(BaseModel):
     id: int = Field(..., gt=0)
     email: EmailStr
+
+
+class LoginUserResponse(UserResponse):
+    id: int
+    email: EmailStr
+    access_token: str
+    refresh_token: str
