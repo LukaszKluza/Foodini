@@ -126,7 +126,7 @@ async def test_login_user_incorrect_password(
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
     assert exc_info.value.detail == "Incorrect password"
-    mock_verify_password.assert_called_once_with("Wrongpassword123", "Password123")
+    mock_verify_password.assert_called_once_with("Password123", "Wrongpassword123")
 
 
 @pytest.mark.asyncio
@@ -135,7 +135,7 @@ async def test_login_user_success(
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        email="test@example.com", password="Password123"
+        id=1, email="test@example.com", password="Password123"
     )
     user_login = UserLogin(email="test@example.com", password="Password123")
     mock_verify_password.return_value = True
