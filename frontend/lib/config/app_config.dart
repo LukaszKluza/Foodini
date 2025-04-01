@@ -5,8 +5,8 @@ class AppConfig {
   //Texts
   static const String succesfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
-  static const String requiredAge = ' Select your age';
-  static const String requiredCountry = ' Select your country';
+  static const String requiredAge = 'Select your age';
+  static const String requiredCountry = 'Select your country';
   static const String requiredEmail = 'E-mail is required';
   static const String requiredPassword = 'Password is required';
   static const String requiredPasswordConfirmation =
@@ -15,6 +15,7 @@ class AppConfig {
   static const String minimalPasswordLegth =
       'Password must have at least $minPasswordLength characters';
   static const String invalidEmail = 'Enter valid e-mail';
+  static const String registration = 'Registration';
   static const String register = 'Register';
   static const String alreadyHaveAnAccount = 'Already have an account? Login';
   static const String home = 'Home';

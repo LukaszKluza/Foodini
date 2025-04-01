@@ -137,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            AppConfig.register,
+            AppConfig.registration,
             style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
           ),
         ),

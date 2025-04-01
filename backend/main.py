@@ -2,9 +2,19 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from backend.users.user_router import user_router
 import psycopg2
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 app.include_router(user_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(psycopg2.OperationalError)

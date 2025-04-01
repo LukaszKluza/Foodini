@@ -7,16 +7,41 @@ import 'package:flutter/material.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  testWidgets('Login screen elements are displayed', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: LoginScreen(),
+      ),
+    );
+
+    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.byType(TextButton), findsNWidgets(2));
+
+    expect(find.text('Login'), findsNWidgets(2));
+  });
+
   testWidgets('User can log in successfully', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: LoginScreen()));
-
-    await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField).at(0), 'test@example.com');
 
     await tester.enterText(find.byType(TextFormField).at(1), 'password123');
 
-    // await tester.tap(find.byType(ElevatedButton));
-    // await tester.pumpAndSettle();
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('Login with different passwords', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: LoginScreen(),
+      ),
+    );
+
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('E-mail is required'), findsOneWidget);
+    expect(find.text('Password is required'), findsOneWidget);
   });
 }
