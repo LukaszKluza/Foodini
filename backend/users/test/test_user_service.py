@@ -26,12 +26,12 @@ def user_service(mock_user_repository):
 
 
 user_create = UserCreate(
-    name="test-name",
-    last_name="test-last-name",
+    name="Testname",
+    last_name="Testlastname",
     age=19,
     country="Poland",
     email="test@example.com",
-    password="password",
+    password="Password123",
 )
 
 
