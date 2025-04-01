@@ -113,7 +113,6 @@ async def test_login_user_success(mock_user_repository, user_service):
     mock_user_repository.get_user_by_email.assert_called_once_with(user_login.email)
 
 
-# Test logout_user
 @pytest.mark.asyncio
 async def test_logout_user_not_found(mock_user_repository, user_service):
     # Given

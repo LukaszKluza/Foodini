@@ -13,11 +13,7 @@ class CountryValidationMixin:
         try:
             country = pycountry.countries.get(name=value)
             if not country:
-                available = cls.get_available_countries()[:3]
-                raise ValueError(
-                    f"Invalid country name: '{value}'. "
-                    f"Available examples: {', '.join(available)}..."
-                )
+                raise ValueError(f"Invalid country name: '{value}'. ")
             return country.name
         except LookupError:
             raise ValueError("Invalid country format") from None
