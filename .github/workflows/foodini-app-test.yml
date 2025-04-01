@@ -18,6 +18,16 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+    POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    API_URL: ${{ secrets.API_URL }}
+    SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    PAPER_KEY: ${{ secrets.PAPER_KEY }}
+    REDIS_HOST: ${{ secrets.REDIS_HOST }}
+    REDIS_PORT: ${{ secrets.REDIS_PORT }}
+
     steps:
        # Python Setup Steps
       - uses: actions/checkout@v4
