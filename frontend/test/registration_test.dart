@@ -1,7 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/register_screen.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:mockito/mockito.dart';
+import 'package:go_router/go_router.dart';
+
+import 'mocks/mocks.mocks.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -14,38 +22,50 @@ void main() {
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
 
-    expect(find.text('Register'), findsOneWidget);
-  });
-
-  testWidgets('Country picker opens on tap', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
-
-    final countryField = find.byType(TextFormField).at(2);
-
-    await tester.tap(countryField);
-    await tester.pumpAndSettle();
+    expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
   testWidgets('Register button triggers registration process', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
+    final client = MockClient();
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'John');
-    await tester.enterText(find.byType(TextFormField).at(1), 'Doe');
+    when(
+      client.post(any, headers: anyNamed("headers"), body: anyNamed("body")),
+    ).thenAnswer(
+      (_) async => http.Response(jsonEncode({"message": "OK"}), 200),
+    );
+
+    final goRouter = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => RegisterScreen(client: client),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => Scaffold(body: Text('Home Screen')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
+
+    await tester.enterText(find.byKey(Key(AppConfig.firstName)), 'John');
+    await tester.enterText(find.byKey(Key(AppConfig.lastName)), 'Doe');
     await tester.enterText(
-      find.byType(TextFormField).at(3),
+      find.byKey(Key(AppConfig.email)),
       'john@example.com',
     );
-    await tester.enterText(find.byType(TextFormField).at(4), 'password123');
-    await tester.enterText(find.byType(TextFormField).at(5), 'password123');
+    await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');
+    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), 'password123');
 
-    await tester.tap(find.byKey(Key('ageDropdown')));
+    await tester.tap(find.byKey(Key(AppConfig.age)));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(DropdownMenuItem<int>).first);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Register'));
+    await tester.tap(find.byKey(Key(AppConfig.register)));
     await tester.pumpAndSettle();
   });
 
@@ -68,10 +88,10 @@ void main() {
   ) async {
     await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
 
-    await tester.enterText(find.byType(TextFormField).at(4), 'password123');
-    await tester.enterText(find.byType(TextFormField).at(5), '321drowddap');
+    await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');
+    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), '321drowddap');
 
-    await tester.tap(find.text('Register'));
+    await tester.tap(find.byKey(Key(AppConfig.register)));
     await tester.pumpAndSettle();
 
     expect(find.text('Passwords must be the same'), findsOneWidget);

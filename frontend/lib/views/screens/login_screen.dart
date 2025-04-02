@@ -44,13 +44,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppConfig.successfullyLoggedIn)),
+          SnackBar(
+            key: Key(AppConfig.successfullyLoggedIn),
+            content: Text(AppConfig.successfullyLoggedIn),
+          ),
         );
         context.go('/home');
       } else {
         final responseBody = jsonDecode(response.body);
         setState(() {
-          _errorMessage = responseBody["detail"].toString() ?? AppConfig.loginFailed;
+          _errorMessage = responseBody["detail"].toString();
         });
       }
     } finally {
@@ -98,12 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: Key(AppConfig.email),
                     controller: _emailController,
                     decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
                     validator: _validateEmail,
                   ),
                   TextFormField(
+                    key: Key(AppConfig.password),
                     controller: _passwordController,
                     decoration: InputDecoration(labelText: AppConfig.password),
                     obscureText: true,
@@ -113,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _isLoading
                       ? CircularProgressIndicator()
                       : ElevatedButton(
-                        key: Key('login button'),
+                        key: Key(AppConfig.login),
                         onPressed: _login,
                         child: Text(AppConfig.login),
                       ),
@@ -126,10 +131,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   TextButton(
+                    key: Key(AppConfig.dontHaveAccount),
                     onPressed: () => context.go('/register'),
                     child: Text(AppConfig.dontHaveAccount),
                   ),
                   TextButton(
+                    key: Key(AppConfig.home),
                     onPressed: () => context.go('/'),
                     child: Text(AppConfig.home),
                   ),

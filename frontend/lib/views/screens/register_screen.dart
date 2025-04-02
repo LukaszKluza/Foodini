@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:country_picker/country_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final http.Client? client;
+
+  const RegisterScreen({super.key, this.client});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -49,33 +51,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage = null;
     });
 
-    final response = await http.post(
-      Uri.parse(AppConfig.registerUrl),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "name": _firstNameController.text,
-        "last_name": _lastNameController.text,
-        "age": _selectedAge,
-        "country": _selectedCountry,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-      }),
-    );
+    final client = widget.client ?? http.Client();
 
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final response = await client.post(
+        Uri.parse(AppConfig.registerUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "name": _firstNameController.text,
+          "last_name": _lastNameController.text,
+          "age": _selectedAge,
+          "country": _selectedCountry,
+          "email": _emailController.text,
+          "password": _passwordController.text,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppConfig.succesfullyRegistered)));
-      context.go('/home'); //TODO
-    } else {
-      final responseBody = jsonDecode(response.body);
       setState(() {
-        _errorMessage = responseBody["detail"] ?? AppConfig.registrationFailed;
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppConfig.succesfullyRegistered)),
+        );
+        context.go('/home'); //TODO
+      } else {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          _errorMessage = responseBody["detail"].toString();
+        });
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -150,17 +160,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  key: Key(AppConfig.firstName),
                   controller: _firstNameController,
                   decoration: InputDecoration(labelText: AppConfig.firstName),
                   validator: _validateName,
                 ),
                 TextFormField(
+                  key: Key(AppConfig.lastName),
                   controller: _lastNameController,
                   decoration: InputDecoration(labelText: AppConfig.lastName),
                   validator: _validateName,
                 ),
                 DropdownButtonFormField<int>(
-                  key: Key('ageDropdown'),
+                  key: Key(AppConfig.age),
                   value: _selectedAge,
                   decoration: InputDecoration(labelText: AppConfig.age),
                   items:
@@ -178,6 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (value) => _validateAge(value),
                 ),
                 TextFormField(
+                  key: Key(AppConfig.country),
                   readOnly: true,
                   decoration: InputDecoration(labelText: AppConfig.country),
                   controller: _countryController,
@@ -185,18 +198,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: _validateCountry,
                 ),
                 TextFormField(
+                  key: Key(AppConfig.email),
                   controller: _emailController,
                   decoration: InputDecoration(labelText: AppConfig.email),
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,
                 ),
                 TextFormField(
+                  key: Key(AppConfig.password),
                   controller: _passwordController,
                   decoration: InputDecoration(labelText: AppConfig.password),
                   obscureText: true,
                   validator: _validatePassword,
                 ),
                 TextFormField(
+                  key: Key(AppConfig.confirmPassword),
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
                     labelText: AppConfig.confirmPassword,
@@ -208,6 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 _isLoading
                     ? CircularProgressIndicator()
                     : ElevatedButton(
+                      key: Key(AppConfig.register),
                       onPressed: _register,
                       child: Text(AppConfig.register),
                     ),
@@ -220,10 +237,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 TextButton(
+                  key: Key(AppConfig.alreadyHaveAnAccount),
                   onPressed: () => context.go('/login'),
                   child: Text(AppConfig.alreadyHaveAnAccount),
                 ),
                 TextButton(
+                  key: Key(AppConfig.home),
                   onPressed: () => context.go('/'),
                   child: Text(AppConfig.home),
                 ),

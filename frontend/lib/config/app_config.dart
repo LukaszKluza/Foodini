@@ -36,9 +36,10 @@ class AppConfig {
   static const String loginFailed = 'Login failed';
 
   //Lists
-  static final List<int> ages = List.generate(100, (index) => index + 1);
+  static final List<int> ages = List.generate(109, (index) => index + 12);
 
   // URLs
-  static const String registerUrl = 'http://127.0.0.1:8000/v1/users/register';
-  static const String loginUrl = 'http://127.0.0.1:8000/v1/users/login';
+  static const String baseUrl = 'http://127.0.0.1:8000/v1';
+  static const String registerUrl = '$baseUrl/users/register';
+  static const String loginUrl = '$baseUrl/users/login';
 }
