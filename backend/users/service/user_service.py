@@ -129,16 +129,22 @@ class UserService:
                 detail="User is already verified",
             )
 
-        token = await AuthorizationService.create_url_safe_token({"email": email})
-        message_link = f"{config.API_URL}/v1/users/verify/{token}"
-        message_subject = "FoodiniApp email verification"
-        message_body = f"Please click this {message_link} to verify your email"
+        try:
+            token = await AuthorizationService.create_url_safe_token({"email": email})
+            message_link = f"{config.API_URL}/v1/users/verify/{token}"
+            message_subject = "FoodiniApp email verification"
+            message_body = f"Please click this {message_link} to verify your email"
 
-        message = create_message(
-            recipients=[email], subject=message_subject, body=message_body
-        )
+            message = create_message(
+                recipients=[email], subject=message_subject, body=message_body
+            )
 
-        await mail.send_message(message)
+            await mail.send_message(message)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send verification email",
+            ) from e
 
 
 def get_user_service(

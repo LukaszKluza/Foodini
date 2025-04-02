@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, AsyncMock, patch
 from backend.users.schemas import UserCreate, UserLogin, UserUpdate
 from backend.users.service.authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
+from backend.mail import mail
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -38,6 +39,20 @@ def mock_send_message():
     with patch.object(
         UserService, "send_verification_message", new_callable=AsyncMock
     ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_create_verification_token():
+    with patch.object(
+        AuthorizationService, "create_url_safe_token", new_callable=AsyncMock
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_mail_send():
+    with patch.object(mail, "send_message", new_callable=AsyncMock) as mock:
         yield mock
 
 
@@ -245,3 +260,77 @@ async def test_delete_user_success(mock_user_repository, user_service):
     # Then
     assert response is None
     mock_user_repository.delete_user.assert_called_once_with(1)
+
+
+@pytest.mark.asyncio
+async def test_send_verification_message_success(
+    user_service, mock_user_repository, mock_create_verification_token, mock_mail_send
+):
+    # Given
+    test_email = "test@example.com"
+    mock_user = MagicMock(is_verified=False)
+    mock_user_repository.get_user_by_email.return_value = mock_user
+    mock_create_verification_token.return_value = "test_token"
+
+    # When
+    await user_service.send_verification_message(test_email)
+
+    # Then
+    mock_user_repository.get_user_by_email.assert_called_once_with(test_email)
+    mock_create_verification_token.assert_called_once_with({"email": test_email})
+    mock_mail_send.assert_called_once()
+
+    args, _ = mock_mail_send.call_args
+    sent_message = args[0]
+    assert test_email in sent_message.recipients
+    assert "test_token" in sent_message.body
+
+
+@pytest.mark.asyncio
+async def test_send_verification_message_user_not_exists(
+    user_service, mock_user_repository
+):
+    # Given
+    mock_user_repository.get_user_by_email.return_value = None
+
+    # When/Then
+    with pytest.raises(HTTPException) as exc:
+        await user_service.send_verification_message("nonexistent@example.com")
+
+    assert exc.value.status_code == 400
+    assert "User does not exist" in exc.value.detail
+
+
+@pytest.mark.asyncio
+async def test_send_verification_message_already_verified(
+    user_service, mock_user_repository
+):
+    # Given
+    mock_user = MagicMock(is_verified=True)
+    mock_user_repository.get_user_by_email.return_value = mock_user
+
+    # When/Then
+    with pytest.raises(HTTPException) as exc:
+        await user_service.send_verification_message("verified@example.com")
+
+    assert exc.value.status_code == 400
+    assert "already verified" in exc.value.detail
+
+
+@pytest.mark.asyncio
+async def test_send_verification_message_email_failure(
+    user_service, mock_user_repository, mock_mail_send
+):
+    # Given
+    test_email = "test@example.com"
+    mock_user = MagicMock(is_verified=False)
+    mock_user_repository.get_user_by_email.return_value = mock_user
+
+    mock_mail_send.side_effect = Exception("SMTP error")
+
+    # When/Then
+    with pytest.raises(HTTPException) as exc:
+        await user_service.send_verification_message(test_email)
+
+    assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert "Failed to send verification email" in str(exc.value.detail)
