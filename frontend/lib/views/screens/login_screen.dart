@@ -5,7 +5,9 @@ import 'package:frontend/config/app_config.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final http.Client? client;
+
+  const LoginScreen({super.key, this.client});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -27,29 +29,33 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final response = await http.post(
-      Uri.parse(AppConfig.loginUrl),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "email": _emailController.text,
-        "password": _passwordController.text,
-      }),
-    );
+    final client = widget.client ?? http.Client();
 
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final response = await client.post(
+        Uri.parse(AppConfig.loginUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": _emailController.text,
+          "password": _passwordController.text,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppConfig.successfullyLoggedIn)));
-      context.go('/home'); // TODO
-    } else {
-      final responseBody = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppConfig.successfullyLoggedIn)),
+        );
+        context.go('/home');
+      } else {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          _errorMessage = responseBody["detail"].toString() ?? AppConfig.loginFailed;
+        });
+      }
+    } finally {
       setState(() {
-        _errorMessage = responseBody["detail"] ?? AppConfig.loginFailed;
+        _isLoading = false;
       });
     }
   }
