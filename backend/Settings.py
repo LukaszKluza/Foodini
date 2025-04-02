@@ -1,13 +1,21 @@
-from dotenv import load_dotenv
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from datetime import timezone
 
-load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-SECRET_KEY: str = os.getenv("SECRET_KEY")
-ALGORITHM: str = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-REFRESH_TOKEN_EXPIRE_HOURS: int = 3
-PEPPER_KEY = os.getenv("PAPER_KEY")
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    API_URL: str
+    REFRESH_TOKEN_EXPIRE_HOURS: int = 3
+    VERIFICATION_TOKEN_EXPIRE_MINUTES: int = 10
+    PEPPER_KEY: str
+    REDIS_HOST: str
+    REDIS_PORT: int
+    TIMEZONE: timezone = timezone.utc
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+
+config = Settings()

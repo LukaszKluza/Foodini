@@ -11,6 +11,8 @@ from backend.users.schemas import (
     PasswordResetRequest,
 )
 from backend.users.user_repository import UserRepository, get_user_repository
+from backend.mail import mail, create_message
+from backend.settings import config
 
 
 async def check_user_permission(user_id_from_token: int, user_id: int):
@@ -33,6 +35,9 @@ class UserService:
             )
         user.password = await PasswordService.hash_password(user.password)
         new_user = await self.user_repository.create_user(user)
+
+        await self.send_verification_message(new_user.email)
+
         return new_user
 
     async def login(self, user: UserLogin):
@@ -41,6 +46,12 @@ class UserService:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incorrect credentials",
+            )
+
+        if not user_.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account not verified. Please check your email for verification link.",
             )
 
         if not await PasswordService.verify_password(user.password, user_.password):
@@ -120,6 +131,43 @@ class UserService:
 
         await AuthorizationService.delete_user_token(user_id_from_request)
         return await self.user_repository.delete_user(user_id_from_request)
+
+    async def verify(self, token: str):
+        token_data = await AuthorizationService.decode_url_safe_token(token)
+        user_email = token_data.get("email")
+        user_ = await self.user_repository.get_user_by_email(user_email)
+        if not user_:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User with this Email does not exist",
+            )
+
+        return await self.user_repository.verify_user(user_email)
+
+    async def send_verification_message(self, email: str):
+        existing_user = await self.user_repository.get_user_by_email(email)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User does not exist",
+            )
+
+        if existing_user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User is already verified",
+            )
+
+        token = await AuthorizationService.create_url_safe_token({"email": email})
+        message_link = f"{config.API_URL}/v1/users/verify/{token}"
+        message_subject = "FoodiniApp email verification"
+        message_body = f"Please click this {message_link} to verify your email"
+
+        message = create_message(
+            recipients=[email], subject=message_subject, body=message_body
+        )
+
+        await mail.send_message(message)
 
 
 def get_user_service(

@@ -6,7 +6,7 @@ import redis.asyncio as aioredis
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
-from backend.Settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from backend.settings import config
 from backend.users.service.authorisation_service import AuthorizationService
 
 
@@ -42,7 +42,7 @@ async def test_create_tokens(mock_redis, mock_jwt):
         assert access_token == "encoded_token"
         assert refresh_token == "encoded_token"
         mock_redis.setex.assert_called_once_with(
-            1, ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
+            1, config.ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
         )
 
 
@@ -50,7 +50,8 @@ async def test_create_tokens(mock_redis, mock_jwt):
 async def test_refresh_access_token(mock_redis, mock_jwt, credentials):
     mock_jwt[0].return_value = {
         "id": 1,
-        "exp": datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+        "exp": datetime.now(config.TIMEZONE)
+        + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES),
     }
     mock_jwt[1].return_value = "encoded_token"
     mock_redis.get.return_value = b"test_token"
@@ -59,7 +60,7 @@ async def test_refresh_access_token(mock_redis, mock_jwt, credentials):
 
     assert new_token == "encoded_token"
     mock_redis.setex.assert_called_once_with(
-        1, ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
+        1, config.ACCESS_TOKEN_EXPIRE_MINUTES * 60, "encoded_token"
     )
 
 

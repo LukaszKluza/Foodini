@@ -76,3 +76,17 @@ async def delete_user(
 ):
     user_id_from_token = token_payload.get("id")
     return await user_service.delete(user_id_from_token, user_id)
+
+
+@user_router.get("/verify/{token}")
+async def verify_user_account(
+    token: str, user_service: UserService = Depends(get_user_service)
+):
+    return await user_service.verify(token)
+
+
+@user_router.post("/resend-verification")
+async def resend_verification(
+    email: str, user_service: UserService = Depends(get_user_service)
+):
+    return await user_service.send_verification_message(email)

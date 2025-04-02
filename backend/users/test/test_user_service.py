@@ -47,6 +47,14 @@ def mock_delete_user_token():
 
 
 @pytest.fixture
+def mock_send_message():
+    with patch.object(
+        UserService, "send_verification_message", new_callable=AsyncMock
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
 def mock_user_repository():
     repo = MagicMock()
     repo.get_user_by_email = AsyncMock()
@@ -89,7 +97,7 @@ async def test_register_user_existing(mock_user_repository, user_service):
 
 @pytest.mark.asyncio
 async def test_register_user_new(
-    mock_hash_password, mock_user_repository, user_service
+    mock_hash_password, mock_user_repository, mock_send_message, user_service
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = None
@@ -97,6 +105,7 @@ async def test_register_user_new(
     mock_user_repository.create_user.return_value = MagicMock(
         id=1, email="test@example.com"
     )
+    mock_send_message.return_value = True
 
     # When
     new_user = await user_service.register(user_create)
