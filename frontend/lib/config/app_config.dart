@@ -1,10 +1,12 @@
 class AppConfig {
   // Numbers
   static const int minPasswordLength = 8;
+  static const int maxPasswordLength = 64;
 
   //Texts
   static const String succesfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
+  static const String provideCorrectName = 'Provide correct name';
   static const String requiredAge = 'Select your age';
   static const String requiredCountry = 'Select your country';
   static const String requiredEmail = 'E-mail is required';
@@ -14,6 +16,10 @@ class AppConfig {
   static const String samePasswords = 'Passwords must be the same';
   static const String minimalPasswordLegth =
       'Password must have at least $minPasswordLength characters';
+  static const String maximalPasswordLegth =
+      'Password must have no more than $maxPasswordLength characters';
+  static const String passwordComplexityError =
+      'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
   static const String registration = 'Registration';
   static const String register = 'Register';

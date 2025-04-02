@@ -108,6 +108,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value == null || value.isEmpty) {
       return AppConfig.requiredName;
     }
+    if (value.length < 2 || value.length > 50 || !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+      return AppConfig.provideCorrectName;
+    }
     return null;
   }
 
@@ -128,6 +131,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value.length < AppConfig.minPasswordLength) {
       return AppConfig.minimalPasswordLegth;
     }
+    if (value.length > AppConfig.maxPasswordLength) {
+      return AppConfig.maximalPasswordLegth;
+    }
+    if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+    return AppConfig.passwordComplexityError; 
+  }
     return null;
   }
 
