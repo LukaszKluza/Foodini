@@ -31,7 +31,15 @@ void main() {
     when(
       client.post(any, headers: anyNamed("headers"), body: anyNamed("body")),
     ).thenAnswer(
-      (_) async => http.Response(jsonEncode({"message": "OK"}), 200),
+      (_) async => http.Response(
+        jsonEncode({
+          "id": 47,
+          "email": "jan4@example.com",
+          "access_token": "access_token",
+          "refresh_token": "refresh_token",
+        }),
+        200,
+      ),
     );
 
     final goRouter = GoRouter(

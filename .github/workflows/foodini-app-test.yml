@@ -1,8 +1,6 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Foodini
-
 env:
   BACKEND_TEST_COVERAGE_THRESHOLD: 80
   FRONTEND_TEST_COVERAGE_THRESHOLD: 70
@@ -15,19 +13,22 @@ env:
   PEPPER_KEY: ${{ secrets.PEPPER_KEY }}
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+  MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+  MAIL_FROM: ${{ secrets.MAIL_FROM }}
+  MAIL_PORT: ${{ secrets.MAIL_PORT }}
+  MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+  MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+
 
 on:
   pull_request:
     branches: [ "*" ]
-
 permissions:
   contents: read
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
        # Python Setup Steps
       - uses: actions/checkout@v4
@@ -54,27 +55,21 @@ jobs:
           cd scripts 
           chmod +x ./backendTestCoverage.sh
           ./backendTestCoverage.sh ${{ env.BACKEND_TEST_COVERAGE_THRESHOLD }}
-
       # Frontend Setup Steps
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.29.1"
-
       - name: Install Frontend dependencies
         run: |
           cd frontend
           flutter pub get
-
       - name: Run Frontend tests
         run: |
           cd frontend
           flutter test --coverage 
-
       - name: Frontend test coverage
         run: |
           cd scripts 
           chmod +x ./frontendTestCoverage.sh
           ./frontendTestCoverage.sh ${{ env.FRONTEND_TEST_COVERAGE_THRESHOLD }}
-
-      
