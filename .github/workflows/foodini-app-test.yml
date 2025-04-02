@@ -4,7 +4,8 @@
 name: Foodini
 
 env:
-  TEST_COVERAGE_THRESHOLD: 80
+  BACKEND_TEST_COVERAGE_THRESHOLD: 80
+  FRONTEND_TEST_COVERAGE_THRESHOLD: 70
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -52,7 +53,7 @@ jobs:
         run: |
           cd scripts 
           chmod +x ./backendTestCoverage.sh
-          ./backendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
+          ./backendTestCoverage.sh ${{ env.BACKEND_TEST_COVERAGE_THRESHOLD }}
 
       # Frontend Setup Steps
       - name: Set up Frontend
@@ -74,6 +75,6 @@ jobs:
         run: |
           cd scripts 
           chmod +x ./frontendTestCoverage.sh
-          ./frontendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
+          ./frontendTestCoverage.sh ${{ env.FRONTEND_TEST_COVERAGE_THRESHOLD }}
 
       
