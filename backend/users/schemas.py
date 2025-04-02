@@ -12,7 +12,12 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     password: str = Field(..., min_length=8, max_length=64)
 
 
-class PasswordResetRequest(PasswordValidationMixin, BaseModel):
+class PasswordResetRequest(BaseModel):
+    id: Optional[str] = Field(None, gt=0)
+    email: EmailStr
+
+
+class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
 

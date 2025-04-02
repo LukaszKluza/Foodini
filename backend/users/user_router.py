@@ -1,7 +1,4 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, status
-from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
 
 from backend.users.service.authorisation_service import AuthorizationService
@@ -12,6 +9,7 @@ from .schemas import (
     UserLogin,
     LoginUserResponse,
     PasswordResetRequest,
+    NewPasswordConfirm,
 )
 from backend.users.service.user_service import UserService, get_user_service
 
@@ -48,13 +46,12 @@ async def refresh_access_token(
     return {"refreshed_access_token": token_payload}
 
 
-@user_router.post("/reset-password", response_model=UserResponse)
+@user_router.get("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
 async def reset_password(
     password_reset_request: PasswordResetRequest,
-    user_id: Optional[int] = Query(None),
     user_service: UserService = Depends(get_user_service),
 ):
-    return await user_service.reset_password(password_reset_request, user_id)
+    return await user_service.reset_password(password_reset_request)
 
 
 @user_router.patch("/update/{user_id}", response_model=UserResponse)
@@ -78,15 +75,24 @@ async def delete_user(
     return await user_service.delete(user_id_from_token, user_id)
 
 
-@user_router.get("/verify/{token}")
-async def verify_user_account(
-    token: str, user_service: UserService = Depends(get_user_service)
+@user_router.post("/confirm/new-password/{url_token}")
+async def verify_new_password(
+    url_token: str,
+    new_password_confirm: NewPasswordConfirm,
+    user_service: UserService = Depends(get_user_service),
 ):
-    return await user_service.verify(token)
+    return await user_service.confirm_new_password(url_token, new_password_confirm)
+
+
+@user_router.get("/confirm/new-account/{url_token}")
+async def verify_new_account(
+    url_token: str, user_service: UserService = Depends(get_user_service)
+):
+    return await user_service.confirm_new_account(url_token)
 
 
 @user_router.post("/resend-verification")
 async def resend_verification(
     email: str, user_service: UserService = Depends(get_user_service)
 ):
-    return await user_service.send_verification_message(email)
+    return await user_service.send_verification_message(email, None)

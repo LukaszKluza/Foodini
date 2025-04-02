@@ -128,7 +128,7 @@ async def test_login_user_not_found(mock_user_repository, user_service):
 
     # Then
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "Incorrect credentials"
+    assert exc_info.value.detail == "User does not exist"
 
 
 @pytest.mark.asyncio
@@ -184,8 +184,8 @@ async def test_logout_user_not_found(mock_user_repository, user_service):
         await user_service.logout(1)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
-    assert exc_info.value.detail == "User with this ID does not exist"
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "User does not exist"
 
 
 @pytest.mark.asyncio
@@ -244,7 +244,7 @@ async def test_reset_password_user_logged(
     mock_hash_password.return_value = "hashed_password"
 
     # When
-    user = await user_service.reset_password(password_reset_request, 1)
+    user = await user_service.reset_password(password_reset_request)
 
     # Then
     assert user.id == 1
@@ -264,8 +264,8 @@ async def test_update_user_not_found(mock_user_repository, user_service):
         await user_service.update(1, 1, user_update)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
-    assert exc_info.value.detail == "User with this ID does not exist"
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "User does not exist"
 
 
 @pytest.mark.asyncio

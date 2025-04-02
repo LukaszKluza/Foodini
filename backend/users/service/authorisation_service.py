@@ -14,7 +14,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Dict, Any
 
 from backend.core.database import get_redis
-from backend.settings import config
+from backend.Settings import config
 
 
 security = HTTPBearer()

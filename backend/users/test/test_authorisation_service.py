@@ -6,7 +6,7 @@ import redis.asyncio as aioredis
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
-from backend.settings import config
+from backend.Settings import config
 from backend.users.service.authorisation_service import AuthorizationService
 
 
