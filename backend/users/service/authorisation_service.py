@@ -1,10 +1,17 @@
 from datetime import datetime, timedelta
 import redis.asyncio as aioredis
 import jwt
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import (
+    URLSafeTimedSerializer,
+    SignatureExpired,
+    BadSignature,
+    BadTimeSignature,
+    BadData,
+)
 from fastapi import HTTPException, Security, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Dict, Any
 
 from backend.core.database import get_redis
 from backend.settings import config
@@ -110,20 +117,27 @@ class AuthorizationService:
             )
 
     @staticmethod
-    async def create_url_safe_token(data: dict):
-        serializer = URLSafeTimedSerializer(
+    async def get_serializer():
+        return URLSafeTimedSerializer(
             secret_key=config.SECRET_KEY, salt=config.PEPPER_KEY
         )
+
+    @staticmethod
+    async def create_url_safe_token(data: Dict[str, Any]):
+        serializer = await AuthorizationService.get_serializer()
 
         return serializer.dumps(data)
 
     @staticmethod
     async def decode_url_safe_token(token: str):
-        serializer = URLSafeTimedSerializer(
-            secret_key=config.SECRET_KEY, salt=config.PEPPER_KEY
-        )
+        serializer = await AuthorizationService.get_serializer()
 
         try:
-            return serializer.loads(token)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            return serializer.loads(
+                token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60
+            )
+        except (SignatureExpired, BadTimeSignature, BadSignature, BadData):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token verification failed",
+            )

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     API_URL: str
     REFRESH_TOKEN_EXPIRE_HOURS: int = 3
+    VERIFICATION_TOKEN_EXPIRE_MINUTES: int = 10
     PEPPER_KEY: str
     REDIS_HOST: str
     REDIS_PORT: int
