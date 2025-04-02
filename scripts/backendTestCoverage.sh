@@ -7,7 +7,7 @@ COVERAGE_FILE="${2:-../.coverage}"
 # Sprawdzenie, czy plik .coverage istnieje
 if [ ! -f "$COVERAGE_FILE" ]; then
   echo "File ($COVERAGE_FILE) doesn't exist."
-  echo "Please run 'run -m pytest' in main directory."
+  echo "Please run 'coverage run -m pytest' in main directory."
   exit 1
 fi
 

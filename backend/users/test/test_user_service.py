@@ -3,7 +3,12 @@ import sys
 from fastapi import HTTPException, status
 from unittest.mock import MagicMock, AsyncMock, patch
 
-from backend.users.schemas import UserCreate, UserLogin, UserUpdate
+from backend.users.schemas import (
+    UserCreate,
+    UserLogin,
+    UserUpdate,
+    PasswordResetRequest,
+)
 from backend.users.service.authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
 
@@ -34,11 +39,20 @@ def mock_create_tokens():
 
 
 @pytest.fixture
+def mock_delete_user_token():
+    with patch.object(
+        AuthorizationService, "delete_user_token", new_callable=AsyncMock
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
 def mock_user_repository():
     repo = MagicMock()
     repo.get_user_by_email = AsyncMock()
     repo.create_user = AsyncMock()
     repo.get_user_by_id = AsyncMock()
+    repo.update_password = AsyncMock()
     repo.update_user = AsyncMock()
     repo.delete_user = AsyncMock()
     return repo
@@ -166,9 +180,12 @@ async def test_logout_user_not_found(mock_user_repository, user_service):
 
 
 @pytest.mark.asyncio
-async def test_logout_user_success(mock_user_repository, user_service):
+async def test_logout_user_success(
+    mock_user_repository, user_service, mock_delete_user_token
+):
     # Given
     mock_user_repository.get_user_by_id.return_value = MagicMock(id=1)
+    mock_user_repository.get_user_by_email.return_value = MagicMock(id=1)
 
     # When
     response = await user_service.logout(1)
@@ -176,13 +193,62 @@ async def test_logout_user_success(mock_user_repository, user_service):
     # Then
     assert response.status_code == status.HTTP_200_OK
     assert response.detail == "Logged out"
+    mock_delete_user_token.assert_called_once_with(1)
+
+
+@pytest.mark.asyncio
+async def test_reset_password_user_unlogged(
+    mock_user_repository, user_service, mock_hash_password
+):
+    # Given
+    mock_user_repository.get_user_by_email.return_value = MagicMock(id=1)
+    mock_user_repository.update_password.return_value = MagicMock(
+        id=1, email="test@example.com"
+    )
+    password_reset_request = PasswordResetRequest(
+        email="test@example.com", password="Password123"
+    )
+    mock_hash_password.return_value = "hashed_password"
+
+    # When
+    user = await user_service.reset_password(password_reset_request, 1)
+
+    # Then
+    assert user.id == 1
+    assert user.email == "test@example.com"
+    mock_user_repository.update_password.assert_called_once_with(1, "hashed_password")
+
+
+@pytest.mark.asyncio
+async def test_reset_password_user_logged(
+    mock_user_repository, user_service, mock_delete_user_token, mock_hash_password
+):
+    # Given
+    mock_user_repository.get_user_by_email.return_value = MagicMock(id=1)
+    mock_user_repository.update_password.return_value = MagicMock(
+        id=1, email="test@example.com"
+    )
+    mock_delete_user_token.return_value = MagicMock(1)
+    password_reset_request = PasswordResetRequest(
+        email="test@example.com", password="Password123"
+    )
+    mock_hash_password.return_value = "hashed_password"
+
+    # When
+    user = await user_service.reset_password(password_reset_request, 1)
+
+    # Then
+    assert user.id == 1
+    assert user.email == "test@example.com"
+    mock_user_repository.update_password.assert_called_once_with(1, "hashed_password")
+    mock_delete_user_token.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
 async def test_update_user_not_found(mock_user_repository, user_service):
     # Given
     mock_user_repository.get_user_by_id.return_value = None
-    user_update = UserUpdate(user_id=1, email="new@example.com")
+    user_update = UserUpdate(email="new@example.com")
 
     # When
     with pytest.raises(HTTPException) as exc_info:
@@ -225,10 +291,13 @@ async def test_delete_user_not_found(mock_user_repository, user_service):
 
 
 @pytest.mark.asyncio
-async def test_delete_user_success(mock_user_repository, user_service):
+async def test_delete_user_success(
+    mock_user_repository, user_service, mock_delete_user_token
+):
     # Given
     mock_user_repository.get_user_by_id.return_value = MagicMock(id=1)
     mock_user_repository.delete_user.return_value = None
+    mock_delete_user_token.return_value = MagicMock(1)
 
     # When
     response = await user_service.delete(1, 1)
@@ -236,3 +305,4 @@ async def test_delete_user_success(mock_user_repository, user_service):
     # Then
     assert response is None
     mock_user_repository.delete_user.assert_called_once_with(1)
+    mock_delete_user_token.assert_called_once_with(1)

@@ -1,8 +1,18 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, status
+from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
 
 from backend.users.service.authorisation_service import AuthorizationService
-from .schemas import UserCreate, UserResponse, UserUpdate, UserLogin, LoginUserResponse
+from .schemas import (
+    UserCreate,
+    UserResponse,
+    UserUpdate,
+    UserLogin,
+    LoginUserResponse,
+    PasswordResetRequest,
+)
 from backend.users.service.user_service import UserService, get_user_service
 
 user_router = APIRouter(prefix="/v1/users")
@@ -36,6 +46,15 @@ async def refresh_access_token(
     token_payload: dict = Depends(AuthorizationService.refresh_access_token),
 ):
     return {"refreshed_access_token": token_payload}
+
+
+@user_router.post("/reset-password", response_model=UserResponse)
+async def reset_password(
+    password_reset_request: PasswordResetRequest,
+    user_id: Optional[int] = Query(None),
+    user_service: UserService = Depends(get_user_service),
+):
+    return await user_service.reset_password(password_reset_request, user_id)
 
 
 @user_router.patch("/update/{user_id}", response_model=UserResponse)

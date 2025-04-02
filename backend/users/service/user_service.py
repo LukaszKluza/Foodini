@@ -8,6 +8,7 @@ from backend.users.schemas import (
     UserLogin,
     UserUpdate,
     LoginUserResponse,
+    PasswordResetRequest,
 )
 from backend.users.user_repository import UserRepository, get_user_repository
 
@@ -66,14 +67,41 @@ class UserService:
                 detail="User with this ID does not exist",
             )
 
+        await AuthorizationService.delete_user_token(user_.id)
         return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
+
+    async def reset_password(
+        self, password_reset_request: PasswordResetRequest, user_id_from_request=None
+    ):
+        user_ = await self.user_repository.get_user_by_email(
+            password_reset_request.email
+        )
+        if not user_:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User with this ID does not exist",
+            )
+
+        if user_id_from_request:
+            if user_.id != user_id_from_request:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Unauthorized access to reset password",
+                )
+            else:
+                await AuthorizationService.delete_user_token(user_id_from_request)
+
+        hashed_password = await PasswordService.hash_password(
+            password_reset_request.password
+        )
+        return await self.user_repository.update_password(user_.id, hashed_password)
 
     async def update(
         self, user_id_from_token: int, user_id_from_request, user: UserUpdate
     ):
         await check_user_permission(user_id_from_token, user_id_from_request)
         user_ = await self.user_repository.get_user_by_id(user_id_from_request)
-        if not user_ or user_.id != user_id_from_request:
+        if not user_:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
@@ -81,16 +109,17 @@ class UserService:
 
         return await self.user_repository.update_user(user_id_from_request, user)
 
-    async def delete(self, user_id_from_token: int, user_id: int):
-        await check_user_permission(user_id_from_token, user_id)
-        user_ = await self.user_repository.get_user_by_id(user_id)
+    async def delete(self, user_id_from_token: int, user_id_from_request: int):
+        await check_user_permission(user_id_from_token, user_id_from_request)
+        user_ = await self.user_repository.get_user_by_id(user_id_from_request)
         if not user_:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User with this ID does not exist",
             )
 
-        return await self.user_repository.delete_user(user_id)
+        await AuthorizationService.delete_user_token(user_id_from_request)
+        return await self.user_repository.delete_user(user_id_from_request)
 
 
 def get_user_service(

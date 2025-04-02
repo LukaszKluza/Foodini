@@ -50,6 +50,18 @@ class AuthorizationService:
         return access_token, refresh_token
 
     @staticmethod
+    async def delete_user_token(user_id):
+        redis_tokens = await get_redis()
+
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+
+        return await redis_tokens.delete(user_id)
+
+    @staticmethod
     async def refresh_access_token(
         refresh_token: HTTPAuthorizationCredentials = Security(security),
         redis_tokens: aioredis.Redis = Depends(get_redis),

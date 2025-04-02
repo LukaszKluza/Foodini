@@ -12,6 +12,11 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     password: str = Field(..., min_length=8, max_length=64)
 
 
+class PasswordResetRequest(PasswordValidationMixin, BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=64)
+
+
 class UserUpdate(CountryValidationMixin, BaseModel):
     name: Optional[str] = Field(
         None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$"
