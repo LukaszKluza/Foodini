@@ -8,10 +8,8 @@ from .schemas import (
     UserUpdate,
     UserLogin,
     LoginUserResponse,
-    EmailSchema,
 )
 from backend.users.service.user_service import UserService, get_user_service
-from backend.mail import mail, create_message
 
 user_router = APIRouter(prefix="/v1/users")
 
@@ -67,14 +65,9 @@ async def delete_user(
     return await user_service.delete(user_id_from_token, user_id)
 
 
-@user_router.post("/send_mail")
-async def send_mail(emails: EmailSchema):
-    emails = emails.addresses
-
-    message = create_message(
-        recipients=emails, subject="Welcome", body="Welcome to app"
-    )
-
-    await mail.send_message(message)
-
-    return {"message": "Email send successfully"}
+@user_router.get("/verify/{token}")
+async def verify_user_account(
+    token: str, user_service: UserService = Depends(get_user_service)
+):
+    print(token)
+    return await user_service.verify(token)

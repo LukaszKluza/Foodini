@@ -10,6 +10,8 @@ from backend.users.schemas import (
     LoginUserResponse,
 )
 from backend.users.user_repository import UserRepository, get_user_repository
+from backend.mail import mail, create_message
+from backend.settings import config
 
 
 async def check_user_permission(user_id_from_token: int, user_id: int):
@@ -32,6 +34,19 @@ class UserService:
             )
         user.password = await PasswordService.hash_password(user.password)
         new_user = await self.user_repository.create_user(user)
+
+        token = await AuthorizationService.create_url_safe_token({"email": user.email})
+
+        message_link = f"{config.API_URL}/v1/users/verify/{token}"
+        message_subject = "FoodiniApp email verification."
+        message_body = f"Please click this {message_link} to verify your email."
+
+        message = create_message(
+            recipients=[user.email], subject=message_subject, body=message_body
+        )
+
+        await mail.send_message(message)
+
         return new_user
 
     async def login(self, user: UserLogin):
@@ -91,6 +106,18 @@ class UserService:
             )
 
         return await self.user_repository.delete_user(user_id)
+
+    async def verify(self, token: str):
+        token_data = await AuthorizationService.decode_url_safe_token(token)
+        user_email = token_data.get("email")
+        user_ = await self.user_repository.get_user_by_email(user_email)
+        if not user_:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User with this Email does not exist",
+            )
+
+        return await self.user_repository.verify_user(user_email)
 
 
 def get_user_service(

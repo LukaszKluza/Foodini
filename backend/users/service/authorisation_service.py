@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
-
 import redis.asyncio as aioredis
 import jwt
+from itsdangerous import URLSafeTimedSerializer
 from fastapi import HTTPException, Security, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from backend.core.database import get_redis
 from backend.settings import config
 
@@ -107,3 +108,22 @@ class AuthorizationService:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
+
+    @staticmethod
+    async def create_url_safe_token(data: dict):
+        serializer = URLSafeTimedSerializer(
+            secret_key=config.SECRET_KEY, salt=config.PEPPER_KEY
+        )
+
+        return serializer.dumps(data)
+
+    @staticmethod
+    async def decode_url_safe_token(token: str):
+        serializer = URLSafeTimedSerializer(
+            secret_key=config.SECRET_KEY, salt=config.PEPPER_KEY
+        )
+
+        try:
+            return serializer.loads(token)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))

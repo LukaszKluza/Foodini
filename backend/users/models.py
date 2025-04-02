@@ -10,6 +10,7 @@ class User(SQLModel, table=True):
     age: int = Field(nullable=False)
     country: str = Field(nullable=False)
     email: str = Field(unique=True, nullable=False)
+    is_verifeid: bool = Field(nullable=False, default=False)
     password: str = Field(nullable=False)
 
 
