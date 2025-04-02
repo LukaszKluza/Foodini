@@ -211,7 +211,7 @@ async def test_reset_password_user_unlogged(
     mock_hash_password.return_value = "hashed_password"
 
     # When
-    user = await user_service.reset_password(password_reset_request, 1)
+    user = await user_service.reset_password(password_reset_request)
 
     # Then
     assert user.id == 1
