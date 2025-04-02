@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from datetime import timezone
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Settings(BaseSettings):
