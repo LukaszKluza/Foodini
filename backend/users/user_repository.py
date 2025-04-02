@@ -46,7 +46,7 @@ class UserRepository:
     async def verify_user(self, user_email: str) -> bool:
         user = await self.get_user_by_email(user_email)
         if user:
-            user.is_verifeid = True
+            user.is_verified = True
             await self.db.commit()
             await self.db.refresh(user)
             return True

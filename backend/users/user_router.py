@@ -69,5 +69,11 @@ async def delete_user(
 async def verify_user_account(
     token: str, user_service: UserService = Depends(get_user_service)
 ):
-    print(token)
     return await user_service.verify(token)
+
+
+@user_router.post("/resend-verification")
+async def resend_verification(
+    email: str, user_service: UserService = Depends(get_user_service)
+):
+    return await user_service.send_verification_message(email)
