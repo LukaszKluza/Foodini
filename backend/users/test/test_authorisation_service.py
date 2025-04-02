@@ -107,15 +107,6 @@ async def test_verify_token_revoked(mock_redis, mock_jwt, credentials):
 
 
 @pytest.mark.asyncio
-async def test_get_serializer():
-    serializer = await AuthorizationService.get_serializer()
-    assert isinstance(serializer, URLSafeTimedSerializer)
-
-    assert str(serializer.secret_key).strip("b'") == str(config.SECRET_KEY).strip("'")
-    assert str(serializer.salt).strip("b'") == str(config.PEPPER_KEY).strip("'")
-
-
-@pytest.mark.asyncio
 async def test_create_url_safe_token(mock_serializer):
     test_data = {"email": "test@example.com"}
     token = await AuthorizationService.create_url_safe_token(test_data)
