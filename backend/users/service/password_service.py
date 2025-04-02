@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 
-from backend.Settings import config
+from backend.settings import config
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

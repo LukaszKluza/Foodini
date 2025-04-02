@@ -6,7 +6,7 @@ from fastapi import HTTPException, Security, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from backend.core.database import get_redis
-from backend.Settings import config
+from backend.settings import config
 
 
 security = HTTPBearer()

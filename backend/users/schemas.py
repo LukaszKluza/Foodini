@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, List
 from .mixins import PasswordValidationMixin, CountryValidationMixin
 
 
@@ -43,3 +43,7 @@ class LoginUserResponse(UserResponse):
     email: EmailStr
     access_token: str
     refresh_token: str
+
+
+class EmailSchema(BaseModel):
+    addresses: List[EmailStr]

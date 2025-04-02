@@ -2,8 +2,16 @@ from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 
 from backend.users.service.authorisation_service import AuthorizationService
-from .schemas import UserCreate, UserResponse, UserUpdate, UserLogin, LoginUserResponse
+from .schemas import (
+    UserCreate,
+    UserResponse,
+    UserUpdate,
+    UserLogin,
+    LoginUserResponse,
+    EmailSchema,
+)
 from backend.users.service.user_service import UserService, get_user_service
+from backend.mail import mail, create_message
 
 user_router = APIRouter(prefix="/v1/users")
 
@@ -57,3 +65,16 @@ async def delete_user(
 ):
     user_id_from_token = token_payload.get("id")
     return await user_service.delete(user_id_from_token, user_id)
+
+
+@user_router.post("/send_mail")
+async def send_mail(emails: EmailSchema):
+    emails = emails.addresses
+
+    message = create_message(
+        recipients=emails, subject="Welcome", body="Welcome to app"
+    )
+
+    await mail.send_message(message)
+
+    return {"message": "Email send successfully"}
