@@ -129,20 +129,29 @@ class AuthorizationService:
             )
 
     @staticmethod
-    async def get_serializer():
-        return URLSafeTimedSerializer(
-            secret_key=config.SECRET_KEY, salt=config.PEPPER_KEY
-        )
+    async def get_serializer(salt: str = config.NEW_ACCOUNT_SLAT):
+        await AuthorizationService.verify_salt(salt)
+
+        return URLSafeTimedSerializer(secret_key=config.SECRET_KEY, salt=salt)
 
     @staticmethod
-    async def create_url_safe_token(data: Dict[str, Any]):
-        serializer = await AuthorizationService.get_serializer()
+    async def verify_salt(salt):
+        if salt not in config.SALTS:
+            raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
+
+    @staticmethod
+    async def create_url_safe_token(
+        data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SLAT
+    ):
+        await AuthorizationService.verify_salt(salt)
+        serializer = await AuthorizationService.get_serializer(salt)
 
         return serializer.dumps(data)
 
     @staticmethod
-    async def decode_url_safe_token(token: str):
-        serializer = await AuthorizationService.get_serializer()
+    async def decode_url_safe_token(token: str, salt: str = config.NEW_ACCOUNT_SLAT):
+        await AuthorizationService.verify_salt(salt)
+        serializer = await AuthorizationService.get_serializer(salt)
 
         try:
             return serializer.loads(

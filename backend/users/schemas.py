@@ -13,7 +13,7 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 
 class PasswordResetRequest(BaseModel):
-    id: Optional[str] = Field(None, gt=0)
+    id: Optional[int] = Field(None, gt=0)
     email: EmailStr
 
 

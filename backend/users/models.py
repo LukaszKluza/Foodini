@@ -1,3 +1,4 @@
+from pydantic import EmailStr
 from sqlmodel import SQLModel, Field
 
 
@@ -9,7 +10,7 @@ class User(SQLModel, table=True):
     last_name: str = Field(nullable=False)
     age: int = Field(nullable=False)
     country: str = Field(nullable=False)
-    email: str = Field(unique=True, nullable=False)
+    email: EmailStr = Field(unique=True, nullable=False)
     is_verified: bool = Field(nullable=False, default=False)
     password: str = Field(nullable=False)
 

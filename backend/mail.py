@@ -1,4 +1,5 @@
 from fastapi_mail import FastMail, ConnectionConfig, MessageSchema, MessageType
+from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
@@ -21,13 +22,18 @@ class MailSettings(BaseSettings):
 mail_settings = MailSettings()
 mail_config = ConnectionConfig(**mail_settings.model_dump())
 
-
 mail = FastMail(config=mail_config)
 
 
-def create_message(recipients: List[str], subject: str, body: str):
-    message = MessageSchema(
-        recipients=recipients, subject=subject, body=body, subtype=MessageType.plain
-    )
+class MailService:
+    @staticmethod
+    async def create_message(recipients: List[EmailStr], subject: str, body: str):
+        message = MessageSchema(
+            recipients=recipients, subject=subject, body=body, subtype=MessageType.plain
+        )
 
-    return message
+        return message
+
+    @staticmethod
+    async def send_message(message: MessageSchema):
+        return await mail.send_message(message)
