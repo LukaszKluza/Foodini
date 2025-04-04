@@ -1,5 +1,6 @@
 import pytest
 import sys
+from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 from unittest.mock import MagicMock, AsyncMock, patch
 from backend.mail import MailService
@@ -12,6 +13,7 @@ from backend.users.schemas import (
 )
 from backend.users.service.authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
+from backend.Settings import config
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -244,7 +246,9 @@ async def test_reset_password_user_unlogged(
     user_service,
 ):
     # Given
-    mock_user_repository.get_user_by_email.return_value = MagicMock(id=1)
+    mock_user_repository.get_user_by_email.return_value = MagicMock(
+        id=1, last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2)
+    )
     password_reset_request = PasswordResetRequest(id=None, email="test@example.com")
     mock_create_url_safe_token.return_value = "token_url"
     mock_create_message.return_value = "message"
@@ -258,7 +262,7 @@ async def test_reset_password_user_unlogged(
 
 
 @pytest.mark.asyncio
-async def test_reset_password_user_logged(
+async def test_reset_password_user_logged_successful(
     mock_user_repository,
     mock_delete_user_token,
     mock_create_url_safe_token,
@@ -267,10 +271,11 @@ async def test_reset_password_user_logged(
     user_service,
 ):
     # Given
-    mock_user_repository.get_user_by_email.return_value = MagicMock(id=1)
-    mock_user_repository.update_password.return_value = MagicMock(
-        id=1, email="test@example.com"
+    mock_user_repository.get_user_by_email.return_value = MagicMock(
+        id=1,
+        last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2)
     )
+    mock_user_repository.update_password.return_value = MagicMock(id=1, email="test@example.com")
     mock_delete_user_token.return_value = MagicMock(1)
     password_reset_request = PasswordResetRequest(id=1, email="test@example.com")
     mock_create_url_safe_token.return_value = "token_url"
@@ -283,6 +288,37 @@ async def test_reset_password_user_logged(
     # Then
     mock_send_message.assert_called_once_with("message")
     mock_delete_user_token.assert_called_once_with(1)
+
+@pytest.mark.asyncio
+async def test_reset_password_user_logged_too_fast(
+    mock_user_repository,
+    mock_delete_user_token,
+    mock_create_url_safe_token,
+    mock_create_message,
+    mock_send_message,
+    user_service,
+):
+    # Given
+    last_password_update = datetime.now(config.TIMEZONE) - timedelta(hours=2)
+    mock_user_repository.get_user_by_email.return_value = MagicMock(
+        id=1,
+        last_password_update=last_password_update
+    )
+    mock_user_repository.update_password.return_value = MagicMock(id=1, email="test@example.com")
+    mock_delete_user_token.return_value = MagicMock(1)
+    password_reset_request = PasswordResetRequest(id=1, email="test@example.com")
+    mock_create_url_safe_token.return_value = "token_url"
+    mock_create_message.return_value = "message"
+    mock_send_message.return_value = True
+
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.reset_password(password_reset_request, "form_url")
+
+    # Then
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+    assert exc_info.value.detail == f"You must wait at least 1 day before changing your password again, last changed {last_password_update}"
+
 
 
 @pytest.mark.asyncio
@@ -376,7 +412,7 @@ async def test_confirm_new_password(
 
     # Then
     mock_hash_password.assert_called_once_with("New_password_1")
-    mock_user_repository.update_password.assert_called_once_with(1, "hashed_password")
+    mock_user_repository.update_password.assert_called_once_with(1, "hashed_password", datetime.now(config.TIMEZONE))
 
 
 @pytest.mark.asyncio

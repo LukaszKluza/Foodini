@@ -1,5 +1,8 @@
 from pydantic import EmailStr
+from datetime import datetime
 from sqlmodel import SQLModel, Field
+
+from backend.Settings import config
 
 
 class User(SQLModel, table=True):
@@ -13,6 +16,7 @@ class User(SQLModel, table=True):
     email: EmailStr = Field(unique=True, nullable=False)
     is_verified: bool = Field(nullable=False, default=False)
     password: str = Field(nullable=False)
+    last_password_update: datetime = Field(default=datetime.now(config.TIMEZONE))
 
 
 class BodyParameters(SQLModel, table=True):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from fastapi.params import Depends
 from pydantic import EmailStr
@@ -61,6 +62,16 @@ async def ensure_verified_user(user):
     return user
 
 
+async def check_last_password_change_data_time(user):
+    time_diff  = (datetime.now(config.TIMEZONE) - user.last_password_update).total_seconds()
+    if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"You must wait at least 1 day before changing your password again,"
+                   f" last changed {user.last_password_update}",
+        )
+
+
 class UserService:
     def __init__(self, user_repository: UserRepository = Depends(get_user_repository)):
         self.user_repository = user_repository
@@ -73,14 +84,14 @@ class UserService:
                 detail="User already exists",
             )
         user.password = await PasswordService.hash_password(user.password)
-        new_user = await self.user_repository.create_user(user)
 
         token = await AuthorizationService.create_url_safe_token(
-            {"email": new_user.email}
+            {"email": user.email}
         )
 
         await self.process_new_account_verification_message(user.email, token)
-        return new_user
+        return await self.user_repository.create_user(user)
+
 
     async def login(self, user_login: UserLogin):
         user_ = await self.ensure_user_exists_by_email(user_login.email)
@@ -122,8 +133,11 @@ class UserService:
             await check_user_permission(user_.id, user_id_from_request)
             await AuthorizationService.delete_user_token(user_id_from_request)
 
+        print(user_)
+        await check_last_password_change_data_time(user_)
+
         token = await AuthorizationService.create_url_safe_token(
-            {"email": user_.email}, salt=config.NEW_PASSWORD_SLAT
+            {"email": user_.email}, salt=config.NEW_PASSWORD_SALT
         )
 
         await self.process_new_password_verification_message(
@@ -145,7 +159,7 @@ class UserService:
         await AuthorizationService.delete_user_token(user_id_from_request)
         return await self.user_repository.delete_user(user_id_from_request)
 
-    async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SLAT):
+    async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         token_data = await AuthorizationService.decode_url_safe_token(token, salt)
         user_email = token_data.get("email")
         await self.ensure_user_exists_by_email(user_email)
@@ -173,7 +187,7 @@ class UserService:
 
     async def confirm_new_password(self, token, new_password_confirm):
         user_email_from_token = await self.decode_url_token(
-            token, salt=config.NEW_PASSWORD_SLAT
+            token, salt=config.NEW_PASSWORD_SALT
         )
         await check_user_permission(user_email_from_token, new_password_confirm.email)
         user_ = await self.ensure_user_exists_by_email(user_email_from_token)
@@ -181,7 +195,7 @@ class UserService:
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password
         )
-        return await self.user_repository.update_password(user_.id, hashed_password)
+        return await self.user_repository.update_password(user_.id, hashed_password, datetime.now(config.TIMEZONE))
 
     async def ensure_user_exists_by_email(self, user_email) -> User:
         existing_user = await self.user_repository.get_user_by_email(user_email)

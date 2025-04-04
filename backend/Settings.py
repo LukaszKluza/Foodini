@@ -10,9 +10,10 @@ class Settings(BaseSettings):
     API_URL: str
     REFRESH_TOKEN_EXPIRE_HOURS: int = 3
     VERIFICATION_TOKEN_EXPIRE_MINUTES: int = 10
+    RESET_PASSWORD_OFFSET_SECONDS: int = 24 * 3600
     PEPPER_KEY: str
-    NEW_ACCOUNT_SLAT: str
-    NEW_PASSWORD_SLAT: str
+    NEW_ACCOUNT_SALT: str
+    NEW_PASSWORD_SALT: str
     REDIS_HOST: str
     REDIS_PORT: int
     TIMEZONE: timezone = timezone.utc
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     def __post_init__(self):
-        self.SALTS = [self.NEW_ACCOUNT_SLAT, self.NEW_PASSWORD_SLAT]
+        self.SALTS = [self.NEW_ACCOUNT_SALT, self.NEW_PASSWORD_SALT]
 
 
 config = Settings()
