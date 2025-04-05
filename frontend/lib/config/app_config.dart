@@ -34,12 +34,18 @@ class AppConfig {
   static const String email = 'E-mail';
   static const String password = 'Password';
   static const String confirmPassword = 'Confirm password';
+  static const String newPassword = 'New password';
   static const String registrationFailed = 'Registration failed';
 
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Succesfully logged in';
   static const String loginFailed = 'Login failed';
+
+  static const String foodini = 'Foodini';
+
+  static const String myAccout = 'My Account';
+  static const String changePassword = 'Change password';
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
@@ -48,4 +54,5 @@ class AppConfig {
   static const String baseUrl = 'http://127.0.0.1:8000/v1';
   static const String registerUrl = '$baseUrl/users/register';
   static const String loginUrl = '$baseUrl/users/login';
+  static const String changePasswordUrl = '$baseUrl/reset-password/request';
 }
