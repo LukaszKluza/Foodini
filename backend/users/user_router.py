@@ -15,7 +15,7 @@ from .schemas import (
     NewPasswordConfirm,
 )
 from backend.users.service.user_service import UserService, get_user_service
-from backend.Settings import config
+from backend.settings import config
 
 user_router = APIRouter(prefix="/v1/users")
 

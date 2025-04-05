@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from datetime import timezone
+from typing import List
 
 
 class Settings(BaseSettings):
@@ -26,8 +27,9 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    def __post_init__(self):
-        self.SALTS = [self.NEW_ACCOUNT_SALT, self.NEW_PASSWORD_SALT]
+    @property
+    def SALTS(self) -> List[str]:
+        return [self.NEW_ACCOUNT_SALT, self.NEW_PASSWORD_SALT]
 
 
 config = Settings()

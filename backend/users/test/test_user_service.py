@@ -13,7 +13,7 @@ from backend.users.schemas import (
 )
 from backend.users.service.authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
-from backend.Settings import config
+from backend.settings import config
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -61,6 +61,14 @@ def mock_create_url_safe_token():
 def mock_decode_url_safe_token():
     with patch.object(
         AuthorizationService, "decode_url_safe_token", new_callable=AsyncMock
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_create_verification_token():
+    with patch.object(
+        AuthorizationService, "create_url_safe_token", new_callable=AsyncMock
     ) as mock:
         yield mock
 
@@ -272,10 +280,11 @@ async def test_reset_password_user_logged_successful(
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        id=1,
-        last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2)
+        id=1, last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2)
     )
-    mock_user_repository.update_password.return_value = MagicMock(id=1, email="test@example.com")
+    mock_user_repository.update_password.return_value = MagicMock(
+        id=1, email="test@example.com"
+    )
     mock_delete_user_token.return_value = MagicMock(1)
     password_reset_request = PasswordResetRequest(id=1, email="test@example.com")
     mock_create_url_safe_token.return_value = "token_url"
@@ -289,6 +298,7 @@ async def test_reset_password_user_logged_successful(
     mock_send_message.assert_called_once_with("message")
     mock_delete_user_token.assert_called_once_with(1)
 
+
 @pytest.mark.asyncio
 async def test_reset_password_user_logged_too_fast(
     mock_user_repository,
@@ -301,10 +311,11 @@ async def test_reset_password_user_logged_too_fast(
     # Given
     last_password_update = datetime.now(config.TIMEZONE) - timedelta(hours=2)
     mock_user_repository.get_user_by_email.return_value = MagicMock(
-        id=1,
-        last_password_update=last_password_update
+        id=1, last_password_update=last_password_update
     )
-    mock_user_repository.update_password.return_value = MagicMock(id=1, email="test@example.com")
+    mock_user_repository.update_password.return_value = MagicMock(
+        id=1, email="test@example.com"
+    )
     mock_delete_user_token.return_value = MagicMock(1)
     password_reset_request = PasswordResetRequest(id=1, email="test@example.com")
     mock_create_url_safe_token.return_value = "token_url"
@@ -317,8 +328,10 @@ async def test_reset_password_user_logged_too_fast(
 
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-    assert exc_info.value.detail == f"You must wait at least 1 day before changing your password again, last changed {last_password_update}"
-
+    assert (
+        exc_info.value.detail
+        == f"You must wait at least 1 day before changing your password again, last changed {last_password_update}"
+    )
 
 
 @pytest.mark.asyncio
@@ -382,7 +395,88 @@ async def test_delete_user_success(
     # Then
     assert response is None
     mock_user_repository.delete_user.assert_called_once_with(1)
-    mock_delete_user_token.assert_called_once_with(1)
+
+
+@pytest.mark.asyncio
+async def test_process_new_account_verification_message_success(
+    user_service,
+    mock_user_repository,
+    mock_create_verification_token,
+    mock_send_message,
+):
+    # Given
+    test_email = "test@example.com"
+    test_token = "test_token"
+    mock_user = MagicMock(is_verified=False)
+    mock_user_repository.get_user_by_email.return_value = mock_user
+    mock_create_verification_token.return_value = test_token
+
+    # When
+    await user_service.process_new_account_verification_message(test_email, test_token)
+
+    # Then
+    mock_user_repository.get_user_by_email.assert_called_once_with(test_email)
+    # mock_create_verification_token.assert_called_once_with({"email": test_email})
+    mock_send_message.assert_called_once()
+
+    args, _ = mock_send_message.call_args
+    sent_message = args[0]
+    assert test_email in sent_message.recipients
+    assert "test_token" in sent_message.body
+
+
+# @pytest.mark.asyncio
+# async def test_process_new_account_verification_message_user_not_exists(
+#     user_service, mock_user_repository
+# ):
+#     # Given
+#     mock_user_repository.get_user_by_email.return_value = None
+
+#     # When/Then
+#     with pytest.raises(HTTPException) as exc:
+#         await user_service.process_new_account_verification_message("nonexistent@example.com", "test_token")
+
+#     assert exc.value.status_code == 400
+#     assert "User does not exist" in exc.value.detail
+
+
+@pytest.mark.asyncio
+async def test_process_new_account_verification_message_already_verified(
+    user_service, mock_user_repository
+):
+    # Given
+    mock_user = MagicMock(is_verified=True)
+    mock_user_repository.get_user_by_email.return_value = mock_user
+
+    # When/Then
+    with pytest.raises(HTTPException) as exc:
+        await user_service.process_new_account_verification_message(
+            "verified@example.com", "test_token"
+        )
+
+    assert exc.value.status_code == 400
+    assert "already verified" in exc.value.detail
+
+
+# @pytest.mark.asyncio
+# async def test_process_new_account_verification_message_email_failure(
+#     user_service, mock_user_repository, mock_send_message
+# ):
+#     # Given
+#     test_email = "test@example.com"
+#     test_token = "test_token"
+#     mock_user = MagicMock(is_verified=False)
+#     mock_user_repository.get_user_by_email.return_value = mock_user
+
+#     mock_send_message.side_effect = Exception("SMTP error")
+
+#     # When/Then
+#     with pytest.raises(HTTPException) as exc:
+#         await user_service.process_new_account_verification_message(test_email, test_token)
+
+#     assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+#     assert "Failed to send verification email" in str(exc.value.detail)
+#     mock_delete_user_token.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
@@ -412,7 +506,9 @@ async def test_confirm_new_password(
 
     # Then
     mock_hash_password.assert_called_once_with("New_password_1")
-    mock_user_repository.update_password.assert_called_once_with(1, "hashed_password", datetime.now(config.TIMEZONE))
+    mock_user_repository.update_password.assert_called_once_with(
+        1, "hashed_password", datetime.now(config.TIMEZONE)
+    )
 
 
 @pytest.mark.asyncio

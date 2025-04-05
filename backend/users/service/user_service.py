@@ -15,7 +15,7 @@ from backend.users.schemas import (
 )
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.mail import MailService
-from backend.Settings import config
+from backend.settings import config
 
 
 async def check_user_permission(
@@ -63,12 +63,14 @@ async def ensure_verified_user(user):
 
 
 async def check_last_password_change_data_time(user):
-    time_diff  = (datetime.now(config.TIMEZONE) - user.last_password_update).total_seconds()
+    time_diff = (
+        datetime.now(config.TIMEZONE) - user.last_password_update
+    ).total_seconds()
     if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"You must wait at least 1 day before changing your password again,"
-                   f" last changed {user.last_password_update}",
+            f" last changed {user.last_password_update}",
         )
 
 
@@ -85,13 +87,10 @@ class UserService:
             )
         user.password = await PasswordService.hash_password(user.password)
 
-        token = await AuthorizationService.create_url_safe_token(
-            {"email": user.email}
-        )
+        token = await AuthorizationService.create_url_safe_token({"email": user.email})
 
         await self.process_new_account_verification_message(user.email, token)
         return await self.user_repository.create_user(user)
-
 
     async def login(self, user_login: UserLogin):
         user_ = await self.ensure_user_exists_by_email(user_login.email)
@@ -195,7 +194,9 @@ class UserService:
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password
         )
-        return await self.user_repository.update_password(user_.id, hashed_password, datetime.now(config.TIMEZONE))
+        return await self.user_repository.update_password(
+            user_.id, hashed_password, datetime.now(config.TIMEZONE)
+        )
 
     async def ensure_user_exists_by_email(self, user_email) -> User:
         existing_user = await self.user_repository.get_user_by_email(user_email)

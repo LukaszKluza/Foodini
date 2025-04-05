@@ -2,7 +2,7 @@ from pydantic import EmailStr
 from datetime import datetime
 from sqlmodel import SQLModel, Field
 
-from backend.Settings import config
+from backend.settings import config
 
 
 class User(SQLModel, table=True):
