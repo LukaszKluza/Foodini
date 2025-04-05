@@ -76,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppConfig.succesfullyRegistered)),
         );
-        context.go('/home'); //TODO
+        context.go('/main_page');
       } else {
         final responseBody = jsonDecode(response.body);
         setState(() {
@@ -108,7 +108,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value == null || value.isEmpty) {
       return AppConfig.requiredName;
     }
-    if (value.length < 2 || value.length > 50 || !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+    if (value.length < 2 ||
+        value.length > 50 ||
+        !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
       return AppConfig.provideCorrectName;
     }
     return null;
@@ -135,8 +137,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return AppConfig.maximalPasswordLegth;
     }
     if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-    return AppConfig.passwordComplexityError; 
-  }
+      return AppConfig.passwordComplexityError;
+    }
     return null;
   }
 

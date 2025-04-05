@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             content: Text(AppConfig.successfullyLoggedIn),
           ),
         );
-        context.go('/home');
+        context.go('/main_page');
       } else {
         final responseBody = jsonDecode(response.body);
         setState(() {
