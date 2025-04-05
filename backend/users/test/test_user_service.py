@@ -2,6 +2,7 @@ import pytest
 import sys
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
+from fastapi_mail.errors import ConnectionErrors
 from unittest.mock import MagicMock, AsyncMock, patch
 from backend.mail import MailService
 from backend.users.schemas import (
@@ -61,14 +62,6 @@ def mock_create_url_safe_token():
 def mock_decode_url_safe_token():
     with patch.object(
         AuthorizationService, "decode_url_safe_token", new_callable=AsyncMock
-    ) as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_create_verification_token():
-    with patch.object(
-        AuthorizationService, "create_url_safe_token", new_callable=AsyncMock
     ) as mock:
         yield mock
 
@@ -401,7 +394,6 @@ async def test_delete_user_success(
 async def test_process_new_account_verification_message_success(
     user_service,
     mock_user_repository,
-    mock_create_verification_token,
     mock_send_message,
 ):
     # Given
@@ -409,35 +401,19 @@ async def test_process_new_account_verification_message_success(
     test_token = "test_token"
     mock_user = MagicMock(is_verified=False)
     mock_user_repository.get_user_by_email.return_value = mock_user
-    mock_create_verification_token.return_value = test_token
+    mock_create_url_safe_token.return_value = test_token
 
     # When
     await user_service.process_new_account_verification_message(test_email, test_token)
 
     # Then
     mock_user_repository.get_user_by_email.assert_called_once_with(test_email)
-    # mock_create_verification_token.assert_called_once_with({"email": test_email})
     mock_send_message.assert_called_once()
 
     args, _ = mock_send_message.call_args
     sent_message = args[0]
     assert test_email in sent_message.recipients
     assert "test_token" in sent_message.body
-
-
-# @pytest.mark.asyncio
-# async def test_process_new_account_verification_message_user_not_exists(
-#     user_service, mock_user_repository
-# ):
-#     # Given
-#     mock_user_repository.get_user_by_email.return_value = None
-
-#     # When/Then
-#     with pytest.raises(HTTPException) as exc:
-#         await user_service.process_new_account_verification_message("nonexistent@example.com", "test_token")
-
-#     assert exc.value.status_code == 400
-#     assert "User does not exist" in exc.value.detail
 
 
 @pytest.mark.asyncio
@@ -456,27 +432,6 @@ async def test_process_new_account_verification_message_already_verified(
 
     assert exc.value.status_code == 400
     assert "already verified" in exc.value.detail
-
-
-# @pytest.mark.asyncio
-# async def test_process_new_account_verification_message_email_failure(
-#     user_service, mock_user_repository, mock_send_message
-# ):
-#     # Given
-#     test_email = "test@example.com"
-#     test_token = "test_token"
-#     mock_user = MagicMock(is_verified=False)
-#     mock_user_repository.get_user_by_email.return_value = mock_user
-
-#     mock_send_message.side_effect = Exception("SMTP error")
-
-#     # When/Then
-#     with pytest.raises(HTTPException) as exc:
-#         await user_service.process_new_account_verification_message(test_email, test_token)
-
-#     assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-#     assert "Failed to send verification email" in str(exc.value.detail)
-#     mock_delete_user_token.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio

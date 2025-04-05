@@ -1,4 +1,6 @@
 from fastapi_mail import FastMail, ConnectionConfig, MessageSchema, MessageType
+from fastapi_mail.errors import ConnectionErrors
+from fastapi import HTTPException, status
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
@@ -36,4 +38,10 @@ class MailService:
 
     @staticmethod
     async def send_message(message: MessageSchema):
-        return await mail.send_message(message)
+        try:
+            return await mail.send_message(message)
+        except ConnectionErrors:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Email service temporarily unavailable",
+            )
