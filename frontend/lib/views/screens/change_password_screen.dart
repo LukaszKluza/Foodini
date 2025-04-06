@@ -15,9 +15,9 @@ class ChangePasswordScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  // final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
       TextEditingController();
 
   bool _isLoading = false;
@@ -38,8 +38,8 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
         Uri.parse(AppConfig.changePasswordUrl),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          // "email": _emailController.text,
-          // "password": _passwordController.text,
+          "email": _emailController.text,
+          "password": _newPasswordController.text,
         }),
       );
 
@@ -65,17 +65,17 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
     }
   }
 
-  // String? _validateEmail(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return AppConfig.requiredEmail;
-  //   }
-  //   if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-  //     return AppConfig.invalidEmail;
-  //   }
-  //   return null;
-  // }
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppConfig.requiredEmail;
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return AppConfig.invalidEmail;
+    }
+    return null;
+  }
 
-  String? _validatePassword(String? value) {
+  String? _validateNewPassword(String? value) {
     if (value == null || value.isEmpty) {
       return AppConfig.requiredPassword;
     }
@@ -91,11 +91,11 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
     return null;
   }
 
-  String? _validateConfirmPassword(String? value) {
+  String? _validateConfirmNewPassword(String? value) {
     if (value == null || value.isEmpty) {
       return AppConfig.requiredPasswordConfirmation;
     }
-    if (value != _passwordController.text) {
+    if (value != _newPasswordController.text) {
       return AppConfig.samePasswords;
     }
     return null;
@@ -106,11 +106,11 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          context.go('/account');
-        },
-      ),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/account');
+          },
+        ),
         title: Center(
           child: Text(
             AppConfig.changePassword,
@@ -127,37 +127,30 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  // TextFormField(
-                  //   key: Key(AppConfig.email),
-                  //   controller: _emailController,
-                  //   decoration: InputDecoration(labelText: AppConfig.email),
-                  //   keyboardType: TextInputType.emailAddress,
-                  //   validator: _validateEmail,
-                  // ),
                   TextFormField(
-                    key: Key(AppConfig.password),
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: AppConfig.password),
-                    obscureText: true,
-                    validator: _validatePassword,
+                    key: Key(AppConfig.email),
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: AppConfig.email),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: _validateEmail,
                   ),
                   TextFormField(
                     key: Key(AppConfig.newPassword),
-                    controller: _passwordController,
+                    controller: _newPasswordController,
                     decoration: InputDecoration(
                       labelText: AppConfig.newPassword,
                     ),
                     obscureText: true,
-                    validator: _validatePassword,
+                    validator: _validateNewPassword,
                   ),
                   TextFormField(
                     key: Key(AppConfig.confirmPassword),
-                    controller: _confirmPasswordController,
+                    controller: _confirmNewPasswordController,
                     decoration: InputDecoration(
                       labelText: AppConfig.confirmPassword,
                     ),
                     obscureText: true,
-                    validator: _validateConfirmPassword,
+                    validator: _validateConfirmNewPassword,
                   ),
                   SizedBox(height: 20),
                   _isLoading
