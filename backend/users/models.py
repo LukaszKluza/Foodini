@@ -1,6 +1,7 @@
 from pydantic import EmailStr
 from datetime import datetime
 from sqlmodel import SQLModel, Field
+from sqlalchemy import DateTime
 
 from backend.settings import config
 
@@ -16,7 +17,10 @@ class User(SQLModel, table=True):
     email: EmailStr = Field(unique=True, nullable=False)
     is_verified: bool = Field(nullable=False, default=False)
     password: str = Field(nullable=False)
-    last_password_update: datetime = Field(default=datetime.now(config.TIMEZONE))
+    last_password_update: datetime = Field(
+        default_factory=lambda: datetime.now(config.TIMEZONE),
+        sa_type=DateTime(timezone=True),
+    )
 
 
 class BodyParameters(SQLModel, table=True):
