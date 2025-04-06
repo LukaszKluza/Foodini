@@ -18,6 +18,12 @@ class _LoginScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/main_page');
+          },
+        ),
         title: Center(
           child: Text(
             AppConfig.foodini,
@@ -38,7 +44,7 @@ class _LoginScreenState extends State<AccountScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     rectangularButton(
-                      "Change password",
+                      AppConfig.changePassword,
                       Icons.settings,
                       () => context.go('/change_password'),
                     ),
