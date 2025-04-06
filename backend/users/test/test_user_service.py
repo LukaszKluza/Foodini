@@ -2,7 +2,7 @@ import pytest
 import sys
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, AsyncMock, ANY, patch
 from backend.mail import MailService
 from backend.users.schemas import (
     UserCreate,
@@ -461,7 +461,11 @@ async def test_confirm_new_password(
     # Then
     mock_hash_password.assert_called_once_with("New_password_1")
     mock_user_repository.update_password.assert_called_once_with(
-        1, "hashed_password", datetime.now(config.TIMEZONE)
+        1, "hashed_password", ANY
+    )
+    args = mock_user_repository.update_password.call_args[0]
+    assert args[2].timestamp() == pytest.approx(
+        datetime.now(config.TIMEZONE).timestamp(), abs=1
     )
 
 
