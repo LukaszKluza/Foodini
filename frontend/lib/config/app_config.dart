@@ -45,6 +45,7 @@ class AppConfig {
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Succesfully logged in';
   static const String loginFailed = 'Login failed';
+  static const String logout = 'Logout';
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
