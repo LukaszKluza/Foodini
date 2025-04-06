@@ -16,6 +16,12 @@ class MainPageScreen extends StatefulWidget {
 class _LoginScreenState extends State<MainPageScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final buttonWidth = screenWidth * 0.4;
+    final buttonHeight = screenHeight * 0.2;
+    
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -40,18 +46,38 @@ class _LoginScreenState extends State<MainPageScreen> {
                     rectangularButton(
                       AppConfig.myAccout,
                       Icons.person,
+                      buttonWidth,
+                      buttonHeight,
                       () => context.go('/account'),
                     ),
                     SizedBox(height: 16),
-                    rectangularButton("Button 2", Icons.do_not_disturb, null),
+                    rectangularButton(
+                      "Button 2",
+                      Icons.do_not_disturb,
+                      buttonWidth,
+                      buttonHeight,
+                      null,
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    rectangularButton("Button 3", Icons.do_not_disturb, null),
+                    rectangularButton(
+                      "Button 3",
+                      Icons.do_not_disturb,
+                      buttonWidth,
+                      buttonHeight,
+                      null,
+                    ),
                     SizedBox(height: 16),
-                    rectangularButton("Button 4", Icons.do_not_disturb, null),
+                    rectangularButton(
+                      "Button 4",
+                      Icons.do_not_disturb,
+                      buttonWidth,
+                      buttonHeight,
+                      null,
+                    ),
                   ],
                 ),
               ],
