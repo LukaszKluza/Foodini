@@ -49,7 +49,11 @@ class _LoginScreenState extends State<AccountScreen> {
                       () => context.go('/change_password'),
                     ),
                     SizedBox(height: 16),
-                    rectangularButton("Button 2", Icons.do_not_disturb, null),
+                    rectangularButton(
+                      AppConfig.logout,
+                      Icons.logout,
+                      () => context.go('/'),
+                    ),
                   ],
                 ),
                 Column(
