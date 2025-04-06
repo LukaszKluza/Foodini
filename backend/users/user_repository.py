@@ -40,7 +40,9 @@ class UserRepository:
             return updated_user
         return None
 
-    async def update_password(self, user_id: int, new_password: str, current_datatime: datetime) -> User | None:
+    async def update_password(
+        self, user_id: int, new_password: str, current_datatime: datetime
+    ) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.password = new_password

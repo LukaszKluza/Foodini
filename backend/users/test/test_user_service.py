@@ -2,7 +2,6 @@ import pytest
 import sys
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
-from fastapi_mail.errors import ConnectionErrors
 from unittest.mock import MagicMock, AsyncMock, patch
 from backend.mail import MailService
 from backend.users.schemas import (
