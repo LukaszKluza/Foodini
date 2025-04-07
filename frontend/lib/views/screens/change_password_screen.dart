@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_client.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  final http.Client? client;
 
-  const ChangePasswordScreen({super.key, this.client});
+  const ChangePasswordScreen({super.key});
 
   @override
   State<ChangePasswordScreen> createState() => _LoginScreenState();
@@ -25,6 +25,8 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
   String? _errorMessage;
 
   Future<void> _changePassword() async {
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -32,16 +34,13 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
       _errorMessage = null;
     });
 
-    final client = widget.client ?? http.Client();
-
     try {
-      final response = await client.post(
+      final response = await apiClient.postRequest(
         Uri.parse(AppConfig.changePasswordUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
+        {
           "email": _emailController.text,
           "password": _newPasswordController.text,
-        }),
+        },
       );
 
       if (response.statusCode == 200) {
@@ -77,10 +76,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
           },
         ),
         title: Center(
-          child: Text(
-            AppConfig.changePassword,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
         ),
       ),
       body: Column(
@@ -115,7 +111,11 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                       labelText: AppConfig.confirmPassword,
                     ),
                     obscureText: true,
-                    validator: (value) => validateConfirmPassword(value, _newPasswordController.text),
+                    validator:
+                        (value) => validateConfirmPassword(
+                          value,
+                          _newPasswordController.text,
+                        ),
                   ),
                   SizedBox(height: 20),
                   _isLoading
@@ -128,10 +128,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                   if (_errorMessage != null)
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        _errorMessage!,
-                        style: AppConfig.errorStyle,
-                      ),
+                      child: Text(_errorMessage!, style: AppConfig.errorStyle),
                     ),
                 ],
               ),

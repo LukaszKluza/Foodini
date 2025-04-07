@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class AccountScreen extends StatefulWidget {
-  final http.Client? client;
 
-  const AccountScreen({super.key, this.client});
+  const AccountScreen({super.key});
 
   @override
   State<AccountScreen> createState() => _LoginScreenState();

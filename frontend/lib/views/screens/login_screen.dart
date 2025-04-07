@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_client.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  final http.Client? client;
 
-  const LoginScreen({super.key, this.client});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _login() async {
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -30,16 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final client = widget.client ?? http.Client();
-
     try {
-      final response = await client.post(
+      final response = await apiClient.postRequest(
         Uri.parse(AppConfig.loginUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": _emailController.text,
-          "password": _passwordController.text,
-        }),
+        {"email": _emailController.text, "password": _passwordController.text},
       );
 
       if (response.statusCode == 200) {
@@ -69,10 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.login,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.login, style: AppConfig.titleStyle),
         ),
       ),
       body: Column(
@@ -109,10 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_errorMessage != null)
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        _errorMessage!,
-                        style: AppConfig.errorStyle,
-                      ),
+                      child: Text(_errorMessage!, style: AppConfig.errorStyle),
                     ),
                   TextButton(
                     key: Key(AppConfig.dontHaveAccount),

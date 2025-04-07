@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_client.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:country_picker/country_picker.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final http.Client? client;
-
-  const RegisterScreen({super.key, this.client});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -45,6 +44,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -52,21 +53,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage = null;
     });
 
-    final client = widget.client ?? http.Client();
-
     try {
-      final response = await client.post(
-        Uri.parse(AppConfig.registerUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "name": _firstNameController.text,
-          "last_name": _lastNameController.text,
-          "age": _selectedAge,
-          "country": _selectedCountry,
-          "email": _emailController.text,
-          "password": _passwordController.text,
-        }),
-      );
+      final response = await apiClient
+          .postRequest(Uri.parse(AppConfig.registerUrl), {
+            "name": _firstNameController.text,
+            "last_name": _lastNameController.text,
+            "age": _selectedAge,
+            "country": _selectedCountry,
+            "email": _emailController.text,
+            "password": _passwordController.text,
+          });
 
       setState(() {
         _isLoading = false;
@@ -96,10 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.registration,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
         ),
       ),
       body: SingleChildScrollView(
@@ -145,7 +138,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(labelText: AppConfig.country),
                   controller: _countryController,
                   onTap: () => _pickCountry(context),
-                  validator: (value) => validateCountry(value, _selectedCountry),
+                  validator:
+                      (value) => validateCountry(value, _selectedCountry),
                 ),
                 TextFormField(
                   key: Key(AppConfig.email),
@@ -168,7 +162,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: AppConfig.confirmPassword,
                   ),
                   obscureText: true,
-                  validator: (value) => validateConfirmPassword(value, _passwordController.text),
+                  validator:
+                      (value) => validateConfirmPassword(
+                        value,
+                        _passwordController.text,
+                      ),
                 ),
                 SizedBox(height: 20),
                 _isLoading
@@ -181,10 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 if (_errorMessage != null)
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      _errorMessage!,
-                      style: AppConfig.errorStyle,
-                    ),
+                    child: Text(_errorMessage!, style: AppConfig.errorStyle),
                   ),
                 TextButton(
                   key: Key(AppConfig.alreadyHaveAnAccount),
