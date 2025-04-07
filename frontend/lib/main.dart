@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_client.dart';
+import 'package:provider/provider.dart';
 import 'app_router.dart';
 
 void main() {
@@ -10,9 +12,14 @@ class Foodini extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
+    return MultiProvider(
+      providers: [
+        Provider<ApiClient>(create: (_) => ApiClient()),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+      ),
     );
   }
 }
