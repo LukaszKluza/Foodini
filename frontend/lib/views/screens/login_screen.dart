@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:http/http.dart' as http;
@@ -63,23 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredEmail;
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return AppConfig.invalidEmail;
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPassword;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Center(
           child: Text(
             AppConfig.login,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
+            style: AppConfig.titleStyle,
           ),
         ),
       ),
@@ -105,14 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailController,
                     decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
-                    validator: _validateEmail,
+                    validator: validateEmail,
                   ),
                   TextFormField(
                     key: Key(AppConfig.password),
                     controller: _passwordController,
                     decoration: InputDecoration(labelText: AppConfig.password),
                     obscureText: true,
-                    validator: _validatePassword,
+                    validator: validatePassword,
                   ),
                   SizedBox(height: 20),
                   _isLoading
@@ -127,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.all(8.0),
                       child: Text(
                         _errorMessage!,
-                        style: TextStyle(color: Colors.red),
+                        style: AppConfig.errorStyle,
                       ),
                     ),
                   TextButton(

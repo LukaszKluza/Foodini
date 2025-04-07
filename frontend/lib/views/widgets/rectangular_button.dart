@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 Widget rectangularButton(
   String text,
   IconData icon,
-  double width,
-  double height,
+  double screenWidth,
+  double screenHeight,
   VoidCallback? onPressed,
 ) {
+  final width = screenWidth * 0.4;
+  final height = screenHeight * 0.2;
+
   return ElevatedButton(
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
