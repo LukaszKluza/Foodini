@@ -271,14 +271,21 @@ async def test_reset_password_user_logged_successful(
     user_service,
 ):
     # Given
-    mock_user_repository.get_user_by_email.return_value = MagicMock(
-        id=1, last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2)
+    mock_user = MagicMock(
+        id=1,
+        email="test@example.com",
+        last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2),
+        is_verified=True,
     )
-    mock_user_repository.update_password.return_value = MagicMock(
-        id=1, email="test@example.com"
+    mock_user_repository.get_user_by_email.return_value = mock_user
+    mock_user_repository.update_password.return_value = mock_user
+
+    mock_verify_token = AsyncMock(return_value={"id": 1})
+    AuthorizationService.verify_token = mock_verify_token
+
+    password_reset_request = PasswordResetRequest(
+        email="test@example.com", token="valid_token"
     )
-    mock_delete_user_token.return_value = MagicMock(1)
-    password_reset_request = PasswordResetRequest(id=1, email="test@example.com")
     mock_create_url_safe_token.return_value = "token_url"
     mock_create_message.return_value = "message"
     mock_send_message.return_value = True
@@ -287,8 +294,9 @@ async def test_reset_password_user_logged_successful(
     await user_service.reset_password(password_reset_request, "form_url")
 
     # Then
-    mock_send_message.assert_called_once_with("message")
+    mock_verify_token.assert_called_once_with("valid_token")
     mock_delete_user_token.assert_called_once_with(1)
+    mock_send_message.assert_called_once_with("message")
 
 
 @pytest.mark.asyncio

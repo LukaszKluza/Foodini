@@ -126,21 +126,35 @@ class UserService:
     ):
         user_ = await self.ensure_user_exists_by_email(password_reset_request.email)
         await ensure_verified_user(user_)
-        user_id_from_request = password_reset_request.id
 
-        if user_id_from_request:
-            await check_user_permission(user_.id, user_id_from_request)
-            await AuthorizationService.delete_user_token(user_id_from_request)
+        user_id_from_token = None
+        if password_reset_request.token:
+            try:
+                payload = await AuthorizationService.verify_token(
+                    password_reset_request.token
+                )
+                user_id_from_token = payload.get("id")
+                if not user_id_from_token:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Invalid token - missing user ID",
+                    )
 
-        print(user_)
+                await check_user_permission(user_id_from_token, user_.id)
+                await AuthorizationService.delete_user_token(user_id_from_token)
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+                ) from e
+
         await check_last_password_change_data_time(user_)
 
-        token = await AuthorizationService.create_url_safe_token(
-            {"email": user_.email}, salt=config.NEW_PASSWORD_SALT
+        reset_token = await AuthorizationService.create_url_safe_token(
+            {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
         )
 
         await self.process_new_password_verification_message(
-            user_.email, token, form_url
+            user_.email, reset_token, form_url
         )
 
     async def update(
@@ -188,8 +202,8 @@ class UserService:
         user_email_from_token = await self.decode_url_token(
             token, salt=config.NEW_PASSWORD_SALT
         )
-        await check_user_permission(user_email_from_token, new_password_confirm.email)
         user_ = await self.ensure_user_exists_by_email(user_email_from_token)
+        await check_user_permission(user_email_from_token, new_password_confirm.email)
 
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password

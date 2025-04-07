@@ -41,12 +41,12 @@ class UserRepository:
         return None
 
     async def update_password(
-        self, user_id: int, new_password: str, current_datatime: datetime
+        self, user_id: int, new_password: str, current_datetime: datetime
     ) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.password = new_password
-            user.last_password_update = current_datatime
+            user.last_password_update = current_datetime
             await self.db.commit()
             await self.db.refresh(user)
             return user

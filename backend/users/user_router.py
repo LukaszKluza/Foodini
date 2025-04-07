@@ -50,7 +50,7 @@ async def refresh_access_token(
     return {"refreshed_access_token": token_payload}
 
 
-@user_router.get("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
+@user_router.post("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
 async def reset_password(
     password_reset_request: PasswordResetRequest,
     form_url: Optional[str] = f"{config.API_URL}/v1/users/confirm/new-password",
