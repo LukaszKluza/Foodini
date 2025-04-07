@@ -18,16 +18,13 @@ class _LoginScreenState extends State<MainPageScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    final buttonWidth = screenWidth * 0.4;
-    final buttonHeight = screenHeight * 0.2;
     
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
             AppConfig.foodini,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
+            style: AppConfig.titleStyle,
           ),
         ),
       ),
@@ -46,16 +43,16 @@ class _LoginScreenState extends State<MainPageScreen> {
                     rectangularButton(
                       AppConfig.myAccout,
                       Icons.person,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       () => context.go('/account'),
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
                       "Button 2",
                       Icons.do_not_disturb,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       null,
                     ),
                   ],
@@ -66,16 +63,16 @@ class _LoginScreenState extends State<MainPageScreen> {
                     rectangularButton(
                       "Button 3",
                       Icons.do_not_disturb,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       null,
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
                       "Button 4",
                       Icons.do_not_disturb,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       null,
                     ),
                   ],

@@ -19,9 +19,6 @@ class _LoginScreenState extends State<AccountScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final buttonWidth = screenWidth * 0.4;
-    final buttonHeight = screenHeight * 0.2;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -33,7 +30,7 @@ class _LoginScreenState extends State<AccountScreen> {
         title: Center(
           child: Text(
             AppConfig.foodini,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
+            style: AppConfig.titleStyle,
           ),
         ),
       ),
@@ -52,16 +49,16 @@ class _LoginScreenState extends State<AccountScreen> {
                     rectangularButton(
                       AppConfig.changePassword,
                       Icons.settings,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       () => context.go('/change_password'),
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
                       AppConfig.logout,
                       Icons.logout,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       () => context.go('/'),
                     ),
                   ],
@@ -72,16 +69,16 @@ class _LoginScreenState extends State<AccountScreen> {
                     rectangularButton(
                       "Button 3",
                       Icons.do_not_disturb,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       null,
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
                       "Button 4",
                       Icons.do_not_disturb,
-                      buttonWidth,
-                      buttonHeight,
+                      screenWidth,
+                      screenHeight,
                       null,
                     ),
                   ],

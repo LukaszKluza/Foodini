@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:http/http.dart' as http;
@@ -65,42 +66,6 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
     }
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredEmail;
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return AppConfig.invalidEmail;
-    }
-    return null;
-  }
-
-  String? _validateNewPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPassword;
-    }
-    if (value.length < AppConfig.minPasswordLength) {
-      return AppConfig.minimalPasswordLegth;
-    }
-    if (value.length > AppConfig.maxPasswordLength) {
-      return AppConfig.maximalPasswordLegth;
-    }
-    if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-      return AppConfig.passwordComplexityError;
-    }
-    return null;
-  }
-
-  String? _validateConfirmNewPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPasswordConfirmation;
-    }
-    if (value != _newPasswordController.text) {
-      return AppConfig.samePasswords;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,7 +79,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
         title: Center(
           child: Text(
             AppConfig.changePassword,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
+            style: AppConfig.titleStyle,
           ),
         ),
       ),
@@ -132,7 +97,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                     controller: _emailController,
                     decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
-                    validator: _validateEmail,
+                    validator: validateEmail,
                   ),
                   TextFormField(
                     key: Key(AppConfig.newPassword),
@@ -141,7 +106,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                       labelText: AppConfig.newPassword,
                     ),
                     obscureText: true,
-                    validator: _validateNewPassword,
+                    validator: validatePassword,
                   ),
                   TextFormField(
                     key: Key(AppConfig.confirmPassword),
@@ -150,7 +115,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                       labelText: AppConfig.confirmPassword,
                     ),
                     obscureText: true,
-                    validator: _validateConfirmNewPassword,
+                    validator: (value) => validateConfirmPassword(value, _newPasswordController.text),
                   ),
                   SizedBox(height: 20),
                   _isLoading
@@ -165,7 +130,7 @@ class _LoginScreenState extends State<ChangePasswordScreen> {
                       padding: EdgeInsets.all(8.0),
                       child: Text(
                         _errorMessage!,
-                        style: TextStyle(color: Colors.red),
+                        style: AppConfig.errorStyle,
                       ),
                     ),
                 ],

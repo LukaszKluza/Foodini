@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
         title: Center(
           child: Text(
             AppConfig.homePage,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
+            style: AppConfig.titleStyle,
           ),
         ),
       ),

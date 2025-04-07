@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppConfig {
   // Numbers
   static const int minPasswordLength = 8;
@@ -55,4 +57,8 @@ class AppConfig {
   static const String registerUrl = '$baseUrl/users/register';
   static const String loginUrl = '$baseUrl/users/login';
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
+
+  //Styles
+  static const TextStyle titleStyle = TextStyle(fontSize: 32, fontStyle: FontStyle.italic);
+  static const TextStyle errorStyle = TextStyle(color: Colors.red);
 }
