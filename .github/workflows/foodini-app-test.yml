@@ -1,10 +1,9 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Foodini
-
 env:
-  TEST_COVERAGE_THRESHOLD: 80
+  BACKEND_TEST_COVERAGE_THRESHOLD: 80
+  FRONTEND_TEST_COVERAGE_THRESHOLD: 70
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -12,6 +11,8 @@ env:
   API_URL: ${{ secrets.API_URL }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   PEPPER_KEY: ${{ secrets.PEPPER_KEY }}
+  NEW_ACCOUNT_SALT: ${{ secrets.NEW_ACCOUNT_SALT }}
+  NEW_PASSWORD_SALT: ${{ secrets.NEW_PASSWORD_SALT }}
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
   MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
@@ -25,15 +26,11 @@ env:
 on:
   pull_request:
     branches: [ "*" ]
-
 permissions:
   contents: read
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
        # Python Setup Steps
       - uses: actions/checkout@v4
@@ -59,28 +56,22 @@ jobs:
         run: |
           cd scripts 
           chmod +x ./backendTestCoverage.sh
-          ./backendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
-
+          ./backendTestCoverage.sh ${{ env.BACKEND_TEST_COVERAGE_THRESHOLD }}
       # Frontend Setup Steps
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.29.1"
-
       - name: Install Frontend dependencies
         run: |
           cd frontend
           flutter pub get
-
       - name: Run Frontend tests
         run: |
           cd frontend
           flutter test --coverage 
-
       - name: Frontend test coverage
         run: |
           cd scripts 
           chmod +x ./frontendTestCoverage.sh
-          ./frontendTestCoverage.sh ${{ env.TEST_COVERAGE_THRESHOLD }}
-
-      
+          ./frontendTestCoverage.sh ${{ env.FRONTEND_TEST_COVERAGE_THRESHOLD }}

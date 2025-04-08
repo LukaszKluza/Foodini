@@ -1,6 +1,9 @@
+import datetime
+
 from fastapi.params import Depends
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
+
 from .models import User
 from .schemas import UserCreate, UserUpdate
 from sqlalchemy.future import select
@@ -19,7 +22,7 @@ class UserRepository:
         await self.db.refresh(user)
         return user
 
-    async def get_user_by_id(self, user_id: int) -> User:
+    async def get_user_by_id(self, user_id: int) -> User | None:
         return await self.db.get(User, user_id)
 
     async def get_user_by_email(self, email: EmailStr) -> User:
@@ -27,30 +30,45 @@ class UserRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def update_user(self, user_id: int, user_data: UserUpdate) -> User:
-        user = User(id=user_id, **user_data.model_dump(exclude_unset=True))
-        updated_user = await self.db.merge(user)
-        await self.db.commit()
-        await self.db.refresh(updated_user)
-        return updated_user
+    async def update_user(self, user_id: int, user_data: UserUpdate) -> User | None:
+        user = await self.get_user_by_id(user_id)
+        if user:
+            user_request = User(id=user_id, **user_data.model_dump(exclude_unset=True))
+            updated_user = await self.db.merge(user_request)
+            await self.db.commit()
+            await self.db.refresh(updated_user)
+            return updated_user
+        return None
 
-    async def delete_user(self, user_id: int) -> bool:
+    async def update_password(
+        self, user_id: int, new_password: str, current_datetime: datetime
+    ) -> User | None:
+        user = await self.get_user_by_id(user_id)
+        if user:
+            user.password = new_password
+            user.last_password_update = current_datetime
+            await self.db.commit()
+            await self.db.refresh(user)
+            return user
+        return None
+
+    async def delete_user(self, user_id: int) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             await self.db.delete(user)
             await self.db.commit()
             await self.db.flush()
-            return True
-        return False
+            return user
+        return None
 
-    async def verify_user(self, user_email: str) -> bool:
+    async def verify_user(self, user_email: EmailStr) -> User | None:
         user = await self.get_user_by_email(user_email)
         if user:
             user.is_verified = True
             await self.db.commit()
             await self.db.refresh(user)
-            return True
-        return False
+            return user
+        return None
 
 
 async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:

@@ -26,6 +26,11 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+              onPressed: () => context.go('/login'),
+              child: Text(AppConfig.login),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
               onPressed: () => context.go('/register'),
               child: Text(AppConfig.register),
             ),
