@@ -56,6 +56,7 @@ class AppConfig {
   static const String baseUrl = 'http://127.0.0.1:8000/v1';
   static const String registerUrl = '$baseUrl/users/register';
   static const String loginUrl = '$baseUrl/users/login';
+  static const String logoutUrl = '$baseUrl/users/logout';
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
 
   //Styles

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/logged_user.dart';
 import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
@@ -39,6 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (response.statusCode == 200) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final responseBody = jsonDecode(response.body);
+        final loggedUser = LoggedUser.fromJson(responseBody);
+
+        userProvider.setUser(loggedUser); 
+
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
