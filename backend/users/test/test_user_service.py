@@ -11,7 +11,7 @@ from backend.users.schemas import (
     PasswordResetRequest,
     NewPasswordConfirm,
 )
-from backend.users.service.authorisation_service import AuthorizationService
+from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
 from backend.settings import config
 
