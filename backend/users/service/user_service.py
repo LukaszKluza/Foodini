@@ -1,82 +1,37 @@
 from datetime import datetime
 from fastapi import HTTPException, status
 from fastapi.params import Depends
-from pydantic import EmailStr
 
-from backend.users.models import User
 from backend.users.service.authorisation_service import AuthorizationService
+from backend.users.service.email_verification_sevice import (
+    EmailVerificationService,
+    get_email_verification_service,
+)
 from backend.users.service.password_service import PasswordService
+from backend.users.user_decorators import UserDecorators
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
     UserUpdate,
     LoginUserResponse,
     PasswordResetRequest,
+    NewPasswordConfirm,
 )
+from backend.users.models import User
 from backend.users.user_repository import UserRepository, get_user_repository
-from backend.mail import MailService
 from backend.settings import config
 
 
-async def check_user_permission(
-    user_param_from_token: int, user_param_from_request: int
-):
-    if user_param_from_token != user_param_from_request:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token"
-        )
-
-
-async def send_new_account_verification_message(email: EmailStr, token: str):
-    message_link = f"{config.API_URL}/v1/users/confirm/new-account/{token}"
-    message_subject = "FoodiniApp email verification"
-    message_body = f"Please click this link: {message_link} to verify your email."
-
-    message = await MailService.create_message(
-        recipients=[email], subject=message_subject, body=message_body
-    )
-
-    await MailService.send_message(message)
-
-
-async def send_new_password_verification_message(
-    email: EmailStr, token: str, form_url: str
-):
-    message_link = f"{form_url}/{token}"
-    message_subject = "FoodiniApp new password request"
-    message_body = f"To change the password please click this link: {message_link}."
-
-    message = await MailService.create_message(
-        recipients=[email], subject=message_subject, body=message_body
-    )
-
-    await MailService.send_message(message)
-
-
-async def ensure_verified_user(user):
-    if not user.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account not verified. Please check your email for verification link.",
-        )
-    return user
-
-
-async def check_last_password_change_data_time(user):
-    time_diff = (
-        datetime.now(config.TIMEZONE) - user.last_password_update
-    ).total_seconds()
-    if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"You must wait at least 1 day before changing your password again,"
-            f" last changed {user.last_password_update}",
-        )
-
-
 class UserService:
-    def __init__(self, user_repository: UserRepository = Depends(get_user_repository)):
+    def __init__(
+        self,
+        user_repository: UserRepository = Depends(get_user_repository),
+        email_verification_service: EmailVerificationService = Depends(
+            get_email_verification_service
+        ),
+    ):
         self.user_repository = user_repository
+        self.email_verification_service = email_verification_service
 
     async def register(self, user: UserCreate):
         existing_user = await self.user_repository.get_user_by_email(user.email)
@@ -89,13 +44,14 @@ class UserService:
 
         token = await AuthorizationService.create_url_safe_token({"email": user.email})
 
-        await self.process_new_account_verification_message(user.email, token)
+        await self.email_verification_service.process_new_account_verification(
+            user.email, token
+        )
         return await self.user_repository.create_user(user)
 
-    async def login(self, user_login: UserLogin):
-        user_ = await self.ensure_user_exists_by_email(user_login.email)
-        await ensure_verified_user(user_)
-
+    @UserDecorators.inject_user_by_email(email_arg_index=0)
+    @UserDecorators.requires_verified_user(user_arg_index=1)
+    async def login(self, user_login: UserLogin, user_: User):
         if not await PasswordService.verify_password(
             user_login.password, user_.password
         ):
@@ -115,18 +71,18 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, user_id: int):
-        await self.ensure_user_exists_by_id(user_id)
-
+    @UserDecorators.inject_user_by_id(user_id_index=1)
+    async def logout(self, _: User, user_id: int):
         await AuthorizationService.delete_user_token(user_id)
         return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
 
+    @UserDecorators.inject_user_by_email(email_arg_index=0)
+    @UserDecorators.requires_verified_user(user_arg_index=2)
+    # @UserDecorators.requires_permission(request_id_index=1, token_id_index=2) TODO: think about new logic for this
+    @UserDecorators.requires_password_change_allowed(user_arg_index=2)
     async def reset_password(
-        self, password_reset_request: PasswordResetRequest, form_url: str
+        self, password_reset_request: PasswordResetRequest, form_url: str, user_: User
     ):
-        user_ = await self.ensure_user_exists_by_email(password_reset_request.email)
-        await ensure_verified_user(user_)
-
         user_id_from_token = None
         if password_reset_request.token:
             try:
@@ -140,71 +96,42 @@ class UserService:
                         detail="Invalid token - missing user ID",
                     )
 
-                await check_user_permission(user_id_from_token, user_.id)
                 await AuthorizationService.delete_user_token(user_id_from_token)
             except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
                 ) from e
 
-        await check_last_password_change_data_time(user_)
-
         reset_token = await AuthorizationService.create_url_safe_token(
             {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
         )
 
-        await self.process_new_password_verification_message(
+        await self.email_verification_service.process_password_reset_verification(
             user_.email, reset_token, form_url
         )
 
+    @UserDecorators.requires_permission(token_id_index=0, request_id_index=1)
+    @UserDecorators.inject_user_by_id(user_id_index=1)
     async def update(
-        self, user_id_from_token: int, user_id_from_request, user: UserUpdate
+        self,
+        user_id_from_token: int,
+        user_id_from_request: int,
+        user: UserUpdate,
+        user_: User,
     ):
-        await check_user_permission(user_id_from_token, user_id_from_request)
-        user_ = await self.ensure_user_exists_by_id(user_id_from_request)
-
         return await self.user_repository.update_user(user_.id, user)
 
-    async def delete(self, user_id_from_token: int, user_id_from_request: int):
-        await check_user_permission(user_id_from_token, user_id_from_request)
-        await self.ensure_user_exists_by_id(user_id_from_request)
-
+    @UserDecorators.requires_permission(token_id_index=0, request_id_index=1)
+    @UserDecorators.inject_user_by_id(user_id_index=1)
+    async def delete(self, user_id_from_token: int, user_id_from_request: int, _: User):
         await AuthorizationService.delete_user_token(user_id_from_request)
         return await self.user_repository.delete_user(user_id_from_request)
 
-    async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
-        token_data = await AuthorizationService.decode_url_safe_token(token, salt)
-        user_email = token_data.get("email")
-        await self.ensure_user_exists_by_email(user_email)
-
-        return user_email
-
-    async def process_new_account_verification_message(
-        self, email: EmailStr, token: str
+    @UserDecorators.inject_user_by_token()
+    # @UserDecorators.requires_permission(token_id_index=1, request_id_index=2)
+    async def confirm_new_password(
+        self, token: str, new_password_confirm: NewPasswordConfirm, user_: User
     ):
-        user_ = await self.user_repository.get_user_by_email(email)
-
-        if user_ and user_.is_verified:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User is already verified",
-            )
-
-        await send_new_account_verification_message(email, token)
-
-    async def process_new_password_verification_message(
-        self, email: EmailStr, token: str, form_url: str
-    ):
-        await self.ensure_user_exists_by_email(email)
-        await send_new_password_verification_message(email, token, form_url)
-
-    async def confirm_new_password(self, token, new_password_confirm):
-        user_email_from_token = await self.decode_url_token(
-            token, salt=config.NEW_PASSWORD_SALT
-        )
-        user_ = await self.ensure_user_exists_by_email(user_email_from_token)
-        await check_user_permission(user_email_from_token, new_password_confirm.email)
-
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password
         )
@@ -212,39 +139,15 @@ class UserService:
             user_.id, hashed_password, datetime.now(config.TIMEZONE)
         )
 
-    async def ensure_user_exists_by_email(self, user_email) -> User:
-        existing_user = await self.user_repository.get_user_by_email(user_email)
-        if not existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
-
-        return existing_user
-
-    async def ensure_user_exists_by_id(self, user_id) -> User:
-        existing_user = await self.user_repository.get_user_by_id(user_id)
-        if not existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
-
-        return existing_user
-
-    async def confirm_new_account(self, token: str):
-        user_email = await self.decode_url_token(token)
-        return await self.user_repository.verify_user(user_email)
-
-    async def resend_verification(self, email: EmailStr):
-        await self.ensure_user_exists_by_email(email)
-
-        token = await AuthorizationService.create_url_safe_token({"email": email})
-
-        await self.process_new_account_verification_message(email, token)
+    @UserDecorators.inject_user_by_token()
+    async def confirm_new_account(self, token: str, user_: User):
+        return await self.user_repository.verify_user(user_.email)
 
 
 def get_user_service(
     user_repository: UserRepository = Depends(get_user_repository),
+    email_verification_service: EmailVerificationService = Depends(
+        get_email_verification_service
+    ),
 ) -> UserService:
-    return UserService(user_repository)
+    return UserService(user_repository, email_verification_service)
