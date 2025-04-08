@@ -6,7 +6,7 @@ import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
 
-import 'mocks/mocks.mocks.dart';
+import '../mocks/mocks.mocks.dart';
 
 final client = MockClient();
 
