@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:provider/provider.dart';
 
 class AccountScreen extends StatefulWidget {
-
   const AccountScreen({super.key});
 
   @override
@@ -12,6 +14,28 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<AccountScreen> {
+  Future<void> _logout(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
+    if (userProvider.user != null) {
+      try {
+        await apiClient.logout(userProvider.user!.id);
+        userProvider.logout();
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Logout failed: $e")));
+        }
+      }
+    }
+
+    if (context.mounted) {
+      context.go('/');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -26,10 +50,7 @@ class _LoginScreenState extends State<AccountScreen> {
           },
         ),
         title: Center(
-          child: Text(
-            AppConfig.foodini,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
         ),
       ),
       body: Column(
@@ -57,7 +78,7 @@ class _LoginScreenState extends State<AccountScreen> {
                       Icons.logout,
                       screenWidth,
                       screenHeight,
-                      () => context.go('/'),
+                      () => _logout(context),
                     ),
                   ],
                 ),

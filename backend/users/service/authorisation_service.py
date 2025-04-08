@@ -1,17 +1,21 @@
 from datetime import datetime, timedelta
-
 import redis.asyncio as aioredis
 import jwt
+from itsdangerous import (
+    URLSafeTimedSerializer,
+    SignatureExpired,
+    BadSignature,
+    BadTimeSignature,
+    BadData,
+)
 from fastapi import HTTPException, Security, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from backend.Settings import (
-    SECRET_KEY,
-    ALGORITHM,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    REFRESH_TOKEN_EXPIRE_HOURS,
-)
+from typing import Dict, Any
+
 from backend.core.database import get_redis
+from backend.settings import config
+
 
 security = HTTPBearer()
 
@@ -27,11 +31,11 @@ class AuthorizationService:
                 detail="Redis connection error",
             )
 
-        access_token_expire = datetime.utcnow() + timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
+            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
         )
-        refresh_token_expire = datetime.utcnow() + timedelta(
-            hours=REFRESH_TOKEN_EXPIRE_HOURS
+        refresh_token_expire = datetime.now(config.TIMEZONE) + timedelta(
+            hours=config.REFRESH_TOKEN_EXPIRE_HOURS
         )
 
         access_token_data = data.copy()
@@ -40,14 +44,30 @@ class AuthorizationService:
         refresh_token_data = data.copy()
         refresh_token_data.update({"exp": refresh_token_expire})
 
-        access_token = jwt.encode(access_token_data, SECRET_KEY, algorithm=ALGORITHM)
-        refresh_token = jwt.encode(refresh_token_data, SECRET_KEY, algorithm=ALGORITHM)
+        access_token = jwt.encode(
+            access_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
+        )
+        refresh_token = jwt.encode(
+            refresh_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
+        )
 
         await redis_tokens.setex(
-            data["id"], ACCESS_TOKEN_EXPIRE_MINUTES * 60, access_token
+            data["id"], config.ACCESS_TOKEN_EXPIRE_MINUTES * 60, access_token
         )
 
         return access_token, refresh_token
+
+    @staticmethod
+    async def delete_user_token(user_id):
+        redis_tokens = await get_redis()
+
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+
+        return await redis_tokens.delete(user_id)
 
     @staticmethod
     async def refresh_access_token(
@@ -62,13 +82,17 @@ class AuthorizationService:
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
 
-        access_token_expire = datetime.utcnow() + timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
+            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
         )
         payload["exp"] = access_token_expire
-        refreshed_access_token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+        refreshed_access_token = jwt.encode(
+            payload, config.SECRET_KEY, algorithm=config.ALGORITHM
+        )
         await redis_tokens.setex(
-            payload["id"], ACCESS_TOKEN_EXPIRE_MINUTES * 60, refreshed_access_token
+            payload["id"],
+            config.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            refreshed_access_token,
         )
 
         return refreshed_access_token
@@ -95,9 +119,46 @@ class AuthorizationService:
     ):
         try:
             return jwt.decode(
-                credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
+                credentials.credentials,
+                config.SECRET_KEY,
+                algorithms=[config.ALGORITHM],
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )
+
+    @staticmethod
+    async def get_serializer(salt: str = config.NEW_ACCOUNT_SALT):
+        await AuthorizationService.verify_salt(salt)
+
+        return URLSafeTimedSerializer(secret_key=config.SECRET_KEY, salt=salt)
+
+    @staticmethod
+    async def verify_salt(salt):
+        if salt not in config.SALTS:
+            raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
+
+    @staticmethod
+    async def create_url_safe_token(
+        data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT
+    ):
+        await AuthorizationService.verify_salt(salt)
+        serializer = await AuthorizationService.get_serializer(salt)
+
+        return serializer.dumps(data)
+
+    @staticmethod
+    async def decode_url_safe_token(token: str, salt: str = config.NEW_ACCOUNT_SALT):
+        await AuthorizationService.verify_salt(salt)
+        serializer = await AuthorizationService.get_serializer(salt)
+
+        try:
+            return serializer.loads(
+                token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60
+            )
+        except (SignatureExpired, BadTimeSignature, BadSignature, BadData):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token verification failed",
             )
