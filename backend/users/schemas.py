@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, List
 from .mixins import PasswordValidationMixin, CountryValidationMixin
 
 
@@ -8,6 +8,16 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
     age: int = Field(..., gt=12, lt=120)
     country: str = Field(..., min_length=2, max_length=50)
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=64)
+
+
+class PasswordResetRequest(BaseModel):
+    token: Optional[str] = Field(None)
+    email: EmailStr
+
+
+class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
 
@@ -43,3 +53,7 @@ class LoginUserResponse(UserResponse):
     email: EmailStr
     access_token: str
     refresh_token: str
+
+
+class EmailSchema(BaseModel):
+    addresses: List[EmailStr]

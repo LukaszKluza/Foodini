@@ -11,6 +11,8 @@ env:
   API_URL: ${{ secrets.API_URL }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   PEPPER_KEY: ${{ secrets.PEPPER_KEY }}
+  NEW_ACCOUNT_SALT: ${{ secrets.NEW_ACCOUNT_SALT }}
+  NEW_PASSWORD_SALT: ${{ secrets.NEW_PASSWORD_SALT }}
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
   MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
