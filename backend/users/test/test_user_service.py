@@ -3,6 +3,7 @@ import sys
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 from unittest.mock import MagicMock, AsyncMock, ANY, patch
+
 from backend.mail import MailService
 from backend.users.schemas import (
     UserCreate,
@@ -14,6 +15,7 @@ from backend.users.schemas import (
 from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
 from backend.settings import config
+
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -171,7 +173,7 @@ async def test_login_user_not_found(user_service, mock_user_validators):
     # Given
     user_login = UserLogin(email="test@example.com", password="Password123")
     mock_user_validators.ensure_user_exists_by_email.side_effect = HTTPException(
-        status_code=400, detail="User does not exist"
+        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
     )
 
     # When/Then
@@ -222,7 +224,7 @@ async def test_login_user_success(
 async def test_logout_user_not_found(mock_user_validators, user_service):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-        status_code=400, detail="User does not exist"
+        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
     )
 
     # When
@@ -320,9 +322,7 @@ async def test_reset_password_user_logged_too_fast(mock_user_validators, user_se
 
 
 @pytest.mark.asyncio
-async def test_update_user_not_found(
-    mock_user_repository, user_service, mock_user_validators
-):
+async def test_update_user_not_found(user_service, mock_user_validators):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
         status_code=400, detail="User does not exist"
@@ -357,7 +357,7 @@ async def test_update_user_success(
 
 @pytest.mark.asyncio
 async def test_delete_user_not_found(
-    mock_user_repository, user_service, mock_user_validators, mock_delete_user_token
+    user_service, mock_user_validators, mock_delete_user_token
 ):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
@@ -426,7 +426,6 @@ async def test_confirm_new_password(
 @pytest.mark.asyncio
 async def test_confirm_new_account(
     mock_user_repository,
-    mock_hash_password,
     mock_decode_url_safe_token,
     user_service,
 ):

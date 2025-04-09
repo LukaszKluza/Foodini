@@ -6,7 +6,7 @@ from backend.users.models import User
 from backend.settings import config
 
 
-class UserValidators:
+class UserValidationService:
     def __init__(self, user_repository: UserRepository = Depends(get_user_repository)):
         self.user_repository = user_repository
 
@@ -59,5 +59,5 @@ class UserValidators:
 
 def get_user_validators(
     user_repository: UserRepository = Depends(get_user_repository),
-) -> UserValidators:
-    return UserValidators(user_repository)
+) -> UserValidationService:
+    return UserValidationService(user_repository)

@@ -9,7 +9,7 @@ from backend.users.service.email_verification_sevice import (
 )
 from backend.users.service.password_service import PasswordService
 from backend.users.service.user_validation_service import (
-    UserValidators,
+    UserValidationService,
     get_user_validators,
 )
 from backend.users.schemas import (
@@ -32,7 +32,7 @@ class UserService:
         email_verification_service: EmailVerificationService = Depends(
             get_email_verification_service
         ),
-        user_validators: UserValidators = Depends(get_user_validators),
+        user_validators: UserValidationService = Depends(get_user_validators),
     ):
         self.user_repository = user_repository
         self.email_verification_service = email_verification_service
@@ -177,6 +177,6 @@ def get_user_service(
     email_verification_service: EmailVerificationService = Depends(
         get_email_verification_service
     ),
-    user_validators: UserValidators = Depends(get_user_validators),
+    user_validators: UserValidationService = Depends(get_user_validators),
 ) -> UserService:
     return UserService(user_repository, email_verification_service, user_validators)

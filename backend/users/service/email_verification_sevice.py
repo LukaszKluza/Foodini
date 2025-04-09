@@ -7,7 +7,7 @@ from backend.settings import config
 from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.users.service.user_validation_service import (
-    UserValidators,
+    UserValidationService,
     get_user_validators,
 )
 
@@ -16,7 +16,7 @@ class EmailVerificationService:
     def __init__(
         self,
         user_repository: UserRepository = Depends(get_user_repository),
-        user_validators: UserValidators = Depends(get_user_validators),
+        user_validators: UserValidationService = Depends(get_user_validators),
     ):
         self.user_repository = user_repository
         self.user_validators = user_validators
@@ -66,6 +66,6 @@ class EmailVerificationService:
 
 def get_email_verification_service(
     user_repository: UserRepository = Depends(get_user_repository),
-    user_validators: UserValidators = Depends(get_user_validators),
+    user_validators: UserValidationService = Depends(get_user_validators),
 ) -> EmailVerificationService:
     return EmailVerificationService(user_repository, user_validators)
