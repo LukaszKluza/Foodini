@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/logged_user.dart';
 import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/response_handler_service.dart';
 import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
@@ -70,24 +71,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _isLoading = false;
       });
 
-      if (response.statusCode == 200) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final responseBody = jsonDecode(response.body);
-        final loggedUser = LoggedUser.fromJson(responseBody);
-
-        userProvider.setUser(loggedUser); 
-
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppConfig.succesfullyRegistered)),
-        );
-        context.go('/main_page');
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          _errorMessage = responseBody["detail"].toString();
-        });
-      }
+      ResponseHandlerService.handleRegisterResponse(
+        context: context,
+        response: response,
+        successMessage: AppConfig.checkAndConfirmEmailAddress,
+        route: '/login',
+        onError: (error) {
+          setState(() {
+            _errorMessage = error;
+          });
+        },
+      );
     } finally {
       setState(() {
         _isLoading = false;
