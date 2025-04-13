@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/response_handler_service.dart';
+import 'package:frontend/services/user_provider.dart';
+import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  final http.Client? client;
-
-  const LoginScreen({super.key, this.client});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,6 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _login() async {
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -29,33 +34,23 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final client = widget.client ?? http.Client();
-
     try {
-      final response = await client.post(
+      final response = await apiClient.postRequest(
         Uri.parse(AppConfig.loginUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": _emailController.text,
-          "password": _passwordController.text,
-        }),
+        {"email": _emailController.text, "password": _passwordController.text},
       );
 
-      if (response.statusCode == 200) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            key: Key(AppConfig.successfullyLoggedIn),
-            content: Text(AppConfig.successfullyLoggedIn),
-          ),
-        );
-        context.go('/home');
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          _errorMessage = responseBody["detail"].toString();
-        });
-      }
+      ResponseHandlerService.handleAuthResponse(
+        context: context,
+        response: response,
+        successMessage: AppConfig.successfullyLoggedIn,
+        route: '/main_page',
+        onError: (error) {
+          setState(() {
+            _errorMessage = error;
+          });
+        },
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -63,32 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredEmail;
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return AppConfig.invalidEmail;
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPassword;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.login,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
-          ),
+          child: Text(AppConfig.login, style: AppConfig.titleStyle),
         ),
       ),
       body: Column(
@@ -105,14 +80,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailController,
                     decoration: InputDecoration(labelText: AppConfig.email),
                     keyboardType: TextInputType.emailAddress,
-                    validator: _validateEmail,
+                    validator: validateEmail,
                   ),
                   TextFormField(
                     key: Key(AppConfig.password),
                     controller: _passwordController,
                     decoration: InputDecoration(labelText: AppConfig.password),
                     obscureText: true,
-                    validator: _validatePassword,
+                    validator: validatePassword,
                   ),
                   SizedBox(height: 20),
                   _isLoading
@@ -125,10 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_errorMessage != null)
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(color: Colors.red),
-                      ),
+                      child: Text(_errorMessage!, style: AppConfig.errorStyle),
                     ),
                   TextButton(
                     key: Key(AppConfig.dontHaveAccount),

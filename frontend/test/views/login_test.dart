@@ -1,15 +1,17 @@
 import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/services/api_client.dart';
 import 'package:frontend/views/screens/login_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
+import '../mocks/mocks.mocks.dart';
 
-import 'mocks/mocks.mocks.dart';
+final client = MockClient();
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +28,6 @@ void main() {
   });
 
   testWidgets('User can log in successfully', (WidgetTester tester) async {
-    final client = MockClient();
-
     when(
       client.post(any, headers: anyNamed("headers"), body: anyNamed("body")),
     ).thenAnswer(
@@ -46,7 +46,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => LoginScreen(client: client),
+          builder: (context, state) => LoginScreen(),
         ),
         GoRoute(
           path: '/home',
@@ -55,7 +55,12 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
+    await tester.pumpWidget(
+    Provider<ApiClient>.value(
+      value: ApiClient(client),
+      child: MaterialApp.router(routerConfig: goRouter),
+    ),
+  );
 
     await tester.enterText(
       find.byKey(Key(AppConfig.email)),
@@ -69,7 +74,12 @@ void main() {
   });
 
   testWidgets('Login with different passwords', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: LoginScreen()));
+    await tester.pumpWidget(
+      Provider<ApiClient>.value(
+        value: ApiClient(client),
+        child: MaterialApp(home: LoginScreen()),
+      ),
+    );
 
     await tester.tap(find.byKey(Key(AppConfig.login)));
     await tester.pumpAndSettle();

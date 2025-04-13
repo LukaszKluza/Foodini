@@ -38,7 +38,10 @@ async def login_user(
 
 @user_router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout_user(
-    user_id: int, user_service: UserService = Depends(get_user_service)
+    user_id: int,
+    user_service: UserService = Depends(
+        get_user_service
+    ),  # TODO Use token instead of user_id
 ):
     return await user_service.logout(user_id)
 

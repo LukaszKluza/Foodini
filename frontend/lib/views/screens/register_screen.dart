@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/response_handler_service.dart';
+import 'package:frontend/services/user_provider.dart';
+import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:country_picker/country_picker.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final http.Client? client;
-
-  const RegisterScreen({super.key, this.client});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -44,6 +47,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    final apiClient = Provider.of<ApiClient>(context, listen: false);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -51,38 +56,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage = null;
     });
 
-    final client = widget.client ?? http.Client();
-
     try {
-      final response = await client.post(
-        Uri.parse(AppConfig.registerUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "name": _firstNameController.text,
-          "last_name": _lastNameController.text,
-          "age": _selectedAge,
-          "country": _selectedCountry,
-          "email": _emailController.text,
-          "password": _passwordController.text,
-        }),
-      );
+      final response = await apiClient
+          .postRequest(Uri.parse(AppConfig.registerUrl), {
+            "name": _firstNameController.text,
+            "last_name": _lastNameController.text,
+            "age": _selectedAge,
+            "country": _selectedCountry,
+            "email": _emailController.text,
+            "password": _passwordController.text,
+          });
 
       setState(() {
         _isLoading = false;
       });
 
-      if (response.statusCode == 200) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppConfig.succesfullyRegistered)),
-        );
-        context.go('/home'); //TODO
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          _errorMessage = responseBody["detail"].toString();
-        });
-      }
+      ResponseHandlerService.handleRegisterResponse(
+        context: context,
+        response: response,
+        successMessage: AppConfig.checkAndConfirmEmailAddress,
+        route: '/login',
+        onError: (error) {
+          setState(() {
+            _errorMessage = error;
+          });
+        },
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -90,75 +89,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  String? _validateAge(int? value) {
-    if (value == null) {
-      return AppConfig.requiredAge;
-    }
-    return null;
-  }
-
-  String? _validateCountry(String? value) {
-    if (_selectedCountry == null || _selectedCountry!.isEmpty) {
-      return AppConfig.requiredCountry;
-    }
-    return null;
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredName;
-    }
-    if (value.length < 2 || value.length > 50 || !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-      return AppConfig.provideCorrectName;
-    }
-    return null;
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredEmail;
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return AppConfig.invalidEmail;
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPassword;
-    }
-    if (value.length < AppConfig.minPasswordLength) {
-      return AppConfig.minimalPasswordLegth;
-    }
-    if (value.length > AppConfig.maxPasswordLength) {
-      return AppConfig.maximalPasswordLegth;
-    }
-    if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-    return AppConfig.passwordComplexityError; 
-  }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return AppConfig.requiredPasswordConfirmation;
-    }
-    if (value != _passwordController.text) {
-      return AppConfig.samePasswords;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.registration,
-            style: TextStyle(fontSize: 32, fontStyle: FontStyle.italic),
-          ),
+          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
         ),
       ),
       body: SingleChildScrollView(
@@ -172,13 +108,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   key: Key(AppConfig.firstName),
                   controller: _firstNameController,
                   decoration: InputDecoration(labelText: AppConfig.firstName),
-                  validator: _validateName,
+                  validator: validateName,
                 ),
                 TextFormField(
                   key: Key(AppConfig.lastName),
                   controller: _lastNameController,
                   decoration: InputDecoration(labelText: AppConfig.lastName),
-                  validator: _validateName,
+                  validator: validateName,
                 ),
                 DropdownButtonFormField<int>(
                   key: Key(AppConfig.age),
@@ -196,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       _selectedAge = newValue;
                     });
                   },
-                  validator: (value) => _validateAge(value),
+                  validator: (value) => validateAge(value),
                 ),
                 TextFormField(
                   key: Key(AppConfig.country),
@@ -204,21 +140,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(labelText: AppConfig.country),
                   controller: _countryController,
                   onTap: () => _pickCountry(context),
-                  validator: _validateCountry,
+                  validator:
+                      (value) => validateCountry(value, _selectedCountry),
                 ),
                 TextFormField(
                   key: Key(AppConfig.email),
                   controller: _emailController,
                   decoration: InputDecoration(labelText: AppConfig.email),
                   keyboardType: TextInputType.emailAddress,
-                  validator: _validateEmail,
+                  validator: validateEmail,
                 ),
                 TextFormField(
                   key: Key(AppConfig.password),
                   controller: _passwordController,
                   decoration: InputDecoration(labelText: AppConfig.password),
                   obscureText: true,
-                  validator: _validatePassword,
+                  validator: validatePassword,
                 ),
                 TextFormField(
                   key: Key(AppConfig.confirmPassword),
@@ -227,7 +164,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: AppConfig.confirmPassword,
                   ),
                   obscureText: true,
-                  validator: _validateConfirmPassword,
+                  validator:
+                      (value) => validateConfirmPassword(
+                        value,
+                        _passwordController.text,
+                      ),
                 ),
                 SizedBox(height: 20),
                 _isLoading
@@ -240,10 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 if (_errorMessage != null)
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(color: Colors.red),
-                    ),
+                    child: Text(_errorMessage!, style: AppConfig.errorStyle),
                   ),
                 TextButton(
                   key: Key(AppConfig.alreadyHaveAnAccount),
