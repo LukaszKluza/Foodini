@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/models/logged_user.dart';
 import 'package:frontend/services/api_client.dart';
-import 'package:frontend/services/user_provider.dart';
 import 'package:frontend/utils/userValidators.dart';
+import 'package:frontend/services/response_handler_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:provider/provider.dart';
@@ -40,27 +38,17 @@ class _LoginScreenState extends State<LoginScreen> {
         {"email": _emailController.text, "password": _passwordController.text},
       );
 
-      if (response.statusCode == 200) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final responseBody = jsonDecode(response.body);
-        final loggedUser = LoggedUser.fromJson(responseBody);
-
-        userProvider.setUser(loggedUser); 
-
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            key: Key(AppConfig.successfullyLoggedIn),
-            content: Text(AppConfig.successfullyLoggedIn),
-          ),
-        );
-        context.go('/main_page');
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          _errorMessage = responseBody["detail"].toString();
-        });
-      }
+      ResponseHandlerService.handleAuthResponse(
+        context: context,
+        response: response,
+        successMessage: AppConfig.successfullyLoggedIn,
+        route: '/main_page',
+        onError: (error) {
+          setState(() {
+            _errorMessage = error;
+          });
+        },
+      );
     } finally {
       setState(() {
         _isLoading = false;

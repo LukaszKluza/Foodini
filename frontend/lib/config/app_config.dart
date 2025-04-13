@@ -48,6 +48,9 @@ class AppConfig {
   static const String successfullyLoggedIn = 'Succesfully logged in';
   static const String loginFailed = 'Login failed';
   static const String logout = 'Logout';
+  static const String somethingWentWrong = 'Something went wrong';
+  static const String checkAndConfirmEmailAddress =
+      'Check and confirm your email address';
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
@@ -60,6 +63,9 @@ class AppConfig {
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
 
   //Styles
-  static const TextStyle titleStyle = TextStyle(fontSize: 32, fontStyle: FontStyle.italic);
+  static const TextStyle titleStyle = TextStyle(
+    fontSize: 32,
+    fontStyle: FontStyle.italic,
+  );
   static const TextStyle errorStyle = TextStyle(color: Colors.red);
 }
