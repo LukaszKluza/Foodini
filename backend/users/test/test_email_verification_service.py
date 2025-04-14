@@ -139,7 +139,7 @@ async def test_process_new_account_verification_new_user(
 
 @pytest.mark.asyncio
 async def test_process_new_account_verification_already_verified(
-    email_verification_service, mock_user_repository
+    email_verification_service,
 ):
     test_email = "test@example.com"
     test_token = "test_token"

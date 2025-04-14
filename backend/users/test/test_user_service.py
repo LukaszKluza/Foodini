@@ -68,15 +68,29 @@ def mock_decode_url_safe_token():
 
 
 @pytest.fixture
-def mock_create_message():
-    with patch.object(MailService, "create_message", new_callable=AsyncMock) as mock:
-        yield mock
+def mock_auth_service():
+    # Najpierw mockujemy Redis, ponieważ AuthorizationService go używa
+    with patch("backend.core.database.get_redis") as mock_redis:
+        mock_redis.return_value = AsyncMock()  # Mockowane połączenie Redis
 
+        # Teraz mockujemy całą klasę AuthorizationService
+        with patch(
+            "backend.users.service.user_authorisation_service.AuthorizationService"
+        ) as mock:
+            # Konfigurujemy mockowane metody
+            mock.create_tokens = AsyncMock(
+                return_value=("access_token", "refresh_token")
+            )
+            mock.delete_user_token = AsyncMock(return_value=True)
+            mock.create_url_safe_token = AsyncMock(return_value="url_safe_token")
+            mock.decode_url_safe_token = AsyncMock(return_value={"user_id": 1})
+            mock.verify_token = AsyncMock(
+                return_value={"id": 1, "email": "test@example.com"}
+            )
+            mock.get_payload_from_token = AsyncMock(return_value={"id": 1})
+            mock.refresh_access_token = AsyncMock(return_value="new_access_token")
 
-@pytest.fixture
-def mock_send_message():
-    with patch.object(MailService, "send_message", new_callable=AsyncMock) as mock:
-        yield mock
+            yield mock
 
 
 @pytest.fixture
@@ -203,7 +217,10 @@ async def test_login_user_incorrect_password(
 
 @pytest.mark.asyncio
 async def test_login_user_success(
-    mock_verify_password, mock_create_tokens, mock_user_validators, user_service
+    mock_verify_password,
+    mock_create_tokens,
+    mock_user_validators,
+    user_service,
 ):
     # Given
     mock_user = MagicMock(id=1, email="test@example.com", password="hashed_password")
