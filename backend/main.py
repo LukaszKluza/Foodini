@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from backend.users.user_router import user_router
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
+from redis.exceptions import ConnectionError as RedisConnectionError
 
 
 app = FastAPI()
@@ -28,6 +29,16 @@ async def db_connection_error_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
         content={"error": "Database connection failed", "detail": str(exc)},
+    )
+
+
+@app.exception_handler(RedisConnectionError)
+async def redis_connection_error_handler(request: Request, exc: Exception):
+    logger.error(f"Redis connection error: {str(exc)}")
+
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Redis connection failed", "detail": str(exc)},
     )
 
 
