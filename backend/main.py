@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from backend.users.user_router import user_router
 import psycopg2
@@ -26,9 +26,9 @@ app.add_middleware(
 async def db_connection_error_handler(request: Request, exc: Exception):
     logger.error(f"Database connection error: {str(exc)}")
 
-    return JSONResponse(
-        status_code=500,
-        content={"error": "Database connection failed", "detail": str(exc)},
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
     )
 
 
@@ -36,9 +36,9 @@ async def db_connection_error_handler(request: Request, exc: Exception):
 async def redis_connection_error_handler(request: Request, exc: Exception):
     logger.error(f"Redis connection error: {str(exc)}")
 
-    return JSONResponse(
-        status_code=500,
-        content={"error": "Redis connection failed", "detail": str(exc)},
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
     )
 
 
