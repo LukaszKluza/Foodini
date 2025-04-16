@@ -56,7 +56,7 @@ class UserService:
 
     async def login(self, user_login: UserLogin):
         user_ = await self.user_validators.ensure_user_exists_by_email(user_login.email)
-        await self.user_validators.ensure_verified_user(user_)
+        self.user_validators.ensure_verified_user(user_)
 
         if not await PasswordService.verify_password(
             user_login.password, user_.password
