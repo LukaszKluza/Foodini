@@ -1,140 +1,147 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/services/api_client.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
 import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:provider/provider.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+import '../../repository/auth_repository.dart';
+import '../../events/change_password_events.dart';
+import '../../utils/exception_converter.dart';
+import '../../models/change_password_request.dart';
+import '../../blocs/change_password_bloc.dart';
+import '../../states/change_password_sates.dart';
 
+class ChangePasswordScreen extends StatelessWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  State<ChangePasswordScreen> createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:
+          (_) => ChangePasswordBloc(
+            Provider.of<AuthRepository>(context, listen: false),
+            Provider.of<TokenStorageRepository>(context, listen: false),
+          ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+          ),
+        ),
+        body: _ChangePasswordForm(),
+      ),
+    );
+  }
 }
 
-class _LoginScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordForm extends StatefulWidget {
+  const _ChangePasswordForm();
+
+  @override
+  State<_ChangePasswordForm> createState() => _ChangePasswordFormState();
+}
+
+class _ChangePasswordFormState extends State<_ChangePasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController =
       TextEditingController();
 
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  Future<void> _changePassword() async {
-    final apiClient = Provider.of<ApiClient>(context, listen: false);
-
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final response = await apiClient.postRequest(
-        Uri.parse(AppConfig.changePasswordUrl),
-        {
-          "email": _emailController.text,
-          "password": _newPasswordController.text,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            key: Key(AppConfig.successfullyLoggedIn),
-            content: Text(AppConfig.successfullyLoggedIn),
-          ),
-        );
-        context.go('/account');
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          _errorMessage = responseBody["detail"].toString();
-        });
-      }
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+  String? _message;
+  TextStyle _messageStyle = AppConfig.errorStyle;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/account');
-          },
-        ),
-        title: Center(
-          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
-        ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(35.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    key: Key(AppConfig.email),
-                    controller: _emailController,
-                    decoration: InputDecoration(labelText: AppConfig.email),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: validateEmail,
-                  ),
-                  TextFormField(
-                    key: Key(AppConfig.newPassword),
-                    controller: _newPasswordController,
-                    decoration: InputDecoration(
-                      labelText: AppConfig.newPassword,
-                    ),
-                    obscureText: true,
-                    validator: validatePassword,
-                  ),
-                  TextFormField(
-                    key: Key(AppConfig.confirmPassword),
-                    controller: _confirmNewPasswordController,
-                    decoration: InputDecoration(
-                      labelText: AppConfig.confirmPassword,
-                    ),
-                    obscureText: true,
-                    validator:
-                        (value) => validateConfirmPassword(
-                          value,
-                          _newPasswordController.text,
-                        ),
-                  ),
-                  SizedBox(height: 20),
-                  _isLoading
-                      ? CircularProgressIndicator()
-                      : ElevatedButton(
-                        key: Key(AppConfig.changePassword),
-                        onPressed: _changePassword,
-                        child: Text(AppConfig.changePassword),
-                      ),
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(_errorMessage!, style: AppConfig.errorStyle),
-                    ),
-                ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(35.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                key: Key(AppConfig.email),
+                controller: _emailController,
+                decoration: InputDecoration(labelText: AppConfig.email),
+                keyboardType: TextInputType.emailAddress,
+                validator: validateEmail,
               ),
-            ),
+              TextFormField(
+                key: Key(AppConfig.newPassword),
+                controller: _newPasswordController,
+                decoration: InputDecoration(labelText: AppConfig.newPassword),
+                obscureText: true,
+                validator: validatePassword,
+              ),
+              TextFormField(
+                key: Key(AppConfig.confirmPassword),
+                controller: _confirmNewPasswordController,
+                decoration: InputDecoration(
+                  labelText: AppConfig.confirmPassword,
+                ),
+                obscureText: true,
+                validator:
+                    (value) => validateConfirmPassword(
+                      value,
+                      _newPasswordController.text,
+                    ),
+              ),
+              const SizedBox(height: 20),
+              BlocConsumer<ChangePasswordBloc, ChangePasswordState>(
+                listener: (context, state) {
+                  if (state is ChangePasswordSuccess) {
+                    setState(() {
+                      _message = AppConfig.checkAndConfirmEmailAddress;
+                      _messageStyle = AppConfig.successStyle;
+                    });
+                    Future.delayed(const Duration(seconds: 2), () {
+                      if (mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          context.go('/account');
+                        });
+                      }
+                    });
+                  } else if (state is ChangePasswordFailure) {
+                    setState(() {
+                      _message = ExceptionConverter.formatErrorMessage(
+                        state.error.data["detail"],
+                      );
+                    });
+                  }
+                },
+                builder: (context, state) {
+                  if (state is ChangePasswordLoading) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    return ElevatedButton(
+                      key: Key(AppConfig.changePassword),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          final request = ChangePasswordRequest(
+                            email: _emailController.text,
+                          );
+                          context.read<ChangePasswordBloc>().add(
+                            ChangePasswordSubmitted(request),
+                          );
+                        }
+                      },
+                      child: Text(AppConfig.changePassword),
+                    );
+                  }
+                },
+              ),
+              if (_message != null)
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(_message!, style: _messageStyle),
+                ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

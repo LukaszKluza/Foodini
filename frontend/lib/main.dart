@@ -1,27 +1,47 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/services/api_client.dart';
-import 'package:frontend/services/user_provider.dart';
-import 'package:provider/provider.dart';
-import 'app_router.dart';
+import 'package:workmanager/workmanager.dart';
 
-void main() {
-  runApp(Foodini());
+import 'fetch_token_task_callback.dart';
+import 'foofini.dart';
+
+const fetchTokenTask = 'fetchTokenTask';
+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    if (task == fetchTokenTask) {
+      await fetchTokenTaskCallback();
+    }
+    return Future.value(true);
+  });
 }
 
-class Foodini extends StatelessWidget {
-  const Foodini({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<ApiClient>(create: (_) => ApiClient()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-      ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
+  if (!kIsWeb) {
+    // Android/iOS
+    await Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: false,
+    );
+
+    await Workmanager().registerPeriodicTask(
+      "refreshAccessTokenTask",
+      fetchTokenTask,
+      frequency: Duration(minutes: 25),
+      initialDelay: Duration(minutes: 25),
+      constraints: Constraints(
+        networkType: NetworkType.connected,
       ),
     );
+  } else {
+    // Web
+    Timer.periodic(const Duration(seconds: 25), (timer) async {
+      await fetchTokenTaskCallback();
+    });
   }
+
+  runApp(const Foodini());
 }

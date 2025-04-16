@@ -11,7 +11,7 @@ void main() {
   testWidgets('Main page shows all buttons', (tester) async {
     await tester.pumpWidget(MaterialApp(home: MainPageScreen()));
 
-    expect(find.text(AppConfig.myAccout), findsOneWidget);
+    expect(find.text(AppConfig.myAccount), findsOneWidget);
     expect(find.byIcon(Icons.person), findsOneWidget);
   });
 
@@ -25,7 +25,7 @@ void main() {
         GoRoute(
           path: '/account',
           builder: (context, state) =>
-              const Scaffold(key: Key(AppConfig.myAccout)),
+              const Scaffold(key: Key(AppConfig.myAccount)),
         ),
       ],
     );
@@ -33,9 +33,9 @@ void main() {
     await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(AppConfig.myAccout));
+    await tester.tap(find.text(AppConfig.myAccount));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(Key(AppConfig.myAccout)), findsOneWidget);
+    expect(find.byKey(Key(AppConfig.myAccount)), findsOneWidget);
   });
 }

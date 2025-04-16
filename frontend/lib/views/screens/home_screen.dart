@@ -10,10 +10,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.homePage,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.homePage, style: AppConfig.titleStyle),
         ),
       ),
       body: Center(

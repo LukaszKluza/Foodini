@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/models/register_request.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/services/api_client.dart';
@@ -17,7 +18,14 @@ void main() {
 
   test('should send a POST request with correct headers and body', () async {
     final url = Uri.parse('https://example.com/post');
-    final body = {'key': 'value'};
+    final body = RegisterRequest(
+      name: 'John',
+      lastName: 'Doe',
+      age: 30,
+      country: 'Poland',
+      email: 'john.doe@example.com',
+      password: 'securepassword123',
+    );
 
     when(
       mockClient.post(
@@ -27,12 +35,12 @@ void main() {
       ),
     ).thenAnswer((_) async => http.Response('{"result": "ok"}', 200));
 
-    final response = await apiClient.postRequest(url, body);
+    final response = await apiClient.register(body);
 
     expect(response.statusCode, 200);
     verify(
       mockClient.post(
-        url,
+        Uri.parse(AppConfig.registerUrl),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(body),
       ),

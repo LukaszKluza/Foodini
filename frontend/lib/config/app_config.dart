@@ -7,13 +7,13 @@ class AppConfig {
 
   //Texts
   static const String foodini = 'Foodini';
-  static const String myAccout = 'My Account';
+  static const String myAccount = 'My Account';
   static const String changePassword = 'Change password';
   static const String home = 'Home';
   static const String homePage = 'Foodini Home Page';
   static const String welcome = 'Welcome in Foodini';
 
-  static const String succesfullyRegistered = 'Registered successfully';
+  static const String successfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
   static const String provideCorrectName = 'Provide correct name';
   static const String requiredAge = 'Select your age';
@@ -23,15 +23,16 @@ class AppConfig {
   static const String requiredPasswordConfirmation =
       'Password confirmation is required';
   static const String samePasswords = 'Passwords must be the same';
-  static const String minimalPasswordLegth =
+  static const String minimalPasswordLength =
       'Password must have at least $minPasswordLength characters';
-  static const String maximalPasswordLegth =
+  static const String maximalPasswordLength =
       'Password must have no more than $maxPasswordLength characters';
   static const String passwordComplexityError =
       'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
   static const String registration = 'Registration';
   static const String register = 'Register';
+  static const String account = 'Account';
   static const String alreadyHaveAnAccount = 'Already have an account? Login';
   static const String firstName = 'First name';
   static const String lastName = 'Last name';
@@ -45,7 +46,7 @@ class AppConfig {
 
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
-  static const String successfullyLoggedIn = 'Succesfully logged in';
+  static const String successfullyLoggedIn = 'Successfully logged in';
   static const String loginFailed = 'Login failed';
   static const String logout = 'Logout';
   static const String somethingWentWrong = 'Something went wrong';
@@ -56,11 +57,12 @@ class AppConfig {
   static final List<int> ages = List.generate(109, (index) => index + 12);
 
   // URLs
-  static const String baseUrl = 'http://127.0.0.1:8000/v1';
+  static const String baseUrl = 'http://127.0.0.1:8001/v1';
   static const String registerUrl = '$baseUrl/users/register';
   static const String loginUrl = '$baseUrl/users/login';
   static const String logoutUrl = '$baseUrl/users/logout';
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
+  static const String refreshAccessTokenUrl = '$baseUrl/users/refresh';
 
   //Styles
   static const TextStyle titleStyle = TextStyle(
@@ -68,4 +70,5 @@ class AppConfig {
     fontStyle: FontStyle.italic,
   );
   static const TextStyle errorStyle = TextStyle(color: Colors.red);
+  static const TextStyle successStyle = TextStyle(color: Colors.green);
 }

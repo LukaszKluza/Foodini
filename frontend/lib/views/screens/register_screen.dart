@@ -1,23 +1,45 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/models/logged_user.dart';
-import 'package:frontend/services/api_client.dart';
-import 'package:frontend/services/response_handler_service.dart';
-import 'package:frontend/services/user_provider.dart';
-import 'package:frontend/utils/userValidators.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:country_picker/country_picker.dart';
+import 'package:frontend/utils/exception_converter.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:frontend/models/register_request.dart';
+import 'package:country_picker/country_picker.dart';
 
-class RegisterScreen extends StatefulWidget {
+import '../../repository/auth_repository.dart';
+import '../../blocs/register_bloc.dart';
+import '../../events/register_events.dart';
+import '../../states/register_states.dart';
+import '../../utils/userValidators.dart';
+
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:
+          (_) =>
+              RegisterBloc(Provider.of<AuthRepository>(context, listen: false)),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+          ),
+        ),
+        body: _RegisterForm(),
+      ),
+    );
+  }
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterForm extends StatefulWidget {
+  @override
+  State<_RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<_RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -29,9 +51,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   int? _selectedAge;
   String? _selectedCountry;
-
-  bool _isLoading = false;
-  String? _errorMessage;
+  String? _message;
+  TextStyle _messageStyle = AppConfig.errorStyle;
 
   void _pickCountry(BuildContext context) {
     showCountryPicker(
@@ -46,155 +67,145 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Future<void> _register() async {
-    final apiClient = Provider.of<ApiClient>(context, listen: false);
-
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final response = await apiClient
-          .postRequest(Uri.parse(AppConfig.registerUrl), {
-            "name": _firstNameController.text,
-            "last_name": _lastNameController.text,
-            "age": _selectedAge,
-            "country": _selectedCountry,
-            "email": _emailController.text,
-            "password": _passwordController.text,
-          });
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      ResponseHandlerService.handleRegisterResponse(
-        context: context,
-        response: response,
-        successMessage: AppConfig.checkAndConfirmEmailAddress,
-        route: '/login',
-        onError: (error) {
-          setState(() {
-            _errorMessage = error;
-          });
-        },
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(35.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  key: Key(AppConfig.firstName),
-                  controller: _firstNameController,
-                  decoration: InputDecoration(labelText: AppConfig.firstName),
-                  validator: validateName,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(35.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                key: Key(AppConfig.firstName),
+                controller: _firstNameController,
+                decoration: InputDecoration(labelText: AppConfig.firstName),
+                validator: (value) => validateName(value),
+              ),
+              TextFormField(
+                key: Key(AppConfig.lastName),
+                controller: _lastNameController,
+                decoration: InputDecoration(labelText: AppConfig.lastName),
+                validator: (value) => validateName(value),
+              ),
+              DropdownButtonFormField<int>(
+                key: Key(AppConfig.age),
+                value: _selectedAge,
+                decoration: InputDecoration(labelText: AppConfig.age),
+                items:
+                    AppConfig.ages.map((int age) {
+                      return DropdownMenuItem<int>(
+                        value: age,
+                        child: Text(age.toString()),
+                      );
+                    }).toList(),
+                onChanged: (int? newValue) {
+                  setState(() {
+                    _selectedAge = newValue!;
+                  });
+                },
+                validator: (value) => validateAge(value),
+              ),
+              TextFormField(
+                key: Key(AppConfig.country),
+                readOnly: true,
+                decoration: InputDecoration(labelText: AppConfig.country),
+                controller: _countryController,
+                onTap: () => _pickCountry(context),
+                validator: (value) => validateCountry(value, _selectedCountry),
+              ),
+              TextFormField(
+                key: Key(AppConfig.email),
+                controller: _emailController,
+                decoration: InputDecoration(labelText: AppConfig.email),
+                keyboardType: TextInputType.emailAddress,
+                validator: validateEmail,
+              ),
+              TextFormField(
+                key: Key(AppConfig.password),
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: AppConfig.password),
+                obscureText: true,
+                validator: validatePassword,
+              ),
+              TextFormField(
+                key: Key(AppConfig.confirmPassword),
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(
+                  labelText: AppConfig.confirmPassword,
                 ),
-                TextFormField(
-                  key: Key(AppConfig.lastName),
-                  controller: _lastNameController,
-                  decoration: InputDecoration(labelText: AppConfig.lastName),
-                  validator: validateName,
-                ),
-                DropdownButtonFormField<int>(
-                  key: Key(AppConfig.age),
-                  value: _selectedAge,
-                  decoration: InputDecoration(labelText: AppConfig.age),
-                  items:
-                      AppConfig.ages.map((int age) {
-                        return DropdownMenuItem<int>(
-                          value: age,
-                          child: Text(age.toString()),
-                        );
-                      }).toList(),
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      _selectedAge = newValue;
-                    });
-                  },
-                  validator: (value) => validateAge(value),
-                ),
-                TextFormField(
-                  key: Key(AppConfig.country),
-                  readOnly: true,
-                  decoration: InputDecoration(labelText: AppConfig.country),
-                  controller: _countryController,
-                  onTap: () => _pickCountry(context),
-                  validator:
-                      (value) => validateCountry(value, _selectedCountry),
-                ),
-                TextFormField(
-                  key: Key(AppConfig.email),
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: AppConfig.email),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: validateEmail,
-                ),
-                TextFormField(
-                  key: Key(AppConfig.password),
-                  controller: _passwordController,
-                  decoration: InputDecoration(labelText: AppConfig.password),
-                  obscureText: true,
-                  validator: validatePassword,
-                ),
-                TextFormField(
-                  key: Key(AppConfig.confirmPassword),
-                  controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: AppConfig.confirmPassword,
-                  ),
-                  obscureText: true,
-                  validator:
-                      (value) => validateConfirmPassword(
-                        value,
-                        _passwordController.text,
-                      ),
-                ),
-                SizedBox(height: 20),
-                _isLoading
-                    ? CircularProgressIndicator()
-                    : ElevatedButton(
-                      key: Key(AppConfig.register),
-                      onPressed: _register,
-                      child: Text(AppConfig.register),
+                obscureText: true,
+                validator:
+                    (value) => validateConfirmPassword(
+                      value,
+                      _passwordController.text,
                     ),
-                if (_errorMessage != null)
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(_errorMessage!, style: AppConfig.errorStyle),
-                  ),
-                TextButton(
-                  key: Key(AppConfig.alreadyHaveAnAccount),
-                  onPressed: () => context.go('/login'),
-                  child: Text(AppConfig.alreadyHaveAnAccount),
+              ),
+              SizedBox(height: 20),
+              BlocConsumer<RegisterBloc, RegisterState>(
+                listener: (context, state) {
+                  if (state is RegisterSuccess) {
+                    setState(() {
+                      _message = AppConfig.checkAndConfirmEmailAddress;
+                      _messageStyle = AppConfig.successStyle;
+                    });
+                    Future.delayed(const Duration(seconds: 2), () {
+                      if (mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          context.go('/login');
+                        });
+                      }
+                    });
+                  } else if (state is RegisterFailure) {
+                    setState(() {
+                      _message = ExceptionConverter.formatErrorMessage(
+                        state.error.data["detail"],
+                      );
+                    });
+                  }
+                },
+                builder: (context, state) {
+                  if (state is RegisterLoading) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return ElevatedButton(
+                      key: Key(AppConfig.register),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          final request = RegisterRequest(
+                            name: _firstNameController.text,
+                            lastName: _lastNameController.text,
+                            age: _selectedAge ?? 0,
+                            country: _selectedCountry ?? '',
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          );
+                          context.read<RegisterBloc>().add(
+                            RegisterSubmitted(request),
+                          );
+                        }
+                      },
+                      child: Text(AppConfig.register),
+                    );
+                  }
+                },
+              ),
+              if (_message != null)
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(_message!, style: _messageStyle),
                 ),
-                TextButton(
-                  key: Key(AppConfig.home),
-                  onPressed: () => context.go('/'),
-                  child: Text(AppConfig.home),
-                ),
-              ],
-            ),
+              TextButton(
+                key: Key(AppConfig.alreadyHaveAnAccount),
+                onPressed: () => context.go('/login'),
+                child: Text(AppConfig.alreadyHaveAnAccount),
+              ),
+              TextButton(
+                key: Key(AppConfig.home),
+                onPressed: () => context.go('/'),
+                child: Text(AppConfig.home),
+              ),
+            ],
           ),
         ),
       ),
