@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
-from backend.users.service.authorisation_service import AuthorizationService
+from backend.users.service.user_authorisation_service import AuthorizationService
 from .schemas import (
     UserCreate,
     UserResponse,
