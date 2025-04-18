@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import redis.asyncio as aioredis
 import jwt
+import uuid
 from itsdangerous import (
     URLSafeTimedSerializer,
     SignatureExpired,
@@ -38,11 +39,26 @@ class AuthorizationService:
             hours=config.REFRESH_TOKEN_EXPIRE_HOURS
         )
 
+        access_token_jti = str(uuid.uuid4)
+        refresh_token_jti = str(uuid.uuid4)
+
         access_token_data = data.copy()
-        access_token_data.update({"exp": access_token_expire})
+        access_token_data.update(
+            {
+                "jti": access_token_jti,
+                "linked_jti": refresh_token_jti,
+                "exp": access_token_expire,
+            }
+        )
 
         refresh_token_data = data.copy()
-        refresh_token_data.update({"exp": refresh_token_expire})
+        refresh_token_data.update(
+            {
+                "jti": refresh_token_jti,
+                "linked_jti": access_token_jti,
+                "exp": refresh_token_expire,
+            }
+        )
 
         access_token = jwt.encode(
             access_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
@@ -52,13 +68,13 @@ class AuthorizationService:
         )
 
         await redis_tokens.setex(
-            data["id"], config.ACCESS_TOKEN_EXPIRE_MINUTES * 60, access_token
+            refresh_token_jti, config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, refresh_token
         )
 
         return access_token, refresh_token
 
     @staticmethod
-    async def delete_user_token(user_id):
+    async def revoke_tokens(token_jti: str, linked_token_jti: str):
         redis_tokens = await get_redis()
 
         if not redis_tokens:
@@ -67,7 +83,20 @@ class AuthorizationService:
                 detail="Redis connection error",
             )
 
-        return await redis_tokens.delete(user_id)
+        async with redis_tokens.pipeline() as pipe:
+            await (
+                pipe.setex(
+                    f"blacklist:{token_jti}",
+                    config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+                    "revoked",
+                )
+                .setex(
+                    f"blacklist:{linked_token_jti}",
+                    config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+                    "revoked",
+                )
+                .execute()
+            )
 
     @staticmethod
     async def refresh_access_token(
@@ -75,27 +104,21 @@ class AuthorizationService:
         redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
         payload = await AuthorizationService.get_payload_from_token(refresh_token)
-        user_id = payload.get("id")
+        refresh_token_jti = payload.get("jti")
+        access_token_jti = payload.get("linked_jti")
 
-        if not await redis_tokens.get(user_id):
+        if not await redis_tokens.get(refresh_token_jti):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
 
-        access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
-            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        payload["exp"] = access_token_expire
-        refreshed_access_token = jwt.encode(
-            payload, config.SECRET_KEY, algorithm=config.ALGORITHM
-        )
-        await redis_tokens.setex(
-            payload["id"],
-            config.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            refreshed_access_token,
+        new_access_token, new_refresh_token = await AuthorizationService.create_tokens(
+            {"sub": payload["sub"], "id": payload["id"]}
         )
 
-        return refreshed_access_token
+        await AuthorizationService.revoke_tokens(refresh_token_jti, access_token_jti)
+
+        return new_access_token, new_refresh_token
 
     @staticmethod
     async def verify_token(
@@ -103,13 +126,31 @@ class AuthorizationService:
         redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
         token = await AuthorizationService.get_payload_from_token(credentials)
-        stored_token = await redis_tokens.get(token.get("id"))
+        token_jti = token.get("jti")
+        linked_jti = token.get("linked_jti")
 
-        if not stored_token or stored_token.decode("utf-8") != credentials.credentials:
+        stored_token = await redis_tokens.get(token_jti)
+        stored_linked_token = await redis_tokens.get(linked_jti)
+
+        if not stored_linked_token and not stored_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or revoked token",
+                detail="Invalid token",
             )
+
+        async with redis_tokens.pipeline() as pipe:
+            pipe.exists(f"blacklist:{token_jti}")
+            if linked_jti:
+                pipe.exists(f"blacklist:{linked_jti}")
+            revoked_results = await pipe.execute()
+
+        is_revoked = any(revoked_results)
+        if is_revoked:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Revoked token",
+            )
+
         return token
 
     @staticmethod
