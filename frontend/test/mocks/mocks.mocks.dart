@@ -234,7 +234,7 @@ class MockRegisterBloc extends _i1.Mock implements _i14.RegisterBloc {
   );
 
   @override
-  void on<E extends _i15.RegisterEvent>(
+  void on<E extends _i15.RegisterEvent?>(
     _i16.EventHandler<E, _i6.RegisterState>? handler, {
     _i16.EventTransformer<E>? transformer,
   }) => super.noSuchMethod(
@@ -244,7 +244,7 @@ class MockRegisterBloc extends _i1.Mock implements _i14.RegisterBloc {
 
   @override
   void onTransition(
-    _i16.Transition<_i15.RegisterEvent, _i6.RegisterState>? transition,
+    _i16.Transition<_i15.RegisterEvent?, _i6.RegisterState>? transition,
   ) => super.noSuchMethod(
     Invocation.method(#onTransition, [transition]),
     returnValueForMissingStub: null,

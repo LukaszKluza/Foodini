@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
+
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/userValidators.dart';
+import 'package:frontend/utils/user_validators.dart';
 
 void main() {
   group('Validation Tests', () {

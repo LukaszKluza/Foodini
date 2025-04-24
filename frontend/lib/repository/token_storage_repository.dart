@@ -1,6 +1,6 @@
-import 'package:universal_html/html.dart' as html;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:universal_html/html.dart' as html;
 
 class TokenStorageRepository {
   static const _accessTokenKey = 'access_token';

@@ -42,7 +42,7 @@ dependencies:
   build_runner: ^2.4.7
   provider: ^6.1.1
   flutter_secure_storage: ^9.0.0
-  flutter_bloc: ^9.1.0
+  flutter_bloc: ^8.1.6
   workmanager: ^0.4.1
   dio: ^5.4.0
   universal_html: ^2.0.8

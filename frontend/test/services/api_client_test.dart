@@ -1,9 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/services/api_client.dart';
+
 import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
+
 import '../mocks/mocks.mocks.dart';
 
 void main() {

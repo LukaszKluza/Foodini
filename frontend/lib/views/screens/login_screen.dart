@@ -1,36 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/models/login_request.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../repository/auth_repository.dart';
-import '../../repository/token_storage_repository.dart';
-import '../../blocs/login_bloc.dart';
-import '../../events/login_events.dart';
-import '../../utils/exception_converter.dart';
-import '../../states/login_states.dart';
-import '../../utils/userValidators.dart';
+
+import 'package:frontend/blocs/login_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/login_events.dart';
+import 'package:frontend/models/login_request.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/login_states.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/utils/user_validators.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final LoginBloc? bloc;
+
+  const LoginScreen({super.key, this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) => LoginBloc(
+    return bloc != null
+        ? BlocProvider<LoginBloc>.value(
+      value: bloc!,
+      child: _buildScaffold(),
+    )
+        : BlocProvider<LoginBloc>(
+      create: (_) => LoginBloc(
         Provider.of<AuthRepository>(context, listen: false),
         Provider.of<TokenStorageRepository>(context, listen: false),
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(AppConfig.login, style: AppConfig.titleStyle),
-          ),
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(AppConfig.login, style: AppConfig.titleStyle),
         ),
-        body: _LoginForm(),
       ),
+      body: _LoginForm(),
     );
   }
 }

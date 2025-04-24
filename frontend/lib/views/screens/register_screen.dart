@@ -1,35 +1,46 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/exception_converter.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/models/register_request.dart';
-import 'package:country_picker/country_picker.dart';
+import 'package:provider/provider.dart';
 
-import '../../repository/auth_repository.dart';
-import '../../blocs/register_bloc.dart';
-import '../../events/register_events.dart';
-import '../../states/register_states.dart';
-import '../../utils/userValidators.dart';
+import 'package:frontend/blocs/register_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/register_events.dart';
+import 'package:frontend/models/register_request.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/states/register_states.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/utils/user_validators.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  final RegisterBloc? bloc;
+
+  const RegisterScreen({super.key, this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) =>
-              RegisterBloc(Provider.of<AuthRepository>(context, listen: false)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(AppConfig.registration, style: AppConfig.titleStyle),
-          ),
-        ),
-        body: _RegisterForm(),
+    return bloc != null
+        ? BlocProvider<RegisterBloc>.value(
+      value: bloc!,
+      child: _buildScaffold(),
+    )
+        : BlocProvider<RegisterBloc>(
+      create: (_) => RegisterBloc(
+        Provider.of<AuthRepository>(context, listen: false),
       ),
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+        ),
+      ),
+      body: _RegisterForm(),
     );
   }
 }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class MainPageScreen extends StatefulWidget {
-  final http.Client? client;
-
-  const MainPageScreen({super.key, this.client});
+  const MainPageScreen({super.key});
 
   @override
   State<MainPageScreen> createState() => _LoginScreenState();

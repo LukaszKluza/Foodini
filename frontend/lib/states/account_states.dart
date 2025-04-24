@@ -1,4 +1,4 @@
-import '../api_exception.dart';
+import 'package:frontend/api_exception.dart';
 
 abstract class AccountState {}
 

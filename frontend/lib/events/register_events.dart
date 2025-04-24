@@ -1,4 +1,4 @@
-import '../models/register_request.dart';
+import 'package:frontend/models/register_request.dart';
 
 abstract class RegisterEvent {}
 

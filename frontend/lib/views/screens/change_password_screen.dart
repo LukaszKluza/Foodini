@@ -1,37 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
-import 'package:frontend/utils/userValidators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:provider/provider.dart';
 
-import '../../repository/auth_repository.dart';
-import '../../events/change_password_events.dart';
-import '../../utils/exception_converter.dart';
-import '../../models/change_password_request.dart';
-import '../../blocs/change_password_bloc.dart';
-import '../../states/change_password_sates.dart';
+import 'package:frontend/blocs/change_password_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/change_password_events.dart';
+import 'package:frontend/models/change_password_request.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/utils/user_validators.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
-  const ChangePasswordScreen({super.key});
+  final ChangePasswordBloc? bloc;
+
+  const ChangePasswordScreen({super.key, this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) => ChangePasswordBloc(
-            Provider.of<AuthRepository>(context, listen: false),
-            Provider.of<TokenStorageRepository>(context, listen: false),
-          ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(AppConfig.registration, style: AppConfig.titleStyle),
-          ),
-        ),
-        body: _ChangePasswordForm(),
+    return bloc != null
+        ? BlocProvider<ChangePasswordBloc>.value(
+      value: bloc!,
+      child: _buildScaffold(),
+    )
+        : BlocProvider<ChangePasswordBloc>(
+      create: (_) => ChangePasswordBloc(
+        Provider.of<AuthRepository>(context, listen: false),
+        Provider.of<TokenStorageRepository>(context, listen: false),
       ),
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+        ),
+      ),
+      body: _ChangePasswordForm(),
     );
   }
 }

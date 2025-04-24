@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../api_exception.dart';
-import '../events/login_events.dart';
-import '../repository/auth_repository.dart';
-import '../repository/token_storage_repository.dart';
-import '../states/login_states.dart';
+import 'package:frontend/api_exception.dart';
+import 'package:frontend/events/login_events.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/login_states.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;

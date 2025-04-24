@@ -1,7 +1,6 @@
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/repository/token_storage_repository.dart';
-
-import 'repository/auth_repository.dart';
+import 'package:frontend/repository/auth_repository.dart';
 
 const fetchTokenTask = 'fetchTokenTask';
 

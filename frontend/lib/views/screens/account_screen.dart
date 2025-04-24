@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../blocs/account_bloc.dart';
-import '../../config/app_config.dart';
-import '../../events/account_events.dart';
-import '../../utils/exception_converter.dart';
-import '../../states/account_states.dart';
-import '../widgets/rectangular_button.dart';
+import 'package:frontend/blocs/account_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/account_events.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/account_states.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+  final AccountBloc? bloc;
+
+  const AccountScreen({super.key, this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return bloc != null
+        ? BlocProvider<AccountBloc>.value(
+      value: bloc!,
+      child: _AccountBody(),
+    )
+        : BlocProvider<AccountBloc>(
       create: (_) => AccountBloc(
         Provider.of<AuthRepository>(context, listen: false),
         Provider.of<TokenStorageRepository>(context, listen: false),

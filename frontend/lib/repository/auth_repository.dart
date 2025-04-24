@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/change_password_request.dart';
+import 'package:frontend/models/login_request.dart';
+import 'package:frontend/models/logged_user.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/services/api_client.dart';
-
-import '../models/change_password_request.dart';
-import '../models/logged_user.dart';
-import '../models/login_request.dart';
 
 class AuthRepository {
   final ApiClient apiClient;
