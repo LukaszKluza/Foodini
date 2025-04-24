@@ -86,7 +86,7 @@ class _LoginFormState extends State<_LoginForm> {
                       _message = AppConfig.successfullyLoggedIn;
                       _messageStyle = AppConfig.successStyle;
                     });
-                    Future.delayed(const Duration(seconds: 2), () {
+                    Future.delayed(const Duration(milliseconds: 500), () {
                       if (mounted) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           context.go('/main_page');

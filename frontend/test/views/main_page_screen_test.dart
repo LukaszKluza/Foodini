@@ -9,13 +9,16 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Main page shows all buttons', (tester) async {
+    // Given, When
     await tester.pumpWidget(MaterialApp(home: MainPageScreen()));
 
+    // Then
     expect(find.text(AppConfig.myAccount), findsOneWidget);
     expect(find.byIcon(Icons.person), findsOneWidget);
   });
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
+    // Given
     final goRouter = GoRouter(
       routes: [
         GoRoute(
@@ -30,12 +33,13 @@ void main() {
       ],
     );
 
+    // When
     await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
     await tester.pumpAndSettle();
-
     await tester.tap(find.text(AppConfig.myAccount));
     await tester.pumpAndSettle();
 
+    // Then
     expect(find.byKey(Key(AppConfig.myAccount)), findsOneWidget);
   });
 }

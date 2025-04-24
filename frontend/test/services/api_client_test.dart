@@ -1,24 +1,24 @@
-import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/models/register_request.dart';
-import 'package:mockito/mockito.dart';
-import 'package:http/http.dart' as http;
 import 'package:frontend/services/api_client.dart';
+import 'package:dio/dio.dart';
+import 'package:mockito/mockito.dart';
 import '../mocks/mocks.mocks.dart';
 
 void main() {
-  late MockClient mockClient;
+  late MockDio mockDio;
   late ApiClient apiClient;
 
   setUp(() {
-    mockClient = MockClient();
-    apiClient = ApiClient(mockClient);
+    mockDio = MockDio();
+    when(mockDio.interceptors).thenReturn(Interceptors());
+    apiClient = ApiClient(mockDio);
   });
 
+
   test('should send a POST request with correct headers and body', () async {
-    final url = Uri.parse('https://example.com/post');
-    final body = RegisterRequest(
+    final request = RegisterRequest(
       name: 'John',
       lastName: 'Doe',
       age: 30,
@@ -27,43 +27,73 @@ void main() {
       password: 'securepassword123',
     );
 
-    when(
-      mockClient.post(
-        url,
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      ),
-    ).thenAnswer((_) async => http.Response('{"result": "ok"}', 200));
+    final expectedResponse = Response(
+      requestOptions: RequestOptions(path: AppConfig.registerUrl),
+      data: {"result": "ok"},
+      statusCode: 200,
+    );
 
-    final response = await apiClient.register(body);
+    when(mockDio.interceptors).thenReturn(Interceptors());
+    when(mockDio.post(
+      AppConfig.registerUrl,
+      data: request.toJson(),
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => expectedResponse);
+
+    final response = await apiClient.register(request);
 
     expect(response.statusCode, 200);
-    verify(
-      mockClient.post(
-        Uri.parse(AppConfig.registerUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(body),
-      ),
-    ).called(1);
+    expect(response.data['result'], 'ok');
+
+    verify(mockDio.post(
+      AppConfig.registerUrl,
+      data: request.toJson(),
+      options: anyNamed('options'),
+    )).called(1);
   });
 
-  // test('should call logout endpoint and not throw if status is 204', () async {
-  //   final url = Uri.parse('${AppConfig.logoutUrl}?user_id=123');
+  test('should call logout endpoint with correct user id', () async {
+    const userId = 2;
+    final url = '${AppConfig.logoutUrl}?user_id=$userId';
 
-  //   when(mockClient.get(url)).thenAnswer((_) async => http.Response('', 204));
+    final expectedResponse = Response(
+      requestOptions: RequestOptions(path: url),
+      data: null,
+      statusCode: 204,
+    );
 
-  //   await apiClient.logout(123);
+    when(mockDio.get(
+      url,
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => expectedResponse);
 
-  //   verify(mockClient.get(url)).called(1);
-  // });
+    final response = await apiClient.logout();
 
-  test('should throw if status is not 204', () async {
-    final url = Uri.parse('${AppConfig.logoutUrl}?user_id=123');
+    expect(response.statusCode, 204);
 
-    when(
-      mockClient.get(url),
-    ).thenAnswer((_) async => http.Response('error', 500));
+    verify(mockDio.get(
+      url,
+      options: anyNamed('options'),
+    )).called(1);
+  });
 
-    expect(() => apiClient.logout(123), throwsException);
+  test('should throw if logout returns error status code', () async {
+    const userId = 2;
+    final url = '${AppConfig.logoutUrl}?user_id=$userId';
+
+    when(mockDio.get(
+      url,
+      options: anyNamed('options'),
+    )).thenThrow(DioException(
+      requestOptions: RequestOptions(path: url),
+      response: Response(
+        requestOptions: RequestOptions(path: url),
+        statusCode: 500,
+        data: 'error',
+      ),
+      type: DioExceptionType.badResponse,
+    ));
+
+    expect(() async => await apiClient.logout(), throwsA(isA<DioException>()));
   });
 }

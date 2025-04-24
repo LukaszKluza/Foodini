@@ -3,18 +3,23 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i9;
 
-import 'package:frontend/models/change_password_request.dart' as _i9;
+import 'package:dio/dio.dart' as _i8;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i16;
+import 'package:frontend/blocs/register_bloc.dart' as _i14;
+import 'package:frontend/events/register_events.dart' as _i15;
+import 'package:frontend/models/change_password_request.dart' as _i12;
 import 'package:frontend/models/logged_user.dart' as _i3;
-import 'package:frontend/models/login_request.dart' as _i7;
-import 'package:frontend/models/register_request.dart' as _i8;
+import 'package:frontend/models/login_request.dart' as _i10;
+import 'package:frontend/models/register_request.dart' as _i11;
 import 'package:frontend/models/user_response.dart' as _i4;
 import 'package:frontend/repository/auth_repository.dart' as _i5;
-import 'package:frontend/repository/token_storage_repository.dart' as _i11;
+import 'package:frontend/repository/token_storage_repository.dart' as _i7;
 import 'package:frontend/services/api_client.dart' as _i2;
+import 'package:frontend/states/register_states.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i10;
+import 'package:mockito/src/dummies.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -45,6 +50,54 @@ class _FakeUserResponse_2 extends _i1.SmartFake implements _i4.UserResponse {
     : super(parent, parentInvocation);
 }
 
+class _FakeAuthRepository_3 extends _i1.SmartFake
+    implements _i5.AuthRepository {
+  _FakeAuthRepository_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeRegisterState_4 extends _i1.SmartFake implements _i6.RegisterState {
+  _FakeRegisterState_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeTokenStorageRepository_5 extends _i1.SmartFake
+    implements _i7.TokenStorageRepository {
+  _FakeTokenStorageRepository_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeResponse_6<T> extends _i1.SmartFake implements _i8.Response<T> {
+  _FakeResponse_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeBaseOptions_7 extends _i1.SmartFake implements _i8.BaseOptions {
+  _FakeBaseOptions_7(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeHttpClientAdapter_8 extends _i1.SmartFake
+    implements _i8.HttpClientAdapter {
+  _FakeHttpClientAdapter_8(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeTransformer_9 extends _i1.SmartFake implements _i8.Transformer {
+  _FakeTransformer_9(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeInterceptors_10 extends _i1.SmartFake implements _i8.Interceptors {
+  _FakeInterceptors_10(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeDio_11 extends _i1.SmartFake implements _i8.Dio {
+  _FakeDio_11(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -62,124 +115,1057 @@ class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
           as _i2.ApiClient);
 
   @override
-  _i6.Future<_i3.LoggedUser> login(_i7.LoginRequest? request) =>
+  _i9.Future<_i3.LoggedUser> login(_i10.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
-            returnValue: _i6.Future<_i3.LoggedUser>.value(
+            returnValue: _i9.Future<_i3.LoggedUser>.value(
               _FakeLoggedUser_1(this, Invocation.method(#login, [request])),
             ),
           )
-          as _i6.Future<_i3.LoggedUser>);
+          as _i9.Future<_i3.LoggedUser>);
 
   @override
-  _i6.Future<void> logout() =>
+  _i9.Future<void> logout() =>
       (super.noSuchMethod(
             Invocation.method(#logout, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i6.Future<_i4.UserResponse> register(_i8.RegisterRequest? request) =>
+  _i9.Future<_i4.UserResponse> register(_i11.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
-            returnValue: _i6.Future<_i4.UserResponse>.value(
+            returnValue: _i9.Future<_i4.UserResponse>.value(
               _FakeUserResponse_2(
                 this,
                 Invocation.method(#register, [request]),
               ),
             ),
           )
-          as _i6.Future<_i4.UserResponse>);
+          as _i9.Future<_i4.UserResponse>);
 
   @override
-  _i6.Future<_i4.UserResponse> changePassword(
-    _i9.ChangePasswordRequest? request,
+  _i9.Future<_i4.UserResponse> changePassword(
+    _i12.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
-            returnValue: _i6.Future<_i4.UserResponse>.value(
+            returnValue: _i9.Future<_i4.UserResponse>.value(
               _FakeUserResponse_2(
                 this,
                 Invocation.method(#changePassword, [request]),
               ),
             ),
           )
-          as _i6.Future<_i4.UserResponse>);
+          as _i9.Future<_i4.UserResponse>);
 
   @override
-  _i6.Future<String> refreshAccessToken() =>
+  _i9.Future<String> refreshAccessToken() =>
       (super.noSuchMethod(
             Invocation.method(#refreshAccessToken, []),
-            returnValue: _i6.Future<String>.value(
-              _i10.dummyValue<String>(
+            returnValue: _i9.Future<String>.value(
+              _i13.dummyValue<String>(
                 this,
                 Invocation.method(#refreshAccessToken, []),
               ),
             ),
           )
-          as _i6.Future<String>);
+          as _i9.Future<String>);
+}
+
+/// A class which mocks [RegisterBloc].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRegisterBloc extends _i1.Mock implements _i14.RegisterBloc {
+  MockRegisterBloc() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.AuthRepository get authRepository =>
+      (super.noSuchMethod(
+            Invocation.getter(#authRepository),
+            returnValue: _FakeAuthRepository_3(
+              this,
+              Invocation.getter(#authRepository),
+            ),
+          )
+          as _i5.AuthRepository);
+
+  @override
+  _i6.RegisterState get state =>
+      (super.noSuchMethod(
+            Invocation.getter(#state),
+            returnValue: _FakeRegisterState_4(this, Invocation.getter(#state)),
+          )
+          as _i6.RegisterState);
+
+  @override
+  _i9.Stream<_i6.RegisterState> get stream =>
+      (super.noSuchMethod(
+            Invocation.getter(#stream),
+            returnValue: _i9.Stream<_i6.RegisterState>.empty(),
+          )
+          as _i9.Stream<_i6.RegisterState>);
+
+  @override
+  bool get isClosed =>
+      (super.noSuchMethod(Invocation.getter(#isClosed), returnValue: false)
+          as bool);
+
+  @override
+  void add(_i15.RegisterEvent? event) => super.noSuchMethod(
+    Invocation.method(#add, [event]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void onEvent(_i15.RegisterEvent? event) => super.noSuchMethod(
+    Invocation.method(#onEvent, [event]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void emit(_i6.RegisterState? state) => super.noSuchMethod(
+    Invocation.method(#emit, [state]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void on<E extends _i15.RegisterEvent>(
+    _i16.EventHandler<E, _i6.RegisterState>? handler, {
+    _i16.EventTransformer<E>? transformer,
+  }) => super.noSuchMethod(
+    Invocation.method(#on, [handler], {#transformer: transformer}),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void onTransition(
+    _i16.Transition<_i15.RegisterEvent, _i6.RegisterState>? transition,
+  ) => super.noSuchMethod(
+    Invocation.method(#onTransition, [transition]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i9.Future<void> close() =>
+      (super.noSuchMethod(
+            Invocation.method(#close, []),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
+
+  @override
+  void onChange(_i16.Change<_i6.RegisterState>? change) => super.noSuchMethod(
+    Invocation.method(#onChange, [change]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void addError(Object? error, [StackTrace? stackTrace]) => super.noSuchMethod(
+    Invocation.method(#addError, [error, stackTrace]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void onError(Object? error, StackTrace? stackTrace) => super.noSuchMethod(
+    Invocation.method(#onError, [error, stackTrace]),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [TokenStorageRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageRepository extends _i1.Mock
-    implements _i11.TokenStorageRepository {
+    implements _i7.TokenStorageRepository {
   MockTokenStorageRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<void> saveAccessToken(String? token) =>
+  _i9.Future<void> saveAccessToken(String? token) =>
       (super.noSuchMethod(
             Invocation.method(#saveAccessToken, [token]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i6.Future<String?> getAccessToken() =>
+  _i9.Future<String?> getAccessToken() =>
       (super.noSuchMethod(
             Invocation.method(#getAccessToken, []),
-            returnValue: _i6.Future<String?>.value(),
+            returnValue: _i9.Future<String?>.value(),
           )
-          as _i6.Future<String?>);
+          as _i9.Future<String?>);
 
   @override
-  _i6.Future<void> deleteAccessToken() =>
+  _i9.Future<void> deleteAccessToken() =>
       (super.noSuchMethod(
             Invocation.method(#deleteAccessToken, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i6.Future<void> saveRefreshToken(String? token) =>
+  _i9.Future<void> saveRefreshToken(String? token) =>
       (super.noSuchMethod(
             Invocation.method(#saveRefreshToken, [token]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i6.Future<String?> getRefreshToken() =>
+  _i9.Future<String?> getRefreshToken() =>
       (super.noSuchMethod(
             Invocation.method(#getRefreshToken, []),
-            returnValue: _i6.Future<String?>.value(),
+            returnValue: _i9.Future<String?>.value(),
           )
-          as _i6.Future<String?>);
+          as _i9.Future<String?>);
 
   @override
-  _i6.Future<void> deleteRefreshToken() =>
+  _i9.Future<void> deleteRefreshToken() =>
       (super.noSuchMethod(
             Invocation.method(#deleteRefreshToken, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i9.Future<void>);
+}
+
+/// A class which mocks [ApiClient].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockApiClient extends _i1.Mock implements _i2.ApiClient {
+  MockApiClient() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i7.TokenStorageRepository get tokenStorage =>
+      (super.noSuchMethod(
+            Invocation.getter(#tokenStorage),
+            returnValue: _FakeTokenStorageRepository_5(
+              this,
+              Invocation.getter(#tokenStorage),
+            ),
+          )
+          as _i7.TokenStorageRepository);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> register(_i11.RegisterRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#register, [request]),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#register, [request]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> login(_i10.LoginRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#login, [request]),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#login, [request]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> changePassword(
+    _i12.ChangePasswordRequest? request,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#changePassword, [request]),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#changePassword, [request]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> refreshAccessToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshAccessToken, []),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#refreshAccessToken, []),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> logout() =>
+      (super.noSuchMethod(
+            Invocation.method(#logout, []),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(this, Invocation.method(#logout, [])),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+}
+
+/// A class which mocks [Dio].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDio extends _i1.Mock implements _i8.Dio {
+  MockDio() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.BaseOptions get options =>
+      (super.noSuchMethod(
+            Invocation.getter(#options),
+            returnValue: _FakeBaseOptions_7(this, Invocation.getter(#options)),
+          )
+          as _i8.BaseOptions);
+
+  @override
+  set options(_i8.BaseOptions? _options) => super.noSuchMethod(
+    Invocation.setter(#options, _options),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i8.HttpClientAdapter get httpClientAdapter =>
+      (super.noSuchMethod(
+            Invocation.getter(#httpClientAdapter),
+            returnValue: _FakeHttpClientAdapter_8(
+              this,
+              Invocation.getter(#httpClientAdapter),
+            ),
+          )
+          as _i8.HttpClientAdapter);
+
+  @override
+  set httpClientAdapter(_i8.HttpClientAdapter? _httpClientAdapter) =>
+      super.noSuchMethod(
+        Invocation.setter(#httpClientAdapter, _httpClientAdapter),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i8.Transformer get transformer =>
+      (super.noSuchMethod(
+            Invocation.getter(#transformer),
+            returnValue: _FakeTransformer_9(
+              this,
+              Invocation.getter(#transformer),
+            ),
+          )
+          as _i8.Transformer);
+
+  @override
+  set transformer(_i8.Transformer? _transformer) => super.noSuchMethod(
+    Invocation.setter(#transformer, _transformer),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i8.Interceptors get interceptors =>
+      (super.noSuchMethod(
+            Invocation.getter(#interceptors),
+            returnValue: _FakeInterceptors_10(
+              this,
+              Invocation.getter(#interceptors),
+            ),
+          )
+          as _i8.Interceptors);
+
+  @override
+  void close({bool? force = false}) => super.noSuchMethod(
+    Invocation.method(#close, [], {#force: force}),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i9.Future<_i8.Response<T>> head<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #head,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #head,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> headUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #headUri,
+              [uri],
+              {#data: data, #options: options, #cancelToken: cancelToken},
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #headUri,
+                  [uri],
+                  {#data: data, #options: options, #cancelToken: cancelToken},
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> get<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #get,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #get,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> getUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #getUri,
+              [uri],
+              {
+                #data: data,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #getUri,
+                  [uri],
+                  {
+                    #data: data,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> post<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #post,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #post,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> postUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #postUri,
+              [uri],
+              {
+                #data: data,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #postUri,
+                  [uri],
+                  {
+                    #data: data,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> put<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #put,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #put,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> putUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #putUri,
+              [uri],
+              {
+                #data: data,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #putUri,
+                  [uri],
+                  {
+                    #data: data,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> patch<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #patch,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #patch,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> patchUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #patchUri,
+              [uri],
+              {
+                #data: data,
+                #options: options,
+                #cancelToken: cancelToken,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #patchUri,
+                  [uri],
+                  {
+                    #data: data,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> delete<T>(
+    String? path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #delete,
+              [path],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #options: options,
+                #cancelToken: cancelToken,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #delete,
+                  [path],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #options: options,
+                    #cancelToken: cancelToken,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> deleteUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.Options? options,
+    _i8.CancelToken? cancelToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #deleteUri,
+              [uri],
+              {#data: data, #options: options, #cancelToken: cancelToken},
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #deleteUri,
+                  [uri],
+                  {#data: data, #options: options, #cancelToken: cancelToken},
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> download(
+    String? urlPath,
+    dynamic savePath, {
+    _i8.ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    _i8.CancelToken? cancelToken,
+    bool? deleteOnError = true,
+    _i8.FileAccessMode? fileAccessMode = _i8.FileAccessMode.write,
+    String? lengthHeader = 'content-length',
+    Object? data,
+    _i8.Options? options,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #download,
+              [urlPath, savePath],
+              {
+                #onReceiveProgress: onReceiveProgress,
+                #queryParameters: queryParameters,
+                #cancelToken: cancelToken,
+                #deleteOnError: deleteOnError,
+                #fileAccessMode: fileAccessMode,
+                #lengthHeader: lengthHeader,
+                #data: data,
+                #options: options,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(
+                  #download,
+                  [urlPath, savePath],
+                  {
+                    #onReceiveProgress: onReceiveProgress,
+                    #queryParameters: queryParameters,
+                    #cancelToken: cancelToken,
+                    #deleteOnError: deleteOnError,
+                    #fileAccessMode: fileAccessMode,
+                    #lengthHeader: lengthHeader,
+                    #data: data,
+                    #options: options,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> downloadUri(
+    Uri? uri,
+    dynamic savePath, {
+    _i8.ProgressCallback? onReceiveProgress,
+    _i8.CancelToken? cancelToken,
+    bool? deleteOnError = true,
+    _i8.FileAccessMode? fileAccessMode = _i8.FileAccessMode.write,
+    String? lengthHeader = 'content-length',
+    Object? data,
+    _i8.Options? options,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #downloadUri,
+              [uri, savePath],
+              {
+                #onReceiveProgress: onReceiveProgress,
+                #cancelToken: cancelToken,
+                #deleteOnError: deleteOnError,
+                #fileAccessMode: fileAccessMode,
+                #lengthHeader: lengthHeader,
+                #data: data,
+                #options: options,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(
+                  #downloadUri,
+                  [uri, savePath],
+                  {
+                    #onReceiveProgress: onReceiveProgress,
+                    #cancelToken: cancelToken,
+                    #deleteOnError: deleteOnError,
+                    #fileAccessMode: fileAccessMode,
+                    #lengthHeader: lengthHeader,
+                    #data: data,
+                    #options: options,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> request<T>(
+    String? url, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    _i8.CancelToken? cancelToken,
+    _i8.Options? options,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #request,
+              [url],
+              {
+                #data: data,
+                #queryParameters: queryParameters,
+                #cancelToken: cancelToken,
+                #options: options,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #request,
+                  [url],
+                  {
+                    #data: data,
+                    #queryParameters: queryParameters,
+                    #cancelToken: cancelToken,
+                    #options: options,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> requestUri<T>(
+    Uri? uri, {
+    Object? data,
+    _i8.CancelToken? cancelToken,
+    _i8.Options? options,
+    _i8.ProgressCallback? onSendProgress,
+    _i8.ProgressCallback? onReceiveProgress,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #requestUri,
+              [uri],
+              {
+                #data: data,
+                #cancelToken: cancelToken,
+                #options: options,
+                #onSendProgress: onSendProgress,
+                #onReceiveProgress: onReceiveProgress,
+              },
+            ),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(
+                  #requestUri,
+                  [uri],
+                  {
+                    #data: data,
+                    #cancelToken: cancelToken,
+                    #options: options,
+                    #onSendProgress: onSendProgress,
+                    #onReceiveProgress: onReceiveProgress,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i9.Future<_i8.Response<T>> fetch<T>(_i8.RequestOptions? requestOptions) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetch, [requestOptions]),
+            returnValue: _i9.Future<_i8.Response<T>>.value(
+              _FakeResponse_6<T>(
+                this,
+                Invocation.method(#fetch, [requestOptions]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<T>>);
+
+  @override
+  _i8.Dio clone({
+    _i8.BaseOptions? options,
+    _i8.Interceptors? interceptors,
+    _i8.HttpClientAdapter? httpClientAdapter,
+    _i8.Transformer? transformer,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#clone, [], {
+              #options: options,
+              #interceptors: interceptors,
+              #httpClientAdapter: httpClientAdapter,
+              #transformer: transformer,
+            }),
+            returnValue: _FakeDio_11(
+              this,
+              Invocation.method(#clone, [], {
+                #options: options,
+                #interceptors: interceptors,
+                #httpClientAdapter: httpClientAdapter,
+                #transformer: transformer,
+              }),
+            ),
+          )
+          as _i8.Dio);
 }

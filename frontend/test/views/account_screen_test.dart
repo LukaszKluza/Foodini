@@ -38,18 +38,12 @@ void main() {
   });
 
   testWidgets('Tap on Change password navigates to form', (tester) async {
+    // Given
     final goRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) {
-            return MultiProvider(
-              providers: [
-                Provider<AuthRepository>(create: (_) => MockAuthRepository()),
-              ],
-              child: AccountScreen(),
-            );
-          },
+          builder: (context, state) => AccountScreen(),
         ),
         GoRoute(
           path: '/change_password',
@@ -60,44 +54,43 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
-    await tester.pumpAndSettle();
-
+    // When
+    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
     await tester.tap(find.text(AppConfig.changePassword));
     await tester.pumpAndSettle();
 
+    // Then
     expect(find.byKey(Key(AppConfig.changePassword)), findsOneWidget);
   });
 
   testWidgets('User can log out successfully', (WidgetTester tester) async {
-    final mockAuthRepository = MockAuthRepository();
-
+    // Given
     final goRouter = GoRouter(
-      initialLocation: '/',
+      initialLocation: '/account',
       routes: [
         GoRoute(
-          path: '/',
-          builder: (context, state) {
-            return MultiProvider(
-              providers: [
-                Provider<AuthRepository>.value(value: mockAuthRepository),
-              ],
-              child: AccountScreen(),
-            );
-          },
+          path: '/account',
+          builder: (context, state) => AccountScreen(),
         ),
         GoRoute(
-          path: '/home',
-          builder: (context, state) => Scaffold(body: Text('Home Screen')),
+          path: '/',
+          builder: (context, state) => Scaffold(body: Text(AppConfig.homePage)),
         ),
       ],
     );
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(AppConfig.logout));
+    // When
+    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
     await tester.pumpAndSettle();
 
-    expect(find.text('Home Screen'), findsOneWidget);
+    await tester.tap(find.text(AppConfig.logout));
+    await tester.pump(); 
+
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.text(AppConfig.successfullyLoggedOut), findsOneWidget);
+    expect(find.text(AppConfig.homePage), findsOneWidget);
   });
 }

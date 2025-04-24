@@ -47,6 +47,7 @@ class AppConfig {
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Successfully logged in';
+  static const String successfullyLoggedOut = 'Account loaded successfully';
   static const String loginFailed = 'Login failed';
   static const String logout = 'Logout';
   static const String somethingWentWrong = 'Something went wrong';

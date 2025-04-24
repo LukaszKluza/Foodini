@@ -18,140 +18,131 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (_) => AccountBloc(
-            Provider.of<AuthRepository>(context, listen: false),
-            Provider.of<TokenStorageRepository>(context, listen: false),
-          ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(AppConfig.account, style: AppConfig.titleStyle),
-          ),
-        ),
-        body: BlocListener<AccountBloc, AccountState>(
-          listener: (context, state) {
-            if (state is AccountLogoutSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Account loaded successfully')),
-              );
-            } else if (state is AccountLogoutFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    ExceptionConverter.formatErrorMessage(
-                      state.error.data["detail"],
-                    ),
-                  ),
-                ),
-              );
-            }
-          },
-          child: _AccountBody(),
-        ),
+      create: (_) => AccountBloc(
+        Provider.of<AuthRepository>(context, listen: false),
+        Provider.of<TokenStorageRepository>(context, listen: false),
       ),
+      child: _AccountBody(),
     );
   }
 }
 
 class _AccountBody extends StatefulWidget {
+
   @override
-  State<_AccountBody> createState() => _AccountScreen();
+  State<_AccountBody> createState() => _AccountScreenState();
 }
 
-class _AccountScreen extends State<_AccountBody> {
+class _AccountScreenState extends State<_AccountBody> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return BlocListener<AccountBloc, AccountState>(
-      listener: (context, state) {
-        if (state is AccountLogoutSuccess) {
-          context.go('/');
-        } else if (state is AccountLogoutFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Logout failed: ${state.error}")),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              context.go('/main_page');
-            },
-          ),
-          title: Center(
-            child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/main_page');
+          },
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(35.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      rectangularButton(
-                        AppConfig.changePassword,
-                        Icons.settings,
-                        screenWidth,
-                        screenHeight,
-                        () => context.go('/change_password'),
-                      ),
-                      SizedBox(height: 16),
-                      rectangularButton(
-                        AppConfig.logout,
-                        Icons.logout,
-                        screenWidth,
-                        screenHeight,
-                        () {
-                          context.read<AccountBloc>().add(
-                            AccountLogoutRequested(),
-                          );
-                        },
-                      ),
-                    ],
+        title: Center(
+          child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
+        ),
+      ),
+      body: BlocListener<AccountBloc, AccountState>(
+        listener: (context, state) {
+          if (state is AccountLogoutSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(AppConfig.successfullyLoggedOut)),
+            );
+            Future.delayed(const Duration(seconds: 2), () {
+              if (mounted) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.go('/');
+                });
+              }
+            });
+          } else if (state is AccountLogoutFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  ExceptionConverter.formatErrorMessage(
+                    state.error.data["detail"],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      rectangularButton(
-                        "Button 3",
-                        Icons.do_not_disturb,
-                        screenWidth,
-                        screenHeight,
-                        null,
-                      ),
-                      SizedBox(height: 16),
-                      rectangularButton(
-                        "Button 4",
-                        Icons.do_not_disturb,
-                        screenWidth,
-                        screenHeight,
-                        null,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
-            BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, state) {
-                if (state is AccountLoggingOut) {
-                  return CircularProgressIndicator();
-                }
-                return SizedBox.shrink();
-              },
-            ),
-          ],
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(35.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        rectangularButton(
+                          AppConfig.changePassword,
+                          Icons.settings,
+                          screenWidth,
+                          screenHeight,
+                          () => context.go('/change_password'),
+                        ),
+                        const SizedBox(height: 16),
+                        rectangularButton(
+                          AppConfig.logout,
+                          Icons.logout,
+                          screenWidth,
+                          screenHeight,
+                          () {
+                            context.read<AccountBloc>().add(
+                                  AccountLogoutRequested(),
+                                );
+                          },
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        rectangularButton(
+                          "Button 3",
+                          Icons.do_not_disturb,
+                          screenWidth,
+                          screenHeight,
+                          null,
+                        ),
+                        const SizedBox(height: 16),
+                        rectangularButton(
+                          "Button 4",
+                          Icons.do_not_disturb,
+                          screenWidth,
+                          screenHeight,
+                          null,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              BlocBuilder<AccountBloc, AccountState>(
+                builder: (context, state) {
+                  if (state is AccountLoggingOut) {
+                    return const CircularProgressIndicator();
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
