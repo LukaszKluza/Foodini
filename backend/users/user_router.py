@@ -49,6 +49,16 @@ async def logout_user(
     return await user_service.logout(token_payload=token_payload, user_id=user_id)
 
 
+@user_router.post("/refresh-tokens")
+async def refresh_tokens(
+    tokens: dict = Depends(AuthorizationService.refresh_access_token),
+):
+    return {
+        "access_token": tokens["access_token"],
+        "refresh_token": tokens["refresh_token"],
+    }
+
+
 @user_router.post("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
 async def reset_password(
     password_reset_request: PasswordResetRequest,

@@ -39,8 +39,8 @@ class AuthorizationService:
             hours=config.REFRESH_TOKEN_EXPIRE_HOURS
         )
 
-        access_token_jti = str(uuid.uuid4)
-        refresh_token_jti = str(uuid.uuid4)
+        access_token_jti = str(uuid.uuid4())
+        refresh_token_jti = str(uuid.uuid4())
 
         access_token_data = data.copy()
         access_token_data.update(
@@ -84,26 +84,31 @@ class AuthorizationService:
             )
 
         async with redis_tokens.pipeline() as pipe:
-            await (
-                pipe.setex(
-                    f"blacklist:{token_jti}",
-                    config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                    "revoked",
-                )
-                .setex(
-                    f"blacklist:{linked_token_jti}",
-                    config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                    "revoked",
-                )
-                .execute()
+            await pipe.setex(
+                f"blacklist:{token_jti}",
+                config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+                "revoked",
             )
+            await pipe.setex(
+                f"blacklist:{linked_token_jti}",
+                config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+                "revoked",
+            )
+            await pipe.execute()
 
     @staticmethod
     async def refresh_access_token(
         refresh_token: HTTPAuthorizationCredentials = Security(security),
-        redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
-        payload = await AuthorizationService.get_payload_from_token(refresh_token)
+        redis_tokens = await get_redis()
+
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+
+        payload = await AuthorizationService.verify_token(refresh_token)
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
 
@@ -118,13 +123,20 @@ class AuthorizationService:
 
         await AuthorizationService.revoke_tokens(refresh_token_jti, access_token_jti)
 
-        return new_access_token, new_refresh_token
+        return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
     @staticmethod
     async def verify_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
-        redis_tokens: aioredis.Redis = Depends(get_redis),
     ):
+        redis_tokens = await get_redis()
+
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+
         token = await AuthorizationService.get_payload_from_token(credentials)
         token_jti = token.get("jti")
         linked_jti = token.get("linked_jti")
