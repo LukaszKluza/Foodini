@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'fetch_token_task_callback.dart';
-import 'foofini.dart';
+import 'foodini.dart';
 
 const fetchTokenTask = 'fetchTokenTask';
 
@@ -21,7 +21,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
-    // Android/iOS
     await Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: false,
@@ -31,14 +30,15 @@ void main() async {
       "refreshAccessTokenTask",
       fetchTokenTask,
       frequency: Duration(minutes: 25),
-      initialDelay: Duration(minutes: 25),
+      initialDelay: Duration(seconds: 0),
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
     );
   } else {
-    // Web
-    Timer.periodic(const Duration(seconds: 25), (timer) async {
+    await fetchTokenTaskCallback();
+
+    Timer.periodic(const Duration(minutes: 25), (timer) async {
       await fetchTokenTaskCallback();
     });
   }

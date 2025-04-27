@@ -19,10 +19,6 @@ class Foodini extends StatelessWidget {
         ProxyProvider<ApiClient, AuthRepository>(
           update: (_, apiClient, __) => AuthRepository(apiClient),
         ),
-
-        // BlocProvider<LoginBloc>(
-        //   create: (context) => LoginBloc(context.read<AuthRepository>()),
-        // ),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

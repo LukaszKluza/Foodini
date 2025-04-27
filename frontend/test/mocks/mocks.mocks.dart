@@ -162,7 +162,7 @@ class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
           as _i9.Future<_i4.UserResponse>);
 
   @override
-  _i9.Future<String> refreshAccessToken() =>
+  _i9.Future<String> refreshTokens() =>
       (super.noSuchMethod(
             Invocation.method(#refreshAccessToken, []),
             returnValue: _i9.Future<String>.value(
@@ -401,7 +401,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i9.Future<_i8.Response<dynamic>>);
 
   @override
-  _i9.Future<_i8.Response<dynamic>> refreshAccessToken() =>
+  _i9.Future<_i8.Response<dynamic>> refreshTokens() =>
       (super.noSuchMethod(
             Invocation.method(#refreshAccessToken, []),
             returnValue: _i9.Future<_i8.Response<dynamic>>.value(

@@ -12,7 +12,7 @@ Future<void> fetchTokenTaskCallback() async {
     final apiClient = ApiClient();
     final authRepository = AuthRepository(apiClient);
 
-    final newAccessToken = await authRepository.refreshAccessToken();
+    final newAccessToken = await authRepository.refreshTokens();
     await tokenStorage.saveAccessToken(newAccessToken);
   }
 }

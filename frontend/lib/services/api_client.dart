@@ -28,6 +28,8 @@ class ApiClient {
     );
   }
 
+  get dio => _client;
+
   Future<Response> register(RegisterRequest request) {
     return _client.post(
       AppConfig.registerUrl,
@@ -52,7 +54,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> refreshAccessToken() {
+  Future<Response> refreshTokens() {
     return _client.post(
       AppConfig.refreshAccessTokenUrl,
       options: Options(extra: {'requiresAuth': true}),
@@ -63,7 +65,18 @@ class ApiClient {
     int userId = 2; //TODO
     return _client.get(
       '${AppConfig.logoutUrl}?user_id=$userId',
-      options: Options(extra: {'requiresAuth': false}),
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> refreshRequest(RequestOptions requestOptions) async {
+    return _client.request(
+      requestOptions.path,
+      options: Options(
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+        extra: {'requiresAuth': true},
+      ),
     );
   }
 }

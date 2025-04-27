@@ -55,9 +55,9 @@ class AuthRepository {
     }
   }
 
-  Future<String> refreshAccessToken() async {
+  Future<String> refreshTokens() async {
     try {
-      final response = await apiClient.refreshAccessToken();
+      final response = await apiClient.refreshTokens();
       return response.data['refreshed_access_token'];
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
