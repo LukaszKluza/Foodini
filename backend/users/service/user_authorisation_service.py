@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import redis.asyncio as aioredis
 import jwt
 import uuid
 from itsdangerous import (
@@ -10,7 +9,6 @@ from itsdangerous import (
     BadData,
 )
 from fastapi import HTTPException, Security, status
-from fastapi.params import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Dict, Any
 
@@ -24,13 +22,7 @@ security = HTTPBearer()
 class AuthorizationService:
     @staticmethod
     async def create_tokens(data: dict):
-        redis_tokens = await get_redis()
-
-        if not redis_tokens:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Redis connection error",
-            )
+        redis_tokens = await AuthorizationService.get_redis_or_throw()
 
         access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
             minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
@@ -48,6 +40,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
+                "type": "access",
             }
         )
 
@@ -57,6 +50,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
+                "type": "refresh",
             }
         )
 
@@ -75,13 +69,7 @@ class AuthorizationService:
 
     @staticmethod
     async def revoke_tokens(token_jti: str, linked_token_jti: str):
-        redis_tokens = await get_redis()
-
-        if not redis_tokens:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Redis connection error",
-            )
+        redis_tokens = await AuthorizationService.get_redis_or_throw()
 
         async with redis_tokens.pipeline() as pipe:
             await pipe.setex(
@@ -100,22 +88,16 @@ class AuthorizationService:
     async def refresh_access_token(
         refresh_token: HTTPAuthorizationCredentials = Security(security),
     ):
-        redis_tokens = await get_redis()
+        payload = await AuthorizationService.verify_refresh_token(refresh_token)
 
-        if not redis_tokens:
+        if payload.get("type") != "refresh":
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Redis connection error",
+                detail="Not refresh token provided",
             )
 
-        payload = await AuthorizationService.verify_token(refresh_token)
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
-
-        if not await redis_tokens.get(refresh_token_jti):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-            )
 
         new_access_token, new_refresh_token = await AuthorizationService.create_tokens(
             {"sub": payload["sub"], "id": payload["id"]}
@@ -126,25 +108,39 @@ class AuthorizationService:
         return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
     @staticmethod
-    async def verify_token(
+    async def verify_access_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        redis_tokens = await get_redis()
+        return await AuthorizationService.verify_token_by_type(credentials, "access")
 
-        if not redis_tokens:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Redis connection error",
-            )
+    @staticmethod
+    async def verify_refresh_token(
+        credentials: HTTPAuthorizationCredentials = Security(security),
+    ):
+        return await AuthorizationService.verify_token_by_type(credentials, "refresh")
+
+    @staticmethod
+    async def verify_token_by_type(
+        credentials: HTTPAuthorizationCredentials,
+        expected_type: str,
+    ):
+        redis_tokens = await AuthorizationService.get_redis_or_throw()
 
         token = await AuthorizationService.get_payload_from_token(credentials)
+        token_type = token.get("type")
         token_jti = token.get("jti")
         linked_jti = token.get("linked_jti")
 
-        stored_token = await redis_tokens.get(token_jti)
-        stored_linked_token = await redis_tokens.get(linked_jti)
+        if token_type != expected_type:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid token type. Expected {expected_type}.",
+            )
 
-        if not stored_linked_token and not stored_token:
+        redis_key = token_jti if expected_type == "refresh" else linked_jti
+        stored_token = await redis_tokens.get(redis_key)
+
+        if not stored_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
@@ -156,8 +152,7 @@ class AuthorizationService:
                 pipe.exists(f"blacklist:{linked_jti}")
             revoked_results = await pipe.execute()
 
-        is_revoked = any(revoked_results)
-        if is_revoked:
+        if any(revoked_results):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Revoked token",
@@ -214,3 +209,13 @@ class AuthorizationService:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token verification failed",
             )
+
+    @staticmethod
+    async def get_redis_or_throw():
+        redis_tokens = await get_redis()
+        if not redis_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Redis connection error",
+            )
+        return redis_tokens

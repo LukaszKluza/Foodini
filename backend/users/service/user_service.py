@@ -94,7 +94,7 @@ class UserService:
         user_id_from_token = None
         if password_reset_request.token:
             try:
-                payload = await AuthorizationService.verify_token(
+                payload = await AuthorizationService.verify_access_token(
                     password_reset_request.token
                 )
                 user_id_from_token = payload.get("id")

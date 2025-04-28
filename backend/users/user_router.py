@@ -44,7 +44,7 @@ async def login_user(
 async def logout_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
     return await user_service.logout(token_payload=token_payload, user_id=user_id)
 
@@ -73,7 +73,7 @@ async def update_user(
     user_id: int,
     user: UserUpdate,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
     return await user_service.update(token_payload, user_id, user)
 
@@ -82,7 +82,7 @@ async def update_user(
 async def delete_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
     return await user_service.delete(token_payload, user_id)
 
