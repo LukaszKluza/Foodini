@@ -62,10 +62,15 @@ void main() {
     );
 
     final goRouter = GoRouter(
+      initialLocation: '/register',
       routes: [
         GoRoute(
-          path: '/',
+          path: '/register',
           builder: (context, state) => RegisterScreen(bloc: registerBloc),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => Scaffold(body: Text(AppConfig.login)),
         ),
       ],
     );
@@ -96,6 +101,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(registerBloc.state, isA<RegisterSuccess>());
+
+    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.text(AppConfig.login), findsOneWidget);
   });
 
   testWidgets('Registration without filled form', (WidgetTester tester) async {

@@ -1,6 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/listeners/register_listener.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,6 @@ import 'package:frontend/events/register_events.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/states/register_states.dart';
-import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/utils/user_validators.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -155,25 +155,14 @@ class _RegisterFormState extends State<_RegisterForm> {
               SizedBox(height: 20),
               BlocConsumer<RegisterBloc, RegisterState>(
                 listener: (context, state) {
-                  if (state is RegisterSuccess) {
-                    setState(() {
-                      _message = AppConfig.checkAndConfirmEmailAddress;
-                      _messageStyle = AppConfig.successStyle;
-                    });
-                    Future.delayed(const Duration(seconds: 2), () {
-                      if (mounted) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.go('/login');
-                        });
-                      }
-                    });
-                  } else if (state is RegisterFailure) {
-                    setState(() {
-                      _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
-                      );
-                    });
-                  }
+                  RegisterListenerHelper.onChangePasswordListener(
+                    context: context,
+                    state: state,
+                    setState: setState,
+                    mounted: mounted,
+                    setMessage: (msg) => _message = msg,
+                    setMessageStyle: (style) => _messageStyle = style,
+                  );
                 },
                 builder: (context, state) {
                   if (state is RegisterLoading) {

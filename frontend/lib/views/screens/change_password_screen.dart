@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:frontend/listeners/change_password_listener.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/change_password_bloc.dart';
@@ -10,7 +10,6 @@ import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/repository/token_storage_repository.dart';
 import 'package:frontend/states/change_password_sates.dart';
-import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/utils/user_validators.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
@@ -103,25 +102,14 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               const SizedBox(height: 20),
               BlocConsumer<ChangePasswordBloc, ChangePasswordState>(
                 listener: (context, state) {
-                  if (state is ChangePasswordSuccess) {
-                    setState(() {
-                      _message = AppConfig.checkAndConfirmEmailAddress;
-                      _messageStyle = AppConfig.successStyle;
-                    });
-                    Future.delayed(const Duration(seconds: 2), () {
-                      if (mounted) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.go('/account');
-                        });
-                      }
-                    });
-                  } else if (state is ChangePasswordFailure) {
-                    setState(() {
-                      _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
-                      );
-                    });
-                  }
+                  ChangePasswordListenerHelper.onChangePasswordListener(
+                    context: context,
+                    state: state,
+                    setState: setState,
+                    mounted: mounted,
+                    setMessage: (msg) => _message = msg,
+                    setMessageStyle: (style) => _messageStyle = style,
+                  );
                 },
                 builder: (context, state) {
                   if (state is ChangePasswordLoading) {

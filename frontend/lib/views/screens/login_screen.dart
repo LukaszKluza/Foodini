@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:frontend/blocs/login_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/login_events.dart';
+import 'package:frontend/listeners/login_listener.dart';
 import 'package:frontend/models/login_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/repository/token_storage_repository.dart';
 import 'package:frontend/states/login_states.dart';
-import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/utils/user_validators.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -92,25 +92,14 @@ class _LoginFormState extends State<_LoginForm> {
               SizedBox(height: 20),
               BlocConsumer<LoginBloc, LoginState>(
                 listener: (context, state) {
-                  if (state is LoginSuccess) {
-                    setState(() {
-                      _message = AppConfig.successfullyLoggedIn;
-                      _messageStyle = AppConfig.successStyle;
-                    });
-                    Future.delayed(const Duration(milliseconds: 500), () {
-                      if (mounted) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.go('/main_page');
-                        });
-                      }
-                    });
-                  } else if (state is LoginFailure) {
-                    setState(() {
-                      _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
-                      );
-                    });
-                  }
+                  LoginListenerHelper.onLoginListener(
+                    context: context,
+                    state: state,
+                    setState: setState,
+                    mounted: mounted,
+                    setMessage: (msg) => _message = msg,
+                    setMessageStyle: (style) => _messageStyle = style,
+                  );
                 },
                 builder: (context, state) {
                   if (state is LoginLoading) {

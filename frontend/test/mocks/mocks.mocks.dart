@@ -16,6 +16,7 @@ import 'package:frontend/models/register_request.dart' as _i11;
 import 'package:frontend/models/user_response.dart' as _i4;
 import 'package:frontend/repository/auth_repository.dart' as _i5;
 import 'package:frontend/repository/token_storage_repository.dart' as _i7;
+import 'package:frontend/repository/user_storage.dart' as _i17;
 import 'package:frontend/services/api_client.dart' as _i2;
 import 'package:frontend/states/register_states.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
@@ -125,9 +126,18 @@ class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
           as _i9.Future<_i3.LoggedUser>);
 
   @override
-  _i9.Future<void> logout() =>
+  _i9.Future<void> logout(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#logout, []),
+            Invocation.method(#logout, [userId]),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
+
+  @override
+  _i9.Future<void> delete(int? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [userId]),
             returnValue: _i9.Future<void>.value(),
             returnValueForMissingStub: _i9.Future<void>.value(),
           )
@@ -164,11 +174,11 @@ class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
   @override
   _i9.Future<String> refreshTokens() =>
       (super.noSuchMethod(
-            Invocation.method(#refreshAccessToken, []),
+            Invocation.method(#refreshTokens, []),
             returnValue: _i9.Future<String>.value(
               _i13.dummyValue<String>(
                 this,
-                Invocation.method(#refreshAccessToken, []),
+                Invocation.method(#refreshTokens, []),
               ),
             ),
           )
@@ -403,22 +413,53 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   @override
   _i9.Future<_i8.Response<dynamic>> refreshTokens() =>
       (super.noSuchMethod(
-            Invocation.method(#refreshAccessToken, []),
+            Invocation.method(#refreshTokens, []),
             returnValue: _i9.Future<_i8.Response<dynamic>>.value(
               _FakeResponse_6<dynamic>(
                 this,
-                Invocation.method(#refreshAccessToken, []),
+                Invocation.method(#refreshTokens, []),
               ),
             ),
           )
           as _i9.Future<_i8.Response<dynamic>>);
 
   @override
-  _i9.Future<_i8.Response<dynamic>> logout() =>
+  _i9.Future<_i8.Response<dynamic>> logout(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#logout, []),
+            Invocation.method(#logout, [userId]),
             returnValue: _i9.Future<_i8.Response<dynamic>>.value(
-              _FakeResponse_6<dynamic>(this, Invocation.method(#logout, [])),
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#logout, [userId]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> delete(int? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [userId]),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#delete, [userId]),
+              ),
+            ),
+          )
+          as _i9.Future<_i8.Response<dynamic>>);
+
+  @override
+  _i9.Future<_i8.Response<dynamic>> refreshRequest(
+    _i8.RequestOptions? requestOptions,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshRequest, [requestOptions]),
+            returnValue: _i9.Future<_i8.Response<dynamic>>.value(
+              _FakeResponse_6<dynamic>(
+                this,
+                Invocation.method(#refreshRequest, [requestOptions]),
+              ),
             ),
           )
           as _i9.Future<_i8.Response<dynamic>>);
@@ -1168,4 +1209,30 @@ class MockDio extends _i1.Mock implements _i8.Dio {
             ),
           )
           as _i8.Dio);
+}
+
+/// A class which mocks [UserStorage].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserStorage extends _i1.Mock implements _i17.UserStorage {
+  MockUserStorage() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get isLoggedIn =>
+      (super.noSuchMethod(Invocation.getter(#isLoggedIn), returnValue: false)
+          as bool);
+
+  @override
+  void setUser(_i3.LoggedUser? user) => super.noSuchMethod(
+    Invocation.method(#setUser, [user]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeUser() => super.noSuchMethod(
+    Invocation.method(#removeUser, []),
+    returnValueForMissingStub: null,
+  );
 }

@@ -23,13 +23,23 @@ class AuthRepository {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(int userId) async {
     try {
-      await apiClient.logout();
+      await apiClient.logout(userId);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while logging out $e.');
+    }
+  }
+
+  Future<void> delete(int userId) async {
+    try {
+      await apiClient.delete(userId);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while deleting account $e.');
     }
   }
 

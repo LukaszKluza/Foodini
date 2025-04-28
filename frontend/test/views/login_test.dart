@@ -71,14 +71,15 @@ void main() {
     );
 
     final goRouter = GoRouter(
+      initialLocation: '/login',
       routes: [
         GoRoute(
-          path: '/',
+          path: '/login',
           builder: (context, state) => LoginScreen(bloc: loginBloc),
         ),
         GoRoute(
-          path: '/home',
-          builder: (context, state) => Scaffold(body: Text('Home Screen')),
+          path: '/main_page',
+          builder: (context, state) => Scaffold(body: Text(AppConfig.foodini)),
         ),
       ],
     );
@@ -96,6 +97,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(loginBloc.state, isA<LoginSuccess>());
+
+    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.text(AppConfig.foodini), findsOneWidget);
   });
 
   testWidgets('Login with missing email and password', (WidgetTester tester) async {

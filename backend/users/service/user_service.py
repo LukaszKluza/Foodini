@@ -165,12 +165,12 @@ class UserService:
 
         return await self.user_repository.update_user(user_.id, user)
 
-    async def delete(self, user_id_from_token: int, user_id_from_request: int):
-        await check_user_permission(user_id_from_token, user_id_from_request)
-        await self.ensure_user_exists_by_id(user_id_from_request)
+    async def delete(self, user_id_from_token: int):
+        await check_user_permission(user_id_from_token, user_id_from_token)
+        await self.ensure_user_exists_by_id(user_id_from_token)
 
-        await AuthorizationService.delete_user_token(user_id_from_request)
-        return await self.user_repository.delete_user(user_id_from_request)
+        await AuthorizationService.delete_user_token(user_id_from_token)
+        return await self.user_repository.delete_user(user_id_from_token)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         token_data = await AuthorizationService.decode_url_safe_token(token, salt)

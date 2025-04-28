@@ -61,10 +61,22 @@ class ApiClient {
     );
   }
 
-  Future<Response> logout() {
-    int userId = 2; //TODO
+  Future<Response> logout(int userId) {
     return _client.get(
-      '${AppConfig.logoutUrl}?user_id=$userId',
+      AppConfig.logoutUrl,
+      queryParameters: {
+        'user_id': userId.toString(),
+      },
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> delete(int userId) {
+    return _client.get(
+      AppConfig.deleteUrl,
+      queryParameters: {
+        'user_id': userId.toString(),
+      },
       options: Options(extra: {'requiresAuth': true}),
     );
   }

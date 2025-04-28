@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/login_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/repository/token_storage_repository.dart';
 import 'package:frontend/states/login_states.dart';
 
@@ -18,6 +19,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final accessToken = response.accessToken;
         final refreshToken = response.refreshToken;
 
+        UserStorage().setUser(response);
         tokenStorageRepository.saveAccessToken(accessToken);
         tokenStorageRepository.saveRefreshToken(refreshToken);
 
