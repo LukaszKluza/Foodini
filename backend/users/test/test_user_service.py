@@ -39,8 +39,11 @@ def mock_authorization_service():
             AuthorizationService, "decode_url_safe_token", AsyncMock()
         ) as mock_decode_url_token,
         patch.object(
-            AuthorizationService, "verify_token", AsyncMock()
-        ) as mock_verify_token,
+            AuthorizationService, "verify_access_token", AsyncMock()
+        ) as mock_verify_access_token,
+        patch.object(
+            AuthorizationService, "verify_refresh_token", AsyncMock()
+        ) as mock_verify_refresh_token,
     ):
         yield {
             "create_tokens": mock_create_tokens,
@@ -48,7 +51,8 @@ def mock_authorization_service():
             "revoke_tokens": mock_revoke_tokens,
             "create_url_safe_token": mock_create_url_token,
             "decode_url_safe_token": mock_decode_url_token,
-            "verify_token": mock_verify_token,
+            "verify_access_token": mock_verify_access_token,
+            "verify_refresh_token": mock_verify_refresh_token,
         }
 
 
@@ -279,7 +283,7 @@ async def test_reset_password_user_logged_successful(
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
 
     with patch.object(
-        AuthorizationService, "verify_token", new_callable=AsyncMock
+        AuthorizationService, "verify_access_token", new_callable=AsyncMock
     ) as mock_verify:
         mock_verify.return_value = {
             "id": 1,

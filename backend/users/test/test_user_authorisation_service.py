@@ -40,7 +40,20 @@ def valid_payload():
         "linked_jti": "linked_token_id",
         "id": 1,
         "sub": "user@example.com",
+        "type": "access",
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=30),
+    }
+
+
+@pytest.fixture
+def valid_refresh_payload():
+    return {
+        "jti": "refresh_token_id",
+        "linked_jti": "access_token_id",
+        "id": 1,
+        "sub": "user@example.com",
+        "type": "refresh",
+        "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=60),
     }
 
 
@@ -62,6 +75,7 @@ def credentials():
 
 @pytest.mark.asyncio
 async def test_create_tokens_success(mock_redis):
+    # given
     with (
         patch("jwt.encode", side_effect=["access_token", "refresh_token"]),
         patch(
@@ -70,8 +84,10 @@ async def test_create_tokens_success(mock_redis):
         ),
         patch("uuid.uuid4", side_effect=["access_jti", "refresh_jti"]),
     ):
+        # when
         access, refresh = await AuthorizationService.create_tokens({"id": 1})
 
+        # then
         assert access == "access_token"
         assert refresh == "refresh_token"
         mock_redis.setex.assert_called_once_with(
@@ -81,10 +97,12 @@ async def test_create_tokens_success(mock_redis):
 
 @pytest.mark.asyncio
 async def test_create_tokens_redis_error():
+    # given
     with patch(
         "backend.users.service.user_authorisation_service.get_redis",
         return_value=None,
     ):
+        # when / then
         with pytest.raises(HTTPException) as exc:
             await AuthorizationService.create_tokens({"id": 1})
         assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -92,6 +110,7 @@ async def test_create_tokens_redis_error():
 
 @pytest.mark.asyncio
 async def test_verify_token_success(mock_redis, credentials, valid_payload):
+    # given
     with (
         patch.object(
             AuthorizationService,
@@ -107,29 +126,35 @@ async def test_verify_token_success(mock_redis, credentials, valid_payload):
         mock_redis.pipeline.return_value.exists.return_value = False
         mock_redis.pipeline.return_value.execute.return_value = [0, 0]
 
-        result = await AuthorizationService.verify_token(credentials)
+        # when
+        result = await AuthorizationService.verify_access_token(credentials)
+
+        # then
         assert result == valid_payload
 
 
 @pytest.mark.asyncio
 async def test_verify_token_expired(credentials):
+    # given
     with patch.object(
         AuthorizationService,
         "get_payload_from_token",
         side_effect=HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid token"),
     ):
+        # when / then
         with pytest.raises(HTTPException) as exc:
-            await AuthorizationService.verify_token(credentials)
+            await AuthorizationService.verify_access_token(credentials)
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.asyncio
-async def test_refresh_token_success(mock_redis, credentials, valid_payload):
+async def test_refresh_token_success(mock_redis, credentials, valid_refresh_payload):
+    # given
     with (
         patch.object(
             AuthorizationService,
-            "verify_token",
-            return_value=valid_payload,
+            "verify_refresh_token",
+            return_value=valid_refresh_payload,
         ),
         patch.object(
             AuthorizationService,
@@ -148,21 +173,27 @@ async def test_refresh_token_success(mock_redis, credentials, valid_payload):
     ):
         mock_redis.get.return_value = b"valid_token"
 
+        # when
         result = await AuthorizationService.refresh_access_token(credentials)
+
+        # then
         assert result == {"access_token": "new_access", "refresh_token": "new_refresh"}
         AuthorizationService.revoke_tokens.assert_awaited_once_with(
-            valid_payload["jti"], valid_payload["linked_jti"]
+            valid_refresh_payload["jti"], valid_refresh_payload["linked_jti"]
         )
 
 
 @pytest.mark.asyncio
 async def test_revoke_tokens_success(mock_redis):
+    # given
     with patch(
         "backend.users.service.user_authorisation_service.get_redis",
         return_value=mock_redis,
     ):
+        # when
         await AuthorizationService.revoke_tokens("token_jti", "linked_jti")
 
+        # then
         pipe = mock_redis.pipeline.return_value.__aenter__.return_value
         pipe.setex.assert_any_call(
             "blacklist:token_jti", config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, "revoked"
@@ -175,6 +206,7 @@ async def test_revoke_tokens_success(mock_redis):
 
 @pytest.mark.asyncio
 async def test_create_url_safe_token():
+    # given
     mock_serializer = MagicMock()
     mock_serializer.dumps.return_value = "safe_token"
 
@@ -182,14 +214,18 @@ async def test_create_url_safe_token():
         "backend.users.service.user_authorisation_service.URLSafeTimedSerializer",
         return_value=mock_serializer,
     ):
+        # when
         token = await AuthorizationService.create_url_safe_token(
             {"email": "test@example.com"}
         )
+
+        # then
         assert token == "safe_token"
 
 
 @pytest.mark.asyncio
 async def test_decode_url_safe_token_invalid():
+    # given
     mock_serializer = MagicMock()
     mock_serializer.loads.side_effect = BadSignature("Invalid")
 
@@ -197,6 +233,7 @@ async def test_decode_url_safe_token_invalid():
         "backend.users.service.user_authorisation_service.URLSafeTimedSerializer",
         return_value=mock_serializer,
     ):
+        # when / then
         with pytest.raises(HTTPException) as exc:
             await AuthorizationService.decode_url_safe_token("invalid_token")
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
@@ -204,7 +241,9 @@ async def test_decode_url_safe_token_invalid():
 
 @pytest.mark.asyncio
 async def test_get_payload_from_token_invalid(credentials):
+    # given
     with patch("jwt.decode", side_effect=jwt.InvalidTokenError):
+        # when / then
         with pytest.raises(HTTPException) as exc:
             await AuthorizationService.get_payload_from_token(credentials)
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
