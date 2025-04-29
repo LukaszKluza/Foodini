@@ -26,6 +26,14 @@ user_router = APIRouter(prefix="/v1/users")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/users/login")
 
 
+@user_router.get("/", response_model=UserResponse)
+async def get_user(
+    user_service: UserService = Depends(get_user_service),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
+):
+    return await user_service.get_user(token_payload=token_payload)
+
+
 @user_router.post("/register", response_model=UserResponse)
 async def register_user(
     user: UserCreate, user_service: UserService = Depends(get_user_service)

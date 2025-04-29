@@ -165,9 +165,18 @@ class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
           as _i11.Future<_i3.LoggedUser>);
 
   @override
-  _i11.Future<void> logout() =>
+  _i11.Future<void> logout(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#logout, []),
+            Invocation.method(#logout, [userId]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> delete(int? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [userId]),
             returnValue: _i11.Future<void>.value(),
             returnValueForMissingStub: _i11.Future<void>.value(),
           )
@@ -716,11 +725,27 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i11.Future<_i10.Response<dynamic>>);
 
   @override
-  _i11.Future<_i10.Response<dynamic>> logout() =>
+  _i11.Future<_i10.Response<dynamic>> logout(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#logout, []),
+            Invocation.method(#logout, [userId]),
             returnValue: _i11.Future<_i10.Response<dynamic>>.value(
-              _FakeResponse_13<dynamic>(this, Invocation.method(#logout, [])),
+              _FakeResponse_13<dynamic>(
+                this,
+                Invocation.method(#logout, [userId]),
+              ),
+            ),
+          )
+          as _i11.Future<_i10.Response<dynamic>>);
+
+  @override
+  _i11.Future<_i10.Response<dynamic>> delete(int? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [userId]),
+            returnValue: _i11.Future<_i10.Response<dynamic>>.value(
+              _FakeResponse_13<dynamic>(
+                this,
+                Invocation.method(#delete, [userId]),
+              ),
             ),
           )
           as _i11.Future<_i10.Response<dynamic>>);

@@ -30,6 +30,13 @@ class ApiClient {
 
   get dio => _client;
 
+  Future<Response> getUser() {
+    return _client.post(
+      AppConfig.loginUrl,
+      options: Options(extra: {'requiresAuth': false}),
+    );
+  }
+
   Future<Response> register(RegisterRequest request) {
     return _client.post(
       AppConfig.registerUrl,
@@ -69,20 +76,14 @@ class ApiClient {
 
   Future<Response> logout(int userId) {
     return _client.get(
-      AppConfig.logoutUrl,
-      queryParameters: {
-        'user_id': userId.toString(),
-      },
+      '${AppConfig.logoutUrl}/$userId',
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> delete(int userId) {
-    return _client.get(
-      AppConfig.deleteUrl,
-      queryParameters: {
-        'user_id': userId.toString(),
-      },
+    return _client.delete(
+      '${AppConfig.deleteUrl}/$userId',
       options: Options(extra: {'requiresAuth': true}),
     );
   }

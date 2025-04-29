@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/user_response.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
@@ -98,11 +98,9 @@ void main() {
     );
 
     UserStorage().setUser(
-        LoggedUser(
+        UserResponse(
             id: 1,
             email: "jan4@example.com",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken"
         )
     );
 
@@ -149,11 +147,9 @@ void main() {
     );
 
     UserStorage().setUser(
-        LoggedUser(
+        UserResponse(
             id: 1,
             email: "jan4@example.com",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken"
         )
     );
 

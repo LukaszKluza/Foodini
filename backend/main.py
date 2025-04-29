@@ -1,6 +1,5 @@
 import logging
 from fastapi import FastAPI, Request, HTTPException, status
-from fastapi.responses import JSONResponse
 from backend.users.user_router import user_router
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware

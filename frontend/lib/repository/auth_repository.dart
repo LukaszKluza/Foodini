@@ -13,6 +13,17 @@ class AuthRepository {
 
   AuthRepository(this.apiClient);
 
+  Future<UserResponse> getUser() async {
+    try {
+      final response = await apiClient.getUser();
+      return UserResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while getting user $e.');
+    }
+  }
+
   Future<LoggedUser> login(LoginRequest request) async {
     try {
       final response = await apiClient.login(request);

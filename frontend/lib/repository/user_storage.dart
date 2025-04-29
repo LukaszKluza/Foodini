@@ -1,4 +1,4 @@
-import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/user_response.dart';
 
 class UserStorage {
   static final UserStorage _instance = UserStorage._internal();
@@ -9,17 +9,17 @@ class UserStorage {
 
   UserStorage._internal();
 
-  LoggedUser? _user;
+  UserResponse? _user;
 
-  LoggedUser? get user => _user;
+  UserResponse? get user => _user;
 
   bool get isLoggedIn => _user != null;
 
-  LoggedUser? get getUser => _user;
+  UserResponse? get getUser => _user;
 
   int? get getUserId => _user?.id;
 
-  void setUser(LoggedUser user) {
+  void setUser(UserResponse user) {
     _user = user;
   }
 

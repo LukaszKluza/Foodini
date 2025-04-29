@@ -121,7 +121,7 @@ class AuthorizationService:
     @staticmethod
     async def verify_token_by_type(
         credentials: HTTPAuthorizationCredentials,
-        expected_type: str,
+        expected_type: Token,
     ):
         redis_tokens = await AuthorizationService.get_redis_or_throw()
 

@@ -19,7 +19,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final accessToken = response.accessToken;
         final refreshToken = response.refreshToken;
 
-        UserStorage().setUser(response);
+        final user = await authRepository.getUser();
+        UserStorage().setUser(user);
+
         tokenStorageRepository.saveAccessToken(accessToken);
         tokenStorageRepository.saveRefreshToken(refreshToken);
 
