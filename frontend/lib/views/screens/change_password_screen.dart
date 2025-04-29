@@ -38,7 +38,7 @@ class ChangePasswordScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
         ),
       ),
       body: _ChangePasswordForm(),
@@ -118,7 +118,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                   } else if (state is ChangePasswordFailure) {
                     setState(() {
                       _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
+                        state.error.data,
                       );
                     });
                   }

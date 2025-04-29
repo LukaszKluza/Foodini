@@ -58,12 +58,14 @@ class AppConfig {
   static final List<int> ages = List.generate(109, (index) => index + 12);
 
   // URLs
-  static const String baseUrl = 'http://127.0.0.1:8001/v1';
+  static const String baseUrl = 'http://127.0.0.1:8000/v1';
+  // Mobile app url
+  // static const String baseUrl = 'http://10.0.2.2:8000/v1';
   static const String registerUrl = '$baseUrl/users/register';
   static const String loginUrl = '$baseUrl/users/login';
   static const String logoutUrl = '$baseUrl/users/logout';
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
-  static const String refreshAccessTokenUrl = '$baseUrl/users/refresh';
+  static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
 
   //Styles
   static const TextStyle titleStyle = TextStyle(

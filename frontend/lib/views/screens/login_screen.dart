@@ -107,7 +107,7 @@ class _LoginFormState extends State<_LoginForm> {
                   } else if (state is LoginFailure) {
                     setState(() {
                       _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
+                        state.error.data,
                       );
                     });
                   }

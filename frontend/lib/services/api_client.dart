@@ -54,10 +54,16 @@ class ApiClient {
     );
   }
 
-  Future<Response> refreshTokens() {
+  Future<Response> refreshTokens() async {
+    final refreshToken = await tokenStorage.getRefreshToken();
+
     return _client.post(
-      AppConfig.refreshAccessTokenUrl,
-      options: Options(extra: {'requiresAuth': true}),
+      AppConfig.refreshTokensUrl,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $refreshToken',
+        },
+      ),
     );
   }
 

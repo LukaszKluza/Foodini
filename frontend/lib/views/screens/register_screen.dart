@@ -170,7 +170,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                   } else if (state is RegisterFailure) {
                     setState(() {
                       _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data["detail"],
+                        state.error.data,
                       );
                     });
                   }

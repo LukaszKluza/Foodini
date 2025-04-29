@@ -76,7 +76,7 @@ class _AccountScreenState extends State<_AccountBody> {
               SnackBar(
                 content: Text(
                   ExceptionConverter.formatErrorMessage(
-                    state.error.data["detail"],
+                    state.error.data,
                   ),
                 ),
               ),

@@ -5,7 +5,10 @@ class TokenStorageMobile implements TokenStorage {
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
 
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
+
+  TokenStorageMobile({FlutterSecureStorage? storage})
+      : _storage = storage ?? const FlutterSecureStorage();
 
   @override
   Future<void> saveAccessToken(String token) async {

@@ -3,6 +3,7 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/refreshed_tokens_response.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/services/api_client.dart';
@@ -55,10 +56,10 @@ class AuthRepository {
     }
   }
 
-  Future<String> refreshTokens() async {
+  Future<RefreshedTokensResponse> refreshTokens() async {
     try {
       final response = await apiClient.refreshTokens();
-      return response.data['refreshed_access_token'];
+      return RefreshedTokensResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
