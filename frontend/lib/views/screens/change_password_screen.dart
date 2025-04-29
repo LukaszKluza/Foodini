@@ -37,7 +37,7 @@ class ChangePasswordScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
         ),
       ),
       body: _ChangePasswordForm(),

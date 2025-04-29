@@ -8,6 +8,7 @@ import 'foodini.dart';
 
 const fetchTokenTask = 'fetchTokenTask';
 
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     if (task == fetchTokenTask) {
@@ -25,6 +26,8 @@ void main() async {
       callbackDispatcher,
       isInDebugMode: false,
     );
+
+    await fetchTokenTaskCallback();
 
     await Workmanager().registerPeriodicTask(
       "refreshAccessTokenTask",
