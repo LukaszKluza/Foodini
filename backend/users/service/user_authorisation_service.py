@@ -14,6 +14,7 @@ from typing import Dict, Any
 
 from backend.core.database import get_redis
 from backend.settings import config
+from backend.users.enums.token import Token
 
 
 security = HTTPBearer()
@@ -40,7 +41,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": "access",
+                "type": Token.ACCESS,
             }
         )
 
@@ -50,7 +51,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": "refresh",
+                "type": Token.REFRESH,
             }
         )
 
@@ -75,12 +76,12 @@ class AuthorizationService:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                "revoked",
+                Token.REVOKED,
             )
             await pipe.setex(
                 f"blacklist:{linked_token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                "revoked",
+                Token.REVOKED,
             )
             await pipe.execute()
 
@@ -89,12 +90,6 @@ class AuthorizationService:
         refresh_token: HTTPAuthorizationCredentials = Security(security),
     ):
         payload = await AuthorizationService.verify_refresh_token(refresh_token)
-
-        if payload.get("type") != "refresh":
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Not refresh token provided",
-            )
 
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
@@ -111,13 +106,17 @@ class AuthorizationService:
     async def verify_access_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(credentials, "access")
+        return await AuthorizationService.verify_token_by_type(
+            credentials, Token.ACCESS
+        )
 
     @staticmethod
     async def verify_refresh_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(credentials, "refresh")
+        return await AuthorizationService.verify_token_by_type(
+            credentials, Token.REFRESH
+        )
 
     @staticmethod
     async def verify_token_by_type(
