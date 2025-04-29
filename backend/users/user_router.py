@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
-from backend.users.service.authorisation_service import AuthorizationService
+from backend.users.service.user_authorisation_service import AuthorizationService
 from .schemas import (
     UserCreate,
     UserResponse,
@@ -15,6 +15,10 @@ from .schemas import (
     NewPasswordConfirm,
 )
 from backend.users.service.user_service import UserService, get_user_service
+from backend.users.service.email_verification_sevice import (
+    EmailVerificationService,
+    get_email_verification_service,
+)
 from backend.settings import config
 
 user_router = APIRouter(prefix="/v1/users")
@@ -36,21 +40,23 @@ async def login_user(
     return await user_service.login(user)
 
 
-@user_router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
+@user_router.get("/logout/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def logout_user(
     user_id: int,
-    user_service: UserService = Depends(
-        get_user_service
-    ),  # TODO Use token instead of user_id
+    user_service: UserService = Depends(get_user_service),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
-    return await user_service.logout(user_id)
+    return await user_service.logout(token_payload=token_payload, user_id=user_id)
 
 
-@user_router.post("/refresh")
-async def refresh_access_token(
-    token_payload: dict = Depends(AuthorizationService.refresh_access_token),
+@user_router.post("/refresh-tokens")
+async def refresh_tokens(
+    tokens: dict = Depends(AuthorizationService.refresh_access_token),
 ):
-    return {"refreshed_access_token": token_payload}
+    return {
+        "access_token": tokens["access_token"],
+        "refresh_token": tokens["refresh_token"],
+    }
 
 
 @user_router.post("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
@@ -67,20 +73,18 @@ async def update_user(
     user_id: int,
     user: UserUpdate,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
-    user_id_from_token = token_payload.get("id")
-    return await user_service.update(user_id_from_token, user_id, user)
+    return await user_service.update(token_payload, user_id, user)
 
 
 @user_router.delete("/delete/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     user_id: int,
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_token),
+    token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
-    user_id_from_token = token_payload.get("id")
-    return await user_service.delete(user_id_from_token, user_id)
+    return await user_service.delete(token_payload, user_id)
 
 
 @user_router.post("/confirm/new-password/{url_token}", response_model=UserResponse)
@@ -103,6 +107,9 @@ async def verify_new_account(
     "/confirm/resend-verification-new-account", status_code=status.HTTP_204_NO_CONTENT
 )
 async def resend_verification(
-    email: EmailStr, user_service: UserService = Depends(get_user_service)
+    email: EmailStr,
+    email_verification_service: EmailVerificationService = Depends(
+        get_email_verification_service
+    ),
 ):
-    return await user_service.resend_verification(email)
+    return await email_verification_service.resend_verification(email)
