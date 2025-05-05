@@ -132,24 +132,23 @@ class UserService:
     async def update(
         self, token_payload: dict, user_id_from_request: int, user: UserUpdate
     ):
-        user_id_from_token = token_payload.get("id")
         self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
+            token_payload["id"], user_id_from_request
         )
-        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+        user_ = await self.user_validators.ensure_user_exists_by_id(
+            user_id_from_request
+        )
         return await self.user_repository.update_user(user_.id, user)
 
     async def delete(self, token_payload: dict, user_id_from_request: int):
-        user_id_from_token = token_payload.get("id")
-
         self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
+            token_payload["id"], user_id_from_request
         )
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_request)
         await AuthorizationService.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
-        return await self.user_repository.delete_user(user_id_from_token)
+        return await self.user_repository.delete_user(user_id_from_request)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         token_data = await AuthorizationService.decode_url_safe_token(token, salt)
