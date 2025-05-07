@@ -9,7 +9,7 @@ import 'package:frontend/events/login_events.dart';
 import 'package:frontend/listeners/login_listener.dart';
 import 'package:frontend/models/login_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/user_validators.dart';
 

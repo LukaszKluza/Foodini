@@ -1,10 +1,11 @@
 import logging
-from fastapi import FastAPI, Request, HTTPException, status
-from backend.users.user_router import user_router
+
 import psycopg2
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
 
+from backend.users.user_router import user_router
 
 app = FastAPI()
 app.include_router(user_router)
@@ -16,7 +17,7 @@ app.add_middleware(
     allow_origins="*",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_headers=["Authorization", "Content-Type", "Access-Control-Allow-Origin"],
 )
 
 

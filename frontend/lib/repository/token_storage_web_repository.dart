@@ -1,5 +1,5 @@
 import 'package:universal_html/html.dart' as html;
-import 'token_storage.dart';
+import 'token_storage_repository.dart';
 
 class TokenStorageWeb implements TokenStorage {
   static const _accessTokenKey = 'access_token';

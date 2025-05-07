@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/blocs/register_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/views/screens/register_screen.dart';
 

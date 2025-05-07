@@ -8,7 +8,7 @@ import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/change_password_events.dart';
 import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_sates.dart';
 import 'package:frontend/utils/user_validators.dart';
 

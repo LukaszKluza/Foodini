@@ -23,7 +23,7 @@ class AccountListenerHelper {
         SnackBar(
           content: Text(
             ExceptionConverter.formatErrorMessage(
-              state.error.data["detail"],
+              state.error.data,
             ),
           ),
         ),

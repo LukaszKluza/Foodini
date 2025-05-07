@@ -8,7 +8,7 @@ import 'package:frontend/blocs/account_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/account_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
 

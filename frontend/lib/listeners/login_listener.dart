@@ -29,7 +29,7 @@ class LoginListenerHelper {
     } else if (state is LoginFailure) {
       setState(() {
         setMessage(ExceptionConverter.formatErrorMessage(
-          state.error.data["detail"],
+          state.error.data,
         ));
       });
     }

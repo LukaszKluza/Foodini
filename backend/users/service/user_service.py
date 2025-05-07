@@ -1,18 +1,10 @@
 from datetime import datetime
+
 from fastapi import HTTPException, status
 from fastapi import Response
 from fastapi.params import Depends
 
-from backend.users.service.user_authorisation_service import AuthorizationService
-from backend.users.service.email_verification_sevice import (
-    EmailVerificationService,
-    get_email_verification_service,
-)
-from backend.users.service.password_service import PasswordService
-from backend.users.service.user_validation_service import (
-    UserValidationService,
-    get_user_validators,
-)
+from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
@@ -21,8 +13,17 @@ from backend.users.schemas import (
     PasswordResetRequest,
     NewPasswordConfirm,
 )
+from backend.users.service.email_verification_sevice import (
+    EmailVerificationService,
+    get_email_verification_service,
+)
+from backend.users.service.password_service import PasswordService
+from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.users.service.user_validation_service import (
+    UserValidationService,
+    get_user_validators,
+)
 from backend.users.user_repository import UserRepository, get_user_repository
-from backend.settings import config
 
 
 class UserService:
@@ -83,8 +84,13 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, token_payload: dict, user_id: int):
-        await self.user_validators.ensure_user_exists_by_id(user_id)
+    async def logout(self, token_payload: dict, user_id_from_request: int):
+        user_id_from_token = token_payload["id"]
+        self.user_validators.check_user_permission(
+            user_id_from_token, user_id_from_request
+        )
+
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
         await AuthorizationService.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
@@ -132,23 +138,25 @@ class UserService:
     async def update(
         self, token_payload: dict, user_id_from_request: int, user: UserUpdate
     ):
+        user_id_from_token = token_payload["id"]
         self.user_validators.check_user_permission(
-            token_payload["id"], user_id_from_request
+            user_id_from_token, user_id_from_request
         )
-        user_ = await self.user_validators.ensure_user_exists_by_id(
-            user_id_from_request
-        )
+        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+
         return await self.user_repository.update_user(user_.id, user)
 
     async def delete(self, token_payload: dict, user_id_from_request: int):
+        user_id_from_token = token_payload["id"]
         self.user_validators.check_user_permission(
-            token_payload["id"], user_id_from_request
+            user_id_from_token, user_id_from_request
         )
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_request)
+
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
         await AuthorizationService.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
-        return await self.user_repository.delete_user(user_id_from_request)
+        return await self.user_repository.delete_user(user_id_from_token)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         token_data = await AuthorizationService.decode_url_safe_token(token, salt)

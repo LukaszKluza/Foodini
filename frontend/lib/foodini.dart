@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +15,8 @@ class Foodini extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<ApiClient>(create: (_) => ApiClient()),
         Provider<TokenStorageRepository>(create: (_) => TokenStorageRepository()),
+        Provider<ApiClient>(create: (_) => ApiClient()),
 
         ProxyProvider<ApiClient, AuthRepository>(
           update: (_, apiClient, __) => AuthRepository(apiClient),

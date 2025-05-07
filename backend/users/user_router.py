@@ -1,10 +1,17 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, status
+from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
+from backend.settings import config
+from backend.users.service.email_verification_sevice import (
+    EmailVerificationService,
+    get_email_verification_service,
+)
 from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.users.service.user_service import UserService, get_user_service
 from .schemas import (
     UserCreate,
     UserResponse,
@@ -14,12 +21,6 @@ from .schemas import (
     PasswordResetRequest,
     NewPasswordConfirm,
 )
-from backend.users.service.user_service import UserService, get_user_service
-from backend.users.service.email_verification_sevice import (
-    EmailVerificationService,
-    get_email_verification_service,
-)
-from backend.settings import config
 
 user_router = APIRouter(prefix="/v1/users")
 
@@ -48,13 +49,15 @@ async def login_user(
     return await user_service.login(user)
 
 
-@user_router.get("/logout/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@user_router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout_user(
-    user_id: int,
+    user_id: int = Query(...),
     user_service: UserService = Depends(get_user_service),
     token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
-    return await user_service.logout(token_payload=token_payload, user_id=user_id)
+    return await user_service.logout(
+        token_payload=token_payload, user_id_from_request=user_id
+    )
 
 
 @user_router.post("/refresh-tokens")

@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/models/user_response.dart';
+import 'package:frontend/repository/user_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -9,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/blocs/login_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/views/screens/login_screen.dart';
 
@@ -57,6 +59,13 @@ void main() {
 
   testWidgets('User can log in successfully', (WidgetTester tester) async {
     // Given
+    UserStorage().setUser(
+        UserResponse(
+          id: 1,
+          email: "jan4@example.com",
+        )
+    );
+
     when(mockApiClient.login(any)).thenAnswer(
           (_) async => Response<dynamic>(
         data: {
@@ -66,7 +75,15 @@ void main() {
           "refresh_token": "refresh_token",
         },
         statusCode: 200,
-        requestOptions: RequestOptions(path: AppConfig.registerUrl),
+        requestOptions: RequestOptions(path: AppConfig.loginUrl),
+      ),
+    );
+
+    when(mockApiClient.getUser()).thenAnswer(
+          (_) async => Response<dynamic>(
+        data: {"id": 1, "email": "jan4@example.com"},
+        statusCode: 200,
+        requestOptions: RequestOptions(path: '/user'),
       ),
     );
 
@@ -103,6 +120,12 @@ void main() {
 
     // Then
     expect(find.text(AppConfig.foodini), findsOneWidget);
+
+    var loggedUser = UserStorage().getUser;
+    expect(loggedUser, isNotNull);
+    expect(loggedUser?.id, 1);
+    expect(loggedUser?.email, 'jan4@example.com');
+
   });
 
   testWidgets('Login with missing email and password', (WidgetTester tester) async {

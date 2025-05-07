@@ -67,8 +67,8 @@ void main() {
 
     when(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
-      queryParameters: {'user_id': userId.toString()},
     )).thenAnswer((_) async => expectedResponse);
 
     final response = await apiClient.logout(userId);
@@ -77,8 +77,8 @@ void main() {
 
     verify(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
-      queryParameters: {'user_id': userId.toString()},
     )).called(1);
   });
 
@@ -88,8 +88,8 @@ void main() {
 
     when(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
-      queryParameters: {'user_id': userId.toString()},
     )).thenThrow(DioException(
       requestOptions: RequestOptions(path: url),
       response: Response(
