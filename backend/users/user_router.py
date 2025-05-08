@@ -37,6 +37,7 @@ async def register_user(
 async def login_user(
     user: UserLogin, user_service: UserService = Depends(get_user_service)
 ):
+    print("Login")
     return await user_service.login(user)
 
 
@@ -65,6 +66,7 @@ async def reset_password(
     form_url: Optional[str] = f"{config.API_URL}/v1/users/confirm/new-password",
     user_service: UserService = Depends(get_user_service),
 ):
+    print("Reset password request")
     return await user_service.reset_password(password_reset_request, form_url)
 
 
@@ -93,7 +95,9 @@ async def verify_new_password(
     new_password_confirm: NewPasswordConfirm,
     user_service: UserService = Depends(get_user_service),
 ):
-    return await user_service.confirm_new_password(url_token, new_password_confirm)
+    print("Confirm new Password")
+    await user_service.confirm_new_password(url_token, new_password_confirm)
+    return RedirectResponse(url="http://localhost:3000/#/change_password")
 
 
 @user_router.get("/confirm/new-account/{url_token}", response_model=UserResponse)

@@ -113,7 +113,7 @@ class UserService:
                     status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
                 ) from e
 
-        self.user_validators.check_last_password_change_data_time(user_)
+        # self.user_validators.check_last_password_change_data_time(user_)
 
         reset_token = await AuthorizationService.create_url_safe_token(
             {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT

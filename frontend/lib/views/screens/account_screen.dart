@@ -101,7 +101,7 @@ class _AccountScreenState extends State<_AccountBody> {
                           Icons.settings,
                           screenWidth,
                           screenHeight,
-                          () => context.go('/change_password'),
+                          () => context.go('/provide_email'),
                         ),
                         const SizedBox(height: 16),
                         rectangularButton(

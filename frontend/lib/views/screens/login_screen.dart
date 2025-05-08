@@ -140,6 +140,11 @@ class _LoginFormState extends State<_LoginForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
+                key: Key(AppConfig.forgotPassword),
+                onPressed: () => context.go('/provide_email'),
+                child: Text(AppConfig.forgotPassword),
+              ),
+              TextButton(
                 key: Key(AppConfig.dontHaveAccount),
                 onPressed: () => context.go('/register'),
                 child: Text(AppConfig.dontHaveAccount),

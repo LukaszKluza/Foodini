@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/models/login_request.dart';
+import 'package:frontend/models/provide_email_request.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/repository/token_storage_repository.dart';
 
@@ -41,6 +42,14 @@ class ApiClient {
   Future<Response> login(LoginRequest request) {
     return _client.post(
       AppConfig.loginUrl,
+      data: request.toJson(),
+      options: Options(extra: {'requiresAuth': false}),
+    );
+  }
+
+  Future<Response> provideEmail(ProvideEmailRequest request) {
+    return _client.post(
+      AppConfig.changePasswordUrl,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );

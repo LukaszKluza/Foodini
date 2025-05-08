@@ -1,17 +1,14 @@
-class ChangePasswordRequest {
+class ProvideEmailRequest {
   final String email;
-  final String newPassword;
   final int? id;
 
-  ChangePasswordRequest({
+  ProvideEmailRequest({
     required this.email,
-    required this.newPassword,
     this.id,
   });
 
   Map<String, dynamic> toJson() => {
     "email": email,
-    "new_password": newPassword,
     "id": id,
   };
 }
