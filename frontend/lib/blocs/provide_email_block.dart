@@ -12,7 +12,6 @@ class ProvideEmailBloc extends Bloc<ProvideEmailEvent?, ProvideEmailState> {
       emit(ProvideEmailLoading());
       try {
         final response = await authRepository.provideEmail(event.request);
-        print(response);
 
         emit(ProvideEmailSuccess(response));
       } on ApiException catch (error) {

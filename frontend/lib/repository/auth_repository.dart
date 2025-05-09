@@ -64,7 +64,7 @@ class AuthRepository {
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
-      throw Exception('Error while channing password: $e');
+      throw Exception('Error while changing password: $e');
     }
   }
 

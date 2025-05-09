@@ -11,7 +11,7 @@ class ChangePasswordRequest {
 
   Map<String, dynamic> toJson() => {
     "email": email,
-    "new_password": newPassword,
+    "password": newPassword,
     "id": id,
   };
 }

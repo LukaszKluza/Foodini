@@ -63,10 +63,9 @@ async def refresh_tokens(
 @user_router.post("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
 async def reset_password(
     password_reset_request: PasswordResetRequest,
-    form_url: Optional[str] = f"{config.API_URL}/v1/users/confirm/new-password",
+    form_url: Optional[str] = f"http://localhost:3000/#/change_password",
     user_service: UserService = Depends(get_user_service),
 ):
-    print("Reset password request")
     return await user_service.reset_password(password_reset_request, form_url)
 
 
@@ -89,16 +88,12 @@ async def delete_user(
     return await user_service.delete(token_payload, user_id)
 
 
-@user_router.post("/confirm/new-password/{url_token}", response_model=UserResponse)
+@user_router.post("/confirm/new-password", response_model=UserResponse)
 async def verify_new_password(
-    url_token: str,
     new_password_confirm: NewPasswordConfirm,
     user_service: UserService = Depends(get_user_service),
 ):
-    print("Confirm new Password")
-    await user_service.confirm_new_password(url_token, new_password_confirm)
-    return RedirectResponse(url="http://localhost:3000/#/change_password")
-
+    return await user_service.confirm_new_password(new_password_confirm)
 
 @user_router.get("/confirm/new-account/{url_token}", response_model=UserResponse)
 async def verify_new_account(

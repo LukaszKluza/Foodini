@@ -105,7 +105,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 listener: (context, state) {
                   if (state is ChangePasswordSuccess) {
                     setState(() {
-                      _message = AppConfig.checkAndConfirmEmailAddress;
+                      _message = AppConfig.passwordSuccesfullyChanged;
                       _messageStyle = AppConfig.successStyle;
                     });
                     Future.delayed(const Duration(seconds: 2), () {

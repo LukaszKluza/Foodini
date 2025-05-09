@@ -91,36 +91,8 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
-        user_id_from_token = None
-        if password_reset_request.token:
-            try:
-                payload = await AuthorizationService.verify_access_token(
-                    password_reset_request.token
-                )
-                user_id_from_token = payload.get("id")
-                if not user_id_from_token:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Invalid token - missing user ID",
-                    )
-
-                self.user_validators.check_user_permission(user_id_from_token, user_.id)
-                await AuthorizationService.revoke_tokens(
-                    payload["jti"], payload["linked_jti"]
-                )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
-                ) from e
-
-        # self.user_validators.check_last_password_change_data_time(user_)
-
-        reset_token = await AuthorizationService.create_url_safe_token(
-            {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
-        )
-
         await self.email_verification_service.process_password_reset_verification(
-            user_.email, reset_token, form_url
+            user_.email, form_url
         )
 
     async def update(
@@ -152,8 +124,38 @@ class UserService:
         return user_email
 
     async def confirm_new_password(
-        self, token: str, new_password_confirm: NewPasswordConfirm
+        self, new_password_confirm: NewPasswordConfirm
     ):
+        user_ = await self.user_validators.ensure_user_exists_by_email(
+            new_password_confirm.email
+        )
+        self.user_validators.ensure_verified_user(user_)
+
+        user_id_from_token = None
+        if new_password_confirm.token:
+            try:
+                payload = await AuthorizationService.verify_access_token(
+                    new_password_confirm.token
+                )
+                user_id_from_token = payload.get("id")
+                if not user_id_from_token:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Invalid token - missing user ID",
+                    )
+
+                self.user_validators.check_user_permission(user_id_from_token, user_.id)
+                await AuthorizationService.revoke_tokens(
+                    payload["jti"], payload["linked_jti"]
+                )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+                ) from e
+
+        token = await AuthorizationService.create_url_safe_token(
+            {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
+        )
         user_email_from_token = await self.decode_url_token(
             token, salt=config.NEW_PASSWORD_SALT
         )

@@ -57,7 +57,7 @@ class ApiClient {
 
   Future<Response> changePassword(ChangePasswordRequest request) {
     return _client.post(
-      AppConfig.changePasswordUrl,
+      AppConfig.confirmNewPasswordUrl,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );

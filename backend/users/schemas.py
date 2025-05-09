@@ -13,11 +13,11 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 
 class PasswordResetRequest(BaseModel):
-    token: Optional[str] = Field(None)
     email: EmailStr
 
 
 class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
+    token: Optional[str] = Field(None)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
 

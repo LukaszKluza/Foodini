@@ -56,6 +56,8 @@ class AppConfig {
       'Check and confirm your email address';
   static const String checkEmailAddressToSetNewPassword =
       'Check your email address to set new password';
+    static const String passwordSuccesfullyChanged =
+      'Password succesfully changed';
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
@@ -68,6 +70,7 @@ class AppConfig {
   static const String loginUrl = '$baseUrl/users/login';
   static const String logoutUrl = '$baseUrl/users/logout';
   static const String changePasswordUrl = '$baseUrl/users/reset-password/request';
+  static const String confirmNewPasswordUrl = '$baseUrl/users/confirm/new-password';
   static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
 
   //Styles
