@@ -7,3 +7,9 @@ class LoginSubmitted extends LoginEvent {
 
   LoginSubmitted(this.request);
 }
+
+class ResendVerificationEmail extends LoginEvent {
+  final String email;
+
+  ResendVerificationEmail(this.email);
+}

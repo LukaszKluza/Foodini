@@ -17,7 +17,8 @@ class UserValidationService:
         if not user.is_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Account not verified. Please check your email.",
+                detail="EMAIL_NOT_VERIFIED",
+                headers={"X-Error-Code": "EMAIL_NOT_VERIFIED"},
             )
         return user
 

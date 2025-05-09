@@ -72,6 +72,8 @@ class AppConfig {
   static const String loginUrl = '$baseUrl/users/login';
   static const String logoutUrl = '$baseUrl/users/logout';
   static const String getUserUrl = '$baseUrl/users/';
+  static const String resendVerificationEmailUrl =
+      '$baseUrl/users/confirm/resend-verification-new-account';
   static const String deleteUrl = '$baseUrl/users/delete';
   static const String changePasswordUrl = '$baseUrl/reset-password/request';
   static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';

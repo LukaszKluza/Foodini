@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:frontend/services/api_client.dart';
-
-import 'package:frontend/services/token_storage_service.dart';
-
 import 'package:frontend/app_router.dart';
 import 'package:frontend/repository/user_storage.dart';
+import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/token_storage_service.dart';
 
 class GlobalErrorInterceptor extends Interceptor {
   final ApiClient _apiClient;
@@ -22,7 +20,9 @@ class GlobalErrorInterceptor extends Interceptor {
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
-          await _handleForbiddenError(err, handler);
+          if(err.response?.data["detail"] == 'Revoked token'){
+            await _handleForbiddenError(err, handler);
+          }
           break;
         case 500:
           message = "Server error";

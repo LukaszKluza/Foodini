@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/change_password_request.dart';
-import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/refreshed_tokens_response.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/models/user_response.dart';
@@ -42,6 +42,16 @@ class AuthRepository {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while logging out $e.');
+    }
+  }
+
+  Future<void> resendVerificationMail(String email) async {
+    try {
+      await apiClient.resendVerificationMail(email);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while resending verification mail $e.');
     }
   }
 

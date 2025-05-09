@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frontend/blocs/login_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/login_events.dart';
@@ -12,6 +9,8 @@ import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginBloc? bloc;
@@ -104,6 +103,26 @@ class _LoginFormState extends State<_LoginForm> {
                 builder: (context, state) {
                   if (state is LoginLoading) {
                     return CircularProgressIndicator();
+                  } else if (state is AccountNotVerified){
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.warning, color: Colors.orange, size: 48),
+                        SizedBox(height: 16),
+                        Text(
+                          "Twoje konto nie zostało potwierdzone.",
+                          style: TextStyle(color: Colors.orange, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<LoginBloc>().add(ResendVerificationEmail(_emailController.text));
+                          },
+                          child: Text("Wyślij ponownie e-mail weryfikacyjny"),
+                        ),
+                      ],
+                    );
                   } else {
                     return ElevatedButton(
                       key: Key(AppConfig.login),

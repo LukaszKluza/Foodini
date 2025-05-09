@@ -27,6 +27,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         emit(LoginSuccess(response));
       } on ApiException catch (error) {
+        if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
+          emit(AccountNotVerified(error));
+          return;
+        }
+        emit(LoginFailure(error));
+      }
+    });
+
+    on<ResendVerificationEmail>((event, emit) async {
+      try {
+        await authRepository.resendVerificationMail(event.email);
+
+        emit(ResendAccountVerificationSuccess(response));
+      } on ApiException catch (error) {
+        if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
+          emit(AccountNotVerified(error));
+          return;
+        }
         emit(LoginFailure(error));
       }
     });
