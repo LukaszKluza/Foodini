@@ -4,7 +4,7 @@ class AppConfig {
   // Numbers
   static const int minPasswordLength = 8;
   static const int maxPasswordLength = 64;
-  static const int redirectionDelay = 1000;
+  static const int redirectionDelay = 300;
 
   //Texts
   static const String foodini = 'Foodini';

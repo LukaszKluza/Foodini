@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/exception_converter.dart';
-
 import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangePasswordListenerHelper {
   static void onChangePasswordListener({
@@ -20,7 +18,7 @@ class ChangePasswordListenerHelper {
         setMessage(AppConfig.checkAndConfirmEmailAddress);
         setMessageStyle(AppConfig.successStyle);
       });
-      Future.delayed(const Duration(seconds: AppConfig.redirectionDelay), () {
+      Future.delayed(const Duration(milliseconds: AppConfig.redirectionDelay), () {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.go('/account');
