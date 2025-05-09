@@ -62,7 +62,7 @@ async def refresh_tokens(
 @user_router.post("/reset-password/request", response_model=UserResponse)
 async def reset_password(
     password_reset_request: PasswordResetRequest,
-    form_url: Optional[str] = f"http://localhost:3000/#/change_password",
+    form_url: Optional[str] = "http://localhost:3000/#/change_password",
     user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.reset_password(password_reset_request, form_url)
@@ -93,6 +93,7 @@ async def verify_new_password(
     user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.confirm_new_password(new_password_confirm)
+
 
 @user_router.get("/confirm/new-account/{url_token}", response_model=UserResponse)
 async def verify_new_account(

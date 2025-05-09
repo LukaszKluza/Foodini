@@ -129,9 +129,7 @@ class UserService:
 
         return user_email
 
-    async def confirm_new_password(
-        self, new_password_confirm: NewPasswordConfirm
-    ):
+    async def confirm_new_password(self, new_password_confirm: NewPasswordConfirm):
         user_ = await self.user_validators.ensure_user_exists_by_email(
             new_password_confirm.email
         )

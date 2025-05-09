@@ -88,13 +88,6 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                       _message = AppConfig.checkEmailAddressToSetNewPassword;
                       _messageStyle = AppConfig.successStyle;
                     });
-                    Future.delayed(const Duration(seconds: 2), () {
-                      if (mounted) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.go('/change_password');
-                        });
-                      }
-                    });
                   } else if (state is ProvideEmailFailure) {
                     setState(() {
                       _message = ExceptionConverter.formatErrorMessage(
