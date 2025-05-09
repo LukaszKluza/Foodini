@@ -37,7 +37,6 @@ async def register_user(
 async def login_user(
     user: UserLogin, user_service: UserService = Depends(get_user_service)
 ):
-    print("Login")
     return await user_service.login(user)
 
 
@@ -60,7 +59,7 @@ async def refresh_tokens(
     }
 
 
-@user_router.post("/reset-password/request", status_code=status.HTTP_204_NO_CONTENT)
+@user_router.post("/reset-password/request", response_model=UserResponse)
 async def reset_password(
     password_reset_request: PasswordResetRequest,
     form_url: Optional[str] = f"http://localhost:3000/#/change_password",

@@ -16,6 +16,7 @@ from backend.users.schemas import (
     UserCreate,
     UserLogin,
     UserUpdate,
+    UserResponse,
     LoginUserResponse,
     PasswordResetRequest,
     NewPasswordConfirm,
@@ -93,6 +94,11 @@ class UserService:
 
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url
+        )
+
+        return UserResponse(
+            id=user_.id,
+            email=user_.email,
         )
 
     async def update(
