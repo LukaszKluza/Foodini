@@ -66,7 +66,7 @@ void main() {
           builder: (context, state) => AccountScreen(),
         ),
         GoRoute(
-          path: '/change_password',
+          path: '/provide_email',
           builder:
               (context, state) =>
                   const Scaffold(key: Key(AppConfig.changePassword)),

@@ -103,18 +103,17 @@ async def test_send_password_reset_verification(
     email_verification_service, patch_mail_create_send
 ):
     test_email = "test@example.com"
-    test_token = "test_token"
     test_form_url = "https://example.com/reset"
     mock_create, mock_send = patch_mail_create_send
 
     await email_verification_service.send_password_reset_verification(
-        test_email, test_token, test_form_url
+        test_email, test_form_url
     )
 
     mock_create.assert_called_once_with(
         recipients=[test_email],
         subject="FoodiniApp new password request",
-        body=f"To change the password please click this link: {test_form_url}/{test_token}.",
+        body=f"To change the password please click this link: {test_form_url}.",
     )
     mock_send.assert_called_once()
 
@@ -164,16 +163,15 @@ async def test_process_password_reset_verification(
     patch_send_password_reset_verification,
 ):
     test_email = "test@example.com"
-    test_token = "reset_token"
     test_form_url = "https://example.com/reset"
     mock_send = patch_send_password_reset_verification
 
     await email_verification_service.process_password_reset_verification(
-        test_email, test_token, test_form_url
+        test_email, test_form_url
     )
 
     mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(test_email)
-    mock_send.assert_called_once_with(test_email, test_token, test_form_url)
+    mock_send.assert_called_once_with(test_email, test_form_url)
 
 
 @pytest.mark.asyncio

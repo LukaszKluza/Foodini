@@ -49,7 +49,7 @@ void main() {
 
     // Then
     expect(find.byType(TextFormField), findsNWidgets(2));
-    expect(find.byType(TextButton), findsNWidgets(2));
+    expect(find.byType(TextButton), findsNWidgets(3));
     expect(find.byType(ElevatedButton), findsOneWidget);
 
     expect(loginBloc.state, isA<LoginInitial>());
