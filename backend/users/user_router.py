@@ -102,7 +102,7 @@ async def verify_new_account(
     url_token: str, user_service: UserService = Depends(get_user_service)
 ):
     await user_service.confirm_new_account(url_token)
-    return RedirectResponse(url="http://localhost:3000/#/login")
+    return RedirectResponse(url=f"{config.FRONTEND_URL}/#/login")
 
 
 @user_router.get(
