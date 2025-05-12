@@ -11,7 +11,6 @@ from itsdangerous import BadSignature
 from backend.settings import config
 from backend.users.enums.token import Token
 from backend.users.service.user_authorisation_service import AuthorizationService
-from backend.users.enums.token import Token
 
 
 @pytest.fixture
