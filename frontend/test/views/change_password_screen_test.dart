@@ -1,58 +1,89 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/services/api_client.dart';
-import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+
+import 'package:frontend/blocs/change_password_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/views/screens/change_password_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 
-final client = MockClient();
+late MockDio mockDio;
+late MockApiClient mockApiClient;
+late AuthRepository authRepository;
+late ChangePasswordBloc changePasswordBloc;
+late MockTokenStorageRepository mockTokenStorageRepository;
+
+Widget wrapWithProviders(Widget child) {
+  return MultiProvider(
+    providers: [
+      Provider<AuthRepository>.value(value: authRepository),
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+    ],
+    child: MaterialApp(home: child),
+  );
+}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('ChangePassword screen shows all fields and button', (tester) async {
-    await tester.pumpWidget(MaterialApp(home: ChangePasswordScreen()));
+  setUp(() {
+    mockDio = MockDio();
+    mockApiClient = MockApiClient();
+    authRepository = AuthRepository(mockApiClient);
+    mockTokenStorageRepository = MockTokenStorageRepository();
+    changePasswordBloc = ChangePasswordBloc(authRepository, mockTokenStorageRepository);
+    when(mockDio.interceptors).thenReturn(Interceptors());
+  });
 
+  testWidgets('Change password elements are displayed', (WidgetTester tester) async {
+    // Given, When
+    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
+
+    // Then
     expect(find.byKey(Key(AppConfig.email)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.newPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.confirmPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.changePassword)), findsOneWidget);
+
+    expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
   });
 
-  testWidgets('Submit without filling form shows validation errors', (tester) async {
-    await tester.pumpWidget(
-      Provider<ApiClient>.value(
-        value: ApiClient(client),
-        child: MaterialApp(home: ChangePasswordScreen()),
-      ),
-    );
+  testWidgets('Submit without filling form shows validation errors', (WidgetTester tester) async {
+    // Given
+    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
 
+    // When
     await tester.tap(find.byKey(Key(AppConfig.changePassword)));
     await tester.pumpAndSettle();
 
-    expect(find.text('E-mail is required'), findsOneWidget);
-    expect(find.text('Password is required'), findsOneWidget);
-    expect(find.text('Password confirmation is required'), findsOneWidget);
+    // Then
+    expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
+
+    expect(find.text(AppConfig.requiredEmail), findsOneWidget);
+    expect(find.text(AppConfig.requiredPassword), findsOneWidget);
+    expect(find.text(AppConfig.requiredPasswordConfirmation), findsOneWidget);
   });
 
-  testWidgets('Mismatched passwords show validation error', (tester) async {
-    await tester.pumpWidget(
-      Provider<ApiClient>.value(
-        value: ApiClient(client),
-        child: MaterialApp(home: ChangePasswordScreen()),
-      ),
-    );
+  testWidgets('Mismatched passwords show validation error', (WidgetTester tester) async {
+    // Given
+    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen()));
 
+    // When
     await tester.enterText(find.byKey(Key(AppConfig.email)), 'test@example.com');
-    await tester.enterText(find.byKey(Key(AppConfig.newPassword)), 'password123');
-    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), '321drowssap');
+    await tester.enterText(find.byKey(Key(AppConfig.newPassword)), 'Password123');
+    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), '321drowssaP');
 
     await tester.tap(find.byKey(Key(AppConfig.changePassword)));
     await tester.pumpAndSettle();
 
-    expect(find.text('Passwords must be the same'), findsOneWidget);
+    // Then
+    expect(find.text(AppConfig.samePasswords), findsOneWidget);
   });
 }

@@ -41,10 +41,10 @@ String? validateAge(int? value) {
       return AppConfig.requiredPassword;
     }
     if (value.length < AppConfig.minPasswordLength) {
-      return AppConfig.minimalPasswordLegth;
+      return AppConfig.minimalPasswordLength;
     }
     if (value.length > AppConfig.maxPasswordLength) {
-      return AppConfig.maximalPasswordLegth;
+      return AppConfig.maximalPasswordLength;
     }
     if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
       return AppConfig.passwordComplexityError;
