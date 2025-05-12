@@ -1,27 +1,88 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/models/change_password_request.dart';
+import 'package:frontend/models/login_request.dart';
+import 'package:frontend/models/register_request.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
 
 class ApiClient {
-  final http.Client _client;
+  final Dio _client;
+  final TokenStorageRepository tokenStorage = TokenStorageRepository();
 
-  ApiClient([http.Client? client]) : _client = client ?? http.Client();
+  ApiClient([Dio? client])
+    : _client =
+          client ??
+          Dio(BaseOptions(headers: {'Content-Type': 'application/json'})) {
+    _client.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final requiresAuth = options.extra['requiresAuth'] == true;
 
-  Future<http.Response> postRequest(Uri url, Map<String, dynamic> body) {
-    return _client.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
+          if (requiresAuth) {
+            final accessToken = await tokenStorage.getAccessToken();
+            options.headers['Authorization'] = 'Bearer $accessToken';
+          }
+          return handler.next(options);
+        },
+      ),
     );
   }
 
-  Future<void> logout(int userId) async {
-    final uri = Uri.parse('${AppConfig.logoutUrl}?user_id=$userId');
+  get dio => _client;
 
-    final response = await http.get(uri);
+  Future<Response> register(RegisterRequest request) {
+    return _client.post(
+      AppConfig.registerUrl,
+      data: request.toJson(),
+      options: Options(extra: {'requiresAuth': false}),
+    );
+  }
 
-    if (response.statusCode != 204) {
-      throw Exception('Logout failed: ${response.statusCode}');
-    }
+  Future<Response> login(LoginRequest request) {
+    return _client.post(
+      AppConfig.loginUrl,
+      data: request.toJson(),
+      options: Options(extra: {'requiresAuth': false}),
+    );
+  }
+
+  Future<Response> changePassword(ChangePasswordRequest request) {
+    return _client.post(
+      AppConfig.changePasswordUrl,
+      data: request.toJson(),
+      options: Options(extra: {'requiresAuth': false}),
+    );
+  }
+
+  Future<Response> refreshTokens() async {
+    final refreshToken = await tokenStorage.getRefreshToken();
+
+    return _client.post(
+      AppConfig.refreshTokensUrl,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $refreshToken',
+        },
+      ),
+    );
+  }
+
+  Future<Response> logout() {
+    int userId = 2; //TODO
+    return _client.get(
+      '${AppConfig.logoutUrl}?user_id=$userId',
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> refreshRequest(RequestOptions requestOptions) async {
+    return _client.request(
+      requestOptions.path,
+      options: Options(
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+        extra: {'requiresAuth': true},
+      ),
+    );
   }
 }

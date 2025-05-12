@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:frontend/config/app_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class MainPageScreen extends StatefulWidget {
-  final http.Client? client;
-
-  const MainPageScreen({super.key, this.client});
+  const MainPageScreen({super.key});
 
   @override
   State<MainPageScreen> createState() => _LoginScreenState();
@@ -18,14 +16,11 @@ class _LoginScreenState extends State<MainPageScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.foodini,
-            style: AppConfig.titleStyle,
-          ),
+          child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
         ),
       ),
       body: Column(
@@ -41,7 +36,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     rectangularButton(
-                      AppConfig.myAccout,
+                      AppConfig.myAccount,
                       Icons.person,
                       screenWidth,
                       screenHeight,

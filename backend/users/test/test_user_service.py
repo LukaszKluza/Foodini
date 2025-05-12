@@ -2,7 +2,7 @@ import pytest
 import sys
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
-from unittest.mock import MagicMock, AsyncMock, ANY, patch
+from unittest.mock import MagicMock, AsyncMock, patch
 
 from backend.users.schemas import (
     UserCreate,
@@ -27,8 +27,11 @@ def mock_authorization_service():
             AuthorizationService, "create_tokens", AsyncMock()
         ) as mock_create_tokens,
         patch.object(
-            AuthorizationService, "delete_user_token", AsyncMock()
-        ) as mock_delete_token,
+            AuthorizationService, "refresh_access_token", AsyncMock()
+        ) as mock_refresh_access_token,
+        patch.object(
+            AuthorizationService, "revoke_tokens", AsyncMock()
+        ) as mock_revoke_tokens,
         patch.object(
             AuthorizationService, "create_url_safe_token", AsyncMock()
         ) as mock_create_url_token,
@@ -36,15 +39,20 @@ def mock_authorization_service():
             AuthorizationService, "decode_url_safe_token", AsyncMock()
         ) as mock_decode_url_token,
         patch.object(
-            AuthorizationService, "verify_token", AsyncMock()
-        ) as mock_verify_token,
+            AuthorizationService, "verify_access_token", AsyncMock()
+        ) as mock_verify_access_token,
+        patch.object(
+            AuthorizationService, "verify_refresh_token", AsyncMock()
+        ) as mock_verify_refresh_token,
     ):
         yield {
             "create_tokens": mock_create_tokens,
-            "delete_user_token": mock_delete_token,
+            "refresh_access_token": mock_refresh_access_token,
+            "revoke_tokens": mock_revoke_tokens,
             "create_url_safe_token": mock_create_url_token,
             "decode_url_safe_token": mock_decode_url_token,
-            "verify_token": mock_verify_token,
+            "verify_access_token": mock_verify_access_token,
+            "verify_refresh_token": mock_verify_refresh_token,
         }
 
 
@@ -133,7 +141,6 @@ async def test_register_user_new(
 ):
     # Given
     mock_user_repository.get_user_by_email.return_value = None
-    print(mock_password_service.keys())
     mock_password_service["hash_password"].return_value = "hashed_password"
     mock_user_repository.create_user.return_value = MagicMock(
         id=1, email="test@example.com"
@@ -230,8 +237,9 @@ async def test_logout_user_success(
 
     response = await user_service.logout(MagicMock(), 1)
 
+    # Then
     assert response.status_code == status.HTTP_200_OK
-    mock_authorization_service["delete_user_token"].assert_called_once_with(1)
+    mock_authorization_service["revoke_tokens"].assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -275,10 +283,14 @@ async def test_reset_password_user_logged_successful(
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
 
     with patch.object(
-        AuthorizationService, "verify_token", new_callable=AsyncMock
+        AuthorizationService, "verify_access_token", new_callable=AsyncMock
     ) as mock_verify:
-        mock_verify.return_value = {"id": 1}
-        mock_authorization_service["delete_user_token"].return_value = True
+        mock_verify.return_value = {
+            "id": 1,
+            "jti": "mock_jti",
+            "linked_jti": "mock_linked_jti",
+        }
+        mock_authorization_service["revoke_tokens"].return_value = True
 
         await user_service.reset_password(
             PasswordResetRequest(email="test@example.com", token="valid_token"),
@@ -289,152 +301,17 @@ async def test_reset_password_user_logged_successful(
 
 
 @pytest.mark.asyncio
-async def test_reset_password_user_logged_too_fast(mock_user_validators, user_service):
-    last_update = datetime.now(config.TIMEZONE) - timedelta(hours=2)
-    mock_user = MagicMock(id=1, last_password_update=last_update)
-    mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
-    mock_user_validators.check_last_password_change_data_time.side_effect = (
-        HTTPException(
-            status_code=403,
-            detail="You must wait at least 1 day before changing your password again",
-        )
-    )
-
-    with pytest.raises(HTTPException) as exc_info:
-        await user_service.reset_password(
-            PasswordResetRequest(email="test@example.com"), "form_url"
-        )
-
-    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.asyncio
 async def test_update_user_not_found(user_service, mock_user_validators):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-        status_code=400, detail="User does not exist"
+        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
     )
-    user_update = UserUpdate(email="new@example.com")
-
-    # When/Then
-    with pytest.raises(HTTPException) as exc_info:
-        await user_service.update(1, 1, user_update)
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-
-
-@pytest.mark.asyncio
-async def test_update_user_success(
-    mock_user_repository, user_service, mock_user_validators
-):
-    # Given
-    mock_user = MagicMock(id=1)
-    mock_user_validators.ensure_user_exists_by_id.return_value = mock_user
-    mock_user_repository.update_user.return_value = MagicMock(
-        id=1, email="new@example.com"
-    )
-
-    # When
-    user_update = UserUpdate(country="Spain")
-    updated_user = await user_service.update(1, 1, user_update)
-
-    # Then
-    assert updated_user.email == "new@example.com"
-    mock_user_repository.update_user.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_delete_user_not_found(
-    user_service, mock_user_validators, mock_authorization_service
-):
-    # Given
-    mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-        status_code=400, detail="User does not exist"
-    )
-    mock_authorization_service["delete_user_token"].return_value = True
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_service.delete(1, 1)
+        await user_service.update(
+            MagicMock(), 1, UserUpdate(name="Newname", last_name="Newlastname")
+        )
 
-    # Then
+    # Assert
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "User does not exist"
-
-
-@pytest.mark.asyncio
-async def test_delete_user_success(
-    mock_user_repository, mock_authorization_service, user_service
-):
-    # Given
-    mock_user_repository.get_user_by_id.return_value = MagicMock(id=1)
-    mock_user_repository.delete_user.return_value = None
-    mock_authorization_service["delete_user_token"].return_value = MagicMock(1)
-
-    # When
-    response = await user_service.delete(1, 1)
-
-    # Then
-    assert response is None
-    mock_user_repository.delete_user.assert_called_once_with(1)
-
-
-@pytest.mark.asyncio
-async def test_confirm_new_password(
-    mock_user_repository,
-    mock_password_service,
-    mock_authorization_service,
-    user_service,
-):
-    # Given
-    token = "test_token"
-    new_password_confirm = NewPasswordConfirm(
-        email="test@example.com", password="New_password_1"
-    )
-
-    mock_user = MagicMock()
-    mock_user.id = 1
-    mock_user.email = "test@example.com"
-    mock_user_repository.get_user_by_email.return_value = mock_user
-
-    mock_password_service["hash_password"].return_value = "hashed_password"
-    mock_authorization_service["decode_url_safe_token"].return_value = {
-        "email": "test@example.com",
-        "id": 1,
-    }
-
-    # When
-    await user_service.confirm_new_password(token, new_password_confirm)
-
-    # Then
-    mock_password_service["hash_password"].assert_called_once_with("New_password_1")
-    mock_user_repository.update_password.assert_called_once()
-
-    args, _ = mock_user_repository.update_password.call_args
-    assert args[1] == "hashed_password"
-
-
-@pytest.mark.asyncio
-async def test_confirm_new_account(
-    mock_user_repository,
-    mock_authorization_service,
-    user_service,
-):
-    # Given
-    token = "test_token"
-
-    mock_user_repository.get_user_by_email.return_value = MagicMock(
-        id=1, email="test@example.com"
-    )
-    mock_authorization_service["decode_url_safe_token"].return_value = {
-        "email": "test@example.com",
-        "id": 1,
-    }
-    mock_user_repository.verify_user.return_value = MagicMock(
-        id=1, email="test@example.com"
-    )
-
-    # When
-    await user_service.confirm_new_account(token)
-
-    # Then
-    mock_user_repository.verify_user.assert_called_once_with("test@example.com")

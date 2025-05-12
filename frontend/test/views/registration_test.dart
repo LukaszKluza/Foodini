@@ -1,86 +1,105 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/services/api_client.dart';
-import 'package:frontend/views/screens/register_screen.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
 import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+
+import 'package:frontend/blocs/register_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/register_states.dart';
+import 'package:frontend/views/screens/register_screen.dart';
+
 import '../mocks/mocks.mocks.dart';
 
-final client = MockClient();
+late MockDio mockDio;
+late RegisterBloc registerBloc;
+late MockApiClient mockApiClient;
+late AuthRepository authRepository;
+late MockTokenStorageRepository mockTokenStorageRepository;
+
+Widget wrapWithProviders(Widget child) {
+  return MultiProvider(
+    providers: [
+      Provider<AuthRepository>.value(value: authRepository),
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+    ],
+    child: MaterialApp(home: child),
+  );
+}
+
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Register screen elements are displayed', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(MaterialApp(home: RegisterScreen()));
+  setUp(() {
+    mockDio = MockDio();
+    mockApiClient = MockApiClient();
+    authRepository = AuthRepository(mockApiClient);
+    registerBloc = RegisterBloc(authRepository);
+    mockTokenStorageRepository = MockTokenStorageRepository();
+    when(mockDio.interceptors).thenReturn(Interceptors());
+  });
+
+  testWidgets('Register screen elements are displayed', (WidgetTester tester) async {
+    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
-
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
-  testWidgets('Register button triggers registration process', (
-    WidgetTester tester,
-  ) async {
-    when(
-      client.post(any, headers: anyNamed("headers"), body: anyNamed("body")),
-    ).thenAnswer(
-      (_) async => http.Response(jsonEncode({"message": "OK"}), 200),
+  testWidgets('Register form submits with valid data', (WidgetTester tester) async {
+    when(mockApiClient.register(any)).thenAnswer(
+          (_) async => Response<dynamic>(
+        data: {'id': 1, 'email': 'john@example.com'},
+        statusCode: 200,
+        requestOptions: RequestOptions(path: AppConfig.registerUrl),
+      ),
     );
 
     final goRouter = GoRouter(
       routes: [
-        GoRoute(path: '/', builder: (context, state) => RegisterScreen()),
         GoRoute(
-          path: '/home',
-          builder: (context, state) => Scaffold(body: Text('Home Screen')),
+          path: '/',
+          builder: (context, state) => RegisterScreen(bloc: registerBloc),
         ),
       ],
     );
 
-    await tester.pumpWidget(
-      Provider<ApiClient>.value(
-        value: ApiClient(client),
-        child: MaterialApp.router(routerConfig: goRouter),
-      ),
-    );
+    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(Key(AppConfig.firstName)), 'John');
     await tester.enterText(find.byKey(Key(AppConfig.lastName)), 'Doe');
-    await tester.enterText(
-      find.byKey(Key(AppConfig.email)),
-      'john@example.com',
-    );
-    await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');
-    await tester.enterText(
-      find.byKey(Key(AppConfig.confirmPassword)),
-      'password123',
-    );
-
     await tester.tap(find.byKey(Key(AppConfig.age)));
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(DropdownMenuItem<int>).first);
+    await tester.tap(find.text('18').last);
+    await tester.pump();
+
+    await tester.tap(find.byKey(Key(AppConfig.country)));
     await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Argentina'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(Key(AppConfig.email)), 'john@example.com');
+    await tester.enterText(find.byKey(Key(AppConfig.password)), 'Password1234');
+    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), 'Password1234');
+
+    expect(registerBloc.state, isA<RegisterInitial>());
 
     await tester.tap(find.byKey(Key(AppConfig.register)));
     await tester.pumpAndSettle();
+
+    expect(registerBloc.state, isA<RegisterSuccess>());
   });
 
   testWidgets('Registration without filled form', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      Provider<ApiClient>.value(
-        value: ApiClient(client),
-        child: MaterialApp(home: RegisterScreen()),
-      ),
-    );
+    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
@@ -93,15 +112,8 @@ void main() {
     expect(find.text('Password confirmation is required'), findsOneWidget);
   });
 
-  testWidgets('Registration with different passwords', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(
-      Provider<ApiClient>.value(
-        value: ApiClient(client),
-        child: MaterialApp(home: RegisterScreen()),
-      ),
-    );
+  testWidgets('Registration with different passwords', (WidgetTester tester) async {
+    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');
     await tester.enterText(

@@ -1,14 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:frontend/models/logged_user.dart';
 
 void main() {
-  test('should parse correctly from JSON with int id', () {
-    final json = {
-      'id': 42,
-      'email': 'test@example.com',
-      'access_token': 'access123',
-      'refresh_token': 'refresh456',
-    };
+  group('LoggedUser', () {
+    test('should parse correctly from JSON with int id', () {
+      final json = {
+        'id': 42,
+        'email': 'test@example.com',
+        'access_token': 'access123',
+        'refresh_token': 'refresh456',
+      };
 
     final user = LoggedUser.fromJson(json);
 
@@ -32,5 +34,6 @@ void main() {
     expect(user.email, 'string@example.com');
     expect(user.accessToken, 'access789');
     expect(user.refreshToken, 'refresh987');
+  });
   });
 }

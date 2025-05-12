@@ -1,41 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/services/api_client.dart';
-import 'package:frontend/services/user_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:provider/provider.dart';
 
-class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key});
+import 'package:frontend/blocs/account_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/account_events.dart';
+import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/states/account_states.dart';
+import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/views/widgets/rectangular_button.dart';
+
+class AccountScreen extends StatelessWidget {
+  final AccountBloc? bloc;
+
+  const AccountScreen({super.key, this.bloc});
 
   @override
-  State<AccountScreen> createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return bloc != null
+        ? BlocProvider<AccountBloc>.value(
+      value: bloc!,
+      child: _AccountBody(),
+    )
+        : BlocProvider<AccountBloc>(
+      create: (_) => AccountBloc(
+        Provider.of<AuthRepository>(context, listen: false),
+        Provider.of<TokenStorageRepository>(context, listen: false),
+      ),
+      child: _AccountBody(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<AccountScreen> {
-  Future<void> _logout(BuildContext context) async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final apiClient = Provider.of<ApiClient>(context, listen: false);
+class _AccountBody extends StatefulWidget {
 
-    if (userProvider.user != null) {
-      try {
-        await apiClient.logout(userProvider.user!.id);
-        userProvider.logout();
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Logout failed: $e")));
-        }
-      }
-    }
+  @override
+  State<_AccountBody> createState() => _AccountScreenState();
+}
 
-    if (context.mounted) {
-      context.go('/');
-    }
-  }
-
+class _AccountScreenState extends State<_AccountBody> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -44,7 +49,7 @@ class _LoginScreenState extends State<AccountScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             context.go('/main_page');
           },
@@ -53,59 +58,99 @@ class _LoginScreenState extends State<AccountScreen> {
           child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(35.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: BlocListener<AccountBloc, AccountState>(
+        listener: (context, state) {
+          if (state is AccountLogoutSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(AppConfig.successfullyLoggedOut)),
+            );
+            Future.delayed(const Duration(seconds: 2), () {
+              if (mounted) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.go('/');
+                });
+              }
+            });
+          } else if (state is AccountLogoutFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  ExceptionConverter.formatErrorMessage(
+                    state.error.data,
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(35.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    rectangularButton(
-                      AppConfig.changePassword,
-                      Icons.settings,
-                      screenWidth,
-                      screenHeight,
-                      () => context.go('/change_password'),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        rectangularButton(
+                          AppConfig.changePassword,
+                          Icons.settings,
+                          screenWidth,
+                          screenHeight,
+                          () => context.go('/change_password'),
+                        ),
+                        const SizedBox(height: 16),
+                        rectangularButton(
+                          AppConfig.logout,
+                          Icons.logout,
+                          screenWidth,
+                          screenHeight,
+                          () {
+                            context.read<AccountBloc>().add(
+                                  AccountLogoutRequested(),
+                                );
+                          },
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 16),
-                    rectangularButton(
-                      AppConfig.logout,
-                      Icons.logout,
-                      screenWidth,
-                      screenHeight,
-                      () => _logout(context),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        rectangularButton(
+                          "Button 3",
+                          Icons.do_not_disturb,
+                          screenWidth,
+                          screenHeight,
+                          null,
+                        ),
+                        const SizedBox(height: 16),
+                        rectangularButton(
+                          "Button 4",
+                          Icons.do_not_disturb,
+                          screenWidth,
+                          screenHeight,
+                          null,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    rectangularButton(
-                      "Button 3",
-                      Icons.do_not_disturb,
-                      screenWidth,
-                      screenHeight,
-                      null,
-                    ),
-                    SizedBox(height: 16),
-                    rectangularButton(
-                      "Button 4",
-                      Icons.do_not_disturb,
-                      screenWidth,
-                      screenHeight,
-                      null,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+              BlocBuilder<AccountBloc, AccountState>(
+                builder: (context, state) {
+                  if (state is AccountLoggingOut) {
+                    return const CircularProgressIndicator();
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

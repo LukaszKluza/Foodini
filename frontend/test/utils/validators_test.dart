@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
+
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/userValidators.dart';
+import 'package:frontend/utils/user_validators.dart';
 
 void main() {
   group('Validation Tests', () {
@@ -62,11 +63,11 @@ void main() {
     });
 
     test('validatePassword returns error message for short password', () {
-      expect(validatePassword('12345'), equals(AppConfig.minimalPasswordLegth));
+      expect(validatePassword('12345'), equals(AppConfig.minimalPasswordLength));
     });
 
     test('validatePassword returns error message for long password', () {
-      expect(validatePassword('a' * 70), equals(AppConfig.maximalPasswordLegth));
+      expect(validatePassword('a' * 70), equals(AppConfig.maximalPasswordLength));
     });
 
     test('validatePassword returns error message for invalid complexity', () {

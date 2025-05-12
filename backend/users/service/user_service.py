@@ -20,7 +20,6 @@ from backend.users.schemas import (
     PasswordResetRequest,
     NewPasswordConfirm,
 )
-from backend.users.models import User
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.settings import config
 
@@ -77,9 +76,11 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, _: User, user_id: int):
+    async def logout(self, token_payload: dict, user_id: int):
         await self.user_validators.ensure_user_exists_by_id(user_id)
-        await AuthorizationService.delete_user_token(user_id)
+        await AuthorizationService.revoke_tokens(
+            token_payload["jti"], token_payload["linked_jti"]
+        )
         return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
 
     async def reset_password(
@@ -88,12 +89,12 @@ class UserService:
         user_ = await self.user_validators.ensure_user_exists_by_email(
             password_reset_request.email
         )
-        await self.user_validators.ensure_verified_user(user_)
+        self.user_validators.ensure_verified_user(user_)
 
         user_id_from_token = None
         if password_reset_request.token:
             try:
-                payload = await AuthorizationService.verify_token(
+                payload = await AuthorizationService.verify_access_token(
                     password_reset_request.token
                 )
                 user_id_from_token = payload.get("id")
@@ -103,16 +104,16 @@ class UserService:
                         detail="Invalid token - missing user ID",
                     )
 
-                await self.user_validators.check_user_permission(
-                    user_id_from_token, user_.id
+                self.user_validators.check_user_permission(user_id_from_token, user_.id)
+                await AuthorizationService.revoke_tokens(
+                    payload["jti"], payload["linked_jti"]
                 )
-                await AuthorizationService.delete_user_token(user_id_from_token)
             except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
                 ) from e
 
-        await self.user_validators.check_last_password_change_data_time(user_)
+        self.user_validators.check_last_password_change_data_time(user_)
 
         reset_token = await AuthorizationService.create_url_safe_token(
             {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
@@ -123,22 +124,24 @@ class UserService:
         )
 
     async def update(
-        self, user_id_from_token: int, user_id_from_request: int, user: UserUpdate
+        self, token_payload: dict, user_id_from_request: int, user: UserUpdate
     ):
-        await self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
+        self.user_validators.check_user_permission(
+            token_payload["id"], user_id_from_request
         )
         user_ = await self.user_validators.ensure_user_exists_by_id(
             user_id_from_request
         )
         return await self.user_repository.update_user(user_.id, user)
 
-    async def delete(self, user_id_from_token: int, user_id_from_request: int):
-        await self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
+    async def delete(self, token_payload: dict, user_id_from_request: int):
+        self.user_validators.check_user_permission(
+            token_payload["id"], user_id_from_request
         )
         await self.user_validators.ensure_user_exists_by_id(user_id_from_request)
-        await AuthorizationService.delete_user_token(user_id_from_request)
+        await AuthorizationService.revoke_tokens(
+            token_payload["jti"], token_payload["linked_jti"]
+        )
         return await self.user_repository.delete_user(user_id_from_request)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
@@ -157,7 +160,7 @@ class UserService:
         user_ = await self.user_validators.ensure_user_exists_by_email(
             user_email_from_token
         )
-        await self.user_validators.check_user_permission(
+        self.user_validators.check_user_permission(
             user_email_from_token, new_password_confirm.email
         )
         hashed_password = await PasswordService.hash_password(
