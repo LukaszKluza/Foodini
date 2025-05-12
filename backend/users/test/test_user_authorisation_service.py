@@ -11,6 +11,7 @@ from itsdangerous import BadSignature
 from backend.settings import config
 from backend.users.enums.token import Token
 from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.users.enums.token import Token
 
 
 @pytest.fixture
@@ -42,7 +43,7 @@ def valid_payload():
         "linked_jti": "linked_token_id",
         "id": 1,
         "sub": "user@example.com",
-        "type": Token.ACCESS.value,
+        "type": Token.ACCESS,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=30),
     }
 
@@ -54,7 +55,7 @@ def valid_refresh_payload():
         "linked_jti": "access_token_id",
         "id": 1,
         "sub": "user@example.com",
-        "type": Token.REFRESH.value,
+        "type": Token.REFRESH,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=60),
     }
 
@@ -200,12 +201,12 @@ async def test_revoke_tokens_success(mock_redis):
         pipe.setex.assert_any_call(
             "blacklist:token_jti",
             config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-            Token.REVOKED.value,
+            Token.REVOKED,
         )
         pipe.setex.assert_any_call(
             "blacklist:linked_jti",
             config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-            Token.REVOKED.value,
+            Token.REVOKED,
         )
         pipe.execute.assert_awaited_once()
 

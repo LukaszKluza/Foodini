@@ -17,6 +17,7 @@ from backend.core.database import get_redis
 from backend.settings import config
 from backend.users.enums.token import Token
 
+
 security = HTTPBearer()
 
 
@@ -41,7 +42,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": str(Token.ACCESS.value),
+                "type": Token.ACCESS,
             }
         )
 
@@ -51,7 +52,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": str(Token.REFRESH.value),
+                "type": Token.REFRESH,
             }
         )
 
@@ -76,12 +77,12 @@ class AuthorizationService:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED.value,
+                Token.REVOKED,
             )
             await pipe.setex(
                 f"blacklist:{linked_token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED.value,
+                Token.REVOKED,
             )
             await pipe.execute()
 
@@ -107,7 +108,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.ACCESS.value
+            credentials, Token.ACCESS
         )
 
     @staticmethod
@@ -115,7 +116,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.REFRESH.value
+            credentials, Token.REFRESH
         )
 
     @staticmethod
