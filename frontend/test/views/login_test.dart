@@ -17,21 +17,7 @@ import 'package:frontend/views/screens/login_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 
-late MockDio mockDio;
-late LoginBloc loginBloc;
-late MockApiClient mockApiClient;
-late AuthRepository authRepository;
-late MockTokenStorageRepository mockTokenStorageRepository;
-
-Widget wrapWithProviders(Widget child) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
-    ],
-    child: MaterialApp(home: child),
-  );
-}
+final client = MockClient();
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

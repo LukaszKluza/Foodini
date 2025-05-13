@@ -1,7 +1,6 @@
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/repository/auth_repository.dart';
 
 import 'app_router.dart';

@@ -62,7 +62,6 @@ class GlobalErrorInterceptor extends Interceptor {
           );
         }
       } catch (e) {
-        print(e);
         _showErrorDialog("Session expired.");
       }
     } else {
