@@ -16,7 +16,7 @@ class LoginListenerHelper {
   }) {
     if (state is LoginSuccess) {
       setState(() {
-        setMessage(AppConfig.successfullyLoggedIn);
+        setMessage(state.message);
         setMessageStyle(AppConfig.successStyle);
       });
       Future.delayed(const Duration(milliseconds: AppConfig.redirectionDelay), () {

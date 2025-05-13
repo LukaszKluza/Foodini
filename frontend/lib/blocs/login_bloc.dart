@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/login_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/repository/user_storage.dart';
@@ -25,7 +26,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final user = await authRepository.getUser();
         UserStorage().setUser(user);
 
-        emit(LoginSuccess(response));
+        emit(LoginSuccess(AppConfig.successfullyLoggedIn));
       } on ApiException catch (error) {
         if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
           emit(AccountNotVerified(error));
@@ -39,12 +40,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         await authRepository.resendVerificationMail(event.email);
 
-        emit(ResendAccountVerificationSuccess(response));
+        emit(ResendAccountVerificationSuccess(AppConfig.successfullyResendEmailVerification));
       } on ApiException catch (error) {
-        if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
-          emit(AccountNotVerified(error));
-          return;
-        }
         emit(LoginFailure(error));
       }
     });

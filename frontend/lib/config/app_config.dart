@@ -49,6 +49,7 @@ class AppConfig {
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Successfully logged in';
+  static const String successfullyResendEmailVerification = 'Email account verification send successfully';
   static const String successfullyLoggedOut = 'Account logged out successfully';
   static const String successfullyDeletedAccount = 'Account deleted successfully';
   static const String accountDeletionInformation = 'Are you sure you want to delete your account? This action cannot be undone.';

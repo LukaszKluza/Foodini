@@ -27,7 +27,3 @@ class ResendAccountVerificationSuccess extends LoginState {
 
   ResendAccountVerificationSuccess(this.message);
 }
-
-class ResendAccountVerificationFailure extends LoginFailure {
-  ResendAccountVerificationFailure(super.error);
-}
