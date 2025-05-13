@@ -1,9 +1,11 @@
+from typing import Optional
 from pydantic import EmailStr
 from datetime import datetime
-from sqlmodel import SQLModel, Field
+from sqlmodel import Relationship, SQLModel, Field
 from sqlalchemy import DateTime
 
 from backend.settings import config
+from backend.user_datails.models import UserDetails
 
 
 class User(SQLModel, table=True):
@@ -20,4 +22,7 @@ class User(SQLModel, table=True):
     last_password_update: datetime = Field(
         default_factory=lambda: datetime.now(config.TIMEZONE),
         sa_type=DateTime(timezone=True),
+    )
+    details: Optional["UserDetails"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"uselist": False}
     )

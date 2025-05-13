@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class SleepQuality(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+    POOR = "poor"
+    FAIR = "fair"
+    GOOD = "good"
+    EXCELLENT = "excellent"
