@@ -17,6 +17,7 @@ from backend.core.database import get_redis
 from backend.settings import config
 from backend.users.enums.token import Token
 
+
 security = HTTPBearer()
 
 
@@ -41,7 +42,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": str(Token.ACCESS.value),
+                "type": Token.ACCESS.value,
             }
         )
 
@@ -51,7 +52,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": str(Token.REFRESH.value),
+                "type": Token.REFRESH.value,
             }
         )
 
