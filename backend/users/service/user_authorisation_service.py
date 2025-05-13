@@ -42,7 +42,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": Token.ACCESS,
+                "type": Token.ACCESS.value,
             }
         )
 
@@ -52,7 +52,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": Token.REFRESH,
+                "type": Token.REFRESH.value,
             }
         )
 
@@ -77,12 +77,12 @@ class AuthorizationService:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED,
+                Token.REVOKED.value,
             )
             await pipe.setex(
                 f"blacklist:{linked_token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED,
+                Token.REVOKED.value,
             )
             await pipe.execute()
 
@@ -108,7 +108,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.ACCESS
+            credentials, Token.ACCESS.value
         )
 
     @staticmethod
@@ -116,7 +116,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.REFRESH
+            credentials, Token.REFRESH.value
         )
 
     @staticmethod
