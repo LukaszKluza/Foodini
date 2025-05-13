@@ -21,17 +21,3 @@ class User(SQLModel, table=True):
         default_factory=lambda: datetime.now(config.TIMEZONE),
         sa_type=DateTime(timezone=True),
     )
-
-
-class BodyParameters(SQLModel, table=True):
-    __tablename__ = "body_parameters"
-
-    id: int = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id", nullable=False)
-    height_cm: float = Field(nullable=False)
-    weight_kg: float = Field(nullable=False)
-    gender: str = Field(max_length=50, nullable=False)
-    activity_level: str = Field(max_length=50, nullable=False)
-    number_of_meals: int = Field(nullable=False)
-    cooking_skills: str = Field(max_length=50, nullable=False)
-    goal: str = Field(max_length=50, nullable=False)
