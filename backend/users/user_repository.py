@@ -4,7 +4,7 @@ from fastapi.params import Depends
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from .models import User
+from backend.models import User
 from .schemas import UserCreate, UserUpdate
 from sqlalchemy.future import select
 

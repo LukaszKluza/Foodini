@@ -2,7 +2,7 @@ from fastapi import HTTPException, status, Depends
 from datetime import datetime
 
 from backend.users.user_repository import UserRepository, get_user_repository
-from backend.users.models import User
+from backend.models import User
 from backend.settings import config
 
 
