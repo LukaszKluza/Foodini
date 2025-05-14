@@ -1,6 +1,12 @@
-from datetime import datetime, timedelta
-import jwt
+import base64
+import re
 import uuid
+from datetime import datetime, timedelta
+from typing import Dict, Any
+
+import jwt
+from fastapi import HTTPException, Security, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from itsdangerous import (
     URLSafeTimedSerializer,
     SignatureExpired,
@@ -8,12 +14,10 @@ from itsdangerous import (
     BadTimeSignature,
     BadData,
 )
-from fastapi import HTTPException, Security, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Dict, Any
 
 from backend.core.database import get_redis
 from backend.settings import config
+from backend.users.enums.token import Token
 
 
 security = HTTPBearer()
@@ -40,7 +44,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": "access",
+                "type": Token.ACCESS.value,
             }
         )
 
@@ -50,7 +54,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": "refresh",
+                "type": Token.REFRESH.value,
             }
         )
 
@@ -75,12 +79,12 @@ class AuthorizationService:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                "revoked",
+                Token.REVOKED.value,
             )
             await pipe.setex(
                 f"blacklist:{linked_token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                "revoked",
+                Token.REVOKED.value,
             )
             await pipe.execute()
 
@@ -89,12 +93,6 @@ class AuthorizationService:
         refresh_token: HTTPAuthorizationCredentials = Security(security),
     ):
         payload = await AuthorizationService.verify_refresh_token(refresh_token)
-
-        if payload.get("type") != "refresh":
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Not refresh token provided",
-            )
 
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
@@ -111,13 +109,17 @@ class AuthorizationService:
     async def verify_access_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(credentials, "access")
+        return await AuthorizationService.verify_token_by_type(
+            credentials, Token.ACCESS.value
+        )
 
     @staticmethod
     async def verify_refresh_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(credentials, "refresh")
+        return await AuthorizationService.verify_token_by_type(
+            credentials, Token.REFRESH.value
+        )
 
     @staticmethod
     async def verify_token_by_type(
@@ -126,14 +128,18 @@ class AuthorizationService:
     ):
         redis_tokens = await AuthorizationService.get_redis_or_throw()
 
-        token = await AuthorizationService.get_payload_from_token(credentials)
+        token = await AuthorizationService.get_payload_from_token(
+            credentials, expected_type
+        )
         token_type = token.get("type")
         token_jti = token.get("jti")
         linked_jti = token.get("linked_jti")
 
         if token_type != expected_type:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
@@ -154,7 +160,9 @@ class AuthorizationService:
 
         if any(revoked_results):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
             )
 
@@ -163,6 +171,7 @@ class AuthorizationService:
     @staticmethod
     async def get_payload_from_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
+        token_type: str = None,
     ):
         try:
             return jwt.decode(
@@ -172,8 +181,23 @@ class AuthorizationService:
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
             )
+
+    @staticmethod
+    async def extract_email_from_base64(token: str) -> str | None:
+        padding = len(token) % 4
+        if padding:
+            token += "=" * (4 - padding)
+
+        try:
+            decoded = base64.urlsafe_b64decode(token)
+            match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
+            return match.group(0).decode("utf-8")
+        except Exception:
+            return None
 
     @staticmethod
     async def get_serializer(salt: str = config.NEW_ACCOUNT_SALT):

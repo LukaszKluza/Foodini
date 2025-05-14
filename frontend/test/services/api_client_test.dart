@@ -57,7 +57,7 @@ void main() {
 
   test('should call logout endpoint with correct user id', () async {
     const userId = 2;
-    final url = '${AppConfig.logoutUrl}?user_id=$userId';
+    final url = AppConfig.logoutUrl;
 
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: url),
@@ -67,25 +67,28 @@ void main() {
 
     when(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
     )).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.logout();
+    final response = await apiClient.logout(userId);
 
     expect(response.statusCode, 204);
 
     verify(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
     )).called(1);
   });
 
   test('should throw if logout returns error status code', () async {
     const userId = 2;
-    final url = '${AppConfig.logoutUrl}?user_id=$userId';
+    final url = AppConfig.logoutUrl;
 
     when(mockDio.get(
       url,
+      queryParameters: {'user_id': userId},
       options: anyNamed('options'),
     )).thenThrow(DioException(
       requestOptions: RequestOptions(path: url),
@@ -97,6 +100,6 @@ void main() {
       type: DioExceptionType.badResponse,
     ));
 
-    expect(() async => await apiClient.logout(), throwsA(isA<DioException>()));
+    expect(() async => await apiClient.logout(2), throwsA(isA<DioException>()));
   });
 }

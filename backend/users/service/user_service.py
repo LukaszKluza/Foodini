@@ -1,28 +1,31 @@
 from datetime import datetime
-from fastapi import HTTPException, status
-from fastapi.params import Depends
 
-from backend.users.service.user_authorisation_service import AuthorizationService
+from fastapi import HTTPException, status
+from fastapi import Response
+from fastapi.params import Depends
+from starlette.responses import RedirectResponse
+
+from backend.settings import config
+from backend.users.schemas import (
+    UserCreate,
+    UserLogin,
+    UserUpdate,
+    LoginUserResponse,
+    PasswordResetRequest,
+    NewPasswordConfirm,
+    UserResponse,
+)
 from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
     get_email_verification_service,
 )
 from backend.users.service.password_service import PasswordService
+from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.user_validation_service import (
     UserValidationService,
     get_user_validators,
 )
-from backend.users.schemas import (
-    UserCreate,
-    UserLogin,
-    UserUpdate,
-    UserResponse,
-    LoginUserResponse,
-    PasswordResetRequest,
-    NewPasswordConfirm,
-)
 from backend.users.user_repository import UserRepository, get_user_repository
-from backend.settings import config
 
 
 class UserService:
@@ -37,6 +40,12 @@ class UserService:
         self.user_repository = user_repository
         self.email_verification_service = email_verification_service
         self.user_validators = user_validators
+
+    async def get_user(self, token_payload: dict):
+        user_id_from_token = token_payload["id"]
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+
+        return await self.user_repository.get_user_by_id(user_id_from_token)
 
     async def register(self, user: UserCreate):
         existing_user = await self.user_repository.get_user_by_email(user.email)
@@ -77,12 +86,17 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, token_payload: dict, user_id: int):
-        await self.user_validators.ensure_user_exists_by_id(user_id)
+    async def logout(self, token_payload: dict, user_id_from_request: int):
+        user_id_from_token = token_payload["id"]
+        self.user_validators.check_user_permission(
+            user_id_from_token, user_id_from_request
+        )
+
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
         await AuthorizationService.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
-        return HTTPException(status_code=status.HTTP_200_OK, detail="Logged out")
+        return Response(status_code=204)
 
     async def reset_password(
         self, password_reset_request: PasswordResetRequest, form_url: str
@@ -95,7 +109,6 @@ class UserService:
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url
         )
-
         return UserResponse(
             id=user_.id,
             email=user_.email,
@@ -104,23 +117,25 @@ class UserService:
     async def update(
         self, token_payload: dict, user_id_from_request: int, user: UserUpdate
     ):
+        user_id_from_token = token_payload["id"]
         self.user_validators.check_user_permission(
-            token_payload["id"], user_id_from_request
+            user_id_from_token, user_id_from_request
         )
-        user_ = await self.user_validators.ensure_user_exists_by_id(
-            user_id_from_request
-        )
+        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+
         return await self.user_repository.update_user(user_.id, user)
 
     async def delete(self, token_payload: dict, user_id_from_request: int):
+        user_id_from_token = token_payload["id"]
         self.user_validators.check_user_permission(
-            token_payload["id"], user_id_from_request
+            user_id_from_token, user_id_from_request
         )
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_request)
+
+        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
         await AuthorizationService.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
-        return await self.user_repository.delete_user(user_id_from_request)
+        return await self.user_repository.delete_user(user_id_from_token)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         token_data = await AuthorizationService.decode_url_safe_token(token, salt)
@@ -157,6 +172,8 @@ class UserService:
                     status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
                 ) from e
 
+        self.user_validators.check_last_password_change_data_time(user_)
+
         token = await AuthorizationService.create_url_safe_token(
             {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
         )
@@ -177,8 +194,17 @@ class UserService:
         )
 
     async def confirm_new_account(self, token: str):
-        user_email = await self.decode_url_token(token)
-        return await self.user_repository.verify_user(user_email)
+        try:
+            user_email = await self.decode_url_token(token)
+            await self.user_repository.verify_user(user_email)
+            redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
+        except HTTPException:
+            email = await AuthorizationService.extract_email_from_base64(token)
+            redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
+            if email:
+                redirect_url += f"&email={email}"
+
+        return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
 
 
 def get_user_service(

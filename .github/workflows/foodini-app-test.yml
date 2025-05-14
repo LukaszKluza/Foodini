@@ -9,6 +9,7 @@ env:
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   API_URL: ${{ secrets.API_URL }}
+  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   PEPPER_KEY: ${{ secrets.PEPPER_KEY }}
   NEW_ACCOUNT_SALT: ${{ secrets.NEW_ACCOUNT_SALT }}

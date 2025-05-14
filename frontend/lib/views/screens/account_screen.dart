@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/listeners/account_listener.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -7,9 +8,8 @@ import 'package:frontend/blocs/account_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/account_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
-import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -20,22 +20,19 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bloc != null
-        ? BlocProvider<AccountBloc>.value(
-      value: bloc!,
-      child: _AccountBody(),
-    )
+        ? BlocProvider<AccountBloc>.value(value: bloc!, child: _AccountBody())
         : BlocProvider<AccountBloc>(
-      create: (_) => AccountBloc(
-        Provider.of<AuthRepository>(context, listen: false),
-        Provider.of<TokenStorageRepository>(context, listen: false),
-      ),
-      child: _AccountBody(),
-    );
+          create:
+              (_) => AccountBloc(
+                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<TokenStorageRepository>(context, listen: false),
+              ),
+          child: _AccountBody(),
+        );
   }
 }
 
 class _AccountBody extends StatefulWidget {
-
   @override
   State<_AccountBody> createState() => _AccountScreenState();
 }
@@ -60,28 +57,7 @@ class _AccountScreenState extends State<_AccountBody> {
       ),
       body: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
-          if (state is AccountLogoutSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(AppConfig.successfullyLoggedOut)),
-            );
-            Future.delayed(const Duration(seconds: 2), () {
-              if (mounted) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  context.go('/');
-                });
-              }
-            });
-          } else if (state is AccountLogoutFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  ExceptionConverter.formatErrorMessage(
-                    state.error.data,
-                  ),
-                ),
-              ),
-            );
-          }
+          AccountListenerHelper.accountStateListener(context, state, mounted: mounted);
         },
         child: SingleChildScrollView(
           child: Column(
@@ -109,11 +85,9 @@ class _AccountScreenState extends State<_AccountBody> {
                           Icons.logout,
                           screenWidth,
                           screenHeight,
-                          () {
-                            context.read<AccountBloc>().add(
-                                  AccountLogoutRequested(),
-                                );
-                          },
+                          () => context.read<AccountBloc>().add(
+                            AccountLogoutRequested(),
+                          ),
                         ),
                       ],
                     ),
@@ -129,11 +103,11 @@ class _AccountScreenState extends State<_AccountBody> {
                         ),
                         const SizedBox(height: 16),
                         rectangularButton(
-                          "Button 4",
-                          Icons.do_not_disturb,
+                          AppConfig.deleteAccount,
+                          Icons.auto_delete,
                           screenWidth,
                           screenHeight,
-                          null,
+                          () => showDeleteAccountDialog(context),
                         ),
                       ],
                     ),
@@ -142,7 +116,7 @@ class _AccountScreenState extends State<_AccountBody> {
               ),
               BlocBuilder<AccountBloc, AccountState>(
                 builder: (context, state) {
-                  if (state is AccountLoggingOut) {
+                  if (state is AccountActionInProgress) {
                     return const CircularProgressIndicator();
                   }
                   return const SizedBox.shrink();
@@ -154,4 +128,29 @@ class _AccountScreenState extends State<_AccountBody> {
       ),
     );
   }
+}
+
+void showDeleteAccountDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(AppConfig.confirmAccountDeletion),
+      content: Text(AppConfig.accountDeletionInformation),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(dialogContext).pop();
+          },
+          child: Text(AppConfig.cancel),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(dialogContext).pop();
+            context.read<AccountBloc>().add(AccountDeleteRequested());
+          },
+          child: Text(AppConfig.delete),
+        ),
+      ],
+    ),
+  );
 }

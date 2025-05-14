@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:frontend/repository/token_storage.dart';
+import 'package:frontend/app_router.dart';
+import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/token_storage_service.dart';
 
 class GlobalErrorInterceptor extends Interceptor {
   final ApiClient _apiClient;
-  final TokenStorage _tokenStorage;
+  final TokenStorageRepository _tokenStorage;
 
   GlobalErrorInterceptor(this._apiClient, this._tokenStorage);
 
@@ -16,7 +18,11 @@ class GlobalErrorInterceptor extends Interceptor {
 
       switch (statusCode) {
         case 401:
-          await _handleUnauthorizedError(err, handler);
+          return await _handleUnauthorizedError(err, handler);
+        case 403:
+          if(err.response?.data["detail"] == 'Revoked token'){
+            await _handleForbiddenError(err, handler);
+          }
           break;
         case 500:
           message = "Server error";
@@ -26,9 +32,8 @@ class GlobalErrorInterceptor extends Interceptor {
       }
 
       _showErrorDialog(message);
-      return super.onError(err, handler);
     }
-    return super.onError(err, handler);
+    return handler.reject(err);
   }
 
   Future<void> _handleUnauthorizedError(DioException err, ErrorInterceptorHandler handler) async {
@@ -64,7 +69,16 @@ class GlobalErrorInterceptor extends Interceptor {
     }
   }
 
+  Future<void> _handleForbiddenError(DioException err, ErrorInterceptorHandler handler) async {
+    UserStorage().removeUser();
+    await TokenStorageRepository().deleteAccessToken();
+    await TokenStorageRepository().deleteRefreshToken();
+
+    router.go('/');
+  }
+
   void _showErrorDialog(String message) {
+    // Simone add logger here please
     print(message);
   }
 }

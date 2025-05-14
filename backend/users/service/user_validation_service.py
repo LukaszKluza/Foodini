@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status, Depends
 from datetime import datetime
 
+from pydantic import EmailStr
+
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.users.models import User
 from backend.settings import config
@@ -10,24 +12,26 @@ class UserValidationService:
     def __init__(self, user_repository: UserRepository = Depends(get_user_repository)):
         self.user_repository = user_repository
 
-    def ensure_verified_user(self, user) -> User:
+    @staticmethod
+    def ensure_verified_user(user) -> User:
         if not user.is_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Account not verified. Please check your email.",
+                detail="EMAIL_NOT_VERIFIED",
+                headers={"X-Error-Code": "EMAIL_NOT_VERIFIED"},
             )
         return user
 
-    def check_user_permission(
-        self, user_param_from_token: int, user_param_from_request: int
-    ):
+    @staticmethod
+    def check_user_permission(user_param_from_token, user_param_from_request):
         if user_param_from_token != user_param_from_request:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid token",
             )
 
-    def check_last_password_change_data_time(self, user):
+    @staticmethod
+    def check_last_password_change_data_time(user):
         time_diff = (
             datetime.now(config.TIMEZONE) - user.last_password_update
         ).total_seconds()
@@ -38,7 +42,7 @@ class UserValidationService:
                 f" last changed at {user.last_password_update}",
             )
 
-    async def ensure_user_exists_by_email(self, email: str) -> User:
+    async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
         user = await self.user_repository.get_user_by_email(email)
         if not user:
             raise HTTPException(

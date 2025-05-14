@@ -4,12 +4,14 @@ abstract class AccountState {}
 
 class AccountInitial extends AccountState {}
 
-class AccountLoggingOut extends AccountState {}
+class AccountActionInProgress extends AccountState {}
 
 class AccountLogoutSuccess extends AccountState {}
 
-class AccountLogoutFailure extends AccountState {
+class AccountDeleteSuccess extends AccountState {}
+
+class AccountFailure extends AccountState {
   final ApiException error;
 
-  AccountLogoutFailure(this.error);
+  AccountFailure(this.error);
 }

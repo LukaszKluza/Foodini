@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
-from unittest.mock import patch, AsyncMock, MagicMock
-import pytest
+from unittest.mock import patch, AsyncMock, MagicMock, Mock
+
 import jwt
+import pytest
 import redis.asyncio as aioredis
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from itsdangerous import BadSignature
 
 from backend.settings import config
+from backend.users.enums.token import Token
 from backend.users.service.user_authorisation_service import AuthorizationService
 
 
@@ -21,7 +23,7 @@ def mock_redis():
 
     pipe_mock = AsyncMock()
     pipe_mock.setex = AsyncMock()
-    pipe_mock.exists = AsyncMock()
+    pipe_mock.exists = Mock()
     pipe_mock.execute = AsyncMock()
 
     pipeline_cm = AsyncMock()
@@ -40,7 +42,7 @@ def valid_payload():
         "linked_jti": "linked_token_id",
         "id": 1,
         "sub": "user@example.com",
-        "type": "access",
+        "type": Token.ACCESS.value,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=30),
     }
 
@@ -52,7 +54,7 @@ def valid_refresh_payload():
         "linked_jti": "access_token_id",
         "id": 1,
         "sub": "user@example.com",
-        "type": "refresh",
+        "type": Token.REFRESH.value,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=60),
     }
 
@@ -196,10 +198,14 @@ async def test_revoke_tokens_success(mock_redis):
         # then
         pipe = mock_redis.pipeline.return_value.__aenter__.return_value
         pipe.setex.assert_any_call(
-            "blacklist:token_jti", config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, "revoked"
+            "blacklist:token_jti",
+            config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+            Token.REVOKED.value,
         )
         pipe.setex.assert_any_call(
-            "blacklist:linked_jti", config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, "revoked"
+            "blacklist:linked_jti",
+            config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
+            Token.REVOKED.value,
         )
         pipe.execute.assert_awaited_once()
 
@@ -246,4 +252,4 @@ async def test_get_payload_from_token_invalid(credentials):
         # when / then
         with pytest.raises(HTTPException) as exc:
             await AuthorizationService.get_payload_from_token(credentials)
-        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.status_code == status.HTTP_403_FORBIDDEN
