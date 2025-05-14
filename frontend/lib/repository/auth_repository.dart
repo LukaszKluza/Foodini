@@ -13,6 +13,17 @@ class AuthRepository {
 
   AuthRepository(this.apiClient);
 
+  Future<UserResponse> getUser() async {
+    try {
+      final response = await apiClient.getUser();
+      return UserResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while getting user $e.');
+    }
+  }
+
   Future<LoggedUser> login(LoginRequest request) async {
     try {
       final response = await apiClient.login(request);
@@ -24,13 +35,23 @@ class AuthRepository {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(int userId) async {
     try {
-      await apiClient.logout();
+      await apiClient.logout(userId);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while logging out $e.');
+    }
+  }
+
+  Future<void> delete(int userId) async {
+    try {
+      await apiClient.delete(userId);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while deleting account $e.');
     }
   }
 

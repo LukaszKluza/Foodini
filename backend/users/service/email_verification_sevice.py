@@ -21,7 +21,8 @@ class EmailVerificationService:
         self.user_repository = user_repository
         self.user_validators = user_validators
 
-    async def send_new_account_verification(self, email: EmailStr, token: str):
+    @staticmethod
+    async def send_new_account_verification(email: EmailStr, token: str):
         message_link = f"{config.API_URL}/v1/users/confirm/new-account/{token}"
         message_subject = "FoodiniApp email verification"
         message_body = f"Please click this link: {message_link} to verify your email."
@@ -31,8 +32,9 @@ class EmailVerificationService:
         )
         await MailService.send_message(message)
 
+    @staticmethod
     async def send_password_reset_verification(
-        self, email: EmailStr, token: str, form_url: str
+        email: EmailStr, token: str, form_url: str
     ):
         message_link = f"{form_url}/{token}"
         message_subject = "FoodiniApp new password request"

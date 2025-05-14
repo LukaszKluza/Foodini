@@ -1,6 +1,10 @@
-from datetime import datetime, timedelta
-import jwt
 import uuid
+from datetime import datetime, timedelta
+from typing import Dict, Any
+
+import jwt
+from fastapi import HTTPException, Security, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from itsdangerous import (
     URLSafeTimedSerializer,
     SignatureExpired,
@@ -8,9 +12,6 @@ from itsdangerous import (
     BadTimeSignature,
     BadData,
 )
-from fastapi import HTTPException, Security, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Dict, Any
 
 from backend.core.database import get_redis
 from backend.settings import config
@@ -41,7 +42,7 @@ class AuthorizationService:
                 "jti": access_token_jti,
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
-                "type": Token.ACCESS,
+                "type": Token.ACCESS.value,
             }
         )
 
@@ -51,7 +52,7 @@ class AuthorizationService:
                 "jti": refresh_token_jti,
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
-                "type": Token.REFRESH,
+                "type": Token.REFRESH.value,
             }
         )
 
@@ -76,12 +77,12 @@ class AuthorizationService:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED,
+                Token.REVOKED.value,
             )
             await pipe.setex(
                 f"blacklist:{linked_token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
-                Token.REVOKED,
+                Token.REVOKED.value,
             )
             await pipe.execute()
 
@@ -107,7 +108,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.ACCESS
+            credentials, Token.ACCESS.value
         )
 
     @staticmethod
@@ -115,7 +116,7 @@ class AuthorizationService:
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await AuthorizationService.verify_token_by_type(
-            credentials, Token.REFRESH
+            credentials, Token.REFRESH.value
         )
 
     @staticmethod
@@ -125,14 +126,18 @@ class AuthorizationService:
     ):
         redis_tokens = await AuthorizationService.get_redis_or_throw()
 
-        token = await AuthorizationService.get_payload_from_token(credentials)
+        token = await AuthorizationService.get_payload_from_token(
+            credentials, expected_type
+        )
         token_type = token.get("type")
         token_jti = token.get("jti")
         linked_jti = token.get("linked_jti")
 
         if token_type != expected_type:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
@@ -153,7 +158,9 @@ class AuthorizationService:
 
         if any(revoked_results):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
             )
 
@@ -162,6 +169,7 @@ class AuthorizationService:
     @staticmethod
     async def get_payload_from_token(
         credentials: HTTPAuthorizationCredentials = Security(security),
+        token_type: str = None,
     ):
         try:
             return jwt.decode(
@@ -171,7 +179,9 @@ class AuthorizationService:
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+                status_code=status.HTTP_401_UNAUTHORIZED
+                if Token.ACCESS.value == token_type
+                else status.HTTP_403_FORBIDDEN,
             )
 
     @staticmethod

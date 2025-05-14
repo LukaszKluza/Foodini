@@ -1,4 +1,4 @@
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/account_screen.dart';
 import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:frontend/views/screens/login_screen.dart';

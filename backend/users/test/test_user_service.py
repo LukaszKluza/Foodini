@@ -1,20 +1,20 @@
-import pytest
 import sys
 from datetime import datetime, timedelta
-from fastapi import HTTPException, status
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, AsyncMock, patch, Mock
 
+import pytest
+from fastapi import HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
+
+from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
     UserUpdate,
     PasswordResetRequest,
-    NewPasswordConfirm,
 )
-from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.password_service import PasswordService
-from backend.settings import config
-
+from backend.users.service.user_authorisation_service import AuthorizationService
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -77,9 +77,9 @@ def mock_email_verification_service():
 def mock_user_validators():
     mock = MagicMock()
     mock.ensure_user_exists_by_email = AsyncMock()
-    mock.ensure_verified_user = AsyncMock()
-    mock.check_user_permission = AsyncMock()
-    mock.check_last_password_change_data_time = AsyncMock()
+    mock.ensure_verified_user = Mock()
+    mock.check_user_permission = Mock()
+    mock.check_last_password_change_data_time = Mock()
     mock.ensure_user_exists_by_id = AsyncMock()
     return mock
 
@@ -109,8 +109,8 @@ def mock_user_repository():
 
 
 user_create = UserCreate(
-    name="Testname",
-    last_name="Testlastname",
+    name="TestName",
+    last_name="TestLastName",
     age=19,
     country="Poland",
     email="test@example.com",
@@ -238,7 +238,7 @@ async def test_logout_user_success(
     response = await user_service.logout(MagicMock(), 1)
 
     # Then
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     mock_authorization_service["revoke_tokens"].assert_called_once()
 
 
@@ -293,7 +293,12 @@ async def test_reset_password_user_logged_successful(
         mock_authorization_service["revoke_tokens"].return_value = True
 
         await user_service.reset_password(
-            PasswordResetRequest(email="test@example.com", token="valid_token"),
+            PasswordResetRequest(
+                email="test@example.com",
+                token=HTTPAuthorizationCredentials(
+                    scheme="Bearer", credentials="valid_token"
+                ),
+            ),
             "form_url",
         )
 
