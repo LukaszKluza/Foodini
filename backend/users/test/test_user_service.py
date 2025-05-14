@@ -7,6 +7,7 @@ from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
 from backend.settings import config
+from backend.users.models import User
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
@@ -44,6 +45,9 @@ def mock_authorization_service():
         patch.object(
             AuthorizationService, "verify_refresh_token", AsyncMock()
         ) as mock_verify_refresh_token,
+        patch.object(
+            AuthorizationService, "extract_email_from_base64", AsyncMock()
+        ) as mock_extract_email_from_base64,
     ):
         yield {
             "create_tokens": mock_create_tokens,
@@ -53,6 +57,7 @@ def mock_authorization_service():
             "decode_url_safe_token": mock_decode_url_token,
             "verify_access_token": mock_verify_access_token,
             "verify_refresh_token": mock_verify_refresh_token,
+            "mock_extract_email_from_base64": mock_extract_email_from_base64,
         }
 
 
@@ -116,6 +121,44 @@ user_create = UserCreate(
     email="test@example.com",
     password="Password123",
 )
+basic_user = User(
+    id=1,
+    email="test@example.com",
+)
+
+
+@pytest.mark.asyncio
+async def test_get_existing_user(
+    mock_user_repository, user_service, mock_user_validators
+):
+    # Given
+    token_payload = {"id": "1"}
+    mock_user_validators.ensure_user_exists_by_id.return_value = MagicMock(id=1)
+    mock_user_repository.get_user_by_id.return_value = basic_user
+
+    # When
+    response = await user_service.get_user(token_payload)
+
+    # Then
+    assert response == basic_user
+
+
+@pytest.mark.asyncio
+async def test_get_unresisting_user(
+    mock_user_repository, user_service, mock_user_validators
+):
+    # Given
+    token_payload = {"id": "2"}
+    mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
+    )
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.get_user(token_payload)
+
+    # Then
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "User does not exist"
 
 
 @pytest.mark.asyncio
@@ -306,7 +349,7 @@ async def test_reset_password_user_logged_successful(
 
 
 @pytest.mark.asyncio
-async def test_update_user_not_found(user_service, mock_user_validators):
+async def test_update_when_user_not_found(user_service, mock_user_validators):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
@@ -320,3 +363,135 @@ async def test_update_user_not_found(user_service, mock_user_validators):
 
     # Assert
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_update_when_user_exist(
+    user_service, mock_user_validators, mock_user_repository
+):
+    # Given
+    update_user = UserUpdate(name="Newname", last_name="Newlastname")
+    token_payload = {"id": "1", "jti": "fake_jti", "linked_jti": "fake_linked_jti"}
+    mock_user_validators.ensure_user_exists_by_id = AsyncMock(
+        spec=User, return_value=basic_user
+    )
+    mock_user_repository.update_user = AsyncMock(
+        spec=UserUpdate, return_value=update_user
+    )
+
+    # When
+    response = await user_service.update(token_payload, 1, update_user)
+
+    # Assert
+    assert response == update_user
+
+
+@pytest.mark.asyncio
+async def test_delete_account_when_user_not_found(user_service, mock_user_validators):
+    # Given
+    token_payload = {"id": "1"}
+    mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
+    )
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.delete(
+            token_payload,
+            1,
+        )
+
+    # Assert
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_delete_account_when_user_exist(
+    user_service, mock_user_validators, mock_authorization_service, mock_user_repository
+):
+    # Given
+    token_payload = {"id": "1", "jti": "fake_jti", "linked_jti": "fake_linked_jti"}
+    mock_user_validators.ensure_user_exists_by_id = AsyncMock(
+        spec=User, return_value=basic_user
+    )
+    mock_authorization_service["revoke_tokens"].return_value = True
+    mock_user_repository.delete_user = AsyncMock(return_value=basic_user)
+
+    # When
+    response = await user_service.delete(
+        token_payload,
+        1,
+    )
+
+    # Assert
+    assert response == basic_user
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_account_successfully(
+    user_service, mock_user_validators, mock_authorization_service
+):
+    # Given
+    mock_authorization_service["decode_url_safe_token"].return_value = {
+        "email": "test@email.com"
+    }
+    mock_user_validators.ensure_user_exists_by_email = AsyncMock(
+        return_value=basic_user
+    )
+
+    # When
+    response = await user_service.confirm_new_account("test_token")
+
+    # Assert
+    assert response.status_code == 302
+    assert (
+        response.headers["location"] == "http://localhost:3000/#/login?status=success"
+    )
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_account_with_revoked_token(
+    user_service, mock_user_validators, mock_authorization_service
+):
+    # Given
+    mock_authorization_service["decode_url_safe_token"].side_effect = HTTPException(
+        status_code=401,
+        detail="Token verification failed",
+    )
+    mock_authorization_service[
+        "mock_extract_email_from_base64"
+    ].return_value = "test@example.com"
+    mock_user_validators.ensure_user_exists_by_email = AsyncMock(
+        return_value=basic_user
+    )
+
+    # When
+    response = await user_service.confirm_new_account("revoked_token")
+
+    # Assert
+    assert response.status_code == 302
+    assert (
+        response.headers["location"]
+        == "http://localhost:3000/#/login?status=error&email=test@example.com"
+    )
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_account_with_corrupted_token(
+    user_service, mock_user_validators, mock_authorization_service
+):
+    # Given
+    mock_authorization_service["decode_url_safe_token"].side_effect = HTTPException(
+        status_code=401,
+        detail="Token verification failed",
+    )
+    mock_authorization_service["mock_extract_email_from_base64"].return_value = None
+    mock_user_validators.ensure_user_exists_by_email = AsyncMock(
+        spec=User, return_value=basic_user
+    )
+
+    # When
+    response = await user_service.confirm_new_account("corrupted token")
+
+    # Assert
+    assert response.status_code == 302
+    assert response.headers["location"] == "http://localhost:3000/#/login?status=error"

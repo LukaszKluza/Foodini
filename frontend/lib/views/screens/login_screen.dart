@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frontend/blocs/login_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/login_events.dart';
@@ -11,7 +8,10 @@ import 'package:frontend/models/login_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
+import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginBloc? bloc;
@@ -60,6 +60,24 @@ class _LoginFormState extends State<_LoginForm> {
   TextStyle _messageStyle = AppConfig.errorStyle;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pathAndQuery = Uri.base.toString().split('?');
+      if (pathAndQuery.length > 1) {
+        final Map<String, String> queryParameters = QueryParametersMapper
+            .parseQueryParams(pathAndQuery[1]);
+        if (queryParameters["status"] != null) {
+          context.read<LoginBloc>().add(InitFromUrl(queryParameters["status"]));
+        }
+        if (queryParameters["email"] != null){
+          _emailController.text = queryParameters["email"]!;
+        }
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -102,8 +120,29 @@ class _LoginFormState extends State<_LoginForm> {
                   );
                 },
                 builder: (context, state) {
-                  if (state is LoginLoading) {
+                  if (state is ActionInProgress) {
                     return CircularProgressIndicator();
+                  } else if (state is AccountNotVerified){
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.warning, color: Colors.orange, size: 36),
+                        SizedBox(height: 16),
+                        Text(
+                        AppConfig.accountHasNotBeenConfirmed,
+                          style: AppConfig.warningStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          key: Key(AppConfig.sendVerificationEmailAgain),
+                          onPressed: () {
+                            context.read<LoginBloc>().add(ResendVerificationEmail(_emailController.text));
+                          },
+                          child: Text(AppConfig.sendVerificationEmailAgain),
+                        ),
+                      ],
+                    );
                   } else {
                     return ElevatedButton(
                       key: Key(AppConfig.login),

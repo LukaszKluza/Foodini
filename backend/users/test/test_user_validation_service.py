@@ -49,7 +49,8 @@ async def test_ensure_verified_user_failure(user_validators):
         user_validators.ensure_verified_user(mock_user)
 
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-    assert "Account not verified" in exc_info.value.detail
+    assert "EMAIL_NOT_VERIFIED" in exc_info.value.detail
+    assert "EMAIL_NOT_VERIFIED" in exc_info.value.headers["X-Error-Code"]
 
 
 @pytest.mark.asyncio

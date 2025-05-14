@@ -1,3 +1,5 @@
+import base64
+import re
 import uuid
 from datetime import datetime, timedelta
 from typing import Dict, Any
@@ -183,6 +185,19 @@ class AuthorizationService:
                 if Token.ACCESS.value == token_type
                 else status.HTTP_403_FORBIDDEN,
             )
+
+    @staticmethod
+    async def extract_email_from_base64(token: str) -> str | None:
+        padding = len(token) % 4
+        if padding:
+            token += "=" * (4 - padding)
+
+        try:
+            decoded = base64.urlsafe_b64decode(token)
+            match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
+            return match.group(0).decode("utf-8")
+        except Exception:
+            return None
 
     @staticmethod
     async def get_serializer(salt: str = config.NEW_ACCOUNT_SALT):

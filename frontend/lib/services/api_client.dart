@@ -4,7 +4,6 @@ import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/services/token_storage_service.dart';
-
 import 'package:frontend/utils/global_error_interceptor.dart';
 
 class ApiClient {
@@ -80,6 +79,14 @@ class ApiClient {
       AppConfig.logoutUrl,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> resendVerificationMail(String email) {
+    return _client.get(
+      AppConfig.resendVerificationEmailUrl,
+      queryParameters: {'email': email},
+      options: Options(extra: {'requiresAuth': false}),
     );
   }
 

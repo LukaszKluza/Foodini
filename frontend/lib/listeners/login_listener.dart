@@ -16,7 +16,7 @@ class LoginListenerHelper {
   }) {
     if (state is LoginSuccess) {
       setState(() {
-        setMessage(AppConfig.successfullyLoggedIn);
+        setMessage(state.message!);
         setMessageStyle(AppConfig.successStyle);
       });
       Future.delayed(const Duration(milliseconds: AppConfig.redirectionDelay), () {
@@ -25,6 +25,11 @@ class LoginListenerHelper {
             context.go('/main_page');
           });
         }
+      });
+    } else if(state is AccountSuccessVerification || state is ResendAccountVerificationSuccess){
+      setState(() {
+        setMessage(state.message!);
+        setMessageStyle(AppConfig.successStyle);
       });
     } else if (state is LoginFailure) {
       setState(() {

@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from fastapi import Response
 from fastapi.params import Depends
+from starlette.responses import RedirectResponse
 
 from backend.settings import config
 from backend.users.schemas import (
@@ -185,8 +186,17 @@ class UserService:
         )
 
     async def confirm_new_account(self, token: str):
-        user_email = await self.decode_url_token(token)
-        return await self.user_repository.verify_user(user_email)
+        try:
+            user_email = await self.decode_url_token(token)
+            await self.user_repository.verify_user(user_email)
+            redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
+        except HTTPException:
+            email = await AuthorizationService.extract_email_from_base64(token)
+            redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
+            if email:
+                redirect_url += f"&email={email}"
+
+        return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
 
 
 def get_user_service(
