@@ -1,6 +1,6 @@
 from datetime import date
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import List, Optional
 from .enums import (
     Gender,
     DietType,
@@ -8,6 +8,7 @@ from .enums import (
     ActivityLevel,
     SleepQuality,
     StressLevel,
+    Allergies,
 )
 from .mixins import DateOfBirthValidationMixin
 
@@ -19,7 +20,7 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     weight_kg: float = Field(..., ge=20, le=400)
     date_of_birth: date
     diet_type: DietType
-    allergies: str
+    allergies: List[Allergies]
     diet_goal_kg: float = Field(..., ge=20, le=400)
     meals_per_day: int = Field(ge=2, le=5)
     diet_intensivity: DietIntensivity
