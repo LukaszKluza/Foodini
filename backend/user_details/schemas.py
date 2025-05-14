@@ -1,23 +1,26 @@
 from datetime import date
 from pydantic import BaseModel, Field
 from typing import Optional
-from enums.gender import Gender
-from enums.diet_type import DietType
-from enums.diet_intensivity import DietIntensivity
-from enums.activity_level import ActivityLevel
-from enums.sleep_quality import SleepQuality
-from enums.stress_level import StressLevel
+from .enums import (
+    Gender,
+    DietType,
+    DietIntensivity,
+    ActivityLevel,
+    SleepQuality,
+    StressLevel,
+)
+from .mixins import DateOfBirthValidationMixin
 
 
-class UserDetailsCreate(BaseModel):
+class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     user_id: int
     gender: Gender
-    height_cm: float
-    weight_kg: float
+    height_cm: float = Field(..., ge=50, le=300)
+    weight_kg: float = Field(..., ge=20, le=400)
     date_of_birth: date
     diet_type: DietType
     allergies: str
-    diet_goal_kg: float
+    diet_goal_kg: float = Field(..., ge=20, le=400)
     meals_per_day: int = Field(ge=2, le=5)
     diet_intensivity: DietIntensivity
     activity_level: ActivityLevel
@@ -32,14 +35,14 @@ class UserDetailsResponse(UserDetailsCreate):
     id: int
 
 
-class UserDetailsUpdate(BaseModel):
+class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     gender: Optional[Gender] = None
-    height_cm: Optional[float] = None
-    weight_kg: Optional[float] = None
+    height_cm: Optional[float] = Field(None, ge=50, le=300)
+    weight_kg: Optional[float] = Field(None, ge=20, le=400)
     date_of_birth: Optional[date] = None
     diet_type: Optional[DietType] = None
     allergies: Optional[str] = None
-    diet_goal_kg: Optional[float] = None
+    diet_goal_kg: Optional[float] = Field(None, ge=20, le=400)
     meals_per_day: Optional[int] = Field(None, ge=2, le=5)
     diet_intensivity: Optional[DietIntensivity] = None
     activity_level: Optional[ActivityLevel] = None
