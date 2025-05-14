@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SleepQuality(Enum):
+class SleepQuality(str, Enum):
     POOR = "poor"
     FAIR = "fair"
     GOOD = "good"

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class DietIntensivity(Enum):
+class DietIntensivity(str, Enum):
     SLOW = "slow"
     NORMAL = "normal"
     FAST = "fast"

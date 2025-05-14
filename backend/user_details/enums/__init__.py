@@ -4,6 +4,7 @@ from .activity_level import ActivityLevel
 from .diet_intensivity import DietIntensivity
 from .sleep_quality import SleepQuality
 from .stress_level import StressLevel
+from .allergies import Allergies
 
 __all__ = [
     "Gender",
@@ -12,4 +13,5 @@ __all__ = [
     "DietIntensivity",
     "SleepQuality",
     "StressLevel",
+    "Allergies",
 ]

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ActivityLevel(Enum):
+class ActivityLevel(str, Enum):
     VERY_LOW = "very_low"
     LIGHT = "light"
     MODERATE = "moderate"
