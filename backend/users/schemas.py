@@ -1,3 +1,4 @@
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from .mixins import PasswordValidationMixin, CountryValidationMixin
@@ -13,7 +14,7 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 
 class PasswordResetRequest(BaseModel):
-    token: Optional[str] = Field(None)
+    token: Optional[HTTPAuthorizationCredentials] = Field(None)
     email: EmailStr
 
 

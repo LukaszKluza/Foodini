@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/change_password_request.dart';
-import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/refreshed_tokens_response.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/models/user_response.dart';
@@ -12,6 +12,17 @@ class AuthRepository {
   final ApiClient apiClient;
 
   AuthRepository(this.apiClient);
+
+  Future<UserResponse> getUser() async {
+    try {
+      final response = await apiClient.getUser();
+      return UserResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while getting user $e.');
+    }
+  }
 
   Future<LoggedUser> login(LoginRequest request) async {
     try {
@@ -24,13 +35,33 @@ class AuthRepository {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(int userId) async {
     try {
-      await apiClient.logout();
+      await apiClient.logout(userId);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while logging out $e.');
+    }
+  }
+
+  Future<void> resendVerificationMail(String email) async {
+    try {
+      await apiClient.resendVerificationMail(email);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while resending verification mail $e.');
+    }
+  }
+
+  Future<void> delete(int userId) async {
+    try {
+      await apiClient.delete(userId);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while deleting account $e.');
     }
   }
 

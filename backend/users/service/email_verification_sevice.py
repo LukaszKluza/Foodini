@@ -21,7 +21,8 @@ class EmailVerificationService:
         self.user_repository = user_repository
         self.user_validators = user_validators
 
-    async def send_new_account_verification(self, email: EmailStr, token: str):
+    @staticmethod
+    async def send_new_account_verification(email: EmailStr, token: str):
         message_link = f"{config.API_URL}/v1/users/confirm/new-account/{token}"
         message_subject = "FoodiniApp email verification"
         message_body = f"Please click this link: {message_link} to verify your email."
@@ -31,8 +32,9 @@ class EmailVerificationService:
         )
         await MailService.send_message(message)
 
+    @staticmethod
     async def send_password_reset_verification(
-        self, email: EmailStr, token: str, form_url: str
+        email: EmailStr, token: str, form_url: str
     ):
         message_link = f"{form_url}/{token}"
         message_subject = "FoodiniApp new password request"
@@ -59,6 +61,11 @@ class EmailVerificationService:
         await self.send_password_reset_verification(email, token, form_url)
 
     async def resend_verification(self, email: EmailStr):
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email is required",
+            )
         await self.user_validators.ensure_user_exists_by_email(email)
         token = await AuthorizationService.create_url_safe_token({"email": email})
         await self.process_new_account_verification(email, token)

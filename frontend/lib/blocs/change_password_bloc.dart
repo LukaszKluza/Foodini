@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/change_password_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/repository/token_storage_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_sates.dart';
 
 class ChangePasswordBloc
