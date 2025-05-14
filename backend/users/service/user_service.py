@@ -191,7 +191,6 @@ class UserService:
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
         except HTTPException:
-            print("KOKO")
             email = await AuthorizationService.extract_email_from_base64(token)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
             if email:
