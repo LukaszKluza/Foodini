@@ -4,7 +4,7 @@ class AppConfig {
   // Numbers
   static const int minPasswordLength = 8;
   static const int maxPasswordLength = 64;
-  static const int redirectionDelay = 300;
+  static const int redirectionDelay = 100;
 
   //Texts
   static const String foodini = 'Foodini';
@@ -49,9 +49,12 @@ class AppConfig {
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Successfully logged in';
-  static const String successfullyResendEmailVerification = 'Email account verification send successfully';
   static const String successfullyLoggedOut = 'Account logged out successfully';
   static const String successfullyDeletedAccount = 'Account deleted successfully';
+  static const String accountActivatedSuccessfully = 'Account has been activated successfully';
+  static const String accountHasNotBeenConfirmed = 'Your account has not been confirmed.';
+  static const String successfullyResendEmailVerification = 'Email account verification send successfully';
+  static const String sendVerificationEmailAgain = 'Send verification email again';
   static const String accountDeletionInformation = 'Are you sure you want to delete your account? This action cannot be undone.';
   static const String confirmAccountDeletion = 'Confirm Account Deletion';
   static const String delete = 'Delete';
@@ -85,5 +88,6 @@ class AppConfig {
     fontStyle: FontStyle.italic,
   );
   static const TextStyle errorStyle = TextStyle(color: Colors.red);
+  static const TextStyle warningStyle = TextStyle(color: Colors.orange);
   static const TextStyle successStyle = TextStyle(color: Colors.green);
 }

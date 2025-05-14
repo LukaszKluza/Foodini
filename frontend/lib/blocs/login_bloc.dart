@@ -13,8 +13,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc(this.authRepository, this.tokenStorageRepository)
     : super(LoginInitial()) {
+    on<InitFromUrl>((event, emit) {
+      if (event.status == 'success') {
+        emit(AccountSuccessVerification(AppConfig.accountActivatedSuccessfully));
+      } else if (event.status == 'error') {
+        emit(AccountNotVerified());
+      }
+    });
+
     on<LoginSubmitted>((event, emit) async {
-      emit(LoginLoading());
+      emit(ActionInProgress());
       try {
         final response = await authRepository.login(event.request);
         final accessToken = response.accessToken;
@@ -29,7 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginSuccess(AppConfig.successfullyLoggedIn));
       } on ApiException catch (error) {
         if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
-          emit(AccountNotVerified(error));
+          emit(AccountNotVerified());
           return;
         }
         emit(LoginFailure(error));
@@ -38,6 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<ResendVerificationEmail>((event, emit) async {
       try {
+        emit(ActionInProgress());
         await authRepository.resendVerificationMail(event.email);
 
         emit(ResendAccountVerificationSuccess(AppConfig.successfullyResendEmailVerification));

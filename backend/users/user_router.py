@@ -3,7 +3,6 @@ from typing import Optional
 from fastapi import APIRouter, Depends, status
 from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.responses import RedirectResponse
 from pydantic import EmailStr
 
 from backend.settings import config
@@ -112,15 +111,14 @@ async def verify_new_password(
 async def verify_new_account(
     url_token: str, user_service: UserService = Depends(get_user_service)
 ):
-    await user_service.confirm_new_account(url_token)
-    return RedirectResponse(url=f"{config.FRONTEND_URL}/#/login")
+    return await user_service.confirm_new_account(url_token)
 
 
 @user_router.get(
     "/confirm/resend-verification-new-account", status_code=status.HTTP_204_NO_CONTENT
 )
 async def resend_verification(
-    email: EmailStr,
+    email: Optional[EmailStr] = None,
     email_verification_service: EmailVerificationService = Depends(
         get_email_verification_service
     ),

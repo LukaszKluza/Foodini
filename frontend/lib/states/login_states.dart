@@ -1,15 +1,16 @@
 import 'package:frontend/api_exception.dart';
 
-abstract class LoginState {}
+abstract class LoginState {
+  final String? message;
+  const LoginState({this.message});
+}
 
 class LoginInitial extends LoginState {}
 
-class LoginLoading extends LoginState {}
+class ActionInProgress extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final String message;
-
-  LoginSuccess(this.message);
+  LoginSuccess(String message) : super(message: message);
 }
 
 class LoginFailure extends LoginState {
@@ -18,12 +19,14 @@ class LoginFailure extends LoginState {
   LoginFailure(this.error);
 }
 
-class AccountNotVerified extends LoginFailure {
-  AccountNotVerified(super.error);
+class AccountSuccessVerification extends LoginState {
+  AccountSuccessVerification(String message) : super(message: message);
+}
+
+class AccountNotVerified extends LoginState {
+  AccountNotVerified();
 }
 
 class ResendAccountVerificationSuccess extends LoginState {
-  final String message;
-
-  ResendAccountVerificationSuccess(this.message);
+  ResendAccountVerificationSuccess(String message) : super(message: message);
 }

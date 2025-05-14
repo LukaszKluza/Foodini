@@ -61,6 +61,11 @@ class EmailVerificationService:
         await self.send_password_reset_verification(email, token, form_url)
 
     async def resend_verification(self, email: EmailStr):
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email is required",
+            )
         await self.user_validators.ensure_user_exists_by_email(email)
         token = await AuthorizationService.create_url_safe_token({"email": email})
         await self.process_new_account_verification(email, token)

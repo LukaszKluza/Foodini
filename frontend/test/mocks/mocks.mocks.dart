@@ -185,6 +185,15 @@ class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
           as _i11.Future<void>);
 
   @override
+  _i11.Future<void> resendVerificationMail(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resendVerificationMail, [email]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
   _i11.Future<void> delete(int? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
@@ -742,6 +751,19 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               _FakeResponse_12<dynamic>(
                 this,
                 Invocation.method(#logout, [userId]),
+              ),
+            ),
+          )
+          as _i11.Future<_i9.Response<dynamic>>);
+
+  @override
+  _i11.Future<_i9.Response<dynamic>> resendVerificationMail(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resendVerificationMail, [email]),
+            returnValue: _i11.Future<_i9.Response<dynamic>>.value(
+              _FakeResponse_12<dynamic>(
+                this,
+                Invocation.method(#resendVerificationMail, [email]),
               ),
             ),
           )

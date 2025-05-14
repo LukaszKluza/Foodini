@@ -13,3 +13,8 @@ class ResendVerificationEmail extends LoginEvent {
 
   ResendVerificationEmail(this.email);
 }
+
+class InitFromUrl extends LoginEvent {
+  final String? status;
+  InitFromUrl(this.status);
+}
