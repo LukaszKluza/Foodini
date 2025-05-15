@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/states/change_password_states.dart';
+import 'package:frontend/fetch_token_task_callback.dart';
+import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
-import 'package:go_router/go_router.dart';
 
-class ChangePasswordListenerHelper {
-  static void onChangePasswordListener({
+class ProvideEmailListenerHelper {
+  static void onProvideEmailListener({
     required BuildContext context,
-    required ChangePasswordState state,
+    required ProvideEmailState state,
     required void Function(void Function()) setState,
     required bool mounted,
     required void Function(String) setMessage,
     required void Function(TextStyle) setMessageStyle,
   }) {
-    if (state is ChangePasswordSuccess) {
+    if (state is ProvideEmailSuccess) {
       setState(() {
-        setMessage(AppConfig.passwordSuccesfullyChanged);
+        setMessage(AppConfig.checkEmailAddressToSetNewPassword);
         setMessageStyle(AppConfig.successStyle);
       });
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/login');
-          });
-        }
-      });
-    } else if (state is ChangePasswordFailure) {
+      fetchTokenTaskCallback();
+    } else if (state is ProvideEmailFailure) {
       setState(() {
         setMessage(ExceptionConverter.formatErrorMessage(
           state.error.data,

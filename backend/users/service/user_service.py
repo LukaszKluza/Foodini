@@ -150,7 +150,6 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
-        user_id_from_token = None
         if new_password_confirm.token:
             try:
                 payload = await AuthorizationService.verify_access_token(

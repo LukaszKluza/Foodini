@@ -496,3 +496,92 @@ async def test_confirm_new_account_with_corrupted_token(
     # Assert
     assert response.status_code == 302
     assert response.headers["location"] == "http://localhost:3000/#/login?status=error"
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_success(
+    user_service,
+    mock_user_validators,
+    mock_user_repository,
+    mock_authorization_service,
+    mock_password_service,
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token=HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token"),
+    )
+
+    mock_authorization_service["verify_access_token"].return_value = {
+        "id": 1,
+        "jti": "mock_jti",
+        "linked_jti": "linked_jti_value",
+    }
+
+    mock_authorization_service["revoke_tokens"].return_value = True
+
+    mock_authorization_service["create_url_safe_token"].return_value = "safe_token"
+    mock_authorization_service["decode_url_safe_token"].return_value = {
+        "email": "test@example.com"
+    }
+
+    mock_password_service["hash_password"].return_value = "hashed_password"
+    mock_user_repository.update_password.return_value = {"success": True}
+
+    # When
+    response = await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert response == {"success": True}
+    mock_user_validators.ensure_user_exists_by_email.assert_called_with(
+        "test@example.com"
+    )
+    mock_authorization_service["verify_access_token"].assert_awaited_once_with(
+        HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token")
+    )
+    mock_authorization_service["revoke_tokens"].assert_awaited_once_with(
+        "mock_jti", "linked_jti_value"
+    )
+    mock_password_service["hash_password"].assert_awaited_once_with("NewPassword123")
+    mock_user_repository.update_password.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_too_early_password_change(
+    user_service, mock_user_validators, mock_authorization_service
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token=HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token"),
+    )
+
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+
+    mock_user_validators.check_last_password_change_data_time.side_effect = (
+        HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You must wait at least 1 day before changing your password again",
+        )
+    )
+
+    mock_authorization_service["verify_access_token"].return_value = {
+        "id": 1,
+        "jti": "mock_jti",
+        "linked_jti": "linked_jti_value",
+    }
+
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+    assert "You must wait at least 1 day" in exc_info.value.detail
+
+    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(
+        user_
+    )

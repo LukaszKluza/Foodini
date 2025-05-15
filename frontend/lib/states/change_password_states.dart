@@ -1,5 +1,4 @@
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/models/user_response.dart';
 
 abstract class ChangePasswordState {
   final String? message;

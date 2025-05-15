@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/fetch_token_task_callback.dart';
 import 'package:frontend/blocs/provide_email_block.dart';
 import 'package:frontend/events/provide_email_events.dart';
+import 'package:frontend/listeners/provide_email_listener.dart';
 import 'package:frontend/models/provide_email_request.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/repository/auth_repository.dart';
-import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/utils/user_validators.dart';
 
 class ProvideEmailScreen extends StatelessWidget {
@@ -21,15 +20,16 @@ class ProvideEmailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bloc != null
         ? BlocProvider<ProvideEmailBloc>.value(
-      value: bloc!,
-      child: _buildScaffold(context),
-    )
+          value: bloc!,
+          child: _buildScaffold(context),
+        )
         : BlocProvider<ProvideEmailBloc>(
-      create: (_) => ProvideEmailBloc(
-        Provider.of<AuthRepository>(context, listen: false),
-      ),
-      child: _buildScaffold(context),
-    );
+          create:
+              (_) => ProvideEmailBloc(
+                Provider.of<AuthRepository>(context, listen: false),
+              ),
+          child: _buildScaffold(context),
+        );
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -84,19 +84,14 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
               const SizedBox(height: 20),
               BlocConsumer<ProvideEmailBloc, ProvideEmailState>(
                 listener: (context, state) {
-                  if (state is ProvideEmailSuccess) {
-                    setState(() {
-                      _message = AppConfig.checkEmailAddressToSetNewPassword;
-                      _messageStyle = AppConfig.successStyle;
-                    });
-                    fetchTokenTaskCallback();
-                  } else if (state is ProvideEmailFailure) {
-                    setState(() {
-                      _message = ExceptionConverter.formatErrorMessage(
-                        state.error.data,
-                      );
-                    });
-                  }
+                  ProvideEmailListenerHelper.onProvideEmailListener(
+                    context: context,
+                    state: state,
+                    setState: setState,
+                    mounted: mounted,
+                    setMessage: (msg) => _message = msg,
+                    setMessageStyle: (style) => _messageStyle = style,
+                  );
                 },
                 builder: (context, state) {
                   if (state is ProvideEmailLoading) {

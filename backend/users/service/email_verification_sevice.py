@@ -32,7 +32,8 @@ class EmailVerificationService:
         )
         await MailService.send_message(message)
 
-    async def send_password_reset_verification(self, email: EmailStr, form_url: str):
+    @staticmethod
+    async def send_password_reset_verification(email: EmailStr, form_url: str):
         message_link = f"{form_url}"
         message_subject = "FoodiniApp new password request"
         message_body = f"To change the password please click this link: {message_link}."
