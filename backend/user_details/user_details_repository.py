@@ -36,7 +36,7 @@ class UserDetailsRepository:
         return None
 
 
-async def get_user_repository(
+async def get_user_details_repository(
     db: AsyncSession = Depends(get_db),
 ) -> UserDetailsRepository:
     return UserDetailsRepository(db)

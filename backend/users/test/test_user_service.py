@@ -7,7 +7,7 @@ from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
 from backend.settings import config
-from backend.users.models import User
+from backend.models import User
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
@@ -116,7 +116,6 @@ def mock_user_repository():
 user_create = UserCreate(
     name="TestName",
     last_name="TestLastName",
-    age=19,
     country="Poland",
     email="test@example.com",
     password="Password123",

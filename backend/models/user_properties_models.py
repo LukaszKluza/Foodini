@@ -39,8 +39,8 @@ class DietType(SQLModel, table=True):
     name: str = Field(unique=True)
 
 
-class DietIntensivity(SQLModel, table=True):
-    __tablename__ = "diet_intensivity"
+class DietIntensity(SQLModel, table=True):
+    __tablename__ = "diet_intensity"
 
     id: int = Field(default=None, primary_key=True)
     name: str = Field(unique=True)

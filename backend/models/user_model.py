@@ -14,7 +14,6 @@ class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str
     last_name: str
-    age: int
     country: str
     email: str = Field(unique=True, nullable=False)
     is_verified: bool = Field(default=False)
