@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/provide_email_block.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/events/provide_email_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/provide_email_states.dart';
