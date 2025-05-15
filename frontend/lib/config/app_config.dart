@@ -18,7 +18,6 @@ class AppConfig {
   static const String successfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
   static const String provideCorrectName = 'Provide correct name';
-  static const String requiredAge = 'Select your age';
   static const String requiredCountry = 'Select your country';
   static const String requiredEmail = 'E-mail is required';
   static const String requiredPassword = 'Password is required';
@@ -38,7 +37,6 @@ class AppConfig {
   static const String alreadyHaveAnAccount = 'Already have an account? Login';
   static const String firstName = 'First name';
   static const String lastName = 'Last name';
-  static const String age = 'Age';
   static const String country = 'Country';
   static const String email = 'E-mail';
   static const String password = 'Password';
@@ -50,12 +48,18 @@ class AppConfig {
   static const String dontHaveAccount = 'Do not have an account';
   static const String successfullyLoggedIn = 'Successfully logged in';
   static const String successfullyLoggedOut = 'Account logged out successfully';
-  static const String successfullyDeletedAccount = 'Account deleted successfully';
-  static const String accountActivatedSuccessfully = 'Account has been activated successfully';
-  static const String accountHasNotBeenConfirmed = 'Your account has not been confirmed.';
-  static const String successfullyResendEmailVerification = 'Email account verification send successfully';
-  static const String sendVerificationEmailAgain = 'Send verification email again';
-  static const String accountDeletionInformation = 'Are you sure you want to delete your account? This action cannot be undone.';
+  static const String successfullyDeletedAccount =
+      'Account deleted successfully';
+  static const String accountActivatedSuccessfully =
+      'Account has been activated successfully';
+  static const String accountHasNotBeenConfirmed =
+      'Your account has not been confirmed.';
+  static const String successfullyResendEmailVerification =
+      'Email account verification send successfully';
+  static const String sendVerificationEmailAgain =
+      'Send verification email again';
+  static const String accountDeletionInformation =
+      'Are you sure you want to delete your account? This action cannot be undone.';
   static const String confirmAccountDeletion = 'Confirm Account Deletion';
   static const String delete = 'Delete';
   static const String cancel = 'Cancel';
@@ -64,9 +68,6 @@ class AppConfig {
   static const String somethingWentWrong = 'Something went wrong';
   static const String checkAndConfirmEmailAddress =
       'Check and confirm your email address';
-
-  //Lists
-  static final List<int> ages = List.generate(109, (index) => index + 12);
 
   // URLs
   static const String baseUrl = 'http://127.0.0.1:8000/v1';
