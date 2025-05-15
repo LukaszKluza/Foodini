@@ -81,7 +81,7 @@ async def test_create_tokens_success(mock_redis):
     with (
         patch("jwt.encode", side_effect=["access_token", "refresh_token"]),
         patch(
-            "backend.users.service.user_authorisation_service.get_redis",
+            "backend.core.user_authorisation_service.get_redis",
             return_value=mock_redis,
         ),
         patch("uuid.uuid4", side_effect=["access_jti", "refresh_jti"]),
@@ -101,7 +101,7 @@ async def test_create_tokens_success(mock_redis):
 async def test_create_tokens_redis_error():
     # given
     with patch(
-        "backend.users.service.user_authorisation_service.get_redis",
+        "backend.core.user_authorisation_service.get_redis",
         return_value=None,
     ):
         # when / then
@@ -120,7 +120,7 @@ async def test_verify_token_success(mock_redis, credentials, valid_payload):
             return_value=valid_payload,
         ),
         patch(
-            "backend.users.service.user_authorisation_service.get_redis",
+            "backend.core.user_authorisation_service.get_redis",
             return_value=mock_redis,
         ),
     ):
@@ -169,7 +169,7 @@ async def test_refresh_token_success(mock_redis, credentials, valid_refresh_payl
             new_callable=AsyncMock,
         ),
         patch(
-            "backend.users.service.user_authorisation_service.get_redis",
+            "backend.core.user_authorisation_service.get_redis",
             return_value=mock_redis,
         ),
     ):
@@ -189,7 +189,7 @@ async def test_refresh_token_success(mock_redis, credentials, valid_refresh_payl
 async def test_revoke_tokens_success(mock_redis):
     # given
     with patch(
-        "backend.users.service.user_authorisation_service.get_redis",
+        "backend.core.user_authorisation_service.get_redis",
         return_value=mock_redis,
     ):
         # when
@@ -217,7 +217,7 @@ async def test_create_url_safe_token():
     mock_serializer.dumps.return_value = "safe_token"
 
     with patch(
-        "backend.users.service.user_authorisation_service.URLSafeTimedSerializer",
+        "backend.core.user_authorisation_service.URLSafeTimedSerializer",
         return_value=mock_serializer,
     ):
         # when
@@ -236,7 +236,7 @@ async def test_decode_url_safe_token_invalid():
     mock_serializer.loads.side_effect = BadSignature("Invalid")
 
     with patch(
-        "backend.users.service.user_authorisation_service.URLSafeTimedSerializer",
+        "backend.core.user_authorisation_service.URLSafeTimedSerializer",
         return_value=mock_serializer,
     ):
         # when / then

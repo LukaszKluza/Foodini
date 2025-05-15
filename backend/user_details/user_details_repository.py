@@ -1,4 +1,5 @@
 from fastapi.params import Depends
+from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.models import UserDetails
 from .schemas import UserDetailsCreate, UserDetailsUpdate
@@ -20,6 +21,11 @@ class UserDetailsRepository:
 
     async def get_user_details_by_id(self, user_details_id: int) -> UserDetails | None:
         return await self.db.get(UserDetails, user_details_id)
+
+    async def get_user_details_by_user_id(self, user_id: int) -> UserDetails:
+        query = select(UserDetails).where(UserDetails.user_id == user_id)
+        result = await self.db.exec(query)
+        return result.first()
 
     async def update_user_details(
         self, user_details_id: int, user_details_data: UserDetailsUpdate

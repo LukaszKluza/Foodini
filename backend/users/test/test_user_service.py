@@ -6,8 +6,9 @@ import pytest
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
-from backend.settings import config
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.models import User
+from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
@@ -15,7 +16,6 @@ from backend.users.schemas import (
     PasswordResetRequest,
 )
 from backend.users.service.password_service import PasswordService
-from backend.core.user_authorisation_service import AuthorizationService
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService
@@ -120,6 +120,7 @@ user_create = UserCreate(
     email="test@example.com",
     password="Password123",
 )
+
 basic_user = User(
     id=1,
     email="test@example.com",

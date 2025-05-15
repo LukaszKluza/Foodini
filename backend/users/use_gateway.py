@@ -1,6 +1,7 @@
 from fastapi import Depends
 from pydantic import EmailStr
 
+from backend.models import User
 from backend.users.service.user_validation_service import (
     UserValidationService,
     get_user_validators,
@@ -14,10 +15,10 @@ class UserGateway:
     ):
         self.user_validation_service = user_validation_service
 
-    async def ensure_user_exists_by_email(self, email: EmailStr):
+    async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
         return await self.user_validation_service.ensure_user_exists_by_email(email)
 
-    async def ensure_user_exists_by_id(self, user_id: int):
+    async def ensure_user_exists_by_id(self, user_id: int) -> User:
         return await self.user_validation_service.ensure_user_exists_by_id(user_id)
 
 
