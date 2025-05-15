@@ -54,6 +54,7 @@ void main() {
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(TextButton), findsNWidgets(3));
     expect(find.byType(ElevatedButton), findsOneWidget);
+    expect(find.text(AppConfig.login), findsNWidgets(2));
 
     expect(loginBloc.state, isA<LoginInitial>());
   });

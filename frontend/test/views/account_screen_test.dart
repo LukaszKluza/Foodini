@@ -59,6 +59,8 @@ void main() {
     expect(find.text(AppConfig.changePassword), findsOneWidget);
     expect(find.text(AppConfig.logout), findsOneWidget);
     expect(find.text(AppConfig.deleteAccount), findsOneWidget);
+    expect(find.text(AppConfig.foodini), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/fetch_token_task_callback.dart';
 import 'package:frontend/blocs/provide_email_block.dart';
 import 'package:frontend/events/provide_email_events.dart';
 import 'package:frontend/models/provide_email_request.dart';
@@ -88,6 +89,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                       _message = AppConfig.checkEmailAddressToSetNewPassword;
                       _messageStyle = AppConfig.successStyle;
                     });
+                    fetchTokenTaskCallback();
                   } else if (state is ProvideEmailFailure) {
                     setState(() {
                       _message = ExceptionConverter.formatErrorMessage(

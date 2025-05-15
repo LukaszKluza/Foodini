@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/events/change_password_events.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +52,7 @@ void main() {
     expect(find.byKey(Key(AppConfig.newPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.confirmPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.changePassword)), findsOneWidget);
+    expect(find.text(AppConfig.changePassword), findsNWidgets(2));
 
     expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
   });
@@ -85,5 +87,17 @@ void main() {
 
     // Then
     expect(find.text(AppConfig.samePasswords), findsOneWidget);
+  });
+
+  testWidgets('Proper message after successful password change', (WidgetTester tester) async {
+    // Given
+    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
+
+    // When
+    changePasswordBloc.add(InitFromUrl("success"));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.text(AppConfig.passwordSuccesfullyChanged), findsOneWidget);
   });
 }

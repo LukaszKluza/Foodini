@@ -48,6 +48,7 @@ void main() {
 
     // Then
     expect(find.byKey(Key(AppConfig.email)), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
   });
