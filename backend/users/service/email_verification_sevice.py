@@ -4,7 +4,7 @@ from fastapi.params import Depends
 
 from backend.mail import MailService
 from backend.settings import config
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.users.service.user_validation_service import (
     UserValidationService,

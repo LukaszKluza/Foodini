@@ -15,7 +15,7 @@ from backend.users.schemas import (
     PasswordResetRequest,
 )
 from backend.users.service.password_service import PasswordService
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 
 with patch.dict(sys.modules, {"backend.users.user_repository": MagicMock()}):
     from backend.users.service.user_service import UserService

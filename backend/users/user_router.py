@@ -10,7 +10,7 @@ from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
     get_email_verification_service,
 )
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.users.service.user_service import UserService, get_user_service
 from .schemas import (
     UserCreate,

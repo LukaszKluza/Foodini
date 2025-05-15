@@ -2,7 +2,6 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.models import UserDetails
 from .schemas import UserDetailsCreate, UserDetailsUpdate
-from sqlalchemy.future import select
 from backend.core.database import get_db
 
 
