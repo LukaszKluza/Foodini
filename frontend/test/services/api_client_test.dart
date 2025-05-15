@@ -19,12 +19,10 @@ void main() {
     apiClient = ApiClient(mockDio);
   });
 
-
   test('should send a POST request with correct headers and body', () async {
     final request = RegisterRequest(
       name: 'John',
       lastName: 'Doe',
-      age: 30,
       country: 'Poland',
       email: 'john.doe@example.com',
       password: 'securepassword123',
@@ -37,22 +35,26 @@ void main() {
     );
 
     when(mockDio.interceptors).thenReturn(Interceptors());
-    when(mockDio.post(
-      AppConfig.registerUrl,
-      data: request.toJson(),
-      options: anyNamed('options'),
-    )).thenAnswer((_) async => expectedResponse);
+    when(
+      mockDio.post(
+        AppConfig.registerUrl,
+        data: request.toJson(),
+        options: anyNamed('options'),
+      ),
+    ).thenAnswer((_) async => expectedResponse);
 
     final response = await apiClient.register(request);
 
     expect(response.statusCode, 200);
     expect(response.data['result'], 'ok');
 
-    verify(mockDio.post(
-      AppConfig.registerUrl,
-      data: request.toJson(),
-      options: anyNamed('options'),
-    )).called(1);
+    verify(
+      mockDio.post(
+        AppConfig.registerUrl,
+        data: request.toJson(),
+        options: anyNamed('options'),
+      ),
+    ).called(1);
   });
 
   test('should call logout endpoint with correct user id', () async {
@@ -65,40 +67,48 @@ void main() {
       statusCode: 204,
     );
 
-    when(mockDio.get(
-      url,
-      queryParameters: {'user_id': userId},
-      options: anyNamed('options'),
-    )).thenAnswer((_) async => expectedResponse);
+    when(
+      mockDio.get(
+        url,
+        queryParameters: {'user_id': userId},
+        options: anyNamed('options'),
+      ),
+    ).thenAnswer((_) async => expectedResponse);
 
     final response = await apiClient.logout(userId);
 
     expect(response.statusCode, 204);
 
-    verify(mockDio.get(
-      url,
-      queryParameters: {'user_id': userId},
-      options: anyNamed('options'),
-    )).called(1);
+    verify(
+      mockDio.get(
+        url,
+        queryParameters: {'user_id': userId},
+        options: anyNamed('options'),
+      ),
+    ).called(1);
   });
 
   test('should throw if logout returns error status code', () async {
     const userId = 2;
     final url = AppConfig.logoutUrl;
 
-    when(mockDio.get(
-      url,
-      queryParameters: {'user_id': userId},
-      options: anyNamed('options'),
-    )).thenThrow(DioException(
-      requestOptions: RequestOptions(path: url),
-      response: Response(
-        requestOptions: RequestOptions(path: url),
-        statusCode: 500,
-        data: 'error',
+    when(
+      mockDio.get(
+        url,
+        queryParameters: {'user_id': userId},
+        options: anyNamed('options'),
       ),
-      type: DioExceptionType.badResponse,
-    ));
+    ).thenThrow(
+      DioException(
+        requestOptions: RequestOptions(path: url),
+        response: Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: 500,
+          data: 'error',
+        ),
+        type: DioExceptionType.badResponse,
+      ),
+    );
 
     expect(() async => await apiClient.logout(2), throwsA(isA<DioException>()));
   });
