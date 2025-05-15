@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from .user_properties_models import (
     Gender,
     DietType,
-    DietIntensivity,
+    DietIntensity,
     ActivityLevel,
     StressLevel,
     SleepQuality,
@@ -24,7 +24,10 @@ class UserDetails(SQLModel, table=True):
 
     user_id: int = Field(
         sa_column=Column(
-            Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+            Integer,
+            ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            unique=True,
         )
     )
     user: Optional["User"] = Relationship(back_populates="details")
@@ -46,8 +49,8 @@ class UserDetails(SQLModel, table=True):
     diet_goal_kg: float
     meals_per_day: int = Field(ge=2, le=5)
 
-    diet_intensivity_id: int = Field(foreign_key="diet_intensivity.id")
-    diet_intensivity: Optional["DietIntensivity"] = Relationship()
+    diet_intensity_id: int = Field(foreign_key="diet_intensity.id")
+    diet_intensity: Optional["DietIntensity"] = Relationship()
 
     activity_level_id: int = Field(foreign_key="activity_level.id")
     activity_level: Optional["ActivityLevel"] = Relationship()

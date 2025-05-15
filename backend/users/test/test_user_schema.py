@@ -9,7 +9,6 @@ def valid_user_data():
     return {
         "name": "Jan",
         "last_name": "Kowalski",
-        "age": 25,
         "country": "Poland",
         "email": "jan@example.com",
         "password": "ValidPass123",
@@ -101,28 +100,6 @@ def test_last_name_validation(valid_user_data, invalid_last_name):
     # Optional
     errors = exc_info.value.errors()
     assert len(errors) >= 1
-
-
-@pytest.mark.parametrize(
-    "invalid_age",
-    [
-        12,
-        121,
-        0,
-        -5,
-    ],
-)
-def test_age_validation(valid_user_data, invalid_age):
-    # Given
-    invalid_data = prepare_invalid_data(valid_user_data, age=invalid_age)
-
-    # When/Then
-    with pytest.raises(ValidationError) as exc_info:
-        UserCreate(**invalid_data)
-
-    # Optional
-    errors = exc_info.value.errors()
-    assert len(errors) == 1
 
 
 @pytest.mark.parametrize(

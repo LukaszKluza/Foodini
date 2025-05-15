@@ -7,7 +7,7 @@ from backend.models import (
     User,
     ActivityLevel,
     Allergies,
-    DietIntensivity,
+    DietIntensity,
     DietType,
     Gender,
     SleepQuality,
@@ -16,7 +16,7 @@ from backend.models import (
 from backend.user_details.enums import (
     ActivityLevel as ActivityLevelEnum,
     Allergies as AllergiesEnum,
-    DietIntensivity as DietIntensivityEnum,
+    DietIntensity as DietIntensityEnum,
     DietType as DietTypeEnum,
     Gender as GenderEnum,
     SleepQuality as SleepQualityEnum,
@@ -44,7 +44,7 @@ async def populate_enum_tables():
 
         await insert_unique_values(Gender, GenderEnum)
         await insert_unique_values(DietType, DietTypeEnum)
-        await insert_unique_values(DietIntensivity, DietIntensivityEnum)
+        await insert_unique_values(DietIntensity, DietIntensityEnum)
         await insert_unique_values(ActivityLevel, ActivityLevelEnum)
         await insert_unique_values(StressLevel, StressLevelEnum)
         await insert_unique_values(SleepQuality, SleepQualityEnum)

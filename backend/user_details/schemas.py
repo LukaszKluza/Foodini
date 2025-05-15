@@ -4,7 +4,7 @@ from typing import List, Optional
 from .enums import (
     Gender,
     DietType,
-    DietIntensivity,
+    DietIntensity,
     ActivityLevel,
     SleepQuality,
     StressLevel,
@@ -23,7 +23,7 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     allergies: List[Allergies]
     diet_goal_kg: float = Field(..., ge=20, le=400)
     meals_per_day: int = Field(ge=2, le=5)
-    diet_intensivity: DietIntensivity
+    diet_intensity: DietIntensity
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
@@ -45,7 +45,7 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     allergies: Optional[str] = None
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=400)
     meals_per_day: Optional[int] = Field(None, ge=2, le=5)
-    diet_intensivity: Optional[DietIntensivity] = None
+    diet_intensity: Optional[DietIntensity] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None

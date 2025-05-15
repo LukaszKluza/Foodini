@@ -3,7 +3,7 @@ from .user_details_model import UserDetails
 from .user_properties_models import (
     ActivityLevel,
     Allergies,
-    DietIntensivity,
+    DietIntensity,
     DietType,
     Gender,
     SleepQuality,
@@ -16,7 +16,7 @@ __all__ = [
     "UserDetails",
     "ActivityLevel",
     "Allergies",
-    "DietIntensivity",
+    "DietIntensity",
     "DietType",
     "Gender",
     "SleepQuality",

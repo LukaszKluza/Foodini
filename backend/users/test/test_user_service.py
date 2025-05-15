@@ -116,7 +116,6 @@ def mock_user_repository():
 user_create = UserCreate(
     name="TestName",
     last_name="TestLastName",
-    age=19,
     country="Poland",
     email="test@example.com",
     password="Password123",
