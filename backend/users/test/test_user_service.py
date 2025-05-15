@@ -7,7 +7,7 @@ from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
 from backend.settings import config
-from backend.users.models import User
+from backend.models import User
 from backend.users.schemas import (
     UserCreate,
     UserLogin,
