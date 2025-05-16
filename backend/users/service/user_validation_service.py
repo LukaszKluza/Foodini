@@ -4,7 +4,7 @@ from datetime import datetime
 from pydantic import EmailStr
 
 from backend.users.user_repository import UserRepository, get_user_repository
-from backend.users.models import User
+from backend.models import User
 from backend.settings import config
 
 
