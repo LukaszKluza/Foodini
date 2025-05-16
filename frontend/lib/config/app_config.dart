@@ -65,6 +65,16 @@ class AppConfig {
   static const String checkAndConfirmEmailAddress =
       'Check and confirm your email address';
 
+  static const String dietPreferences = 'Diet preferences';
+  static const String dietType = 'Diet type';
+  static const String allergies = 'Allergies';
+  static const String dietGoal = 'Diet goal';
+  static const String mealsPerDay = 'Meals per day';
+  static const String dietIntensity = 'Diet intensity';
+
+  static const String caloriesPrediction = 'Calories prediction';
+
+
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
 
