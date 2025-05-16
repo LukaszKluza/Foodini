@@ -11,6 +11,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/utils/query_parameters_mapper.dart';
 
 
 class ChangePasswordScreen extends StatelessWidget {
@@ -61,7 +62,26 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
       TextEditingController();
 
   String? _message;
+  String? _token;
   TextStyle _messageStyle = AppConfig.errorStyle;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pathAndQuery = Uri.base.toString().split('?');
+      if (pathAndQuery.length > 1) {
+        final Map<String, String> queryParameters =
+            QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
+
+        if (queryParameters["token"] != null) {
+          setState(() {
+            _token = queryParameters["token"];
+          });
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +143,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                           final request = ChangePasswordRequest(
                             email: _emailController.text,
                             newPassword: _newPasswordController.text,
+                            token: _token!,
                           );
                           context.read<ChangePasswordBloc>().add(
                             ChangePasswordSubmitted(request),

@@ -350,6 +350,35 @@ async def test_reset_password_user_logged_successful(
 
 
 @pytest.mark.asyncio
+async def test_reset_password_too_early(
+    user_service,
+    mock_user_validators,
+    mock_authorization_service,
+):
+    # Given
+    password_reset_data = PasswordResetRequest(email="test@example.com")
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+    mock_user_validators.ensure_verified_user.return_value = None
+
+    # Wywołanie wyjątku przy sprawdzaniu czasu ostatniej zmiany hasła
+    mock_user_validators.check_last_password_change_data_time.side_effect = HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="You must wait at least 1 day before changing your password again",
+    )
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.reset_password(password_reset_data, form_url="https://reset.example.com")
+
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+    assert "1 day" in exc_info.value.detail
+
+    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(user_)
+
+
+@pytest.mark.asyncio
 async def test_update_when_user_not_found(user_service, mock_user_validators):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
@@ -500,31 +529,22 @@ async def test_confirm_new_account_with_corrupted_token(
 
 @pytest.mark.asyncio
 async def test_confirm_new_password_success(
-    user_service,
-    mock_user_validators,
-    mock_user_repository,
-    mock_authorization_service,
-    mock_password_service,
+        user_service,
+        mock_user_validators,
+        mock_user_repository,
+        mock_password_service,
 ):
     # Given
     new_password_data = NewPasswordConfirm(
         email="test@example.com",
         password="NewPassword123",
-        token=HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token"),
+        token="valid_token",
     )
 
-    mock_authorization_service["verify_access_token"].return_value = {
-        "id": 1,
-        "jti": "mock_jti",
-        "linked_jti": "linked_jti_value",
-    }
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
-    mock_authorization_service["revoke_tokens"].return_value = True
-
-    mock_authorization_service["create_url_safe_token"].return_value = "safe_token"
-    mock_authorization_service["decode_url_safe_token"].return_value = {
-        "email": "test@example.com"
-    }
+    user_service.decode_url_token = AsyncMock(return_value="test@example.com")
 
     mock_password_service["hash_password"].return_value = "hashed_password"
     mock_user_repository.update_password.return_value = {"success": True}
@@ -534,54 +554,63 @@ async def test_confirm_new_password_success(
 
     # Then
     assert response == {"success": True}
-    mock_user_validators.ensure_user_exists_by_email.assert_called_with(
-        "test@example.com"
-    )
-    mock_authorization_service["verify_access_token"].assert_awaited_once_with(
-        HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token")
-    )
-    mock_authorization_service["revoke_tokens"].assert_awaited_once_with(
-        "mock_jti", "linked_jti_value"
-    )
+    mock_user_validators.ensure_user_exists_by_email.assert_called_with("test@example.com")
+    user_service.decode_url_token.assert_awaited_once_with("valid_token")
+    mock_user_validators.check_user_permission.assert_called_once_with("test@example.com", "test@example.com")
     mock_password_service["hash_password"].assert_awaited_once_with("NewPassword123")
     mock_user_repository.update_password.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_password_too_early_password_change(
-    user_service, mock_user_validators, mock_authorization_service
+async def test_confirm_new_password_invalid_token(
+    user_service,
+    mock_user_validators,
 ):
     # Given
     new_password_data = NewPasswordConfirm(
         email="test@example.com",
         password="NewPassword123",
-        token=HTTPAuthorizationCredentials(scheme="Bearer", credentials="valid_token"),
+        token="invalid_token",
     )
 
     user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
-    mock_user_validators.check_last_password_change_data_time.side_effect = (
-        HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You must wait at least 1 day before changing your password again",
-        )
-    )
-
-    mock_authorization_service["verify_access_token"].return_value = {
-        "id": 1,
-        "jti": "mock_jti",
-        "linked_jti": "linked_jti_value",
-    }
+    user_service.decode_url_token = AsyncMock(side_effect=Exception("Decode failed"))
 
     # When
     with pytest.raises(HTTPException) as exc_info:
         await user_service.confirm_new_password(new_password_data)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-    assert "You must wait at least 1 day" in exc_info.value.detail
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "Invalid token"
 
-    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(
-        user_
+    user_service.decode_url_token.assert_awaited_once_with("invalid_token")
+    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with("test@example.com")
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_missing_token(
+    user_service,
+    mock_user_validators,
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token="",
     )
+
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "Token required"
+
+    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with("test@example.com")

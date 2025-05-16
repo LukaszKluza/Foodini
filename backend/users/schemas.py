@@ -18,9 +18,9 @@ class PasswordResetRequest(BaseModel):
 
 
 class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
-    token: Optional[HTTPAuthorizationCredentials] = Field(None)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
+    token: str
 
 
 class UserUpdate(CountryValidationMixin, BaseModel):
