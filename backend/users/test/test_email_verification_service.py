@@ -99,7 +99,9 @@ async def test_send_new_account_verification(
 
 
 @pytest.mark.asyncio
-async def test_send_password_reset_verification(email_verification_service, patch_mail_create_send):
+async def test_send_password_reset_verification(
+    email_verification_service, patch_mail_create_send
+):
     test_email = "test@example.com"
     test_form_url = "https://example.com/reset"
     test_token = "mocked_token"

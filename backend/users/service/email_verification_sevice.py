@@ -33,7 +33,9 @@ class EmailVerificationService:
         await MailService.send_message(message)
 
     @staticmethod
-    async def send_password_reset_verification(email: EmailStr, form_url: str, token: str):
+    async def send_password_reset_verification(
+        email: EmailStr, form_url: str, token: str
+    ):
         message_link = f"{form_url}/?token={token}"
         message_subject = "FoodiniApp new password request"
         message_body = f"To change the password please click this link: {message_link}."
@@ -52,7 +54,9 @@ class EmailVerificationService:
             )
         await self.send_new_account_verification(email, token)
 
-    async def process_password_reset_verification(self, email: EmailStr, form_url: str, token: str):
+    async def process_password_reset_verification(
+        self, email: EmailStr, form_url: str, token: str
+    ):
         await self.user_validators.ensure_user_exists_by_email(email)
         await self.send_password_reset_verification(email, form_url, token)
 

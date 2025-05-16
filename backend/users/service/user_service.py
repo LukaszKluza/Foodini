@@ -107,7 +107,9 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
-        token = await AuthorizationService.create_url_safe_token({"email": password_reset_request.email})
+        token = await AuthorizationService.create_url_safe_token(
+            {"email": password_reset_request.email}
+        )
 
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url, token
@@ -156,13 +158,17 @@ class UserService:
 
         if new_password_confirm.token:
             try:
-                user_email_from_token = await self.decode_url_token(new_password_confirm.token)
+                user_email_from_token = await self.decode_url_token(
+                    new_password_confirm.token
+                )
                 if not user_email_from_token:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Invalid token - missing user ID",
                     )
-                self.user_validators.check_user_permission(user_email_from_token, new_password_confirm.email)
+                self.user_validators.check_user_permission(
+                    user_email_from_token, new_password_confirm.email
+                )
             except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
