@@ -74,22 +74,11 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         final Map<String, String> queryParameters =
             QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
 
-        if (queryParameters["token"] != null &&
-            queryParameters["token"]!.isNotEmpty) {
+        if (queryParameters["token"] != null) {
           setState(() {
             _token = queryParameters["token"];
           });
-        } else {
-          setState(() {
-            _message = AppConfig.wrongChangePasswordUrl;
-            _messageStyle = AppConfig.errorStyle;
-          });
         }
-      } else {
-        setState(() {
-          _message = AppConfig.wrongChangePasswordUrl;
-          _messageStyle = AppConfig.errorStyle;
-        });
       }
     });
   }
@@ -99,92 +88,88 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(35.0),
-        child:
-            _token == null
-                ? Center(
-                  child: Text(
-                    _message ?? AppConfig.wrongChangePasswordUrl,
-                    style: _messageStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-                : Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        key: Key(AppConfig.email),
-                        controller: _emailController,
-                        decoration: InputDecoration(labelText: AppConfig.email),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: validateEmail,
-                      ),
-                      TextFormField(
-                        key: Key(AppConfig.newPassword),
-                        controller: _newPasswordController,
-                        decoration: InputDecoration(
-                          labelText: AppConfig.newPassword,
-                        ),
-                        obscureText: true,
-                        validator: validatePassword,
-                      ),
-                      TextFormField(
-                        key: Key(AppConfig.confirmPassword),
-                        controller: _confirmNewPasswordController,
-                        decoration: InputDecoration(
-                          labelText: AppConfig.confirmPassword,
-                        ),
-                        obscureText: true,
-                        validator:
-                            (value) => validateConfirmPassword(
-                              value,
-                              _newPasswordController.text,
-                            ),
-                      ),
-                      const SizedBox(height: 20),
-                      BlocConsumer<ChangePasswordBloc, ChangePasswordState>(
-                        listener: (context, state) {
-                          ChangePasswordListenerHelper.onChangePasswordListener(
-                            context: context,
-                            state: state,
-                            setState: setState,
-                            mounted: mounted,
-                            setMessage: (msg) => _message = msg,
-                            setMessageStyle: (style) => _messageStyle = style,
-                          );
-                        },
-                        builder: (context, state) {
-                          if (state is ChangePasswordLoading) {
-                            return const CircularProgressIndicator();
-                          } else {
-                            return ElevatedButton(
-                              key: Key(AppConfig.changePassword),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  final request = ChangePasswordRequest(
-                                    email: _emailController.text,
-                                    newPassword: _newPasswordController.text,
-                                    token: _token!,
-                                  );
-                                  context.read<ChangePasswordBloc>().add(
-                                    ChangePasswordSubmitted(request),
-                                  );
-                                }
-                              },
-                              child: Text(AppConfig.changePassword),
-                            );
-                          }
-                        },
-                      ),
-                      if (_message != null)
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(_message!, style: _messageStyle),
-                        ),
-                    ],
-                  ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                key: Key(AppConfig.email),
+                controller: _emailController,
+                decoration: InputDecoration(labelText: AppConfig.email),
+                keyboardType: TextInputType.emailAddress,
+                validator: validateEmail,
+              ),
+              TextFormField(
+                key: Key(AppConfig.newPassword),
+                controller: _newPasswordController,
+                decoration: InputDecoration(labelText: AppConfig.newPassword),
+                obscureText: true,
+                validator: validatePassword,
+              ),
+              TextFormField(
+                key: Key(AppConfig.confirmPassword),
+                controller: _confirmNewPasswordController,
+                decoration: InputDecoration(
+                  labelText: AppConfig.confirmPassword,
                 ),
+                obscureText: true,
+                validator:
+                    (value) => validateConfirmPassword(
+                      value,
+                      _newPasswordController.text,
+                    ),
+              ),
+              const SizedBox(height: 20),
+              BlocConsumer<ChangePasswordBloc, ChangePasswordState>(
+                listener: (context, state) {
+                  ChangePasswordListenerHelper.onChangePasswordListener(
+                    context: context,
+                    state: state,
+                    setState: setState,
+                    mounted: mounted,
+                    setMessage: (msg) => _message = msg,
+                    setMessageStyle: (style) => _messageStyle = style,
+                  );
+                },
+                builder: (context, state) {
+                  if (state is ChangePasswordLoading) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    return ElevatedButton(
+                      key: Key(AppConfig.changePassword),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          if (_token == null || _token!.isEmpty) {
+                            setState(() {
+                              _message = AppConfig.wrongChangePasswordUrl;
+                              _messageStyle = AppConfig.errorStyle;
+                            });
+                            return;
+                          }
+                          final request = ChangePasswordRequest(
+                            email: _emailController.text,
+                            newPassword: _newPasswordController.text,
+                            token: _token!,
+                          );
+                          context.read<ChangePasswordBloc>().add(
+                            ChangePasswordSubmitted(request),
+                          );
+                        }
+                      },
+                      child: Text(AppConfig.changePassword),
+                    );
+                  }
+                },
+              ),
+              if (_message != null)
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(_message!, style: _messageStyle),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
