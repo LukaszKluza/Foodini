@@ -69,6 +69,7 @@ class AppConfig {
       'Check your email address to set new password';
   static const String passwordSuccesfullyChanged =
       'Password succesfully changed';
+  static const String wrongChangePasswordUrl = "You can't access change password form";
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);

@@ -107,6 +107,7 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
+        self.user_validators.check_last_password_change_data_time(user_)
         token = await AuthorizationService.create_url_safe_token(
             {"email": password_reset_request.email}
         )
@@ -114,7 +115,6 @@ class UserService:
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url, token
         )
-        self.user_validators.check_last_password_change_data_time(user_)
         return UserResponse(
             id=user_.id,
             email=user_.email,
