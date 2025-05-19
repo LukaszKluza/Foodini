@@ -48,6 +48,7 @@ class AppConfig {
 
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
+  static const String forgotPassword = 'Forgot my password';
   static const String successfullyLoggedIn = 'Successfully logged in';
   static const String successfullyLoggedOut = 'Account logged out successfully';
   static const String successfullyDeletedAccount = 'Account deleted successfully';
@@ -64,6 +65,11 @@ class AppConfig {
   static const String somethingWentWrong = 'Something went wrong';
   static const String checkAndConfirmEmailAddress =
       'Check and confirm your email address';
+  static const String checkEmailAddressToSetNewPassword =
+      'Check your email address to set new password';
+  static const String passwordSuccessfullyChanged =
+      'Password successfully changed';
+  static const String wrongChangePasswordUrl = "You can't access change password form";
 
   //Lists
   static final List<int> ages = List.generate(109, (index) => index + 12);
@@ -79,7 +85,8 @@ class AppConfig {
   static const String resendVerificationEmailUrl =
       '$baseUrl/users/confirm/resend-verification-new-account';
   static const String deleteUrl = '$baseUrl/users/delete';
-  static const String changePasswordUrl = '$baseUrl/reset-password/request';
+  static const String changePasswordUrl = '$baseUrl/users/reset-password/request';
+  static const String confirmNewPasswordUrl = '$baseUrl/users/confirm/new-password';
   static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
 
   //Styles

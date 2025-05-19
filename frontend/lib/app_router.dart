@@ -4,6 +4,7 @@ import 'package:frontend/views/screens/account_screen.dart';
 import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:frontend/views/screens/login_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/screens/provide_email_screen.dart';
 import 'package:frontend/views/screens/register_screen.dart';
 import 'package:frontend/views/screens/home_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +29,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/change_password',
       builder: (context, state) => ChangePasswordScreen(),
+    ),
+    GoRoute(
+      path: '/provide_email',
+      builder: (context, state) => ProvideEmailScreen(),
     ),
   ],
 );

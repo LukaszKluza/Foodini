@@ -50,6 +50,7 @@ void main() {
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
+    expect(find.text(AppConfig.registration),findsOneWidget);
   });
 
   testWidgets('Register form submits with valid data', (WidgetTester tester) async {
