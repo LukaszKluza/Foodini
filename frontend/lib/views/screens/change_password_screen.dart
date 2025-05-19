@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/app_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/change_password_bloc.dart';
@@ -74,11 +75,16 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         final Map<String, String> queryParameters =
             QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
 
-        if (queryParameters["token"] != null) {
+        final token = queryParameters["token"];
+        if (token != null && token.isNotEmpty) {
           setState(() {
-            _token = queryParameters["token"];
+            _token = token;
           });
+        } else {
+          router.go("/provide_email");
         }
+      } else {
+        router.go("/provide_email");
       }
     });
   }
@@ -140,13 +146,6 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                       key: Key(AppConfig.changePassword),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (_token == null || _token!.isEmpty) {
-                            setState(() {
-                              _message = AppConfig.wrongChangePasswordUrl;
-                              _messageStyle = AppConfig.errorStyle;
-                            });
-                            return;
-                          }
                           final request = ChangePasswordRequest(
                             email: _emailController.text,
                             newPassword: _newPasswordController.text,

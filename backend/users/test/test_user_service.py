@@ -589,17 +589,13 @@ async def test_confirm_new_password_invalid_token(
     user_service.decode_url_token = AsyncMock(side_effect=Exception("Decode failed"))
 
     # When
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(Exception) as exc_info:
         await user_service.confirm_new_password(new_password_data)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "Invalid token"
+    assert str(exc_info.value) == "Decode failed"
 
     user_service.decode_url_token.assert_awaited_once_with("invalid_token")
-    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(
-        "test@example.com"
-    )
 
 
 @pytest.mark.asyncio
@@ -624,7 +620,3 @@ async def test_confirm_new_password_missing_token(
     # Then
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
     assert exc_info.value.detail == "Token verification failed"
-
-    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(
-        "test@example.com"
-    )

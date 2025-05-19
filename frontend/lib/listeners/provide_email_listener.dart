@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/fetch_token_task_callback.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
@@ -18,7 +17,6 @@ class ProvideEmailListenerHelper {
         setMessage(AppConfig.checkEmailAddressToSetNewPassword);
         setMessageStyle(AppConfig.successStyle);
       });
-      fetchTokenTaskCallback();
     } else if (state is ProvideEmailFailure) {
       setState(() {
         setMessage(ExceptionConverter.formatErrorMessage(
