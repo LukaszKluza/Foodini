@@ -21,18 +21,11 @@ class ChangePasswordBloc
         await tokenStorage.deleteAccessToken();
         await tokenStorage.deleteRefreshToken();
 
-        emit(ChangePasswordSuccess(AppConfig.passwordSuccesfullyChanged));
+        emit(ChangePasswordSuccess(AppConfig.passwordSuccessfullyChanged));
       } on ApiException catch (error) {
         emit(ChangePasswordFailure(error));
       }
     });
 
-    on<InitFromUrl>((event, emit) {
-      if (event.status == 'success') {
-        emit(ChangePasswordSuccess(AppConfig.accountActivatedSuccessfully));
-      } else if (event.status == 'error') {
-        emit(ChangePasswordFailure(ApiException(event)));
-      }
-    });
   }
 }

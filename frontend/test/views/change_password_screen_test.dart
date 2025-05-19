@@ -88,16 +88,4 @@ void main() {
     // Then
     expect(find.text(AppConfig.samePasswords), findsOneWidget);
   });
-
-  testWidgets('Proper message after successful password change', (WidgetTester tester) async {
-    // Given
-    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
-
-    // When
-    changePasswordBloc.add(InitFromUrl("success"));
-    await tester.pumpAndSettle();
-
-    // Then
-    expect(find.text(AppConfig.passwordSuccesfullyChanged), findsOneWidget);
-  });
 }

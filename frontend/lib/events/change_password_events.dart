@@ -7,8 +7,3 @@ class ChangePasswordSubmitted extends ChangePasswordEvent {
 
   ChangePasswordSubmitted(this.request);
 }
-
-class InitFromUrl extends ChangePasswordEvent {
-  final String? status;
-  InitFromUrl(this.status);
-}

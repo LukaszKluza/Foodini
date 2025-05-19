@@ -230,7 +230,7 @@ class AuthorizationService:
             )
         except (SignatureExpired, BadTimeSignature, BadSignature, BadData):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",
             )
 

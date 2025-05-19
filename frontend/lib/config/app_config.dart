@@ -67,8 +67,8 @@ class AppConfig {
       'Check and confirm your email address';
   static const String checkEmailAddressToSetNewPassword =
       'Check your email address to set new password';
-  static const String passwordSuccesfullyChanged =
-      'Password succesfully changed';
+  static const String passwordSuccessfullyChanged =
+      'Password successfully changed';
   static const String wrongChangePasswordUrl = "You can't access change password form";
 
   //Lists

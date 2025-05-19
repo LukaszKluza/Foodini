@@ -15,13 +15,13 @@ class ChangePasswordListenerHelper {
   }) {
     if (state is ChangePasswordSuccess) {
       setState(() {
-        setMessage(AppConfig.passwordSuccesfullyChanged);
+        setMessage(AppConfig.passwordSuccessfullyChanged);
         setMessageStyle(AppConfig.successStyle);
       });
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(milliseconds: AppConfig.redirectionDelay), () {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/login');
+            context.go('/main_page');
           });
         }
       });

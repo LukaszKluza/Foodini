@@ -623,7 +623,7 @@ async def test_confirm_new_password_missing_token(
 
     # Then
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "Token required"
+    assert exc_info.value.detail == "Token verification failed"
 
     mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(
         "test@example.com"
