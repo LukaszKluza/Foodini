@@ -93,7 +93,7 @@ async def test_send_new_account_verification(
     mock_create.assert_called_once_with(
         recipients=[test_email],
         subject="FoodiniApp email verification",
-        body=f"Please click this link: {config.API_URL}/v1/users/confirm/new-account/{test_token} to verify your email.",
+        body=f"Please click this link: {config.API_URL}/v1/users/confirm/new-account?url_token={test_token} to verify your email.",
     )
     mock_send.assert_called_once()
 
