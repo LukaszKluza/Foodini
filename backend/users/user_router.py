@@ -106,9 +106,9 @@ async def verify_new_password(
     return await user_service.confirm_new_password(new_password_confirm)
 
 
-@user_router.get("/confirm/new-account/{url_token}", response_model=UserResponse)
+@user_router.get("/confirm/new-account", response_model=UserResponse)
 async def verify_new_account(
-    url_token: str, user_service: UserService = Depends(get_user_service)
+    url_token: str = Query(None), user_service: UserService = Depends(get_user_service)
 ):
     return await user_service.confirm_new_account(url_token)
 

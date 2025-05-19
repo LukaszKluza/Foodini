@@ -4,7 +4,10 @@ import psycopg2
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
+from starlette.templating import Jinja2Templates
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from backend.settings import config
 from backend.users.user_router import user_router
 
 app = FastAPI()
@@ -19,6 +22,20 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
+
+templates = Jinja2Templates(directory="backend/templates")
+
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_404_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404:
+        return templates.TemplateResponse(
+            "404.html",
+            {"request": request, "redirect_path": config.FRONTEND_URL},
+            status_code=404,
+        )
+    else:
+        raise exc
 
 
 @app.exception_handler(psycopg2.OperationalError)

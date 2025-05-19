@@ -23,7 +23,9 @@ class EmailVerificationService:
 
     @staticmethod
     async def send_new_account_verification(email: EmailStr, token: str):
-        message_link = f"{config.API_URL}/v1/users/confirm/new-account/{token}"
+        message_link = (
+            f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
+        )
         message_subject = "FoodiniApp email verification"
         message_body = f"Please click this link: {message_link} to verify your email."
 

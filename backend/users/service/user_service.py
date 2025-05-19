@@ -3,7 +3,6 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from fastapi import Response
 from fastapi.params import Depends
-from fastapi.security import HTTPAuthorizationCredentials
 from starlette.responses import RedirectResponse
 
 from backend.settings import config
@@ -107,6 +106,7 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
+        self.user_validators.check_last_password_change_data_time(user_)
         token = await AuthorizationService.create_url_safe_token(
             {"email": password_reset_request.email}
         )
@@ -114,7 +114,6 @@ class UserService:
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url, token
         )
-        self.user_validators.check_last_password_change_data_time(user_)
         return UserResponse(
             id=user_.id,
             email=user_.email,
@@ -151,35 +150,21 @@ class UserService:
         return user_email
 
     async def confirm_new_password(self, new_password_confirm: NewPasswordConfirm):
+        user_email_from_token = await self.decode_url_token(new_password_confirm.token)
+
         user_ = await self.user_validators.ensure_user_exists_by_email(
-            new_password_confirm.email
+            user_email_from_token
         )
         self.user_validators.ensure_verified_user(user_)
 
-        if new_password_confirm.token:
-            try:
-                user_email_from_token = await self.decode_url_token(
-                    new_password_confirm.token
-                )
-                if not user_email_from_token:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Invalid token - missing user ID",
-                    )
-                self.user_validators.check_user_permission(
-                    user_email_from_token, new_password_confirm.email
-                )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
-                ) from e
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Token required"
-            )
+        self.user_validators.check_user_permission(
+            user_email_from_token, new_password_confirm.email
+        )
+
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password
         )
+
         return await self.user_repository.update_password(
             user_.id, hashed_password, datetime.now(config.TIMEZONE)
         )
@@ -189,7 +174,7 @@ class UserService:
             user_email = await self.decode_url_token(token)
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
-        except HTTPException:
+        except (HTTPException, TypeError):
             email = await AuthorizationService.extract_email_from_base64(token)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
             if email:
