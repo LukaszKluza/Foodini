@@ -9,5 +9,5 @@ class Allergies(str, Enum):
     SOY = "soy"
     WHEAT = "wheat"
     CELERY = "celery"
-    SULPHIDES = "sulphides"
+    SULPHITES = "sulphites"
     LUPIN = "lupin"
