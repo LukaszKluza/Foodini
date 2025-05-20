@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.mail import MailService
 from backend.settings import config
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 
 
 @pytest.fixture

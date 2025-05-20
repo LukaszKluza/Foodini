@@ -5,6 +5,7 @@ from fastapi import Response
 from fastapi.params import Depends
 from starlette.responses import RedirectResponse
 
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
@@ -19,7 +20,6 @@ from backend.users.service.email_verification_sevice import (
     get_email_verification_service,
 )
 from backend.users.service.password_service import PasswordService
-from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.user_validation_service import (
     UserValidationService,
     get_user_validators,
