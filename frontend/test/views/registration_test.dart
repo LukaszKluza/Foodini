@@ -25,12 +25,11 @@ Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
     child: MaterialApp(home: child),
   );
 }
-
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -44,17 +43,21 @@ void main() {
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
-  testWidgets('Register screen elements are displayed', (WidgetTester tester) async {
+  testWidgets('Register screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     expect(find.byType(TextFormField), findsNWidgets(6));
-    expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
+    expect(find.text(AppConfig.registration),findsOneWidget);
   });
 
-  testWidgets('Register form submits with valid data', (WidgetTester tester) async {
+  testWidgets('Register form submits with valid data', (
+    WidgetTester tester,
+  ) async {
     when(mockApiClient.register(any)).thenAnswer(
-          (_) async => Response<dynamic>(
+      (_) async => Response<dynamic>(
         data: {'id': 1, 'email': 'john@example.com'},
         statusCode: 200,
         requestOptions: RequestOptions(path: AppConfig.registerUrl),
@@ -75,15 +78,14 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpWidget(
+      wrapWithProviders(MaterialApp.router(routerConfig: goRouter)),
+    );
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(Key(AppConfig.firstName)), 'John');
     await tester.enterText(find.byKey(Key(AppConfig.lastName)), 'Doe');
-    await tester.tap(find.byKey(Key(AppConfig.age)));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('18').last);
-    await tester.pump();
 
     await tester.tap(find.byKey(Key(AppConfig.country)));
     await tester.pumpAndSettle();
@@ -91,9 +93,15 @@ void main() {
     await tester.tap(find.text('Argentina'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(Key(AppConfig.email)), 'john@example.com');
+    await tester.enterText(
+      find.byKey(Key(AppConfig.email)),
+      'john@example.com',
+    );
     await tester.enterText(find.byKey(Key(AppConfig.password)), 'Password1234');
-    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), 'Password1234');
+    await tester.enterText(
+      find.byKey(Key(AppConfig.confirmPassword)),
+      'Password1234',
+    );
 
     expect(registerBloc.state, isA<RegisterInitial>());
 
@@ -118,12 +126,13 @@ void main() {
     expect(find.text('Name is required'), findsNWidgets(2));
     expect(find.text('E-mail is required'), findsOneWidget);
     expect(find.text('Password is required'), findsOneWidget);
-    expect(find.text('Select your age'), findsOneWidget);
     expect(find.text('Select your country'), findsOneWidget);
     expect(find.text('Password confirmation is required'), findsOneWidget);
   });
 
-  testWidgets('Registration with different passwords', (WidgetTester tester) async {
+  testWidgets('Registration with different passwords', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');

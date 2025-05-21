@@ -7,20 +7,19 @@ from .mixins import PasswordValidationMixin, CountryValidationMixin
 class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z]+$")
     last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
-    age: int = Field(..., gt=12, lt=120)
     country: str = Field(..., min_length=2, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
 
 
 class PasswordResetRequest(BaseModel):
-    token: Optional[HTTPAuthorizationCredentials] = Field(None)
     email: EmailStr
 
 
 class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
+    token: str
 
 
 class UserUpdate(CountryValidationMixin, BaseModel):
@@ -30,7 +29,6 @@ class UserUpdate(CountryValidationMixin, BaseModel):
     last_name: Optional[str] = Field(
         None, min_length=2, max_length=50, pattern="^[a-zA-Z-]+$"
     )
-    age: Optional[int] = Field(None, gt=12, lt=120)
     country: Optional[str] = Field(None, min_length=2, max_length=50)
 
 

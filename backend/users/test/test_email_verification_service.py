@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.mail import MailService
 from backend.settings import config
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 
 
 @pytest.fixture
@@ -93,7 +93,7 @@ async def test_send_new_account_verification(
     mock_create.assert_called_once_with(
         recipients=[test_email],
         subject="FoodiniApp email verification",
-        body=f"Please click this link: {config.API_URL}/v1/users/confirm/new-account/{test_token} to verify your email.",
+        body=f"Please click this link: {config.API_URL}/v1/users/confirm/new-account?url_token={test_token} to verify your email.",
     )
     mock_send.assert_called_once()
 
@@ -103,18 +103,22 @@ async def test_send_password_reset_verification(
     email_verification_service, patch_mail_create_send
 ):
     test_email = "test@example.com"
-    test_token = "test_token"
     test_form_url = "https://example.com/reset"
+    test_token = "mocked_token"
     mock_create, mock_send = patch_mail_create_send
 
     await email_verification_service.send_password_reset_verification(
-        test_email, test_token, test_form_url
+        test_email, test_form_url, test_token
     )
+
+    expected_link = f"{test_form_url}/?token={test_token}"
+    expected_subject = "FoodiniApp new password request"
+    expected_body = f"To change the password please click this link: {expected_link}."
 
     mock_create.assert_called_once_with(
         recipients=[test_email],
-        subject="FoodiniApp new password request",
-        body=f"To change the password please click this link: {test_form_url}/{test_token}.",
+        subject=expected_subject,
+        body=expected_body,
     )
     mock_send.assert_called_once()
 
@@ -164,16 +168,16 @@ async def test_process_password_reset_verification(
     patch_send_password_reset_verification,
 ):
     test_email = "test@example.com"
-    test_token = "reset_token"
     test_form_url = "https://example.com/reset"
+    test_token = "test_token"
     mock_send = patch_send_password_reset_verification
 
     await email_verification_service.process_password_reset_verification(
-        test_email, test_token, test_form_url
+        test_email, test_form_url, test_token
     )
 
     mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(test_email)
-    mock_send.assert_called_once_with(test_email, test_token, test_form_url)
+    mock_send.assert_called_once_with(test_email, test_form_url, test_token)
 
 
 @pytest.mark.asyncio

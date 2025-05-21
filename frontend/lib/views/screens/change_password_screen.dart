@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/listeners/change_password_listener.dart';
+import 'package:frontend/app_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/change_password_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/change_password_events.dart';
+import 'package:frontend/listeners/change_password_listener.dart';
 import 'package:frontend/models/change_password_request.dart';
-import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
-import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/states/change_password_states.dart';
+import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/utils/query_parameters_mapper.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordBloc? bloc;
@@ -21,16 +23,17 @@ class ChangePasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bloc != null
         ? BlocProvider<ChangePasswordBloc>.value(
-      value: bloc!,
-      child: _buildScaffold(),
-    )
+          value: bloc!,
+          child: _buildScaffold(),
+        )
         : BlocProvider<ChangePasswordBloc>(
-      create: (_) => ChangePasswordBloc(
-        Provider.of<AuthRepository>(context, listen: false),
-        Provider.of<TokenStorageRepository>(context, listen: false),
-      ),
-      child: _buildScaffold(),
-    );
+          create:
+              (_) => ChangePasswordBloc(
+                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<TokenStorageRepository>(context, listen: false),
+              ),
+          child: _buildScaffold(),
+        );
   }
 
   Widget _buildScaffold() {
@@ -60,7 +63,31 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
       TextEditingController();
 
   String? _message;
+  String? _token;
   TextStyle _messageStyle = AppConfig.errorStyle;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pathAndQuery = Uri.base.toString().split('?');
+      if (pathAndQuery.length > 1) {
+        final Map<String, String> queryParameters =
+            QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
+
+        final token = queryParameters["token"];
+        if (token != null && token.isNotEmpty) {
+          setState(() {
+            _token = token;
+          });
+        } else {
+          router.go("/provide_email");
+        }
+      } else {
+        router.go("/provide_email");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +148,8 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                         if (_formKey.currentState!.validate()) {
                           final request = ChangePasswordRequest(
                             email: _emailController.text,
+                            newPassword: _newPasswordController.text,
+                            token: _token!,
                           );
                           context.read<ChangePasswordBloc>().add(
                             ChangePasswordSubmitted(request),

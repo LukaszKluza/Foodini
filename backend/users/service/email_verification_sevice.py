@@ -4,7 +4,7 @@ from fastapi.params import Depends
 
 from backend.mail import MailService
 from backend.settings import config
-from backend.users.service.user_authorisation_service import AuthorizationService
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.users.user_repository import UserRepository, get_user_repository
 from backend.users.service.user_validation_service import (
     UserValidationService,
@@ -23,7 +23,9 @@ class EmailVerificationService:
 
     @staticmethod
     async def send_new_account_verification(email: EmailStr, token: str):
-        message_link = f"{config.API_URL}/v1/users/confirm/new-account/{token}"
+        message_link = (
+            f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
+        )
         message_subject = "FoodiniApp email verification"
         message_body = f"Please click this link: {message_link} to verify your email."
 
@@ -34,9 +36,9 @@ class EmailVerificationService:
 
     @staticmethod
     async def send_password_reset_verification(
-        email: EmailStr, token: str, form_url: str
+        email: EmailStr, form_url: str, token: str
     ):
-        message_link = f"{form_url}/{token}"
+        message_link = f"{form_url}/?token={token}"
         message_subject = "FoodiniApp new password request"
         message_body = f"To change the password please click this link: {message_link}."
 
@@ -55,10 +57,10 @@ class EmailVerificationService:
         await self.send_new_account_verification(email, token)
 
     async def process_password_reset_verification(
-        self, email: EmailStr, token: str, form_url: str
+        self, email: EmailStr, form_url: str, token: str
     ):
         await self.user_validators.ensure_user_exists_by_email(email)
-        await self.send_password_reset_verification(email, token, form_url)
+        await self.send_password_reset_verification(email, form_url, token)
 
     async def resend_verification(self, email: EmailStr):
         if email is None:

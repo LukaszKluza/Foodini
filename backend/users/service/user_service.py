@@ -5,6 +5,7 @@ from fastapi import Response
 from fastapi.params import Depends
 from starlette.responses import RedirectResponse
 
+from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
@@ -13,13 +14,13 @@ from backend.users.schemas import (
     LoginUserResponse,
     PasswordResetRequest,
     NewPasswordConfirm,
+    UserResponse,
 )
 from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
     get_email_verification_service,
 )
 from backend.users.service.password_service import PasswordService
-from backend.users.service.user_authorisation_service import AuthorizationService
 from backend.users.service.user_validation_service import (
     UserValidationService,
     get_user_validators,
@@ -105,35 +106,17 @@ class UserService:
         )
         self.user_validators.ensure_verified_user(user_)
 
-        if password_reset_request.token:
-            try:
-                payload = await AuthorizationService.verify_access_token(
-                    password_reset_request.token
-                )
-                user_id_from_token = payload.get("id")
-                if not user_id_from_token:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Invalid token - missing user ID",
-                    )
-
-                self.user_validators.check_user_permission(user_id_from_token, user_.id)
-                await AuthorizationService.revoke_tokens(
-                    payload["jti"], payload["linked_jti"]
-                )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
-                ) from e
-
         self.user_validators.check_last_password_change_data_time(user_)
-
-        reset_token = await AuthorizationService.create_url_safe_token(
-            {"email": user_.email, "id": user_.id}, salt=config.NEW_PASSWORD_SALT
+        token = await AuthorizationService.create_url_safe_token(
+            {"email": password_reset_request.email}
         )
 
         await self.email_verification_service.process_password_reset_verification(
-            user_.email, reset_token, form_url
+            user_.email, form_url, token
+        )
+        return UserResponse(
+            id=user_.id,
+            email=user_.email,
         )
 
     async def update(
@@ -166,21 +149,22 @@ class UserService:
 
         return user_email
 
-    async def confirm_new_password(
-        self, token: str, new_password_confirm: NewPasswordConfirm
-    ):
-        user_email_from_token = await self.decode_url_token(
-            token, salt=config.NEW_PASSWORD_SALT
-        )
+    async def confirm_new_password(self, new_password_confirm: NewPasswordConfirm):
+        user_email_from_token = await self.decode_url_token(new_password_confirm.token)
+
         user_ = await self.user_validators.ensure_user_exists_by_email(
             user_email_from_token
         )
+        self.user_validators.ensure_verified_user(user_)
+
         self.user_validators.check_user_permission(
             user_email_from_token, new_password_confirm.email
         )
+
         hashed_password = await PasswordService.hash_password(
             new_password_confirm.password
         )
+
         return await self.user_repository.update_password(
             user_.id, hashed_password, datetime.now(config.TIMEZONE)
         )
@@ -190,7 +174,7 @@ class UserService:
             user_email = await self.decode_url_token(token)
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
-        except HTTPException:
+        except (HTTPException, TypeError):
             email = await AuthorizationService.extract_email_from_base64(token)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
             if email:

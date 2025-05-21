@@ -22,15 +22,16 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bloc != null
         ? BlocProvider<RegisterBloc>.value(
-      value: bloc!,
-      child: _buildScaffold(),
-    )
+          value: bloc!,
+          child: _buildScaffold(),
+        )
         : BlocProvider<RegisterBloc>(
-      create: (_) => RegisterBloc(
-        Provider.of<AuthRepository>(context, listen: false),
-      ),
-      child: _buildScaffold(),
-    );
+          create:
+              (_) => RegisterBloc(
+                Provider.of<AuthRepository>(context, listen: false),
+              ),
+          child: _buildScaffold(),
+        );
   }
 
   Widget _buildScaffold() {
@@ -60,7 +61,6 @@ class _RegisterFormState extends State<_RegisterForm> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  int? _selectedAge;
   String? _selectedCountry;
   String? _message;
   TextStyle _messageStyle = AppConfig.errorStyle;
@@ -98,24 +98,6 @@ class _RegisterFormState extends State<_RegisterForm> {
                 controller: _lastNameController,
                 decoration: InputDecoration(labelText: AppConfig.lastName),
                 validator: (value) => validateName(value),
-              ),
-              DropdownButtonFormField<int>(
-                key: Key(AppConfig.age),
-                value: _selectedAge,
-                decoration: InputDecoration(labelText: AppConfig.age),
-                items:
-                    AppConfig.ages.map((int age) {
-                      return DropdownMenuItem<int>(
-                        value: age,
-                        child: Text(age.toString()),
-                      );
-                    }).toList(),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    _selectedAge = newValue!;
-                  });
-                },
-                validator: (value) => validateAge(value),
               ),
               TextFormField(
                 key: Key(AppConfig.country),
@@ -175,7 +157,6 @@ class _RegisterFormState extends State<_RegisterForm> {
                           final request = RegisterRequest(
                             name: _firstNameController.text,
                             lastName: _lastNameController.text,
-                            age: _selectedAge ?? 0,
                             country: _selectedCountry ?? '',
                             email: _emailController.text,
                             password: _passwordController.text,

@@ -9,7 +9,7 @@ import 'package:frontend/blocs/change_password_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
-import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/views/screens/change_password_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
@@ -51,6 +51,7 @@ void main() {
     expect(find.byKey(Key(AppConfig.newPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.confirmPassword)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.changePassword)), findsOneWidget);
+    expect(find.text(AppConfig.changePassword), findsNWidgets(2));
 
     expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
   });

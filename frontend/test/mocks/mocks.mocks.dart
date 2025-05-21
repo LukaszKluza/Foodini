@@ -7,20 +7,21 @@ import 'dart:async' as _i11;
 
 import 'package:dio/dio.dart' as _i9;
 import 'package:dio/src/dio_mixin.dart' as _i10;
-import 'package:flutter/foundation.dart' as _i19;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i17;
+import 'package:flutter/foundation.dart' as _i20;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i18;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i8;
-import 'package:frontend/blocs/register_bloc.dart' as _i15;
-import 'package:frontend/events/register_events.dart' as _i16;
-import 'package:frontend/models/change_password_request.dart' as _i14;
+import 'package:frontend/blocs/register_bloc.dart' as _i16;
+import 'package:frontend/events/register_events.dart' as _i17;
+import 'package:frontend/models/change_password_request.dart' as _i15;
 import 'package:frontend/models/logged_user.dart' as _i4;
 import 'package:frontend/models/login_request.dart' as _i12;
+import 'package:frontend/models/provide_email_request.dart' as _i14;
 import 'package:frontend/models/refreshed_tokens_response.dart' as _i5;
 import 'package:frontend/models/register_request.dart' as _i13;
 import 'package:frontend/models/user_response.dart' as _i3;
 import 'package:frontend/repository/auth_repository.dart' as _i6;
 import 'package:frontend/services/api_client.dart' as _i2;
-import 'package:frontend/services/token_storage_service.dart' as _i18;
+import 'package:frontend/services/token_storage_service.dart' as _i19;
 import 'package:frontend/states/register_states.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -216,8 +217,23 @@ class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
           as _i11.Future<_i3.UserResponse>);
 
   @override
+  _i11.Future<_i3.UserResponse> provideEmail(
+    _i14.ProvideEmailRequest? request,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#provideEmail, [request]),
+            returnValue: _i11.Future<_i3.UserResponse>.value(
+              _FakeUserResponse_1(
+                this,
+                Invocation.method(#provideEmail, [request]),
+              ),
+            ),
+          )
+          as _i11.Future<_i3.UserResponse>);
+
+  @override
   _i11.Future<_i3.UserResponse> changePassword(
-    _i14.ChangePasswordRequest? request,
+    _i15.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
@@ -247,7 +263,7 @@ class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
 /// A class which mocks [RegisterBloc].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
+class MockRegisterBloc extends _i1.Mock implements _i16.RegisterBloc {
   MockRegisterBloc() {
     _i1.throwOnMissingStub(this);
   }
@@ -285,13 +301,13 @@ class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
           as bool);
 
   @override
-  void add(_i16.RegisterEvent? event) => super.noSuchMethod(
+  void add(_i17.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#add, [event]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void onEvent(_i16.RegisterEvent? event) => super.noSuchMethod(
+  void onEvent(_i17.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#onEvent, [event]),
     returnValueForMissingStub: null,
   );
@@ -303,9 +319,9 @@ class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
   );
 
   @override
-  void on<E extends _i16.RegisterEvent?>(
-    _i17.EventHandler<E, _i7.RegisterState>? handler, {
-    _i17.EventTransformer<E>? transformer,
+  void on<E extends _i17.RegisterEvent?>(
+    _i18.EventHandler<E, _i7.RegisterState>? handler, {
+    _i18.EventTransformer<E>? transformer,
   }) => super.noSuchMethod(
     Invocation.method(#on, [handler], {#transformer: transformer}),
     returnValueForMissingStub: null,
@@ -313,7 +329,7 @@ class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
 
   @override
   void onTransition(
-    _i17.Transition<_i16.RegisterEvent?, _i7.RegisterState>? transition,
+    _i18.Transition<_i17.RegisterEvent?, _i7.RegisterState>? transition,
   ) => super.noSuchMethod(
     Invocation.method(#onTransition, [transition]),
     returnValueForMissingStub: null,
@@ -329,7 +345,7 @@ class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
           as _i11.Future<void>);
 
   @override
-  void onChange(_i17.Change<_i7.RegisterState>? change) => super.noSuchMethod(
+  void onChange(_i18.Change<_i7.RegisterState>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );
@@ -351,7 +367,7 @@ class MockRegisterBloc extends _i1.Mock implements _i15.RegisterBloc {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageRepository extends _i1.Mock
-    implements _i18.TokenStorageRepository {
+    implements _i19.TokenStorageRepository {
   MockTokenStorageRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -484,7 +500,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void registerListener({
     required String? key,
-    required _i19.ValueChanged<String?>? listener,
+    required _i20.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -493,7 +509,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i19.ValueChanged<String?>? listener,
+    required _i20.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -716,8 +732,23 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i11.Future<_i9.Response<dynamic>>);
 
   @override
+  _i11.Future<_i9.Response<dynamic>> provideEmail(
+    _i14.ProvideEmailRequest? request,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#provideEmail, [request]),
+            returnValue: _i11.Future<_i9.Response<dynamic>>.value(
+              _FakeResponse_12<dynamic>(
+                this,
+                Invocation.method(#provideEmail, [request]),
+              ),
+            ),
+          )
+          as _i11.Future<_i9.Response<dynamic>>);
+
+  @override
   _i11.Future<_i9.Response<dynamic>> changePassword(
-    _i14.ChangePasswordRequest? request,
+    _i15.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),

@@ -115,4 +115,24 @@ void main() {
       options: anyNamed('options'),
     )).called(1);
   });
+
+  testWidgets('Should show session expired if no refresh token is available', (tester) async {
+    final error = DioException(
+      requestOptions: RequestOptions(path: '/some-path'),
+      response: Response(
+        requestOptions: RequestOptions(path: '/some-path'),
+        statusCode: 401,
+      ),
+      type: DioExceptionType.badResponse,
+    );
+
+    when(mockTokenStorageRepository.getRefreshToken()).thenAnswer((_) async => null);
+    final handler = MockErrorInterceptorHandler();
+    final interceptor = GlobalErrorInterceptor(apiClient, mockTokenStorageRepository);
+
+    await interceptor.onError(error, handler);
+
+    verify(mockTokenStorageRepository.getRefreshToken()).called(1);
+    verifyNever(mockDio.post(AppConfig.refreshTokensUrl, options: anyNamed('options')));
+  });
 }
