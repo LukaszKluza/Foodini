@@ -4,6 +4,7 @@ import 'package:frontend/views/screens/account_screen.dart';
 import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:frontend/views/screens/login_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/screens/profile_details_screen.dart';
 import 'package:frontend/views/screens/provide_email_screen.dart';
 import 'package:frontend/views/screens/register_screen.dart';
 import 'package:frontend/views/screens/home_screen.dart';
@@ -31,6 +32,10 @@ final GoRouter router = GoRouter(
       path: '/account',
       builder: (context, state) => AccountScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/profile_details',
+      builder: (context, satte) => ProfileDetailsScreen(),
     ),
     GoRoute(
       path: '/change_password',

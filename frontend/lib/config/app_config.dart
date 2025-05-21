@@ -75,6 +75,15 @@ class AppConfig {
       'Password successfully changed';
   static const String wrongChangePasswordUrl = "You can't access change password form";
 
+  static const String dietPreferences = "Diet preferences";
+
+  static const String profileDetails = "Profile details";
+  static const String gender = "Gender";
+  static const String height = "Height";
+  static const String weight = "Weight";
+  static const String dateOfBirth = "Date of birth";
+
+
   // URLs
   static const String baseUrl = 'http://127.0.0.1:8000/v1';
   // Mobile app url
