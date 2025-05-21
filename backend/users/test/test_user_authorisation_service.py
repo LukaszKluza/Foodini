@@ -242,7 +242,7 @@ async def test_decode_url_safe_token_invalid():
         # when / then
         with pytest.raises(HTTPException) as exc:
             await AuthorizationService.decode_url_safe_token("invalid_token")
-        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.asyncio

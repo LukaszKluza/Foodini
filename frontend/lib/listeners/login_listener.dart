@@ -36,6 +36,7 @@ class LoginListenerHelper {
         setMessage(ExceptionConverter.formatErrorMessage(
           state.error.data,
         ));
+      setMessageStyle(AppConfig.errorStyle);
       });
     }
   }

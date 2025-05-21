@@ -14,6 +14,7 @@ from backend.users.schemas import (
     UserLogin,
     UserUpdate,
     PasswordResetRequest,
+    NewPasswordConfirm,
 )
 from backend.users.service.password_service import PasswordService
 
@@ -349,6 +350,41 @@ async def test_reset_password_user_logged_successful(
 
 
 @pytest.mark.asyncio
+async def test_reset_password_too_early(
+    user_service,
+    mock_user_validators,
+    mock_authorization_service,
+):
+    # Given
+    password_reset_data = PasswordResetRequest(email="test@example.com")
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+    mock_user_validators.ensure_verified_user.return_value = None
+
+    # Wywołanie wyjątku przy sprawdzaniu czasu ostatniej zmiany hasła
+    mock_user_validators.check_last_password_change_data_time.side_effect = (
+        HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You must wait at least 1 day before changing your password again",
+        )
+    )
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.reset_password(
+            password_reset_data, form_url="https://reset.example.com"
+        )
+
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+    assert "1 day" in exc_info.value.detail
+
+    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(
+        user_
+    )
+
+
+@pytest.mark.asyncio
 async def test_update_when_user_not_found(user_service, mock_user_validators):
     # Given
     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
@@ -495,3 +531,92 @@ async def test_confirm_new_account_with_corrupted_token(
     # Assert
     assert response.status_code == 302
     assert response.headers["location"] == "http://localhost:3000/#/login?status=error"
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_success(
+    user_service,
+    mock_user_validators,
+    mock_user_repository,
+    mock_password_service,
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token="valid_token",
+    )
+
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+
+    user_service.decode_url_token = AsyncMock(return_value="test@example.com")
+
+    mock_password_service["hash_password"].return_value = "hashed_password"
+    mock_user_repository.update_password.return_value = {"success": True}
+
+    # When
+    response = await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert response == {"success": True}
+    mock_user_validators.ensure_user_exists_by_email.assert_called_with(
+        "test@example.com"
+    )
+    user_service.decode_url_token.assert_awaited_once_with("valid_token")
+    mock_user_validators.check_user_permission.assert_called_once_with(
+        "test@example.com", "test@example.com"
+    )
+    mock_password_service["hash_password"].assert_awaited_once_with("NewPassword123")
+    mock_user_repository.update_password.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_invalid_token(
+    user_service,
+    mock_user_validators,
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token="invalid_token",
+    )
+
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+
+    user_service.decode_url_token = AsyncMock(side_effect=Exception("Decode failed"))
+
+    # When
+    with pytest.raises(Exception) as exc_info:
+        await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert str(exc_info.value) == "Decode failed"
+
+    user_service.decode_url_token.assert_awaited_once_with("invalid_token")
+
+
+@pytest.mark.asyncio
+async def test_confirm_new_password_missing_token(
+    user_service,
+    mock_user_validators,
+):
+    # Given
+    new_password_data = NewPasswordConfirm(
+        email="test@example.com",
+        password="NewPassword123",
+        token="",
+    )
+
+    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    mock_user_validators.ensure_user_exists_by_email.return_value = user_
+
+    # When
+    with pytest.raises(HTTPException) as exc_info:
+        await user_service.confirm_new_password(new_password_data)
+
+    # Then
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "Token verification failed"

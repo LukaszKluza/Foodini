@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/states/change_password_sates.dart';
+import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,20 +15,20 @@ class ChangePasswordListenerHelper {
   }) {
     if (state is ChangePasswordSuccess) {
       setState(() {
-        setMessage(AppConfig.checkAndConfirmEmailAddress);
+        setMessage(AppConfig.passwordSuccessfullyChanged);
         setMessageStyle(AppConfig.successStyle);
       });
       Future.delayed(const Duration(milliseconds: AppConfig.redirectionDelay), () {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/account');
+            context.go('/main_page');
           });
         }
       });
     } else if (state is ChangePasswordFailure) {
       setState(() {
         setMessage(ExceptionConverter.formatErrorMessage(
-          state.error.data["detail"],
+          state.error.data,
         ));
       });
     }

@@ -3,6 +3,7 @@ import 'package:frontend/app_router.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/utils/logger.dart';
 
 class GlobalErrorInterceptor extends Interceptor {
   final ApiClient _apiClient;
@@ -17,16 +18,27 @@ class GlobalErrorInterceptor extends Interceptor {
       String message = "Default error message.";
 
       switch (statusCode) {
+        case 400:
+          message = 'Error $statusCode: Bad request';
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
           if(err.response?.data["detail"] == 'Revoked token'){
             await _handleForbiddenError(err, handler);
           }
+          message = 'Error $statusCode: Forbidden';
+          _showErrorDialog(message);
           break;
+        case 422:
+          message = 'Error $statusCode: Unprocessable entity';
         case 500:
-          message = "Server error";
-          break;
+          message = 'Error $statusCode: Server error';
+        case 502:
+          message = 'Error $statusCode: Bad gateway';
+        case 503:
+          message = 'Error $statusCode: Service unavailable';
+        case 504:
+          message = 'Error $statusCode: Gateway timeout';
         default:
           message = "Error $statusCode";
       }
@@ -78,7 +90,6 @@ class GlobalErrorInterceptor extends Interceptor {
   }
 
   void _showErrorDialog(String message) {
-    // Simone add logger here please
-    print(message);
+    logger.w(message);
   }
 }

@@ -188,11 +188,11 @@ class AuthorizationService:
 
     @staticmethod
     async def extract_email_from_base64(token: str) -> str | None:
-        padding = len(token) % 4
-        if padding:
-            token += "=" * (4 - padding)
-
         try:
+            padding = len(token) % 4
+            if padding:
+                token += "=" * (4 - padding)
+
             decoded = base64.urlsafe_b64decode(token)
             match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
             return match.group(0).decode("utf-8")
@@ -230,7 +230,7 @@ class AuthorizationService:
             )
         except (SignatureExpired, BadTimeSignature, BadSignature, BadData):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",
             )
 
