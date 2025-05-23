@@ -73,4 +73,26 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('Advanced options are displayed after tap', (
+      WidgetTester tester,
+      ) async {
+    // Given
+    await tester.pumpWidget(
+      MaterialApp(home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc)),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+
+    await tester.tap(checkboxFinder);
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(tester.widget<CheckboxListTile>(checkboxFinder).value, isTrue);
+    expect(find.textContaining(AppConfig.musclePercentage), findsOneWidget);
+    expect(find.textContaining(AppConfig.waterPercentage), findsOneWidget);
+    expect(find.textContaining(AppConfig.fatPercentage, skipOffstage: false), findsOneWidget);
+  });
 }
