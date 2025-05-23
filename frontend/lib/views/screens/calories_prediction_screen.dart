@@ -238,6 +238,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       child: Form(
         key: _formKey,
         child: ListView.separated(
+          key: Key(AppConfig.caloriesPrediction),
           shrinkWrap: true,
           itemCount: fields.length,
           separatorBuilder: (_, __) => SizedBox(height: 20),
