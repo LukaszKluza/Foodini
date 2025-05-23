@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/account_screen.dart';
+import 'package:frontend/views/screens/calories_prediction_screen.dart';
 import 'package:frontend/views/screens/change_password_screen.dart';
 import 'package:frontend/views/screens/diet_preferences_screen.dart';
 import 'package:frontend/views/screens/login_screen.dart';
@@ -18,10 +19,11 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
     GoRoute(
       path: '/login',
-      pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey(state.uri.toString()),
-        child: LoginScreen(),
-      ),
+      pageBuilder:
+          (context, state) => MaterialPage(
+            key: ValueKey(state.uri.toString()),
+            child: LoginScreen(),
+          ),
     ),
     GoRoute(
       path: '/main_page',
@@ -36,14 +38,22 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/diet_preferences',
       builder: (context, state) => DietPreferencesScreen(),
+      //TODO Fix if after adding navbar and first screen
+      // redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/calories_prediction',
+      builder: (context, state) => CaloriesPredictionScreen(),
+      //TODO Fix if after adding navbar and first screen
       // redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
       path: '/change_password',
-      pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey(state.uri.toString()),
-        child: ChangePasswordScreen(),
-      ),
+      pageBuilder:
+          (context, state) => MaterialPage(
+            key: ValueKey(state.uri.toString()),
+            child: ChangePasswordScreen(),
+          ),
     ),
     GoRoute(
       path: '/provide_email',

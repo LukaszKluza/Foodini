@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+enum StressLevel {
+  LOW = 0;
+  MEDIUM = 1;
+  HIGH = 2;
+  EXTREME = 3;
+}

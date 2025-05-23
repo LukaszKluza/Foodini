@@ -9,21 +9,15 @@ void main() {
     test(
       'validateCountry returns error message when selectedCountry is null or empty',
       () {
-        expect(
-          validateCountry('Country', null),
-          equals(AppConfig.requiredCountry),
-        );
-        expect(
-          validateCountry('Country', ''),
-          equals(AppConfig.requiredCountry),
-        );
+        expect(validateCountry(null), equals(AppConfig.requiredCountry));
+        expect(validateCountry(''), equals(AppConfig.requiredCountry));
       },
     );
 
     test(
       'validateCountry returns null when selectedCountry is not null or empty',
       () {
-        expect(validateCountry('Country', 'USA'), isNull);
+        expect(validateCountry('USA'), isNull);
       },
     );
 

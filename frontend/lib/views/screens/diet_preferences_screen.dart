@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
+import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/blocs/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/utils/diet_preferences_validators.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+
+import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
+import 'package:frontend/views/widgets/weight_slider.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   final DietPreferencesBloc? bloc;
@@ -13,13 +21,13 @@ class DietPreferencesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bloc != null
         ? BlocProvider<DietPreferencesBloc>.value(
-      value: bloc!,
-      child: _buildScaffold(),
-    )
+          value: bloc!,
+          child: _buildScaffold(),
+        )
         : BlocProvider<DietPreferencesBloc>(
-      create: (_) => DietPreferencesBloc(),
-      child: _buildScaffold(),
-    );
+          create: (_) => DietPreferencesBloc(),
+          child: _buildScaffold(),
+        );
   }
 
   Widget _buildScaffold() {
@@ -45,10 +53,18 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final TextEditingController _allergiesController = TextEditingController();
   final TextEditingController _dietGoalController = TextEditingController();
   final TextEditingController _mealsPerDeyController = TextEditingController();
-  final TextEditingController _dietIntensityController = TextEditingController();
+  final TextEditingController _dietIntensityController =
+      TextEditingController();
 
+  DietType? _selectedDietType;
+  List<Allergy>? _selectedAllergies;
+  DietIntensity? _selectedDietIntensity;
+
+  //TODO Simone please set the initial value to user's weight
+  double _selectedDietGoal = 70;
+  int _selectedMealsPerDay = 3;
   String? _message;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  final TextStyle _messageStyle = AppConfig.errorStyle;
 
   @override
   void initState() {
@@ -68,40 +84,96 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   @override
   Widget build(BuildContext context) {
     final fields = [
-      TextFormField(
+      DropdownButtonFormField<DietType>(
         key: Key(AppConfig.dietType),
-        controller: _dietTypeController,
+        value: _selectedDietType,
         decoration: InputDecoration(labelText: AppConfig.dietType),
-        keyboardType: TextInputType.text,
-        validator: validateEmail,
+        items:
+            DietType.values.map((diet) {
+              return DropdownMenuItem<DietType>(
+                value: diet,
+                child: Text(
+                  AppConfig.dietTypeLabels[diet]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedDietType = value!;
+          });
+        },
+        validator: (value) => validateDietType(value),
       ),
-      TextFormField(
-        key: Key(AppConfig.allergies),
-        controller: _allergiesController,
-        decoration: InputDecoration(labelText: AppConfig.allergies),
-        obscureText: true,
-        validator: validatePassword,
+      MultiSelectDialogField<Allergy>(
+        items:
+            Allergy.values.map((allergy) {
+              return MultiSelectItem<Allergy>(
+                allergy,
+                AppConfig.allergyLabels[allergy]!,
+              );
+            }).toList(),
+        title: Text(AppConfig.allergies),
+        selectedColor: Colors.purpleAccent,
+        chipDisplay: MultiSelectChipDisplay(
+          chipColor: Colors.purpleAccent[50],
+          textStyle: TextStyle(color: Colors.black),
+        ),
+        buttonText: Text(AppConfig.allergies),
+        onConfirm: (values) {
+          setState(() {
+            _selectedAllergies = values;
+          });
+        },
       ),
-      TextFormField(
-        key: Key(AppConfig.dietGoal),
-        controller: _dietGoalController,
-        decoration: InputDecoration(labelText: AppConfig.dietGoal),
-        obscureText: true,
-        validator: validatePassword,
+      WeightSlider(
+        initialValue: _selectedDietGoal,
+        onChanged: (value) {
+          setState(() {
+            _selectedDietGoal = value;
+          });
+        },
       ),
-      TextFormField(
-        key: Key(AppConfig.mealsPerDay),
-        controller: _mealsPerDeyController,
-        decoration: InputDecoration(labelText: AppConfig.mealsPerDay),
-        obscureText: true,
-        validator: validatePassword,
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(AppConfig.mealsPerDay),
+          SizedBox(height: 8),
+          FractionallySizedBox(
+            widthFactor: 1,
+            child: SegmentedButton<int>(
+              segments: [
+                for (var i = 1; i <= AppConfig.maxMealsPerDay; i++)
+                  ButtonSegment(value: i, label: Text('$i')),
+              ],
+              selected: <int>{_selectedMealsPerDay},
+              onSelectionChanged: (newSelection) {
+                setState(() => _selectedMealsPerDay = newSelection.first);
+              },
+            ),
+          ),
+        ],
       ),
-      TextFormField(
+      DropdownButtonFormField<DietIntensity>(
         key: Key(AppConfig.dietIntensity),
-        controller: _dietIntensityController,
+        value: _selectedDietIntensity,
         decoration: InputDecoration(labelText: AppConfig.dietIntensity),
-        obscureText: true,
-        validator: validatePassword,
+        items:
+            DietIntensity.values.map((diet) {
+              return DropdownMenuItem<DietIntensity>(
+                value: diet,
+                child: Text(
+                  AppConfig.dietIntensityLabels[diet]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedDietIntensity = value!;
+          });
+        },
+        validator: (value) => validateDietIntensity(value),
       ),
       if (_message != null)
         Padding(
