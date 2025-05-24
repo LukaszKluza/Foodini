@@ -1,7 +1,7 @@
 import 'package:frontend/config/app_config.dart';
 
-String? validateCountry(String? value, String? selectedCountry) {
-  if (selectedCountry == null || selectedCountry.isEmpty) {
+String? validateCountry(String? value) {
+  if (value == null || value.isEmpty) {
     return AppConfig.requiredCountry;
   }
   return null;

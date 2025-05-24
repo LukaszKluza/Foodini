@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
@@ -24,27 +23,32 @@ Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
     child: MaterialApp(home: child),
   );
 }
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     authRepository = AuthRepository(mockApiClient);
     mockTokenStorageRepository = MockTokenStorageRepository();
-    changePasswordBloc = ChangePasswordBloc(authRepository, mockTokenStorageRepository);
+    changePasswordBloc = ChangePasswordBloc(
+      authRepository,
+      mockTokenStorageRepository,
+    );
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
-  testWidgets('Change password elements are displayed', (WidgetTester tester) async {
+  testWidgets('Change password elements are displayed', (
+    WidgetTester tester,
+  ) async {
     // Given, When
-    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
+    await tester.pumpWidget(
+      wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)),
+    );
 
     // Then
     expect(find.byKey(Key(AppConfig.email)), findsOneWidget);
@@ -56,9 +60,13 @@ void main() {
     expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
   });
 
-  testWidgets('Submit without filling form shows validation errors', (WidgetTester tester) async {
+  testWidgets('Submit without filling form shows validation errors', (
+    WidgetTester tester,
+  ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)));
+    await tester.pumpWidget(
+      wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)),
+    );
 
     // When
     await tester.tap(find.byKey(Key(AppConfig.changePassword)));
@@ -72,14 +80,25 @@ void main() {
     expect(find.text(AppConfig.requiredPasswordConfirmation), findsOneWidget);
   });
 
-  testWidgets('Mismatched passwords show validation error', (WidgetTester tester) async {
+  testWidgets('Mismatched passwords show validation error', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen()));
 
     // When
-    await tester.enterText(find.byKey(Key(AppConfig.email)), 'test@example.com');
-    await tester.enterText(find.byKey(Key(AppConfig.newPassword)), 'Password123');
-    await tester.enterText(find.byKey(Key(AppConfig.confirmPassword)), '321drowssaP');
+    await tester.enterText(
+      find.byKey(Key(AppConfig.email)),
+      'test@example.com',
+    );
+    await tester.enterText(
+      find.byKey(Key(AppConfig.newPassword)),
+      'Password123',
+    );
+    await tester.enterText(
+      find.byKey(Key(AppConfig.confirmPassword)),
+      '321drowssaP',
+    );
 
     await tester.tap(find.byKey(Key(AppConfig.changePassword)));
     await tester.pumpAndSettle();

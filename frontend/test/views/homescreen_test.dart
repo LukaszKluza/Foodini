@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-
 import 'package:frontend/views/screens/home_screen.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  testWidgets('Home screen elements are displayed', (WidgetTester tester) async {
+  testWidgets('Home screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
     // Given, When
-    await tester.pumpWidget(
-      MaterialApp(
-        home: HomeScreen(),
-      ),
-    );
+    await tester.pumpWidget(MaterialApp(home: HomeScreen()));
 
     // Then
     expect(find.byType(ElevatedButton), findsNWidgets(2));

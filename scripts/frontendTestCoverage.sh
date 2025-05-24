@@ -12,15 +12,35 @@ fi
 # Initialize sum variables for LF and LH
 total_LF=0
 total_LH=0
+excluded_files=0
+
+excluded_folders=(
+  "lib\assets"
+)
+
 
 # Loop through the lcov file and sum all LF and LH values
 while IFS= read -r line; do
-  if [[ "$line" =~ ^LF: ]]; then
-    LF_value=$(echo "$line" | awk -F: '{print $2}' | tr -d '[:space:]')
-    total_LF=$((total_LF + LF_value))
-  elif [[ "$line" =~ ^LH: ]]; then
-    LH_value=$(echo "$line" | awk -F: '{print $2}' | tr -d '[:space:]')
-    total_LH=$((total_LH + LH_value))
+  if [[ "$line" =~ ^SF:(.*) ]]; then
+    filepath="${BASH_REMATCH[1]}"
+    is_excluded=0
+    for folder in "${excluded_folders[@]}"; do
+      if [[ "$filepath" == "$folder"* ]]; then
+        is_excluded=1
+        excluded_files=$((excluded_files+1))
+        break
+      fi
+    done
+  fi
+
+  if [ "$is_excluded" -eq 0 ]; then
+    if [[ "$line" =~ ^LF: ]]; then
+      LF_value=$(echo "$line" | awk -F: '{print $2}' | tr -d '[:space:]')
+      total_LF=$((total_LF + LF_value))
+    elif [[ "$line" =~ ^LH: ]]; then
+      LH_value=$(echo "$line" | awk -F: '{print $2}' | tr -d '[:space:]')
+      total_LH=$((total_LH + LH_value))
+    fi
   fi
 done < "$COVERAGE_FILE"
 
@@ -36,6 +56,14 @@ fi
 
 # Calculate coverage percentage using simple shell math
 coverage_percentage=$(($total_LH * 100 / $total_LF))
+
+echo "[INFO] Excluding folders from coverage:"
+for folder in "${excluded_folders[@]}"; do
+  echo "  - $folder"
+done
+echo "[INFO] Files in those folders: $excluded_files"
+echo ""
+
 
 echo "[INFO] Coverage percentage: $coverage_percentage%"
 
