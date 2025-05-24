@@ -17,7 +17,7 @@ String? validateAllergy(Allergy? value) {
   return null;
 }
 
-String? validateWeight(String? value) {
+String? validateDietGoal(String? value) {
   final weight = double.tryParse(value ?? '');
   if (weight == null ||
       weight < AppConfig.minWeight ||

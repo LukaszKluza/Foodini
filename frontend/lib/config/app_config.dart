@@ -3,6 +3,7 @@ import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart
 import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
+import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 
 import '../assets/diet_preferences_enums/allergy.pbenum.dart';
 import '../assets/diet_preferences_enums/diet_type.pbenum.dart';
@@ -176,12 +177,27 @@ class AppConfig {
 
   static const String generateWeeklyDiet = 'Generate weekly diet';
 
-  static const String dietPreferences = "Diet preferences";
-
   static const String profileDetails = "Profile details";
+
   static const String gender = "Gender";
+  static const String requiredGender = 'Gender is required';
+  static const Map<Gender, String> genderLabels = {
+    Gender.MALE: 'Male',
+    Gender.FEMALE: 'Female',
+  };
+
   static const String height = "Height";
+  static const String heightCm = 'Height (cm)';
+  static const double minHeight = 60;
+  static const double maxHeight = 230;
+  static const String heightShouldBeBetween = 'Height should be between';
+  static const String cm = 'cm';
+  static const String enterYourHeight = "Enter your height";
+
   static const String weight = "Weight";
+  static const String enterYourWeight = "Enter your weight";
+  static const String weightShouldBeBetween = "Weight should be between";
+
   static const String dateOfBirth = "Date of birth";
 
 

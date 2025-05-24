@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/profile_details_bloc.dart';
+import 'package:frontend/assets/profile_details/gender.pbenum.dart';
+import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/utils/profile_details_validators.dart';
+import 'package:frontend/views/widgets/height_slider.dart';
+import 'package:frontend/views/widgets/weight_slider.dart';
+import 'package:intl/intl.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
-  final ProfileDetailsBlock? bloc;
-
-  const ProfileDetailsScreen({super.key, this.bloc});
+  const ProfileDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<ProfileDetailsBlock>.value(
-      value: bloc!,
-      child: _buildScaffold(),
-    )
-        : BlocProvider<ProfileDetailsBlock>(
-      create: (_) => ProfileDetailsBlock(),
-      child: _buildScaffold(),
-    );
-  }
-
-  Widget _buildScaffold() {
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -46,8 +37,11 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
 
+  Gender? _selectedGender;
+  double _selectedHeight = 175;
+  double _selectedWeight = 65;
   String? _message;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  final TextStyle _messageStyle = AppConfig.errorStyle;
 
   @override
   void initState() {
@@ -66,33 +60,81 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   @override
   Widget build(BuildContext context) {
     final fields = [
-      TextFormField(
+      DropdownButtonFormField<Gender>(
         key: Key(AppConfig.gender),
-        controller: _genderController,
+        value: _selectedGender,
         decoration: InputDecoration(labelText: AppConfig.gender),
-        keyboardType: TextInputType.text,
-        validator: validateEmail,
+        items:
+            Gender.values.map((gender) {
+              return DropdownMenuItem<Gender>(
+                value: gender,
+                child: Text(
+                  AppConfig.genderLabels[gender]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedGender = value!;
+          });
+          context.read<DietFormBloc>().add(UpdateGender(value!));
+        },
+        validator: (value) => validateGender(value),
       ),
-      TextFormField(
-        key: Key(AppConfig.height),
-        controller: _heightController,
-        decoration: InputDecoration(labelText: AppConfig.height),
-        obscureText: true,
-        validator: validatePassword,
+      HeightSlider(
+        initialValue: _selectedHeight,
+        onChanged: (value) {
+          setState(() {
+            _selectedHeight = value;
+          });
+          context.read<DietFormBloc>().add(UpdateHeight(value));
+        },
       ),
-      TextFormField(
-        key: Key(AppConfig.weight),
-        controller: _weightController,
-        decoration: InputDecoration(labelText: AppConfig.weight),
-        obscureText: true,
-        validator: validatePassword,
+      WeightSlider(
+        initialValue: _selectedWeight,
+        label: AppConfig.weight,
+        dialogTitle: AppConfig.enterYourWeight,
+        onChanged: (value) {
+          setState(() {
+            _selectedWeight = value;
+          });
+          context.read<DietFormBloc>().add(UpdateWeight(value));
+        },
       ),
       TextFormField(
         key: Key(AppConfig.dateOfBirth),
         controller: _dateOfBirthController,
-        decoration: InputDecoration(labelText: AppConfig.dateOfBirth),
-        obscureText: true,
-        validator: validatePassword,
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: AppConfig.dateOfBirth,
+          suffixIcon: Icon(Icons.calendar_today),
+        ),
+        onTap: () async {
+          FocusScope.of(context).requestFocus(FocusNode());
+
+          final now = DateTime.now();
+          final earliestDate = DateTime(now.year - 120, now.month, now.day);
+          final latestDate = DateTime(now.year - 12, now.month, now.day);
+
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime(now.year - 30),
+            firstDate: earliestDate,
+            lastDate: latestDate,
+            initialEntryMode: DatePickerEntryMode.calendar,
+            initialDatePickerMode: DatePickerMode.year,
+          );
+
+          if (pickedDate != null) {
+            setState(() {
+              final formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
+              _dateOfBirthController.text = formattedDate;
+            });
+
+            context.read<DietFormBloc>().add(UpdateDateOfBirth(pickedDate));
+          }
+        },
       ),
       if (_message != null)
         Padding(

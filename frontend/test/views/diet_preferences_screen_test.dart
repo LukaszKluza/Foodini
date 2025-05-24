@@ -3,23 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
-import 'package:frontend/blocs/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/diet_preferences_screen.dart';
 
-late DietPreferencesBloc dietPreferencesBloc;
-
 void main() {
-  setUp(() {
-    dietPreferencesBloc = DietPreferencesBloc();
-  });
 
   testWidgets('Diet preferences screen elements are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -37,7 +31,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -84,7 +78,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -142,7 +136,7 @@ void main() {
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -159,7 +153,7 @@ void main() {
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -186,7 +180,7 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -205,7 +199,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(home: DietPreferencesScreen()),
     );
     await tester.pumpAndSettle();
 

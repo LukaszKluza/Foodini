@@ -3,35 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
+import 'package:frontend/blocs/diet_form_bloc.dart';
 
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/events/calories_prediction_events.dart';
-import 'package:frontend/models/advanced_body_parameters.dart';
+import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 
-import 'package:frontend/blocs/calories_prediction_bloc.dart';
-import 'package:frontend/models/calories_prediction.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
-  final CaloriesPredictionBloc? bloc;
-
-  const CaloriesPredictionScreen({super.key, this.bloc});
+  const CaloriesPredictionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<CaloriesPredictionBloc>.value(
-          value: bloc!,
-          child: _buildScaffold(),
-        )
-        : BlocProvider<CaloriesPredictionBloc>(
-          create: (_) => CaloriesPredictionBloc(),
-          child: _buildScaffold(),
-        );
-  }
-
-  Widget _buildScaffold() {
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -103,6 +88,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           setState(() {
             _selectedActivityLevel = value!;
           });
+          context.read<DietFormBloc>().add(UpdateActivityLevel(value!));
         },
         validator: (value) => validateActivityLevel(value),
       ),
@@ -124,6 +110,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           setState(() {
             _selectedStressLevel = value!;
           });
+          context.read<DietFormBloc>().add(UpdateStressLevel(value!));
         },
         validator: (value) => validateStressLevel(value),
       ),
@@ -145,6 +132,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           setState(() {
             _selectedSleepQuality = value!;
           });
+          context.read<DietFormBloc>().add(UpdateSleepQuality(value!));
         },
         validator: (value) => validateSleepQuality(value),
       ),
@@ -173,6 +161,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedMusclePercentage = value;
             });
+            context.read<DietFormBloc>().add(UpdateMusclePercentage(value));
           },
         ),
         PercentageOptionSlider(
@@ -185,6 +174,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedWaterPercentage = value;
             });
+            context.read<DietFormBloc>().add(UpdateWaterPercentage(value));
           },
         ),
         PercentageOptionSlider(
@@ -197,6 +187,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedFatPercentage = value;
             });
+            context.read<DietFormBloc>().add(UpdateFatPercentage(value));
           },
         ),
       ],
@@ -204,24 +195,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ElevatedButton(
         key: Key(AppConfig.generateWeeklyDiet),
         onPressed: () {
-          AdvancedBodyParameters? advancedBodyParameters;
-          if (_isChecked) {
-            advancedBodyParameters = AdvancedBodyParameters(
-              musclePercentage: _selectedMusclePercentage,
-              waterPercentage: _selectedWaterPercentage,
-              fatPercentage: _selectedFatPercentage,
-            );
-          }
-          CaloriesPrediction caloriesPrediction = CaloriesPrediction(
-            activityLevel: _selectedActivityLevel!,
-            stressLevel: _selectedStressLevel!,
-            sleepQuality: _selectedSleepQuality!,
-            advancedBodyParametersEnabled: _isChecked,
-            advancedBodyParameters: advancedBodyParameters,
-          );
-          context.read<CaloriesPredictionBloc>().add(
-            CaloriesPredictionSubmitted(caloriesPrediction),
-          );
+          context.read<DietFormBloc>().add(SubmitForm());
         },
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFB2F2BB)),
         child: Text(AppConfig.generateWeeklyDiet),
@@ -235,13 +209,26 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
 
     return Padding(
       padding: EdgeInsets.all(35.0),
-      child: Form(
-        key: _formKey,
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: fields.length,
-          separatorBuilder: (_, __) => SizedBox(height: 20),
-          itemBuilder: (_, index) => fields[index],
+      child: BlocListener<DietFormBloc, DietFormState>(
+        listener: (context, state) {
+          if (state.isSuccess == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Form successfully submitted')),
+            );
+          } else if (state.errorMessage != null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: fields.length,
+            separatorBuilder: (_, __) => SizedBox(height: 20),
+            itemBuilder: (_, index) => fields[index],
+          ),
         ),
       ),
     );

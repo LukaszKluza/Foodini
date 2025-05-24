@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/assets/calories_prediction_enums/activity_level.pbenum.dart';
-import 'package:frontend/blocs/calories_prediction_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/calories_prediction_screen.dart';
 
-late CaloriesPredictionBloc caloriesPredictionBloc;
 
 void main() {
-  setUp(() {
-    caloriesPredictionBloc = CaloriesPredictionBloc();
-  });
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc)),
+      MaterialApp(home: CaloriesPredictionScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -33,7 +28,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc)),
+      MaterialApp(home: CaloriesPredictionScreen()),
     );
     await tester.pumpAndSettle();
 
@@ -79,7 +74,7 @@ void main() {
       ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc)),
+      MaterialApp(home: CaloriesPredictionScreen()),
     );
     await tester.pumpAndSettle();
 
