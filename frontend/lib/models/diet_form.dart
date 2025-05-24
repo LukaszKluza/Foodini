@@ -6,7 +6,7 @@ import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dar
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
 import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 
-class DietFormData {
+class DietForm {
   final Gender gender;
   final double height;
   final double weight;
@@ -23,7 +23,7 @@ class DietFormData {
   final double? fatPercentage;
   final double? waterPercentage;
 
-  DietFormData({
+  DietForm({
     required this.gender,
     required this.height,
     required this.weight,
@@ -40,4 +40,22 @@ class DietFormData {
     this.fatPercentage,
     this.waterPercentage,
   });
+
+  Map<String, dynamic> toJson() => {
+  "gender": gender.value,
+  "height": height,
+  "weight": weight,
+  "date_of_birth": dateOfBirth.toIso8601String(),
+  "diet_type": dietType.value,
+  "allergies": allergies.map((a) => a.value).toList(),
+  "diet_goal": dietGoal,
+  "meals_per_day": mealsPerDay,
+  "diet_intensity": dietIntensity.value,
+  "activity_level": activityLevel.value,
+  "stress_level": stressLevel.value,
+  "sleep_quality": sleepQuality.value,
+  "muscle_percentage": musclePercentage,
+  "fat_percentage": fatPercentage,
+  "water_percentage": waterPercentage,
+};
 }
