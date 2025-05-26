@@ -1,16 +1,8 @@
-import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
 import 'package:frontend/config/app_config.dart';
 
 String? validateDietType(DietType? value) {
-  if (value == null) {
-    return AppConfig.requiredDietType;
-  }
-  return null;
-}
-
-String? validateAllergy(Allergy? value) {
   if (value == null) {
     return AppConfig.requiredDietType;
   }
