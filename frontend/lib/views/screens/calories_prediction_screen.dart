@@ -226,7 +226,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           child: ListView.separated(
             shrinkWrap: true,
             itemCount: fields.length,
-            separatorBuilder: (_, __) => SizedBox(height: 20),
+            separatorBuilder: (_, _) => SizedBox(height: 20),
             itemBuilder: (_, index) => fields[index],
           ),
         ),

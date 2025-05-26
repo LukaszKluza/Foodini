@@ -48,6 +48,7 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
             content: Form(
               key: _formKey,
               child: TextFormField(
+                key: Key(widget.propertiesName),
                 controller: controller,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(labelText: widget.inputDecorator),
@@ -87,16 +88,17 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
         InkWell(
           onTap: _showPercentageOptionDialog,
           child: Text(
-            "${widget.propertiesName}: ${_value.toStringAsFixed(1)} %",
+            "${widget.propertiesName}: ${_value.toStringAsFixed(1)}%",
           ),
         ),
         GestureDetector(
           child: Slider(
+            key: Key(widget.propertiesName),
             value: _value,
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt(),
-            label: "${_value.toStringAsFixed(1)} %",
+            label: "${_value.toStringAsFixed(1)}%",
             onChanged: (value) {
               setState(() {
                 _value = value;

@@ -164,7 +164,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // // When
+    // When
     final sliderFinder = find.byType(Slider);
 
     await tester.drag(sliderFinder, const Offset(15, 0));
@@ -186,7 +186,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // // When
+    // When
     await tester.tap(find.textContaining(AppConfig.dietGoal));
     await tester.pumpAndSettle();
 
