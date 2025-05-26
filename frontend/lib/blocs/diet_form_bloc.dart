@@ -60,7 +60,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     try {
-      // here add comunication with backend:
+      // TODO here add comunication with backend:
       emit(state.copyWith(isSubmitting: false, isSuccess: true));
     } catch (e) {
       emit(state.copyWith(

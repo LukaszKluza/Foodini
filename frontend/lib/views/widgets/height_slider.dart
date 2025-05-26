@@ -86,7 +86,6 @@ class HeightSliderState extends State<HeightSlider> {
           ),
         ),
         GestureDetector(
-          // onTap: _showHeightDialog,
           child: Slider(
             value: _height,
             min: widget.min,

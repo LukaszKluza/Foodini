@@ -41,7 +41,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/profile_details',
       builder:
-          (context, satte) => BlocProvider(
+          (context, state) => BlocProvider(
             create: (_) => DietFormBloc(),
             child: ProfileDetailsScreen(),
           ),

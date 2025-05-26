@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
+import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/diet_preferences_screen.dart';
 
 void main() {
+
+  final bloc = DietFormBloc();
 
   testWidgets('Diet preferences screen elements are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -31,7 +40,12 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -78,7 +92,12 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -136,7 +155,12 @@ void main() {
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -153,7 +177,12 @@ void main() {
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -180,7 +209,12 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -199,7 +233,12 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen()),
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const DietPreferencesScreen(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 

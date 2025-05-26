@@ -83,6 +83,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
         validator: (value) => validateGender(value),
       ),
       HeightSlider(
+        key: Key(AppConfig.height),
         initialValue: _selectedHeight,
         onChanged: (value) {
           setState(() {
@@ -92,6 +93,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
         },
       ),
       WeightSlider(
+        key: Key(AppConfig.weight),
         initialValue: _selectedWeight,
         label: AppConfig.weight,
         dialogTitle: AppConfig.enterYourWeight,

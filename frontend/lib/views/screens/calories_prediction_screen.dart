@@ -123,7 +123,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
               return DropdownMenuItem<SleepQuality>(
                 value: sleepQuality,
                 child: Text(
-                  AppConfig.stressSleepQualityLabels[sleepQuality]!,
+                  AppConfig.sleepQualityLabels[sleepQuality]!,
                   style: TextStyle(color: Colors.black),
                 ),
               );
@@ -213,7 +213,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         listener: (context, state) {
           if (state.isSuccess == true) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Form successfully submitted')),
+              SnackBar(content: Text(AppConfig.formSuccefullySubmitted)),
             );
           } else if (state.errorMessage != null) {
             ScaffoldMessenger.of(
