@@ -27,7 +27,7 @@ String? validateSleepQuality(SleepQuality? value) {
 String? validateMusclePercentage(String? value) {
   final percentage = double.tryParse(value ?? '');
   if (percentage == null || percentage < 0 || percentage > 100) {
-    return '${AppConfig.musclePercentageMustBeBetween} 0 and 100%';
+    return '${AppConfig.musclePercentageShouldBeBetween} 0 and 100%';
   }
   return null;
 }
