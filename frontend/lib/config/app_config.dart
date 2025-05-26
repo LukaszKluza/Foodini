@@ -152,7 +152,7 @@ class AppConfig {
 
   static const String sleepQuality = 'Sleep quality';
   static const String requiredSleepQuality = 'Sleep quality is required';
-  static const Map<SleepQuality, String> stressSleepQualityLabels = {
+  static const Map<SleepQuality, String> sleepQualityLabels = {
     SleepQuality.POOR: 'Poor',
     SleepQuality.FAIR: 'Fair',
     SleepQuality.GOOD: 'Good',
