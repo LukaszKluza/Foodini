@@ -8,6 +8,7 @@ import 'package:frontend/states/provide_email_states.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/utils/user_validators.dart';
 
@@ -42,7 +43,7 @@ class ProvideEmailScreen extends StatelessWidget {
           },
         ),
         title: Center(
-          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
+          child: Text(AppConfig.changePassword, style: Styles.titleStyle),
         ),
       ),
       body: _ProvideEmailForm(),
@@ -62,7 +63,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
   final TextEditingController _emailController = TextEditingController();
 
   String? _message;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   Widget build(BuildContext context) {

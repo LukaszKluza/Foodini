@@ -1,18 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 
-import '../assets/diet_preferences_enums/allergy.pbenum.dart';
-import '../assets/diet_preferences_enums/diet_type.pbenum.dart';
+import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
+import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
 
 class AppConfig {
-  // Numbers
-  static const int minPasswordLength = 8;
-  static const int maxPasswordLength = 64;
-  static const int redirectionDelay = 100;
-
   //Texts
   static const String foodini = 'Foodini';
   static const String myAccount = 'My Account';
@@ -31,10 +25,7 @@ class AppConfig {
   static const String requiredPasswordConfirmation =
       'Password confirmation is required';
   static const String samePasswords = 'Passwords must be the same';
-  static const String minimalPasswordLength =
-      'Password must have at least $minPasswordLength characters';
-  static const String maximalPasswordLength =
-      'Password must have no more than $maxPasswordLength characters';
+  static const String passwordLengthMustBeBetween = "Password length must be between";
   static const String passwordComplexityError =
       'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
@@ -113,13 +104,11 @@ class AppConfig {
   static const String dietGoal = 'Diet goal';
   static const String enterYourDietGoal = 'Enter your diet goal';
   static const String weightKg = 'Weight (kg)';
-  static const double minWeight = 20;
-  static const double maxWeight = 160;
+
   static const String dietGoalShouldBeBetween = 'Diet goal should be between';
   static const String kg = 'kg';
 
   static const String mealsPerDay = 'Meals per day';
-  static const int maxMealsPerDay = 6;
 
   static const String dietIntensity = 'Diet intensity';
   static const String requiredDietIntensity = 'Diet intensity is required';
@@ -175,31 +164,4 @@ class AppConfig {
   static const String fatPercentageShouldBeBetween = 'Fat % should be %';
 
   static const String generateWeeklyDiet = 'Generate weekly diet';
-
-  // URLs
-  static const String baseUrl = 'http://127.0.0.1:8000/v1';
-
-  // Mobile app url
-  // static const String baseUrl = 'http://10.0.2.2:8000/v1';
-  static const String registerUrl = '$baseUrl/users/register';
-  static const String loginUrl = '$baseUrl/users/login';
-  static const String logoutUrl = '$baseUrl/users/logout';
-  static const String getUserUrl = '$baseUrl/users/';
-  static const String resendVerificationEmailUrl =
-      '$baseUrl/users/confirm/resend-verification-new-account';
-  static const String deleteUrl = '$baseUrl/users/delete';
-  static const String changePasswordUrl =
-      '$baseUrl/users/reset-password/request';
-  static const String confirmNewPasswordUrl =
-      '$baseUrl/users/confirm/new-password';
-  static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
-
-  //Styles
-  static const TextStyle titleStyle = TextStyle(
-    fontSize: 32,
-    fontStyle: FontStyle.italic,
-  );
-  static const TextStyle errorStyle = TextStyle(color: Colors.red);
-  static const TextStyle warningStyle = TextStyle(color: Colors.orange);
-  static const TextStyle successStyle = TextStyle(color: Colors.green);
 }

@@ -3,6 +3,8 @@ import 'package:frontend/config/app_config.dart';
 
 import 'package:frontend/utils/diet_preferences_validators.dart';
 
+import 'package:frontend/config/constants.dart';
+
 class WeightSlider extends StatefulWidget {
   final double min;
   final double max;
@@ -11,8 +13,8 @@ class WeightSlider extends StatefulWidget {
 
   const WeightSlider({
     super.key,
-    this.min = AppConfig.minWeight,
-    this.max = AppConfig.maxWeight,
+    this.min = Constants.minWeight,
+    this.max = Constants.maxWeight,
     required this.initialValue,
     required this.onChanged,
   });

@@ -4,6 +4,7 @@ import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/blocs/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/utils/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -11,6 +12,8 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
+
+import '../../config/constants.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   final DietPreferencesBloc? bloc;
@@ -34,7 +37,7 @@ class DietPreferencesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.dietPreferences, style: AppConfig.titleStyle),
+          child: Text(AppConfig.dietPreferences, style: Styles.titleStyle),
         ),
       ),
       body: _DietPreferencesForm(),
@@ -64,7 +67,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   double _selectedDietGoal = 70;
   int _selectedMealsPerDay = 3;
   String? _message;
-  final TextStyle _messageStyle = AppConfig.errorStyle;
+  final TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
@@ -143,7 +146,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
             widthFactor: 1,
             child: SegmentedButton<int>(
               segments: [
-                for (var i = 1; i <= AppConfig.maxMealsPerDay; i++)
+                for (var i = 1; i <= Constants.maxMealsPerDay; i++)
                   ButtonSegment(value: i, label: Text('$i')),
               ],
               selected: <int>{_selectedMealsPerDay},

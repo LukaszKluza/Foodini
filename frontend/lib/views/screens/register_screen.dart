@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/register_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/register_events.dart';
 import 'package:frontend/models/register_request.dart';
 import 'package:frontend/repository/auth_repository.dart';
@@ -38,7 +39,7 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.registration, style: AppConfig.titleStyle),
+          child: Text(AppConfig.registration, style: Styles.titleStyle),
         ),
       ),
       body: _RegisterForm(),
@@ -63,7 +64,7 @@ class _RegisterFormState extends State<_RegisterForm> {
 
   String? _selectedCountry;
   String? _message;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   void _pickCountry(BuildContext context) {
     showCountryPicker(

@@ -1,5 +1,7 @@
 import 'package:frontend/config/app_config.dart';
 
+import 'package:frontend/config/constants.dart';
+
 String? validateCountry(String? value) {
   if (value == null || value.isEmpty) {
     return AppConfig.requiredCountry;
@@ -33,11 +35,8 @@ String? validatePassword(String? value) {
   if (value == null || value.isEmpty) {
     return AppConfig.requiredPassword;
   }
-  if (value.length < AppConfig.minPasswordLength) {
-    return AppConfig.minimalPasswordLength;
-  }
-  if (value.length > AppConfig.maxPasswordLength) {
-    return AppConfig.maximalPasswordLength;
+  if (value.length < Constants.minPasswordLength || value.length > Constants.maxPasswordLength) {
+    return AppConfig.passwordLengthMustBeBetween;
   }
   if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
     return AppConfig.passwordComplexityError;

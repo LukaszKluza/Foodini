@@ -1,0 +1,12 @@
+import 'package:flutter/material.dart';
+
+class Styles {
+  static const TextStyle titleStyle = TextStyle(
+    fontSize: 32,
+    fontStyle: FontStyle.italic,
+  );
+
+  static const TextStyle errorStyle = TextStyle(color: Colors.red);
+  static const TextStyle warningStyle = TextStyle(color: Colors.orange);
+  static const TextStyle successStyle = TextStyle(color: Colors.green);
+}
