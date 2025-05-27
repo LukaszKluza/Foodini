@@ -105,7 +105,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 decoration: InputDecoration(labelText: AppConfig.country),
                 controller: _countryController,
                 onTap: () => _pickCountry(context),
-                validator: (value) => validateCountry(value, _selectedCountry),
+                validator: (value) => validateCountry(value),
               ),
               TextFormField(
                 key: Key(AppConfig.email),
