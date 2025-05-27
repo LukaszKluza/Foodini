@@ -10,7 +10,7 @@ def main():
     parser.add_argument(
         "--dart_define_from_file",
         type=str,
-        default="config/dev-web.json.",
+        default="config/dev-web.json",
         help="Flutter config",
     )
 
