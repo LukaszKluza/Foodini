@@ -2,6 +2,7 @@ import logging
 
 import psycopg2
 from fastapi import FastAPI, Request, HTTPException, status
+from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
 from starlette.templating import Jinja2Templates
@@ -34,8 +35,7 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
             {"request": request, "redirect_path": config.FRONTEND_URL},
             status_code=404,
         )
-    else:
-        raise exc
+    return await http_exception_handler(request, exc)
 
 
 @app.exception_handler(psycopg2.OperationalError)
