@@ -1,4 +1,3 @@
-import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
 import 'package:frontend/config/app_config.dart';

@@ -5,10 +5,8 @@ import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/profile_details_screen.dart';
-import 'package:intl/intl.dart';
 
 void main() {
-
   final bloc = DietFormBloc();
 
   testWidgets('Profile details screen elements are displayed', (

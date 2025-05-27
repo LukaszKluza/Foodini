@@ -12,7 +12,6 @@ import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 
-
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
 
@@ -21,10 +20,7 @@ class CaloriesPredictionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppConfig.caloriesPrediction,
-            style: Styles.titleStyle,
-          ),
+          child: Text(AppConfig.caloriesPrediction, style: Styles.titleStyle),
         ),
       ),
       body: _CaloriesPredictionForm(),
@@ -214,7 +210,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         listener: (context, state) {
           if (state.isSuccess == true) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppConfig.formSuccefullySubmitted)),
+              SnackBar(content: Text(AppConfig.formSuccessfullySubmitted)),
             );
           } else if (state.errorMessage != null) {
             ScaffoldMessenger.of(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_form_events.dart';
 import 'package:frontend/utils/profile_details_validators.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
@@ -17,7 +18,7 @@ class ProfileDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.profileDetails, style: AppConfig.titleStyle),
+          child: Text(AppConfig.profileDetails, style: Styles.titleStyle),
         ),
       ),
       body: _ProfileDetailsForm(),
@@ -41,7 +42,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   double _selectedHeight = 175;
   double _selectedWeight = 65;
   String? _message;
-  final TextStyle _messageStyle = AppConfig.errorStyle;
+  final TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {

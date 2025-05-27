@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 
 import 'package:frontend/utils/profile_details_validators.dart';
 
@@ -11,8 +12,8 @@ class HeightSlider extends StatefulWidget {
 
   const HeightSlider({
     super.key,
-    this.min = AppConfig.minHeight,
-    this.max = AppConfig.maxHeight,
+    this.min = Constants.minHeight,
+    this.max = Constants.maxHeight,
     required this.initialValue,
     required this.onChanged,
   });

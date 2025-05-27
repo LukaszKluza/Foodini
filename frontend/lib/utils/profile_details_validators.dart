@@ -1,5 +1,6 @@
 import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 
 String? validateGender(Gender? value) {
   if (value == null) {
@@ -11,9 +12,9 @@ String? validateGender(Gender? value) {
 String? validateWeight(String? value) {
   final weight = double.tryParse(value ?? '');
   if (weight == null ||
-      weight < AppConfig.minWeight ||
-      weight > AppConfig.maxWeight) {
-    return '${AppConfig.weightShouldBeBetween} ${AppConfig.minWeight} and ${AppConfig.maxWeight}';
+      weight < Constants.minWeight ||
+      weight > Constants.maxWeight) {
+    return '${AppConfig.weightShouldBeBetween} [${Constants.minWeight}, ${Constants.maxWeight}]';
   }
   return null;
 }
@@ -21,9 +22,9 @@ String? validateWeight(String? value) {
 String? validateHeight(String? value) {
   final height = double.tryParse(value ?? '');
   if (height == null ||
-      height < AppConfig.minHeight ||
-      height > AppConfig.maxHeight) {
-    return '${AppConfig.heightShouldBeBetween} ${AppConfig.minHeight} and ${AppConfig.maxHeight}';
+      height < Constants.minHeight ||
+      height > Constants.maxHeight) {
+    return '${AppConfig.heightShouldBeBetween} [${Constants.minHeight}, ${Constants.maxHeight}]';
   }
   return null;
 }

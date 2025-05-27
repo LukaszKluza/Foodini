@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
@@ -26,7 +25,8 @@ class AppConfig {
   static const String requiredPasswordConfirmation =
       'Password confirmation is required';
   static const String samePasswords = 'Passwords must be the same';
-  static const String passwordLengthMustBeBetween = "Password length must be between";
+  static const String passwordLengthMustBeBetween =
+      "Password length must be between";
   static const String passwordComplexityError =
       'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
@@ -105,13 +105,11 @@ class AppConfig {
   static const String dietGoal = 'Diet goal';
   static const String enterYourDietGoal = 'Enter your diet goal';
   static const String weightKg = 'Weight (kg)';
-  static const double minWeight = 20;
-  static const double maxWeight = 160;
+
   static const String dietGoalShouldBeBetween = 'Diet goal should be between';
   static const String kg = 'kg';
 
   static const String mealsPerDay = 'Meals per day';
-  static const int maxMealsPerDay = 6;
 
   static const String dietIntensity = 'Diet intensity';
   static const String requiredDietIntensity = 'Diet intensity is required';
@@ -178,12 +176,11 @@ class AppConfig {
   };
 
   static const String height = "Height";
+  static const String enterYourHeight = "Enter your height";
   static const String heightCm = 'Height (cm)';
-  static const double minHeight = 60;
-  static const double maxHeight = 230;
+
   static const String heightShouldBeBetween = 'Height should be between';
   static const String cm = 'cm';
-  static const String enterYourHeight = "Enter your height";
 
   static const String weight = "Weight";
   static const String enterYourWeight = "Enter your weight";
@@ -191,38 +188,5 @@ class AppConfig {
 
   static const String dateOfBirth = "Date of birth";
 
-  static const String formSuccefullySubmitted = "Form succesfully submitted";
-
-
-  // URLs
-  static const String baseUrl = 'http://127.0.0.1:8000/v1';
-  // Mobile app url
-  // static const String baseUrl = 'http://10.0.2.2:8000/v1';
-  static const String registerUrl = '$baseUrl/users/register';
-  static const String loginUrl = '$baseUrl/users/login';
-  static const String logoutUrl = '$baseUrl/users/logout';
-  static const String getUserUrl = '$baseUrl/users/';
-  static const String resendVerificationEmailUrl =
-      '$baseUrl/users/confirm/resend-verification-new-account';
-  static const String deleteUrl = '$baseUrl/users/delete';
-  static const String changePasswordUrl = '$baseUrl/users/reset-password/request';
-  static const String confirmNewPasswordUrl = '$baseUrl/users/confirm/new-password';
-  static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
-
-  static const String advancedBodyParameters = "Advance body parameters";
-
-  static const String musclePercentage = "Muscle percentage";
-  static const String enterMusclePercentage = 'Enter your muscle %';
-  static const String musclePercentageShouldBeBetween =
-      'Muscle % should be between';
-
-  static const String waterPercentage = "Water percentage";
-  static const String enterWaterPercentage = 'Enter your water percentage';
-  static const String waterPercentageShouldBeBetween = 'Water % should be %';
-
-  static const String fatPercentage = "Fat percentage";
-  static const String enterFatPercentage = 'Enter your fat percentage';
-  static const String fatPercentageShouldBeBetween = 'Fat % should be %';
-
-  static const String generateWeeklyDiet = 'Generate weekly diet';
+  static const String formSuccessfullySubmitted = "Form successfully submitted";
 }
