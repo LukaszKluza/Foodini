@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class AccountListenerHelper {
-  static void accountStateListener(BuildContext context, AccountState state,
-      {required bool mounted}) {
+  static void accountStateListener(
+    BuildContext context,
+    AccountState state, {
+    required bool mounted,
+  }) {
     if (state is AccountDeleteSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(AppConfig.successfullyDeletedAccount)),
@@ -22,9 +26,7 @@ class AccountListenerHelper {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            ExceptionConverter.formatErrorMessage(
-              state.error.data,
-            ),
+            ExceptionConverter.formatErrorMessage(state.error.data),
           ),
         ),
       );
@@ -33,12 +35,14 @@ class AccountListenerHelper {
 
   static void goHome(bool mounted, BuildContext context) {
     Future.delayed(
-        const Duration(milliseconds: AppConfig.redirectionDelay), () {
-      if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.go('/');
-        });
-      }
-    });
+      const Duration(milliseconds: Constants.redirectionDelay),
+      () {
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/');
+          });
+        }
+      },
+    );
   }
 }

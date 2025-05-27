@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -95,7 +97,7 @@ void main() {
     when(mockApiClient.logout(1)).thenAnswer(
           (_) async => Response<dynamic>(
         statusCode: 204,
-        requestOptions: RequestOptions(path: AppConfig.logoutUrl),
+        requestOptions: RequestOptions(path: Endpoints.logout),
       ),
     );
 
@@ -131,7 +133,7 @@ void main() {
 
     expect(accountBloc.state, isA<AccountLogoutSuccess>());
 
-    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
     // Then
@@ -183,7 +185,7 @@ void main() {
 
     expect(accountBloc.state, isA<AccountDeleteSuccess>());
 
-    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
     // Then

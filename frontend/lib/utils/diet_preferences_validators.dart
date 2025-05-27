@@ -1,6 +1,8 @@
+import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 
 String? validateDietType(DietType? value) {
   if (value == null) {
@@ -12,9 +14,9 @@ String? validateDietType(DietType? value) {
 String? validateWeight(String? value) {
   final weight = double.tryParse(value ?? '');
   if (weight == null ||
-      weight < AppConfig.minWeight ||
-      weight > AppConfig.maxWeight) {
-    return '${AppConfig.dietGoalShouldBeBetween} ${AppConfig.minWeight} and ${AppConfig.maxWeight}';
+      weight < Constants.minWeight ||
+      weight > Constants.maxWeight) {
+    return '${AppConfig.dietGoalShouldBeBetween} [${Constants.minWeight}, ${Constants.maxWeight}]';
   }
   return null;
 }

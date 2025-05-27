@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/login_events.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/repository/user_storage.dart';
@@ -77,7 +79,7 @@ void main() {
           "refresh_token": "refresh_token",
         },
         statusCode: 200,
-        requestOptions: RequestOptions(path: AppConfig.loginUrl),
+        requestOptions: RequestOptions(path: Endpoints.login),
       ),
     );
 
@@ -117,7 +119,7 @@ void main() {
 
     expect(loginBloc.state, isA<LoginSuccess>());
 
-    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
     // Then
@@ -146,9 +148,9 @@ void main() {
     // Given
     when(mockApiClient.login(any)).thenThrow(
       DioException(
-        requestOptions: RequestOptions(path: AppConfig.loginUrl),
+        requestOptions: RequestOptions(path: Endpoints.login),
         response: Response(
-          requestOptions: RequestOptions(path: AppConfig.loginUrl),
+          requestOptions: RequestOptions(path: Endpoints.login),
           statusCode: 403,
           data: {
             "detail": "EMAIL_NOT_VERIFIED",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
 
 class MainPageScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _LoginScreenState extends State<MainPageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
+          child: Text(AppConfig.foodini, style: Styles.titleStyle),
         ),
       ),
       body: Column(

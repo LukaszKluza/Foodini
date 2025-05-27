@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/config/app_config.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.homePage, style: AppConfig.titleStyle),
+          child: Text(AppConfig.homePage, style: Styles.titleStyle),
         ),
       ),
       body: Center(

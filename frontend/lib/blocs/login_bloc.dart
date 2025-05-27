@@ -36,7 +36,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         emit(LoginSuccess(AppConfig.successfullyLoggedIn));
       } on ApiException catch (error) {
-        if (error.data["detail"] == "EMAIL_NOT_VERIFIED"){
+        if (error.data?["detail"] == "EMAIL_NOT_VERIFIED") {
           emit(AccountNotVerified());
           return;
         }

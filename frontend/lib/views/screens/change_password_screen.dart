@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/change_password_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/change_password_events.dart';
 import 'package:frontend/listeners/change_password_listener.dart';
 import 'package:frontend/models/change_password_request.dart';
@@ -40,7 +41,7 @@ class ChangePasswordScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.changePassword, style: AppConfig.titleStyle),
+          child: Text(AppConfig.changePassword, style: Styles.titleStyle),
         ),
       ),
       body: _ChangePasswordForm(),
@@ -64,7 +65,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
 
   String? _message;
   String? _token;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
