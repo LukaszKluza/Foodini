@@ -15,7 +15,6 @@ class AppConfig {
   static const String homePage = 'Foodini Home Page';
   static const String welcome = 'Welcome in Foodini';
 
-  static const String successfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
   static const String provideCorrectName = 'Provide correct name';
   static const String requiredAge = 'Select your age';
@@ -44,7 +43,6 @@ class AppConfig {
   static const String password = 'Password';
   static const String confirmPassword = 'Confirm password';
   static const String newPassword = 'New password';
-  static const String registrationFailed = 'Registration failed';
 
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
@@ -63,6 +61,7 @@ class AppConfig {
   static const String loginFailed = 'Login failed';
   static const String logout = 'Logout';
   static const String somethingWentWrong = 'Something went wrong';
+  static const String unknownError = 'Unknown error';
   static const String checkAndConfirmEmailAddress =
       'Check and confirm your email address';
   static const String checkEmailAddressToSetNewPassword =
