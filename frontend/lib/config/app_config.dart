@@ -127,7 +127,7 @@ class AppConfig {
     ActivityLevel.LIGHT: 'Low (2–3 days a week)',
     ActivityLevel.MODERATE: 'Moderate (3–4 days a week)',
     ActivityLevel.ACTIVE: 'Active (5–6 days a week)',
-    ActivityLevel.VERY_ACTIVE: ' Very Active (daily activity)',
+    ActivityLevel.VERY_ACTIVE: 'Very Active (daily activity)',
   };
 
   static const String stressLevel = 'Stress level';
@@ -141,7 +141,7 @@ class AppConfig {
 
   static const String sleepQuality = 'Sleep quality';
   static const String requiredSleepQuality = 'Sleep quality is required';
-  static const Map<SleepQuality, String> stressSleepQualityLabels = {
+  static const Map<SleepQuality, String> sleepQualityLabels = {
     SleepQuality.POOR: 'Poor',
     SleepQuality.FAIR: 'Fair',
     SleepQuality.GOOD: 'Good',
@@ -152,8 +152,8 @@ class AppConfig {
 
   static const String musclePercentage = "Muscle percentage";
   static const String enterMusclePercentage = 'Enter your muscle %';
-  static const String musclePercentageMustBeBetween =
-      'Muscle % must be between';
+  static const String musclePercentageShouldBeBetween =
+      'Muscle % should be between';
 
   static const String waterPercentage = "Water percentage";
   static const String enterWaterPercentage = 'Enter your water percentage';
