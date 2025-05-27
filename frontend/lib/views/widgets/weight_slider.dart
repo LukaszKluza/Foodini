@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_config.dart';
-
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/utils/profile_details_validators.dart';
 
 class WeightSlider extends StatefulWidget {
@@ -14,8 +14,8 @@ class WeightSlider extends StatefulWidget {
 
   const WeightSlider({
     super.key,
-    this.min = AppConfig.minWeight,
-    this.max = AppConfig.maxWeight,
+    this.min = Constants.minWeight,
+    this.max = Constants.maxWeight,
     required this.initialValue,
     required this.onChanged,
     this.label = AppConfig.dietGoal,

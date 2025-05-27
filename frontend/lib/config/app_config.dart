@@ -9,11 +9,6 @@ import '../assets/diet_preferences_enums/allergy.pbenum.dart';
 import '../assets/diet_preferences_enums/diet_type.pbenum.dart';
 
 class AppConfig {
-  // Numbers
-  static const int minPasswordLength = 8;
-  static const int maxPasswordLength = 64;
-  static const int redirectionDelay = 100;
-
   //Texts
   static const String foodini = 'Foodini';
   static const String myAccount = 'My Account';
@@ -23,7 +18,6 @@ class AppConfig {
   static const String homePage = 'Foodini Home Page';
   static const String welcome = 'Welcome in Foodini';
 
-  static const String successfullyRegistered = 'Registered successfully';
   static const String requiredName = 'Name is required';
   static const String provideCorrectName = 'Provide correct name';
   static const String requiredCountry = 'Select your country';
@@ -32,10 +26,7 @@ class AppConfig {
   static const String requiredPasswordConfirmation =
       'Password confirmation is required';
   static const String samePasswords = 'Passwords must be the same';
-  static const String minimalPasswordLength =
-      'Password must have at least $minPasswordLength characters';
-  static const String maximalPasswordLength =
-      'Password must have no more than $maxPasswordLength characters';
+  static const String passwordLengthMustBeBetween = "Password length must be between";
   static const String passwordComplexityError =
       'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
@@ -50,7 +41,6 @@ class AppConfig {
   static const String password = 'Password';
   static const String confirmPassword = 'Confirm password';
   static const String newPassword = 'New password';
-  static const String registrationFailed = 'Registration failed';
 
   static const String login = 'Login';
   static const String dontHaveAccount = 'Do not have an account';
@@ -76,6 +66,7 @@ class AppConfig {
   static const String loginFailed = 'Login failed';
   static const String logout = 'Logout';
   static const String somethingWentWrong = 'Something went wrong';
+  static const String unknownError = 'Unknown error';
   static const String checkAndConfirmEmailAddress =
       'Check and confirm your email address';
   static const String checkEmailAddressToSetNewPassword =
@@ -205,7 +196,6 @@ class AppConfig {
 
   // URLs
   static const String baseUrl = 'http://127.0.0.1:8000/v1';
-
   // Mobile app url
   // static const String baseUrl = 'http://10.0.2.2:8000/v1';
   static const String registerUrl = '$baseUrl/users/register';
@@ -215,18 +205,24 @@ class AppConfig {
   static const String resendVerificationEmailUrl =
       '$baseUrl/users/confirm/resend-verification-new-account';
   static const String deleteUrl = '$baseUrl/users/delete';
-  static const String changePasswordUrl =
-      '$baseUrl/users/reset-password/request';
-  static const String confirmNewPasswordUrl =
-      '$baseUrl/users/confirm/new-password';
+  static const String changePasswordUrl = '$baseUrl/users/reset-password/request';
+  static const String confirmNewPasswordUrl = '$baseUrl/users/confirm/new-password';
   static const String refreshTokensUrl = '$baseUrl/users/refresh-tokens';
 
-  //Styles
-  static const TextStyle titleStyle = TextStyle(
-    fontSize: 32,
-    fontStyle: FontStyle.italic,
-  );
-  static const TextStyle errorStyle = TextStyle(color: Colors.red);
-  static const TextStyle warningStyle = TextStyle(color: Colors.orange);
-  static const TextStyle successStyle = TextStyle(color: Colors.green);
+  static const String advancedBodyParameters = "Advance body parameters";
+
+  static const String musclePercentage = "Muscle percentage";
+  static const String enterMusclePercentage = 'Enter your muscle %';
+  static const String musclePercentageShouldBeBetween =
+      'Muscle % should be between';
+
+  static const String waterPercentage = "Water percentage";
+  static const String enterWaterPercentage = 'Enter your water percentage';
+  static const String waterPercentageShouldBeBetween = 'Water % should be %';
+
+  static const String fatPercentage = "Fat percentage";
+  static const String enterFatPercentage = 'Enter your fat percentage';
+  static const String fatPercentageShouldBeBetween = 'Fat % should be %';
+
+  static const String generateWeeklyDiet = 'Generate weekly diet';
 }

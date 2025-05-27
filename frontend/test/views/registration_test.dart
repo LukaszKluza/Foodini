@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -60,7 +62,7 @@ void main() {
       (_) async => Response<dynamic>(
         data: {'id': 1, 'email': 'john@example.com'},
         statusCode: 200,
-        requestOptions: RequestOptions(path: AppConfig.registerUrl),
+        requestOptions: RequestOptions(path: Endpoints.register),
       ),
     );
 
@@ -110,7 +112,7 @@ void main() {
 
     expect(registerBloc.state, isA<RegisterSuccess>());
 
-    await tester.pump(const Duration(milliseconds: AppConfig.redirectionDelay));
+    await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
     // Then

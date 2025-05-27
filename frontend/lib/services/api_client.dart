@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/provide_email_request.dart';
@@ -34,14 +34,14 @@ class ApiClient {
 
   Future<Response> getUser() {
     return _client.get(
-      AppConfig.getUserUrl,
+      Endpoints.getUser,
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> register(RegisterRequest request) {
     return _client.post(
-      AppConfig.registerUrl,
+      Endpoints.register,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -49,7 +49,7 @@ class ApiClient {
 
   Future<Response> login(LoginRequest request) {
     return _client.post(
-      AppConfig.loginUrl,
+      Endpoints.login,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -57,7 +57,7 @@ class ApiClient {
 
   Future<Response> provideEmail(ProvideEmailRequest request) {
     return _client.post(
-      AppConfig.changePasswordUrl,
+      Endpoints.changePassword,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -65,7 +65,7 @@ class ApiClient {
 
   Future<Response> changePassword(ChangePasswordRequest request) {
     return _client.post(
-      AppConfig.confirmNewPasswordUrl,
+      Endpoints.confirmNewPassword,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -74,7 +74,7 @@ class ApiClient {
   Future<Response> refreshTokens() async {
     final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
-      AppConfig.refreshTokensUrl,
+      Endpoints.refreshTokens,
       options: Options(
         headers: {
           'Authorization': 'Bearer $refreshToken',
@@ -85,7 +85,7 @@ class ApiClient {
 
   Future<Response> logout(int userId) {
     return _client.get(
-      AppConfig.logoutUrl,
+      Endpoints.logout,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -93,7 +93,7 @@ class ApiClient {
 
   Future<Response> resendVerificationMail(String email) {
     return _client.get(
-      AppConfig.resendVerificationEmailUrl,
+      Endpoints.resendVerificationEmail,
       queryParameters: {'email': email},
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -101,7 +101,7 @@ class ApiClient {
 
   Future<Response> delete(int userId) {
     return _client.delete(
-      '${AppConfig.deleteUrl}/$userId',
+      '${Endpoints.delete}/$userId',
       options: Options(extra: {'requiresAuth': true}),
     );
   }

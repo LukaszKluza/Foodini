@@ -15,5 +15,6 @@ uvicorn backend.main:app --reload
 
 #### 1. Running the frontend
 ``` bash
-flutter run
+cd Foodini/frontend
+python ./run.py
 ```

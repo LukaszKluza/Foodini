@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/login_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/login_events.dart';
 import 'package:frontend/listeners/login_listener.dart';
 import 'package:frontend/models/login_request.dart';
@@ -38,7 +39,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.login, style: AppConfig.titleStyle),
+          child: Text(AppConfig.login, style: Styles.titleStyle),
         ),
       ),
       body: _LoginForm(),
@@ -57,7 +58,7 @@ class _LoginFormState extends State<_LoginForm> {
   final TextEditingController _passwordController = TextEditingController();
 
   String? _message;
-  TextStyle _messageStyle = AppConfig.errorStyle;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
@@ -130,7 +131,7 @@ class _LoginFormState extends State<_LoginForm> {
                         SizedBox(height: 16),
                         Text(
                         AppConfig.accountHasNotBeenConfirmed,
-                          style: AppConfig.warningStyle,
+                          style: Styles.warningStyle,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16),

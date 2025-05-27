@@ -6,6 +6,7 @@ import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/calories_prediction_validators.dart';
@@ -22,7 +23,7 @@ class CaloriesPredictionScreen extends StatelessWidget {
         title: Center(
           child: Text(
             AppConfig.caloriesPrediction,
-            style: AppConfig.titleStyle,
+            style: Styles.titleStyle,
           ),
         ),
       ),
@@ -52,7 +53,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   double _selectedWaterPercentage = 60.0;
   double _selectedFatPercentage = 15.0;
   String? _message;
-  final TextStyle _messageStyle = AppConfig.errorStyle;
+  final TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
@@ -224,6 +225,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         child: Form(
           key: _formKey,
           child: ListView.separated(
+            key: Key(AppConfig.caloriesPrediction),
             shrinkWrap: true,
             itemCount: fields.length,
             separatorBuilder: (_, _) => SizedBox(height: 20),

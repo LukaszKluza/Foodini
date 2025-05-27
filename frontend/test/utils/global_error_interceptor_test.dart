@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
@@ -8,7 +9,6 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/account_bloc.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 
@@ -49,16 +49,16 @@ void main() {
   ) async {
     when(
       mockDio.get(
-        AppConfig.logoutUrl,
+        Endpoints.logout,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
     ).thenThrow(
       DioException(
-        requestOptions: RequestOptions(path: AppConfig.logoutUrl),
+        requestOptions: RequestOptions(path: Endpoints.logout),
         response: Response(
           requestOptions: RequestOptions(
-            path: AppConfig.logoutUrl,
+            path: Endpoints.logout,
             queryParameters: {'user_id': 1},
           ),
           statusCode: 401,
@@ -73,10 +73,10 @@ void main() {
     ).thenAnswer((_) async => 'refresh_token');
 
     when(
-      mockDio.post(AppConfig.refreshTokensUrl, options: anyNamed('options')),
+      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     ).thenAnswer(
       (_) async => Response(
-        requestOptions: RequestOptions(path: AppConfig.refreshTokensUrl),
+        requestOptions: RequestOptions(path: Endpoints.refreshTokens),
         data: {
           'access_token': 'access_token',
           'refresh_token': 'refresh_token',
@@ -87,13 +87,13 @@ void main() {
 
     when(
       mockDio.request(
-        AppConfig.logoutUrl,
+        Endpoints.logout,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
     ).thenAnswer(
       (_) async => Response(
-        requestOptions: RequestOptions(path: AppConfig.logoutUrl),
+        requestOptions: RequestOptions(path: Endpoints.logout),
         statusCode: 204,
       ),
     );
@@ -114,19 +114,19 @@ void main() {
 
     verify(
       mockDio.get(
-        AppConfig.logoutUrl,
+        Endpoints.logout,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
     ).called(1);
 
     verify(
-      mockDio.post(AppConfig.refreshTokensUrl, options: anyNamed('options')),
+      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     ).called(1);
 
     verify(
       mockDio.request(
-        AppConfig.logoutUrl,
+        Endpoints.logout,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
@@ -158,7 +158,7 @@ void main() {
 
     verify(mockTokenStorageRepository.getRefreshToken()).called(1);
     verifyNever(
-      mockDio.post(AppConfig.refreshTokensUrl, options: anyNamed('options')),
+      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     );
   });
 }

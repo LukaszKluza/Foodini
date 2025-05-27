@@ -76,14 +76,14 @@ void main() {
     test('validatePassword returns error message for short password', () {
       expect(
         validatePassword('12345'),
-        equals(AppConfig.minimalPasswordLength),
+        equals(AppConfig.passwordLengthMustBeBetween),
       );
     });
 
     test('validatePassword returns error message for long password', () {
       expect(
         validatePassword('a' * 70),
-        equals(AppConfig.maximalPasswordLength),
+        equals(AppConfig.passwordLengthMustBeBetween),
       );
     });
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/account_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/account_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
@@ -52,7 +53,7 @@ class _AccountScreenState extends State<_AccountBody> {
           },
         ),
         title: Center(
-          child: Text(AppConfig.foodini, style: AppConfig.titleStyle),
+          child: Text(AppConfig.foodini, style: Styles.titleStyle),
         ),
       ),
       body: BlocListener<AccountBloc, AccountState>(
