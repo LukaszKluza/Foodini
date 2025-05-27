@@ -11,13 +11,6 @@ String? validateDietType(DietType? value) {
   return null;
 }
 
-String? validateAllergy(Allergy? value) {
-  if (value == null) {
-    return AppConfig.requiredDietType;
-  }
-  return null;
-}
-
 String? validateWeight(String? value) {
   final weight = double.tryParse(value ?? '');
   if (weight == null ||

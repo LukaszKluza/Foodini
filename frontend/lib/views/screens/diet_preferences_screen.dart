@@ -4,6 +4,7 @@ import 'package:frontend/assets/diet_preferences_enums/allergy.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
 import 'package:frontend/blocs/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/utils/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
@@ -12,8 +13,6 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
-
-import '../../config/constants.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   final DietPreferencesBloc? bloc;

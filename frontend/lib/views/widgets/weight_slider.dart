@@ -88,7 +88,6 @@ class WeightSliderState extends State<WeightSlider> {
           ),
         ),
         GestureDetector(
-          // onTap: _showWeightDialog,
           child: Slider(
             value: _weight,
             min: widget.min,
