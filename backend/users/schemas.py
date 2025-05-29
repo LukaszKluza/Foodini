@@ -1,4 +1,3 @@
-from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from .mixins import PasswordValidationMixin, CountryValidationMixin
