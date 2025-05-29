@@ -24,80 +24,82 @@ class _LoginScreenState extends State<MainPageScreen> {
     final dynamicFontSize = screenWidth * fontSizeRatio;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: horizontalPadding,
-                right: horizontalPadding,
-                bottom: 4.0,
-              ),
-              child: Text(
-                'Hey',
-                style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
-              child: Text(
-                'Simone!',
-                style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        rectangularButton(
-                          AppConfig.myAccount,
-                          Icons.person,
-                          screenWidth,
-                          screenHeight,
-                          () => context.go('/account'),
-                        ),
-                        const SizedBox(height: 16),
-                        rectangularButton(
-                          AppConfig.dietPreferences,
-                          Icons.food_bank_rounded,
-                          screenWidth,
-                          screenHeight,
-                          () => context.go('/profile_details'),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        rectangularButton(
-                          "Button 3",
-                          Icons.do_not_disturb,
-                          screenWidth,
-                          screenHeight,
-                          null,
-                        ),
-                        const SizedBox(height: 16),
-                        rectangularButton(
-                          "Button 4",
-                          Icons.do_not_disturb,
-                          screenWidth,
-                          screenHeight,
-                          null,
-                        ),
-                      ],
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  bottom: 4.0,
+                ),
+                child: Text(
+                  AppConfig.hey,
+                  style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
+                child: Text(
+                  'Simone!',
+                  style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          rectangularButton(
+                            AppConfig.myAccount,
+                            Icons.person,
+                            screenWidth,
+                            screenHeight,
+                            () => context.go('/account'),
+                          ),
+                          const SizedBox(height: 16),
+                          rectangularButton(
+                            AppConfig.dietPreferences,
+                            Icons.food_bank_rounded,
+                            screenWidth,
+                            screenHeight,
+                            () => context.go('/profile_details'),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          rectangularButton(
+                            "Button 3",
+                            Icons.do_not_disturb,
+                            screenWidth,
+                            screenHeight,
+                            null,
+                          ),
+                          const SizedBox(height: 16),
+                          rectangularButton(
+                            "Button 4",
+                            Icons.do_not_disturb,
+                            screenWidth,
+                            screenHeight,
+                            null,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

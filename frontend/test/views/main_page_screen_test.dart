@@ -16,7 +16,7 @@ void main() {
     // Then
     expect(find.text(AppConfig.myAccount), findsOneWidget);
     expect(find.byIcon(Icons.person), findsOneWidget);
-    expect(find.text(AppConfig.foodini), findsOneWidget);
+    expect(find.text(AppConfig.hey), findsOneWidget);
   });
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {

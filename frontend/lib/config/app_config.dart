@@ -16,6 +16,7 @@ class AppConfig {
   static const String home = 'Home';
   static const String homePage = 'Foodini Home Page';
   static const String welcome = 'Welcome in Foodini';
+  static const String hey = 'Hey';
 
   static const String requiredName = 'Name is required';
   static const String provideCorrectName = 'Provide correct name';
