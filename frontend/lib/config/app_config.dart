@@ -2,9 +2,10 @@ import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart
 import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
 import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
 import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
+import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 
-import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
+import '../assets/diet_preferences_enums/allergy.pbenum.dart';
+import '../assets/diet_preferences_enums/diet_type.pbenum.dart';
 
 class AppConfig {
   //Texts
@@ -24,7 +25,8 @@ class AppConfig {
   static const String requiredPasswordConfirmation =
       'Password confirmation is required';
   static const String samePasswords = 'Passwords must be the same';
-  static const String passwordLengthMustBeBetween = "Password length must be between";
+  static const String passwordLengthMustBeBetween =
+      "Password length must be between";
   static const String passwordComplexityError =
       'Password must contain letters (capital and lowercase) and numbers';
   static const String invalidEmail = 'Enter valid e-mail';
@@ -163,4 +165,28 @@ class AppConfig {
   static const String fatPercentageShouldBeBetween = 'Fat % should be %';
 
   static const String generateWeeklyDiet = 'Generate weekly diet';
+
+  static const String profileDetails = "Profile details";
+
+  static const String gender = "Gender";
+  static const String requiredGender = 'Gender is required';
+  static const Map<Gender, String> genderLabels = {
+    Gender.MALE: 'Male',
+    Gender.FEMALE: 'Female',
+  };
+
+  static const String height = "Height";
+  static const String enterYourHeight = "Enter your height";
+  static const String heightCm = 'Height (cm)';
+
+  static const String heightShouldBeBetween = 'Height should be between';
+  static const String cm = 'cm';
+
+  static const String weight = "Weight";
+  static const String enterYourWeight = "Enter your weight";
+  static const String weightShouldBeBetween = "Weight should be between";
+
+  static const String dateOfBirth = "Date of birth";
+
+  static const String formSuccessfullySubmitted = "Form successfully submitted";
 }
