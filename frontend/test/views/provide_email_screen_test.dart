@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -21,10 +22,15 @@ late AuthRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child) {
+Widget wrapWithProviders(Widget child, {List<GoRoute> routes = const []}) {
+  final goRouter = GoRouter(
+    initialLocation: '/',
+    routes: [GoRoute(path: '/', builder: (context, state) => child), ...routes],
+  );
+
   return MultiProvider(
     providers: [Provider<AuthRepository>.value(value: authRepository)],
-    child: MaterialApp(home: child),
+    child: MaterialApp.router(routerConfig: goRouter),
   );
 }
 
@@ -51,7 +57,7 @@ void main() {
     await provideEmailBloc.close();
   });
 
-  testWidgets('Provide email elements are displayed', (
+  testWidgets('Provide email elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -62,6 +68,7 @@ void main() {
 
     expect(find.byKey(Key(AppConfig.email)), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
   });

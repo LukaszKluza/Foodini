@@ -16,6 +16,7 @@ import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/screens/account_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -26,14 +27,18 @@ late AuthRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
+Widget wrapWithProviders(Widget child, {List<GoRoute> routes = const []}) {
+  final goRouter = GoRouter(
+    initialLocation: '/',
+    routes: [GoRoute(path: '/', builder: (context, state) => child), ...routes],
+  );
 
-Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp.router(routerConfig: goRouter),
   );
 }
 
@@ -50,9 +55,17 @@ void main() {
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
-  testWidgets('Account screen shows all buttons', (WidgetTester tester) async {
+  tearDown(() {
+    accountBloc.close();
+  });
+
+  testWidgets('Account screen shows all buttons and navbar', (
+    WidgetTester tester,
+  ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(AccountScreen(bloc: accountBloc)));
+    await tester.pumpWidget(
+      wrapWithProviders(AccountScreen(bloc: accountBloc)),
+    );
 
     // When
     await tester.pumpAndSettle();
@@ -61,8 +74,8 @@ void main() {
     expect(find.text(AppConfig.changePassword), findsOneWidget);
     expect(find.text(AppConfig.logout), findsOneWidget);
     expect(find.text(AppConfig.deleteAccount), findsOneWidget);
-    expect(find.text(AppConfig.foodini), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.text(AppConfig.myAccount), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
 
@@ -72,41 +85,52 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => AccountScreen(),
+          builder: (context, state) => AccountScreen(bloc: accountBloc),
         ),
         GoRoute(
           path: '/provide_email',
           builder:
-              (context, state) =>
-                  const Scaffold(key: Key(AppConfig.changePassword)),
+              (context, state) => const Scaffold(
+                key: Key(AppConfig.changePassword),
+                body: Center(child: Text('Change Password Screen')),
+              ),
         ),
       ],
     );
 
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
     // When
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
     await tester.tap(find.text(AppConfig.changePassword));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(Key(AppConfig.changePassword)), findsOneWidget);
+    expect(find.byKey(const Key(AppConfig.changePassword)), findsOneWidget);
+    expect(find.text('Change Password Screen'), findsOneWidget);
   });
 
   testWidgets('User can log out successfully', (WidgetTester tester) async {
     // Given
     when(mockApiClient.logout(1)).thenAnswer(
-          (_) async => Response<dynamic>(
+      (_) async => Response<dynamic>(
         statusCode: 204,
         requestOptions: RequestOptions(path: Endpoints.logout),
       ),
     );
 
-    UserStorage().setUser(
-        UserResponse(
-            id: 1,
-            email: "jan4@example.com",
-        )
-    );
+    UserStorage().setUser(UserResponse(id: 1, email: "jan4@example.com"));
 
     final goRouter = GoRouter(
       initialLocation: '/account',
@@ -117,17 +141,30 @@ void main() {
         ),
         GoRoute(
           path: '/',
-          builder: (context, state) => Scaffold(body: Text(AppConfig.homePage)),
+          builder:
+              (context, state) =>
+                  Scaffold(body: Center(child: Text(AppConfig.homePage))),
         ),
       ],
     );
 
-    // When
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+
     await tester.pumpAndSettle();
 
     expect(accountBloc.state, isA<AccountInitial>());
 
+    // When
     await tester.tap(find.text(AppConfig.logout));
     await tester.pump();
 
@@ -141,21 +178,18 @@ void main() {
     expect(find.text(AppConfig.homePage), findsOneWidget);
   });
 
-  testWidgets('User can successfully delete account', (WidgetTester tester) async {
+  testWidgets('User can successfully delete account', (
+    WidgetTester tester,
+  ) async {
     // Given
     when(mockApiClient.delete(1)).thenAnswer(
-          (_) async => Response<dynamic>(
+      (_) async => Response<dynamic>(
         statusCode: 204,
         requestOptions: RequestOptions(path: AppConfig.delete),
       ),
     );
 
-    UserStorage().setUser(
-        UserResponse(
-            id: 1,
-            email: "jan4@example.com",
-        )
-    );
+    UserStorage().setUser(UserResponse(id: 1, email: "jan4@example.com"));
 
     final goRouter = GoRouter(
       initialLocation: '/account',
@@ -166,17 +200,30 @@ void main() {
         ),
         GoRoute(
           path: '/',
-          builder: (context, state) => Scaffold(body: Text(AppConfig.homePage)),
+          builder:
+              (context, state) =>
+                  Scaffold(body: Center(child: Text(AppConfig.homePage))),
         ),
       ],
     );
 
-    // When
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+
     await tester.pumpAndSettle();
 
     expect(accountBloc.state, isA<AccountInitial>());
 
+    // When
     await tester.tap(find.text(AppConfig.deleteAccount));
     await tester.pump();
 
@@ -195,7 +242,9 @@ void main() {
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(AccountScreen(bloc: accountBloc)));
+    await tester.pumpWidget(
+      wrapWithProviders(AccountScreen(bloc: accountBloc)),
+    );
 
     // When
     await tester.pumpAndSettle();
@@ -214,6 +263,7 @@ void main() {
     verifyZeroInteractions(mockTokenStorageRepository);
     expect(accountBloc.state, isA<AccountInitial>());
     expect(find.text(AppConfig.deleteAccount), findsOneWidget);
-    expect(find.text(AppConfig.foodini), findsOneWidget);
+    expect(find.text(AppConfig.myAccount), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
   });
 }

@@ -7,23 +7,42 @@ import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/diet_preferences_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late DietFormBloc bloc;
 
-  final bloc = DietFormBloc();
+  setUp(() {
+    bloc = DietFormBloc();
+  });
 
-  testWidgets('Diet preferences screen elements are displayed', (
+  tearDown(() {
+    bloc.close();
+  });
+
+  Widget wrapWithRouter(Widget child) {
+    return MaterialApp.router(
+      routerConfig: GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) =>
+                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
+          ),
+        ],
+      ),
+    );
+  }
+
+  testWidgets('Diet preferences screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -33,20 +52,14 @@ void main() {
     expect(find.textContaining(AppConfig.dietGoal), findsOneWidget);
     expect(find.text(AppConfig.mealsPerDay), findsOneWidget);
     expect(find.text(AppConfig.dietIntensity), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
   });
 
   testWidgets('Diet type enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -91,14 +104,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -154,14 +160,7 @@ void main() {
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -176,14 +175,7 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -208,14 +200,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -232,14 +217,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const DietPreferencesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When

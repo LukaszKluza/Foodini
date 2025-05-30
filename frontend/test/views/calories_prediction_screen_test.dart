@@ -7,43 +7,58 @@ import 'package:frontend/assets/calories_prediction_enums/stress_level.pbserver.
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/calories_prediction_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
-  final bloc = DietFormBloc();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late DietFormBloc bloc;
 
-  testWidgets('Basic Calories prediction screen elements are displayed', (
-    WidgetTester tester,
-  ) async {
-    // Given, When
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+  setUp(() {
+    bloc = DietFormBloc();
+  });
+
+  tearDown(() {
+    bloc.close();
+  });
+
+  Widget wrapWithRouter(Widget child) {
+    return MaterialApp.router(
+      routerConfig: GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) =>
+                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
+          ),
+        ],
       ),
     );
-    await tester.pumpAndSettle();
+  }
 
-    // Then
-    expect(find.byKey(Key(AppConfig.activityLevel)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.stressLevel)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.sleepQuality)), findsOneWidget);
-    expect(find.text(AppConfig.advancedBodyParameters), findsOneWidget);
-  });
+  testWidgets(
+    'Basic Calories prediction screen elements and navbar are displayed',
+    (WidgetTester tester) async {
+      // Given, When
+      await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
+      await tester.pumpAndSettle();
+
+      // Then
+      expect(find.byKey(Key(AppConfig.activityLevel)), findsOneWidget);
+      expect(find.byKey(Key(AppConfig.stressLevel)), findsOneWidget);
+      expect(find.byKey(Key(AppConfig.sleepQuality)), findsOneWidget);
+      expect(find.text(AppConfig.advancedBodyParameters), findsOneWidget);
+      expect(find.byType(BottomNavBar), findsOneWidget);
+    },
+  );
 
   testWidgets('Activity enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -87,14 +102,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -134,14 +142,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -181,14 +182,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -212,18 +206,14 @@ void main() {
 
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -237,27 +227,30 @@ void main() {
 
   testWidgets('Water slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
     final sliderFinder = find.byKey(Key(AppConfig.waterPercentage));
-    await tester.drag(sliderFinder, const Offset(100, 0));
+
+    final slider = tester.getCenter(sliderFinder);
+    await tester.dragFrom(slider, const Offset(100, 0));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text("Water percentage: 65.0%"), findsOneWidget);
+    expect(find.textContaining("Water percentage:"), findsOneWidget);
+
+    final textFinder = find.textContaining("Water percentage:");
+    expect(textFinder, findsOneWidget);
+    final textWidget = tester.widget<Text>(textFinder);
+    expect(textWidget.data, contains("60.0%"));
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {
@@ -266,18 +259,14 @@ void main() {
     tester.view.devicePixelRatio = 1.5;
     await tester.pumpAndSettle();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -291,18 +280,14 @@ void main() {
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -325,18 +310,14 @@ void main() {
 
   testWidgets('Water pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -363,18 +344,14 @@ void main() {
     tester.view.devicePixelRatio = 1.5;
     await tester.pumpAndSettle();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, AppConfig.advancedBodyParameters);
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      AppConfig.advancedBodyParameters,
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 

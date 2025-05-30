@@ -5,22 +5,42 @@ import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/views/screens/profile_details_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
-  final bloc = DietFormBloc();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late DietFormBloc bloc;
 
-  testWidgets('Profile details screen elements are displayed', (
+  setUp(() {
+    bloc = DietFormBloc();
+  });
+
+  tearDown(() {
+    bloc.close();
+  });
+
+  Widget wrapWithRouter(Widget child) {
+    return MaterialApp.router(
+      routerConfig: GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) =>
+                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
+          ),
+        ],
+      ),
+    );
+  }
+
+  testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -28,20 +48,14 @@ void main() {
     expect(find.byKey(Key(AppConfig.height)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.weight)), findsOneWidget);
     expect(find.byKey(Key(AppConfig.dateOfBirth)), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
   });
 
   testWidgets('Gender enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -60,14 +74,7 @@ void main() {
 
   testWidgets('Height slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -82,14 +89,7 @@ void main() {
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -104,14 +104,7 @@ void main() {
 
   testWidgets('Height pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -134,14 +127,7 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -164,14 +150,7 @@ void main() {
 
   testWidgets('Date picker appears on tap', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrapWithRouter(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When
