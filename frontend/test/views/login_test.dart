@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/login_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/language.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -12,8 +15,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/login_bloc.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/views/screens/login_screen.dart';
@@ -32,7 +34,16 @@ Widget wrapWithProviders(Widget child) {
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp(
+      home: child,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+    ),
   );
 }
 
@@ -56,7 +67,7 @@ void main() {
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(TextButton), findsNWidgets(3));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.text(AppConfig.login), findsNWidgets(2));
+    expect(find.text('Login'), findsNWidgets(2));
 
     expect(loginBloc.state, isA<LoginInitial>());
   });
@@ -66,17 +77,18 @@ void main() {
     UserStorage().setUser(
         UserResponse(
           id: 1,
-          email: "jan4@example.com",
+          language: Language.en,
+          email: 'jan4@example.com',
         )
     );
 
     when(mockApiClient.login(any)).thenAnswer(
           (_) async => Response<dynamic>(
         data: {
-          "id": 1,
-          "email": "jan4@example.com",
-          "access_token": "access_token",
-          "refresh_token": "refresh_token",
+          'id': 1,
+          'email': 'jan4@example.com',
+          'access_token': 'access_token',
+          'refresh_token': 'refresh_token',
         },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.login),
@@ -85,7 +97,7 @@ void main() {
 
     when(mockApiClient.getUser()).thenAnswer(
           (_) async => Response<dynamic>(
-        data: {"id": 1, "email": "jan4@example.com"},
+        data: {'id': 1, 'email': 'jan4@example.com', 'name': 'Jan', 'language': 'pl'},
         statusCode: 200,
         requestOptions: RequestOptions(path: '/user'),
       ),
@@ -100,21 +112,34 @@ void main() {
         ),
         GoRoute(
           path: '/main_page',
-          builder: (context, state) => Scaffold(body: Text(AppConfig.foodini)),
+          builder: (context, state) => Scaffold(body: Text('Foodini')),
         ),
       ],
     );
 
     // When
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+        ],
+        child: MaterialApp.router(
+          routerConfig: goRouter,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     // Then
-    await tester.enterText(find.byKey(Key(AppConfig.email)), 'jan4@example.com');
-    await tester.enterText(find.byKey(Key(AppConfig.password)), 'Password1234');
+    await tester.enterText(find.byKey(Key('e-mail')), 'jan4@example.com');
+    await tester.enterText(find.byKey(Key('password')), 'Password1234');
 
     expect(loginBloc.state, isA<LoginInitial>());
 
-    await tester.tap(find.byKey(Key(AppConfig.login)));
+    await tester.tap(find.byKey(Key('login')));
     await tester.pumpAndSettle();
 
     expect(loginBloc.state, isA<LoginSuccess>());
@@ -123,7 +148,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.foodini), findsOneWidget);
+    expect(find.text('Foodini'), findsOneWidget);
 
     var loggedUser = UserStorage().getUser;
     expect(loggedUser, isNotNull);
@@ -136,7 +161,7 @@ void main() {
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.login)));
+    await tester.tap(find.byKey(Key('login')));
     await tester.pumpAndSettle();
 
     // Then
@@ -153,7 +178,7 @@ void main() {
           requestOptions: RequestOptions(path: Endpoints.login),
           statusCode: 403,
           data: {
-            "detail": "EMAIL_NOT_VERIFIED",
+            'detail': 'EMAIL_NOT_VERIFIED',
           },
         ),
       ),
@@ -177,15 +202,28 @@ void main() {
     );
 
     // When
-    await tester.pumpWidget(wrapWithProviders(MaterialApp.router(routerConfig: goRouter)));
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+        ],
+        child: MaterialApp.router(
+          routerConfig: goRouter,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     // Then
-    await tester.enterText(find.byKey(Key(AppConfig.email)), 'jan4@example.com');
-    await tester.enterText(find.byKey(Key(AppConfig.password)), 'Password1234');
+    await tester.enterText(find.byKey(Key('e-mail')), 'jan4@example.com');
+    await tester.enterText(find.byKey(Key('password')), 'Password1234');
 
     expect(loginBloc.state, isA<LoginInitial>());
 
-    await tester.tap(find.byKey(Key(AppConfig.login)));
+    await tester.tap(find.byKey(Key('login')));
     await tester.pumpAndSettle();
 
     expect(loginBloc.state, isA<AccountNotVerified>());
@@ -193,7 +231,7 @@ void main() {
     expect(find.text('Your account has not been confirmed.'), findsOneWidget);
     expect(find.text('Send verification email again'), findsOneWidget);
 
-    await tester.tap(find.byKey(Key(AppConfig.sendVerificationEmailAgain)));
+    await tester.tap(find.byKey(Key('send_verification_email_again')));
     await tester.pumpAndSettle();
 
     expect(loginBloc.state, isA<ResendAccountVerificationSuccess>());
@@ -205,7 +243,7 @@ void main() {
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
     // When
-    loginBloc.add(InitFromUrl("success"));
+    loginBloc.add(InitFromUrl('success'));
     await tester.pumpAndSettle();
 
     // Then
@@ -217,7 +255,7 @@ void main() {
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
     // When
-    loginBloc.add(InitFromUrl("error"));
+    loginBloc.add(InitFromUrl('error'));
     await tester.pumpAndSettle();
 
     // Then

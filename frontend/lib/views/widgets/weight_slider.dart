@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/config/app_config.dart';
 
 import 'package:frontend/utils/diet_preferences_validators.dart';
-
 import 'package:frontend/config/constants.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class WeightSlider extends StatefulWidget {
   final double min;
@@ -40,24 +39,26 @@ class WeightSliderState extends State<WeightSlider> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppConfig.enterYourDietGoal),
+            title: Text(AppLocalizations.of(context)!.enterYourDietGoal),
             content: Form(
               key: _formKey,
               child: TextFormField(
-                key: Key(AppConfig.weightKg),
+                key: Key("weight_kg"),
                 controller: controller,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: AppConfig.weightKg),
-                validator: validateWeight,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.weightKg,
+                ),
+                validator: (value) => validateWeight(value, context),
               ),
             ),
             actions: [
               ElevatedButton(
-                child: Text(AppConfig.cancel),
+                child: Text(AppLocalizations.of(context)!.cancel),
                 onPressed: () => Navigator.pop(context),
               ),
               ElevatedButton(
-                child: Text(AppConfig.ok),
+                child: Text(AppLocalizations.of(context)!.ok),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final value = double.tryParse(controller.text);
@@ -84,7 +85,7 @@ class WeightSliderState extends State<WeightSlider> {
         InkWell(
           onTap: _showWeightDialog,
           child: Text(
-            "${AppConfig.dietGoal}: ${_weight.toStringAsFixed(1)} ${AppConfig.kg}",
+            "${AppLocalizations.of(context)!.dietGoal}: ${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
           ),
         ),
         GestureDetector(
@@ -93,7 +94,7 @@ class WeightSliderState extends State<WeightSlider> {
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
-            label: "${_weight.toStringAsFixed(1)} ${AppConfig.kg}",
+            label: "${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
             onChanged: (value) {
               setState(() {
                 _weight = value;

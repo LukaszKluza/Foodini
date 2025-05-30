@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/config/app_config.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,7 +12,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.homePage, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.homePage,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: Center(
@@ -20,18 +23,18 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppConfig.welcome,
+              AppLocalizations.of(context)!.welcome,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.go('/login'),
-              child: Text(AppConfig.login),
+              child: Text(AppLocalizations.of(context)!.login),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => context.go('/register'),
-              child: Text(AppConfig.register),
+              child: Text(AppLocalizations.of(context)!.register),
             ),
           ],
         ),

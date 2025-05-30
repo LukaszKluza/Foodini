@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:frontend/blocs/login_bloc.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/login_events.dart';
 import 'package:frontend/listeners/login_listener.dart';
 import 'package:frontend/models/login_request.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user_validators.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginBloc? bloc;
@@ -23,23 +25,27 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bloc != null
         ? BlocProvider<LoginBloc>.value(
-      value: bloc!,
-      child: _buildScaffold(),
-    )
+          value: bloc!,
+          child: _buildScaffold(context),
+        )
         : BlocProvider<LoginBloc>(
-      create: (_) => LoginBloc(
-        Provider.of<AuthRepository>(context, listen: false),
-        Provider.of<TokenStorageRepository>(context, listen: false),
-      ),
-      child: _buildScaffold(),
-    );
+          create:
+              (_) => LoginBloc(
+                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<TokenStorageRepository>(context, listen: false),
+              ),
+          child: _buildScaffold(context),
+        );
   }
 
-  Widget _buildScaffold() {
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.login, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.login,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _LoginForm(),
@@ -66,12 +72,12 @@ class _LoginFormState extends State<_LoginForm> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pathAndQuery = Uri.base.toString().split('?');
       if (pathAndQuery.length > 1) {
-        final Map<String, String> queryParameters = QueryParametersMapper
-            .parseQueryParams(pathAndQuery[1]);
+        final Map<String, String> queryParameters =
+            QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
         if (queryParameters["status"] != null) {
           context.read<LoginBloc>().add(InitFromUrl(queryParameters["status"]));
         }
-        if (queryParameters["email"] != null){
+        if (queryParameters["email"] != null) {
           _emailController.text = queryParameters["email"]!;
         }
       }
@@ -95,18 +101,19 @@ class _LoginFormState extends State<_LoginForm> {
           child: Column(
             children: [
               TextFormField(
-                key: Key(AppConfig.email),
+                key: Key("e-mail"),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppConfig.email),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
                 keyboardType: TextInputType.emailAddress,
-                validator: validateEmail,
+                validator: (value) => validateEmail(value, context),
+
               ),
               TextFormField(
-                key: Key(AppConfig.password),
+                key: Key("password"),
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: AppConfig.password),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
                 obscureText: true,
-                validator: validatePassword,
+                validator: (value) => validatePassword(value, context),
               ),
               SizedBox(height: 20),
               BlocConsumer<LoginBloc, LoginState>(
@@ -123,30 +130,32 @@ class _LoginFormState extends State<_LoginForm> {
                 builder: (context, state) {
                   if (state is ActionInProgress) {
                     return CircularProgressIndicator();
-                  } else if (state is AccountNotVerified){
+                  } else if (state is AccountNotVerified) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.warning, color: Colors.orange, size: 36),
                         SizedBox(height: 16),
                         Text(
-                        AppConfig.accountHasNotBeenConfirmed,
+                          AppLocalizations.of(context)!.accountHasNotBeenConfirmed,
                           style: Styles.warningStyle,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16),
                         ElevatedButton(
-                          key: Key(AppConfig.sendVerificationEmailAgain),
+                          key: Key("send_verification_email_again"),
                           onPressed: () {
-                            context.read<LoginBloc>().add(ResendVerificationEmail(_emailController.text));
+                            context.read<LoginBloc>().add(
+                              ResendVerificationEmail(_emailController.text),
+                            );
                           },
-                          child: Text(AppConfig.sendVerificationEmailAgain),
+                          child: Text(AppLocalizations.of(context)!.sendVerificationEmailAgain),
                         ),
                       ],
                     );
                   } else {
                     return ElevatedButton(
-                      key: Key(AppConfig.login),
+                      key: Key("login"),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = LoginRequest(
@@ -158,7 +167,7 @@ class _LoginFormState extends State<_LoginForm> {
                           );
                         }
                       },
-                      child: Text(AppConfig.login),
+                      child: Text(AppLocalizations.of(context)!.login),
                     );
                   }
                 },
@@ -169,19 +178,19 @@ class _LoginFormState extends State<_LoginForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
-                key: Key(AppConfig.forgotPassword),
+                key: Key("forgot_password"),
                 onPressed: () => context.go('/provide_email'),
-                child: Text(AppConfig.forgotPassword),
+                child: Text(AppLocalizations.of(context)!.forgotPassword),
               ),
               TextButton(
-                key: Key(AppConfig.dontHaveAccount),
+                key: Key("dont_have_account"),
                 onPressed: () => context.go('/register'),
-                child: Text(AppConfig.dontHaveAccount),
+                child: Text(AppLocalizations.of(context)!.dontHaveAccount),
               ),
               TextButton(
-                key: Key(AppConfig.home),
+                key: Key("home"),
                 onPressed: () => context.go('/'),
-                child: Text(AppConfig.home),
+                child: Text(AppLocalizations.of(context)!.home),
               ),
             ],
           ),

@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/services/api_client.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:provider/provider.dart';
 
 import 'app_router.dart';
-import 'blocs/account_bloc.dart';
+import 'l10n/app_localizations.dart';
+
+class LanguageCubit extends Cubit<Locale> {
+  LanguageCubit() : super(const Locale('en'));
+
+  void change(Locale locale) => emit(locale);
+}
+
 
 class Foodini extends StatelessWidget {
   const Foodini({super.key});
@@ -17,20 +25,31 @@ class Foodini extends StatelessWidget {
       providers: [
         Provider<ApiClient>(create: (_) => ApiClient()),
         Provider<TokenStorageRepository>(create: (_) => TokenStorageRepository()),
-
         ProxyProvider<ApiClient, AuthRepository>(
           update: (_, apiClient, __) => AuthRepository(apiClient),
         ),
-        BlocProvider(
-          create: (context) => AccountBloc(
-            Provider.of<AuthRepository>(context, listen: false),
-            Provider.of<TokenStorageRepository>(context, listen: false),
-          ),
-        ),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => LanguageCubit()),
+        ],
+        child: BlocBuilder<LanguageCubit, Locale>(
+          builder: (context, locale) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              locale: locale,
+              localeResolutionCallback: (deviceLocale, supportedLocales) => locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              routerConfig: router,
+            );
+          },
+        ),
       ),
     );
   }

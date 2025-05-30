@@ -16,7 +16,7 @@ class LoginListenerHelper {
   }) {
     if (state is LoginSuccess) {
       setState(() {
-        setMessage(state.message!);
+        setMessage(state.getMessage!(context));
         setMessageStyle(Styles.successStyle);
       });
       Future.delayed(
@@ -32,12 +32,12 @@ class LoginListenerHelper {
     } else if (state is AccountSuccessVerification ||
         state is ResendAccountVerificationSuccess) {
       setState(() {
-        setMessage(state.message!);
+        setMessage(state.getMessage!(context));
         setMessageStyle(Styles.successStyle);
       });
     } else if (state is LoginFailure) {
       setState(() {
-        setMessage(ExceptionConverter.formatErrorMessage(state.error.data));
+        setMessage(ExceptionConverter.formatErrorMessage(state.error.data, context));
         setMessageStyle(Styles.errorStyle);
       });
     }

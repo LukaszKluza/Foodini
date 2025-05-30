@@ -7,10 +7,10 @@ import 'package:frontend/models/provide_email_request.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class ProvideEmailScreen extends StatelessWidget {
   final ProvideEmailBloc? bloc;
@@ -43,7 +43,10 @@ class ProvideEmailScreen extends StatelessWidget {
           },
         ),
         title: Center(
-          child: Text(AppConfig.changePassword, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.changePassword,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _ProvideEmailForm(),
@@ -76,11 +79,13 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                key: Key(AppConfig.email),
+                key: Key("e-mail"),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppConfig.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
                 keyboardType: TextInputType.emailAddress,
-                validator: validateEmail,
+                validator: (value) => validateEmail(value, context),
               ),
               const SizedBox(height: 20),
               BlocConsumer<ProvideEmailBloc, ProvideEmailState>(
@@ -99,7 +104,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                     return const CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key(AppConfig.changePassword),
+                      key: Key("change_password"),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = ProvideEmailRequest(
@@ -110,7 +115,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                           );
                         }
                       },
-                      child: Text(AppConfig.changePassword),
+                      child: Text(AppLocalizations.of(context)!.changePassword),
                     );
                   }
                 },

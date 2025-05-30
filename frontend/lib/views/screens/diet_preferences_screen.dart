@@ -13,6 +13,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   final DietPreferencesBloc? bloc;
@@ -24,19 +25,22 @@ class DietPreferencesScreen extends StatelessWidget {
     return bloc != null
         ? BlocProvider<DietPreferencesBloc>.value(
           value: bloc!,
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         )
         : BlocProvider<DietPreferencesBloc>(
           create: (_) => DietPreferencesBloc(),
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         );
   }
 
-  Widget _buildScaffold() {
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.dietPreferences, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.dietPreferences,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _DietPreferencesForm(),
@@ -87,9 +91,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   Widget build(BuildContext context) {
     final fields = [
       DropdownButtonFormField<DietType>(
-        key: Key(AppConfig.dietType),
+        key: Key("diet_type"),
         value: _selectedDietType,
-        decoration: InputDecoration(labelText: AppConfig.dietType),
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.dietType),
         items:
             DietType.values.map((diet) {
               return DropdownMenuItem<DietType>(
@@ -105,7 +109,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
             _selectedDietType = value!;
           });
         },
-        validator: (value) => validateDietType(value),
+        validator: (value) => validateDietType(value, context),
       ),
       MultiSelectDialogField<Allergy>(
         items:
@@ -115,13 +119,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
                 AppConfig.allergyLabels[allergy]!,
               );
             }).toList(),
-        title: Text(AppConfig.allergies),
+        title: Text(AppLocalizations.of(context)!.allergies),
         selectedColor: Colors.purpleAccent,
         chipDisplay: MultiSelectChipDisplay(
           chipColor: Colors.purpleAccent[50],
           textStyle: TextStyle(color: Colors.black),
         ),
-        buttonText: Text(AppConfig.allergies),
+        buttonText: Text(AppLocalizations.of(context)!.allergies),
         onConfirm: (values) {
           setState(() {
             _selectedAllergies = values;
@@ -139,7 +143,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppConfig.mealsPerDay),
+          Text(AppLocalizations.of(context)!.mealsPerDay),
           SizedBox(height: 8),
           FractionallySizedBox(
             widthFactor: 1,
@@ -157,9 +161,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         ],
       ),
       DropdownButtonFormField<DietIntensity>(
-        key: Key(AppConfig.dietIntensity),
+        key: Key("diet_intensity"),
         value: _selectedDietIntensity,
-        decoration: InputDecoration(labelText: AppConfig.dietIntensity),
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.dietIntensity),
         items:
             DietIntensity.values.map((diet) {
               return DropdownMenuItem<DietIntensity>(
@@ -175,7 +179,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
             _selectedDietIntensity = value!;
           });
         },
-        validator: (value) => validateDietIntensity(value),
+        validator: (value) => validateDietIntensity(value, context),
       ),
       if (_message != null)
         Padding(

@@ -21,7 +21,7 @@ class ProvideEmailListenerHelper {
     } else if (state is ProvideEmailFailure) {
       setState(() {
         setMessage(ExceptionConverter.formatErrorMessage(
-          state.error.data,
+          state.error.data, context
         ));
       });
     }

@@ -20,7 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins="*",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-Error-Code"],
 )
 
@@ -35,6 +35,8 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
             {"request": request, "redirect_path": config.FRONTEND_URL},
             status_code=404,
         )
+    print("CHUJ")
+    print(exc)
     return await http_exception_handler(request, exc)
 
 

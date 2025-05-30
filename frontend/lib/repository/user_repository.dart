@@ -6,6 +6,7 @@ import 'package:frontend/models/login_request.dart';
 import 'package:frontend/models/provide_email_request.dart';
 import 'package:frontend/models/refreshed_tokens_response.dart';
 import 'package:frontend/models/register_request.dart';
+import 'package:frontend/models/change_language_request.dart';
 import 'package:frontend/models/user_response.dart';
 import 'package:frontend/services/api_client.dart';
 
@@ -67,15 +68,16 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse> register(RegisterRequest request) async {
+  Future<UserResponse?> register(RegisterRequest request) async {
     try {
       final response = await apiClient.register(request);
-      return UserResponse.fromJson(response.data);
+      // return UserResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while registration new user $e.');
     }
+    return null;
   }
 
   Future<UserResponse> provideEmail(ProvideEmailRequest request) async {
@@ -97,6 +99,17 @@ class AuthRepository {
       throw ApiException(e.response?.data);
     } catch (e) {
       throw Exception('Error while changing password: $e');
+    }
+  }
+
+  Future<UserResponse> changeLanguage(ChangeLanguageRequest request, int userId) async {
+    try {
+      final response = await apiClient.updateLanguage(request, userId);
+      return UserResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data);
+    } catch (e) {
+      throw Exception('Error while updating language: $e');
     }
   }
 

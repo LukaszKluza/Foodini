@@ -4,16 +4,16 @@ import 'package:frontend/app_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/change_password_bloc.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/change_password_events.dart';
 import 'package:frontend/listeners/change_password_listener.dart';
 import 'package:frontend/models/change_password_request.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/utils/user_validators.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordBloc? bloc;
@@ -25,7 +25,7 @@ class ChangePasswordScreen extends StatelessWidget {
     return bloc != null
         ? BlocProvider<ChangePasswordBloc>.value(
           value: bloc!,
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         )
         : BlocProvider<ChangePasswordBloc>(
           create:
@@ -33,15 +33,18 @@ class ChangePasswordScreen extends StatelessWidget {
                 Provider.of<AuthRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         );
   }
 
-  Widget _buildScaffold() {
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.changePassword, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.changePassword,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _ChangePasswordForm(),
@@ -101,30 +104,35 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                key: Key(AppConfig.email),
+                key: Key("e-mail"),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppConfig.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
                 keyboardType: TextInputType.emailAddress,
-                validator: validateEmail,
+                validator: (value) => validateEmail(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.newPassword),
+                key: Key("new_password"),
                 controller: _newPasswordController,
-                decoration: InputDecoration(labelText: AppConfig.newPassword),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.newPassword,
+                ),
                 obscureText: true,
-                validator: validatePassword,
+                validator: (value) => validatePassword(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.confirmPassword),
+                key: Key("confirm_password"),
                 controller: _confirmNewPasswordController,
                 decoration: InputDecoration(
-                  labelText: AppConfig.confirmPassword,
+                  labelText: AppLocalizations.of(context)!.confirmPassword,
                 ),
                 obscureText: true,
                 validator:
                     (value) => validateConfirmPassword(
                       value,
                       _newPasswordController.text,
+                      context,
                     ),
               ),
               const SizedBox(height: 20),
@@ -144,7 +152,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                     return const CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key(AppConfig.changePassword),
+                      key: Key("change_password"),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = ChangePasswordRequest(
@@ -157,7 +165,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                           );
                         }
                       },
-                      child: Text(AppConfig.changePassword),
+                      child: Text(AppLocalizations.of(context)!.changePassword),
                     );
                   }
                 },

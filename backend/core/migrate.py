@@ -53,7 +53,7 @@ async def populate_enum_tables():
 
 async def main():
     await create_tables()
-    await populate_enum_tables()
+    # await populate_enum_tables()
 
 
 if __name__ == "__main__":

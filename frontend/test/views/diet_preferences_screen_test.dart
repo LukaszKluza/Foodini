@@ -5,6 +5,7 @@ import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dar
 import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
 import 'package:frontend/blocs/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/diet_preferences_screen.dart';
 
 late DietPreferencesBloc dietPreferencesBloc;
@@ -19,17 +20,22 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(Key(AppConfig.dietType)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.dietIntensity)), findsOneWidget);
-    expect(find.text(AppConfig.allergies), findsOneWidget);
-    expect(find.textContaining(AppConfig.dietGoal), findsOneWidget);
-    expect(find.text(AppConfig.mealsPerDay), findsOneWidget);
-    expect(find.text(AppConfig.dietIntensity), findsOneWidget);
+    expect(find.byKey(Key('diet_type')), findsOneWidget);
+    expect(find.byKey(Key('diet_intensity')), findsOneWidget);
+    expect(find.text('Allergies'), findsOneWidget);
+    expect(find.textContaining('Diet goal'), findsOneWidget);
+    expect(find.text('Meals per day'), findsOneWidget);
+    expect(find.text('Diet intensity'), findsOneWidget);
   });
 
   testWidgets('Diet type enums are displayed after tap', (
@@ -37,12 +43,17 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.dietType)));
+    await tester.tap(find.byKey(Key('diet_type')));
     await tester.pumpAndSettle();
 
     // Then
@@ -84,12 +95,17 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.text(AppConfig.allergies));
+    await tester.tap(find.text('Allergies'));
     await tester.pumpAndSettle();
 
     // Then
@@ -116,11 +132,11 @@ void main() {
     );
 
     expect(
-      find.text(AppConfig.ok.toUpperCase(), skipOffstage: false),
+      find.text('Ok'.toUpperCase(), skipOffstage: false),
       findsOneWidget,
     );
     expect(
-      find.text(AppConfig.cancel.toUpperCase(), skipOffstage: false),
+      find.text('Cancel'.toUpperCase(), skipOffstage: false),
       findsOneWidget,
     );
 
@@ -128,7 +144,7 @@ void main() {
     await tester.tap(find.text(AppConfig.allergyLabels[Allergy.SOY]!));
     await tester.tap(find.text(AppConfig.allergyLabels[Allergy.CELERY]!));
 
-    await tester.tap(find.text(AppConfig.ok.toUpperCase()));
+    await tester.tap(find.text('Ok'.toUpperCase()));
     await tester.pumpAndSettle();
 
     expect(
@@ -142,7 +158,12 @@ void main() {
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -159,23 +180,28 @@ void main() {
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.textContaining(AppConfig.dietGoal));
+    await tester.tap(find.textContaining('Diet goal'));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.enterYourDietGoal), findsOneWidget);
-    expect(find.textContaining(AppConfig.weightKg), findsOneWidget);
-    expect(find.text(AppConfig.ok), findsOneWidget);
-    expect(find.text(AppConfig.cancel), findsOneWidget);
+    expect(find.text('Enter your diet goal'), findsOneWidget);
+    expect(find.textContaining('Weight (kg)'), findsOneWidget);
+    expect(find.text('Ok'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
 
-    await tester.enterText(find.byKey(Key(AppConfig.weightKg)), '77');
+    await tester.enterText(find.byKey(Key('weight_kg')), '77');
 
-    await tester.tap(find.textContaining(AppConfig.ok));
+    await tester.tap(find.textContaining('Ok'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('77'), findsOneWidget);
@@ -186,12 +212,17 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.mealsPerDay), findsOneWidget);
+    expect(find.text('Meals per day'), findsOneWidget);
     expect(find.textContaining('1'), findsOneWidget);
     expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
@@ -205,12 +236,17 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(home: DietPreferencesScreen(bloc: dietPreferencesBloc)),
+      MaterialApp(
+        locale: Locale('en'),
+        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
     );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.dietIntensity)));
+    await tester.tap(find.byKey(Key('diet_intensity')));
     await tester.pumpAndSettle();
 
     // Then

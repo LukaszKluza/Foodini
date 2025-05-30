@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/blocs/provide_email_block.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/views/screens/provide_email_screen.dart';
 
@@ -23,8 +23,14 @@ late MockTokenStorageRepository mockTokenStorageRepository;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
-    providers: [Provider<AuthRepository>.value(value: authRepository)],
-    child: MaterialApp(home: child),
+    providers: [
+      Provider<AuthRepository>.value(value: authRepository),
+    ],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: child,
+    ),
   );
 }
 
@@ -60,7 +66,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byKey(Key(AppConfig.email)), findsOneWidget);
+    expect(find.byKey(Key('e-mail')), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
@@ -73,11 +79,11 @@ void main() {
       wrapWithProviders(ProvideEmailScreen(bloc: provideEmailBloc)),
     );
 
-    await tester.tap(find.byKey(Key(AppConfig.changePassword)));
+    await tester.tap(find.byKey(Key('change_password')));
     await tester.pumpAndSettle();
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
-    expect(find.text(AppConfig.requiredEmail), findsOneWidget);
+    expect(find.text('E-mail is required'), findsOneWidget);
   });
 
   testWidgets('ProvideEmail form submits with valid data and redirects', (
@@ -85,7 +91,7 @@ void main() {
   ) async {
     when(mockApiClient.provideEmail(any)).thenAnswer(
       (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'john@example.com'},
+        data: {'id': 1, 'email': 'john@example.com', 'name': 'John', 'language': 'pl'},
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.changePassword),
       ),
@@ -101,30 +107,32 @@ void main() {
         ),
         GoRoute(
           path: '/account',
-          builder:
-              (context, state) => const Scaffold(body: Text(AppConfig.account)),
+          builder: (context, state) => const Scaffold(body: Text("Account")),
         ),
       ],
     );
 
     await tester.pumpWidget(
-      wrapWithProviders(MaterialApp.router(routerConfig: goRouter)),
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+        ],
+        child: MaterialApp.router(
+          routerConfig: goRouter,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
-    await tester.pumpWidget(MaterialApp.router(routerConfig: goRouter));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(Key(AppConfig.email)),
-      'john@example.com',
-    );
-    await tester.tap(find.byKey(Key(AppConfig.changePassword)));
+    await tester.enterText(find.byKey(Key('e-mail')), 'john@example.com');
+    await tester.tap(find.byKey(Key('change_password')));
     await tester.pumpAndSettle();
 
     expect(provideEmailBloc.state, isA<ProvideEmailSuccess>());
     expect(
-      find.text(AppConfig.checkEmailAddressToSetNewPassword),
+      find.text('Check your email address to set new password'),
       findsOneWidget,
     );
   });

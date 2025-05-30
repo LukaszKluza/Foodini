@@ -14,6 +14,8 @@ import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/blocs/calories_prediction_bloc.dart';
 import 'package:frontend/models/calories_prediction.dart';
 
+import '../../l10n/app_localizations.dart';
+
 class CaloriesPredictionScreen extends StatelessWidget {
   final CaloriesPredictionBloc? bloc;
 
@@ -24,20 +26,20 @@ class CaloriesPredictionScreen extends StatelessWidget {
     return bloc != null
         ? BlocProvider<CaloriesPredictionBloc>.value(
           value: bloc!,
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         )
         : BlocProvider<CaloriesPredictionBloc>(
           create: (_) => CaloriesPredictionBloc(),
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         );
   }
 
-  Widget _buildScaffold() {
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            AppConfig.caloriesPrediction,
+            AppLocalizations.of(context)!.caloriesPrediction,
             style: Styles.titleStyle,
           ),
         ),
@@ -87,9 +89,9 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   Widget build(BuildContext context) {
     final fields = [
       DropdownButtonFormField<ActivityLevel>(
-        key: Key(AppConfig.activityLevel),
+        key: Key('activity_level'),
         value: _selectedActivityLevel,
-        decoration: InputDecoration(labelText: AppConfig.activityLevel),
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.activityLevel),
         items:
             ActivityLevel.values.map((activityLevel) {
               return DropdownMenuItem<ActivityLevel>(
@@ -105,12 +107,12 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             _selectedActivityLevel = value!;
           });
         },
-        validator: (value) => validateActivityLevel(value),
+        validator: (value) => validateActivityLevel(value, context),
       ),
       DropdownButtonFormField<StressLevel>(
-        key: Key(AppConfig.stressLevel),
+        key: Key('stress_level'),
         value: _selectedStressLevel,
-        decoration: InputDecoration(labelText: AppConfig.stressLevel),
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.stressLevel),
         items:
             StressLevel.values.map((stressLevel) {
               return DropdownMenuItem<StressLevel>(
@@ -126,12 +128,12 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             _selectedStressLevel = value!;
           });
         },
-        validator: (value) => validateStressLevel(value),
+        validator: (value) => validateStressLevel(value,context),
       ),
       DropdownButtonFormField<SleepQuality>(
-        key: Key(AppConfig.sleepQuality),
+        key: Key('sleep_quality'),
         value: _selectedSleepQuality,
-        decoration: InputDecoration(labelText: AppConfig.sleepQuality),
+        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.sleepQuality),
         items:
             SleepQuality.values.map((sleepQuality) {
               return DropdownMenuItem<SleepQuality>(
@@ -147,13 +149,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             _selectedSleepQuality = value!;
           });
         },
-        validator: (value) => validateSleepQuality(value),
+        validator: (value) => validateSleepQuality(value, context),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0),
         child: CheckboxListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(AppConfig.advancedBodyParameters),
+          title: Text(AppLocalizations.of(context)!.advancedBodyParameters),
           value: _isChecked,
           onChanged: (value) {
             setState(() {
@@ -166,10 +168,11 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       if (_isChecked) ...[
         PercentageOptionSlider(
           initialValue: _selectedMusclePercentage,
-          propertiesName: AppConfig.musclePercentage,
-          alertDialogTitle: AppConfig.enterMusclePercentage,
-          inputDecorator: AppConfig.musclePercentage,
-          validator: (value) => validateMusclePercentage(value),
+          pupUpKey: 'muscle_percentage',
+          propertiesName: AppLocalizations.of(context)!.musclePercentage,
+          alertDialogTitle: AppLocalizations.of(context)!.enterMusclePercentage,
+          inputDecorator: AppLocalizations.of(context)!.musclePercentage,
+          validator: (value) => validateMusclePercentage(value, context),
           onChanged: (value) {
             setState(() {
               _selectedMusclePercentage = value;
@@ -178,10 +181,11 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         ),
         PercentageOptionSlider(
           initialValue: _selectedWaterPercentage,
-          propertiesName: AppConfig.waterPercentage,
-          alertDialogTitle: AppConfig.enterWaterPercentage,
-          inputDecorator: AppConfig.waterPercentage,
-          validator: (value) => validateWaterPercentage(value),
+          pupUpKey: 'water_percentage',
+          propertiesName: AppLocalizations.of(context)!.waterPercentage,
+          alertDialogTitle: AppLocalizations.of(context)!.enterWaterPercentage,
+          inputDecorator: AppLocalizations.of(context)!.waterPercentage,
+          validator: (value) => validateWaterPercentage(value, context),
           onChanged: (value) {
             setState(() {
               _selectedWaterPercentage = value;
@@ -190,10 +194,11 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         ),
         PercentageOptionSlider(
           initialValue: _selectedFatPercentage,
-          propertiesName: AppConfig.fatPercentage,
-          alertDialogTitle: AppConfig.enterFatPercentage,
-          inputDecorator: AppConfig.fatPercentage,
-          validator: (value) => validateFatPercentage(value),
+          pupUpKey: 'fat_percentage',
+          propertiesName: AppLocalizations.of(context)!.fatPercentage,
+          alertDialogTitle: AppLocalizations.of(context)!.enterFatPercentage,
+          inputDecorator: AppLocalizations.of(context)!.fatPercentage,
+          validator: (value) => validateFatPercentage(value, context),
           onChanged: (value) {
             setState(() {
               _selectedFatPercentage = value;
@@ -203,7 +208,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ],
       SizedBox(height: 16),
       ElevatedButton(
-        key: Key(AppConfig.generateWeeklyDiet),
+        key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
         onPressed: () {
           AdvancedBodyParameters? advancedBodyParameters;
           if (_isChecked) {
@@ -225,7 +230,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           );
         },
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFB2F2BB)),
-        child: Text(AppConfig.generateWeeklyDiet),
+        child: Text(AppLocalizations.of(context)!.generateWeeklyDiet),
       ),
       if (_message != null)
         Padding(
@@ -239,7 +244,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       child: Form(
         key: _formKey,
         child: ListView.separated(
-          key: Key(AppConfig.caloriesPrediction),
+          key: Key(AppLocalizations.of(context)!.caloriesPrediction),
           shrinkWrap: true,
           itemCount: fields.length,
           separatorBuilder: (_, __) => SizedBox(height: 20),

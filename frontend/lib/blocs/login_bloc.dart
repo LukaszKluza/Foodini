@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/login_events.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/repository/user_storage.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;
@@ -15,7 +15,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     : super(LoginInitial()) {
     on<InitFromUrl>((event, emit) {
       if (event.status == 'success') {
-        emit(AccountSuccessVerification(AppConfig.accountActivatedSuccessfully));
+        emit(
+          AccountSuccessVerification(
+            (context) =>
+                AppLocalizations.of(context)!.accountActivatedSuccessfully,
+          ),
+        );
       } else if (event.status == 'error') {
         emit(AccountNotVerified());
       }
@@ -34,7 +39,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final user = await authRepository.getUser();
         UserStorage().setUser(user);
 
-        emit(LoginSuccess(AppConfig.successfullyLoggedIn));
+        emit(
+          LoginSuccess(
+            (context) => AppLocalizations.of(context)!.successfullyLoggedIn,
+          ),
+        );
       } on ApiException catch (error) {
         if (error.data?["detail"] == "EMAIL_NOT_VERIFIED") {
           emit(AccountNotVerified());
@@ -49,7 +58,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(ActionInProgress());
         await authRepository.resendVerificationMail(event.email);
 
-        emit(ResendAccountVerificationSuccess(AppConfig.successfullyResendEmailVerification));
+        emit(
+          ResendAccountVerificationSuccess(
+            (context) =>
+                AppLocalizations.of(
+                  context,
+                )!.successfullyResendEmailVerification,
+          ),
+        );
       } on ApiException catch (error) {
         emit(LoginFailure(error));
       }

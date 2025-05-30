@@ -6,6 +6,7 @@ from fastapi.params import Depends
 from starlette.responses import RedirectResponse
 
 from backend.core.user_authorisation_service import AuthorizationService
+from backend.models.user_model import Language
 from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
@@ -14,7 +15,8 @@ from backend.users.schemas import (
     LoginUserResponse,
     PasswordResetRequest,
     NewPasswordConfirm,
-    UserResponse,
+    DefaultResponse,
+    ChangeLanguageRequest,
 )
 from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
@@ -114,7 +116,7 @@ class UserService:
         await self.email_verification_service.process_password_reset_verification(
             user_.email, form_url, token
         )
-        return UserResponse(
+        return DefaultResponse(
             id=user_.id,
             email=user_.email,
         )
@@ -129,6 +131,24 @@ class UserService:
         user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
 
         return await self.user_repository.update_user(user_.id, user)
+
+    async def change_language(
+        self,
+        token_payload: dict,
+        user_id_from_request: int,
+        change_change_request: ChangeLanguageRequest,
+    ):
+        user_id_from_token = token_payload["id"]
+        self.user_validators.check_user_permission(
+            user_id_from_token, user_id_from_request
+        )
+        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
+
+        temp = await self.user_repository.change_language(
+            user_.id, change_change_request.language
+        )
+        print(temp)
+        return temp
 
     async def delete(self, token_payload: dict, user_id_from_request: int):
         user_id_from_token = token_payload["id"]

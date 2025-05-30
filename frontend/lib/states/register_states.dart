@@ -8,9 +8,9 @@ class RegisterInitial extends RegisterState {}
 class RegisterLoading extends RegisterState {}
 
 class RegisterSuccess extends RegisterState {
-  final UserResponse userResponse;
-
-  RegisterSuccess(this.userResponse);
+  // final UserResponse userResponse;
+  //
+  // RegisterSuccess(this.userResponse);
 }
 
 class RegisterFailure extends RegisterState {

@@ -9,7 +9,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/account_bloc.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 
 import '../mocks/mocks.mocks.dart';

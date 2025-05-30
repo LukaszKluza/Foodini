@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/listeners/account_listener.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/account_bloc.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/account_events.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:frontend/models/language.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/listeners/account_listener.dart';
+import 'package:frontend/models/change_language_request.dart';
 
 class AccountScreen extends StatelessWidget {
   final AccountBloc? bloc;
@@ -53,12 +56,19 @@ class _AccountScreenState extends State<_AccountBody> {
           },
         ),
         title: Center(
-          child: Text(AppConfig.foodini, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.foodini,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
-          AccountListenerHelper.accountStateListener(context, state, mounted: mounted);
+          AccountListenerHelper.accountStateListener(
+            context,
+            state,
+            mounted: mounted,
+          );
         },
         child: SingleChildScrollView(
           child: Column(
@@ -74,41 +84,50 @@ class _AccountScreenState extends State<_AccountBody> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         rectangularButton(
-                          AppConfig.changePassword,
+                          AppLocalizations.of(context)!.changePassword,
                           Icons.settings,
                           screenWidth,
                           screenHeight,
                           () => context.go('/provide_email'),
                         ),
                         const SizedBox(height: 16),
-                        rectangularButton(
-                          AppConfig.logout,
-                          Icons.logout,
-                          screenWidth,
-                          screenHeight,
-                          () => context.read<AccountBloc>().add(
-                            AccountLogoutRequested(),
-                          ),
+                        Builder(
+                          builder:
+                              (context) => rectangularButton(
+                                AppLocalizations.of(context)!.logout,
+                                Icons.logout,
+                                screenWidth,
+                                screenHeight,
+                                () => context.read<AccountBloc>().add(
+                                  AccountLogoutRequested(),
+                                ),
+                              ),
                         ),
                       ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        rectangularButton(
-                          "Button 3",
-                          Icons.do_not_disturb,
-                          screenWidth,
-                          screenHeight,
-                          null,
+                        Builder(
+                          builder:
+                              (context) => rectangularButton(
+                                AppLocalizations.of(context)!.changeLanguage,
+                                Icons.translate_rounded,
+                                screenWidth,
+                                screenHeight,
+                                () => _pickLanguage(context),
+                              ),
                         ),
                         const SizedBox(height: 16),
-                        rectangularButton(
-                          AppConfig.deleteAccount,
-                          Icons.auto_delete,
-                          screenWidth,
-                          screenHeight,
-                          () => showDeleteAccountDialog(context),
+                        Builder(
+                          builder:
+                              (context) => rectangularButton(
+                                AppLocalizations.of(context)!.deleteAccount,
+                                Icons.auto_delete,
+                                screenWidth,
+                                screenHeight,
+                                () => showDeleteAccountDialog(context),
+                              ),
                         ),
                       ],
                     ),
@@ -131,27 +150,70 @@ class _AccountScreenState extends State<_AccountBody> {
   }
 }
 
-void showDeleteAccountDialog(BuildContext context) {
+void _pickLanguage(BuildContext mainContext) {
+  final languages = Language.values;
+
+  showModalBottomSheet(
+    context: mainContext,
+    builder: (dialogContext) {
+      return Builder(
+        builder:
+            (innerContext) => ListView.builder(
+              itemCount: languages.length,
+              itemBuilder: (context, index) {
+                final lang = languages[index];
+                return ListTile(
+                  leading: Text(
+                    lang.flag,
+                    style: const TextStyle(fontSize: 32),
+                  ),
+                  title: Text(lang.name, style: const TextStyle(fontSize: 20)),
+                  onTap: () {
+                    final request = ChangeLanguageRequest(language: lang);
+                    mainContext.read<AccountBloc>().add(
+                      AccountChangeLanguageRequested(request),
+                    );
+                    Navigator.of(dialogContext).pop();
+                  },
+                );
+              },
+            ),
+      );
+    },
+  );
+}
+
+void showDeleteAccountDialog(BuildContext mainContext) {
   showDialog(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(AppConfig.confirmAccountDeletion),
-      content: Text(AppConfig.accountDeletionInformation),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(dialogContext).pop();
-          },
-          child: Text(AppConfig.cancel),
+    context: mainContext,
+    builder:
+        (dialogContext) => Builder(
+          builder:
+              (innerContext) => AlertDialog(
+                title: Text(
+                  AppLocalizations.of(mainContext)!.confirmAccountDeletion,
+                ),
+                content: Text(
+                  AppLocalizations.of(mainContext)!.accountDeletionInformation,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                    child: Text(AppLocalizations.of(mainContext)!.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                      mainContext.read<AccountBloc>().add(
+                        AccountDeleteRequested(),
+                      );
+                    },
+                    child: Text(AppLocalizations.of(mainContext)!.delete),
+                  ),
+                ],
+              ),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(dialogContext).pop();
-            context.read<AccountBloc>().add(AccountDeleteRequested());
-          },
-          child: Text(AppConfig.delete),
-        ),
-      ],
-    ),
   );
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/utils/exception_converter.dart';
 import 'package:frontend/states/register_states.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class RegisterListenerHelper {
   static void onChangePasswordListener({
@@ -17,7 +17,7 @@ class RegisterListenerHelper {
   }) {
     if (state is RegisterSuccess) {
       setState(() {
-        setMessage(AppConfig.checkAndConfirmEmailAddress);
+        setMessage(AppLocalizations.of(context)!.checkAndConfirmEmailAddress);
         setMessageStyle(Styles.successStyle);
       });
       Future.delayed(
@@ -33,7 +33,7 @@ class RegisterListenerHelper {
     } else if (state is RegisterFailure) {
       setState(() {
         setMessage(
-          ExceptionConverter.formatErrorMessage(state.error.data["detail"]),
+          ExceptionConverter.formatErrorMessage(state.error.data, context),
         );
       });
     }

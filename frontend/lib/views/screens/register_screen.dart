@@ -6,13 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/register_bloc.dart';
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/register_events.dart';
 import 'package:frontend/models/register_request.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatelessWidget {
   final RegisterBloc? bloc;
@@ -24,22 +24,25 @@ class RegisterScreen extends StatelessWidget {
     return bloc != null
         ? BlocProvider<RegisterBloc>.value(
           value: bloc!,
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         )
         : BlocProvider<RegisterBloc>(
           create:
               (_) => RegisterBloc(
                 Provider.of<AuthRepository>(context, listen: false),
               ),
-          child: _buildScaffold(),
+          child: _buildScaffold(context),
         );
   }
 
-  Widget _buildScaffold() {
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.registration, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.registration,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _RegisterForm(),
@@ -89,50 +92,51 @@ class _RegisterFormState extends State<_RegisterForm> {
           child: Column(
             children: [
               TextFormField(
-                key: Key(AppConfig.firstName),
+                key: Key("first_name"),
                 controller: _firstNameController,
-                decoration: InputDecoration(labelText: AppConfig.firstName),
-                validator: (value) => validateName(value),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.firstName),
+                validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.lastName),
+                key: Key("last_name"),
                 controller: _lastNameController,
-                decoration: InputDecoration(labelText: AppConfig.lastName),
-                validator: (value) => validateName(value),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.lastName),
+                validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.country),
+                key: Key("country"),
                 readOnly: true,
-                decoration: InputDecoration(labelText: AppConfig.country),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.country),
                 controller: _countryController,
                 onTap: () => _pickCountry(context),
-                validator: (value) => validateCountry(value),
+                validator: (value) => validateCountry(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.email),
+                key: Key("e-mail"),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppConfig.email),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
                 keyboardType: TextInputType.emailAddress,
-                validator: validateEmail,
+                validator: (value) => validateEmail(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.password),
+                key: Key("password"),
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: AppConfig.password),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
                 obscureText: true,
-                validator: validatePassword,
+                validator: (value) => validatePassword(value, context),
               ),
               TextFormField(
-                key: Key(AppConfig.confirmPassword),
+                key: Key("confirm_password"),
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
-                  labelText: AppConfig.confirmPassword,
+                  labelText: AppLocalizations.of(context)!.confirmPassword,
                 ),
                 obscureText: true,
                 validator:
                     (value) => validateConfirmPassword(
                       value,
                       _passwordController.text,
+                      context
                     ),
               ),
               SizedBox(height: 20),
@@ -152,7 +156,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                     return CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key(AppConfig.register),
+                      key: Key("register"),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = RegisterRequest(
@@ -167,7 +171,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                           );
                         }
                       },
-                      child: Text(AppConfig.register),
+                      child: Text(AppLocalizations.of(context)!.register),
                     );
                   }
                 },
@@ -178,14 +182,14 @@ class _RegisterFormState extends State<_RegisterForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
-                key: Key(AppConfig.alreadyHaveAnAccount),
+                key: Key("already_have_an_account"),
                 onPressed: () => context.go('/login'),
-                child: Text(AppConfig.alreadyHaveAnAccount),
+                child: Text(AppLocalizations.of(context)!.alreadyHaveAnAccount),
               ),
               TextButton(
-                key: Key(AppConfig.home),
+                key: Key("home"),
                 onPressed: () => context.go('/'),
-                child: Text(AppConfig.home),
+                child: Text(AppLocalizations.of(context)!.home),
               ),
             ],
           ),

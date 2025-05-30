@@ -32,7 +32,7 @@ class ChangePasswordListenerHelper {
       );
     } else if (state is ChangePasswordFailure) {
       setState(() {
-        setMessage(ExceptionConverter.formatErrorMessage(state.error.data));
+        setMessage(ExceptionConverter.formatErrorMessage(state.error.data, context));
       });
     }
   }
