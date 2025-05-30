@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/assets/calories_prediction_enums/activity_level.pbenum.dart';
-import 'package:frontend/blocs/calories_prediction_bloc.dart';
-import 'package:frontend/config/app_config.dart';
+import 'package:frontend/blocs/user_details/calories_prediction_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/views/screens/calories_prediction_screen.dart';
+import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 
 late CaloriesPredictionBloc caloriesPredictionBloc;
 
@@ -53,41 +51,21 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.VERY_LOW]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.LIGHT]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.MODERATE]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.ACTIVE]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.VERY_ACTIVE]!),
-      findsOneWidget,
-    );
+    expect(find.text('Very Low (1–2 days a week or less)'), findsOneWidget);
+    expect(find.text('Low (2–3 days a week)'), findsOneWidget);
+    expect(find.text('Moderate (3–4 days a week)'), findsOneWidget);
+    expect(find.text('Active (5–6 days a week)'), findsOneWidget);
+    expect(find.text('Very Active (daily activity)'), findsOneWidget);
 
-    await tester.tap(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.MODERATE]!),
-    );
+    await tester.tap(find.text('Moderate (3–4 days a week)'));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(AppConfig.activityLevelLabels[ActivityLevel.MODERATE]!),
-      findsOneWidget,
-    );
+    expect(find.text('Moderate (3–4 days a week)'), findsOneWidget);
   });
 
   testWidgets('Advanced options are displayed after tap', (
-      WidgetTester tester,
-      ) async {
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
@@ -99,7 +77,10 @@ void main() {
     );
     await tester.pumpAndSettle();
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
 
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
@@ -108,7 +89,10 @@ void main() {
     expect(tester.widget<CheckboxListTile>(checkboxFinder).value, isTrue);
     expect(find.textContaining('Muscle percentage'), findsOneWidget);
     expect(find.textContaining('Water percentage'), findsOneWidget);
-    expect(find.textContaining('Fat percentage', skipOffstage: false), findsOneWidget);
+    expect(
+      find.textContaining('Fat percentage', skipOffstage: false),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
@@ -124,7 +108,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -149,7 +136,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -178,7 +168,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -203,7 +196,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -237,7 +233,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 
@@ -274,7 +273,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    final checkboxFinder = find.widgetWithText(CheckboxListTile, 'Advance body parameters');
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
     await tester.tap(checkboxFinder);
     await tester.pumpAndSettle();
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/utils/diet_preferences_validators.dart';
+import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 

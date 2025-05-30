@@ -8,10 +8,10 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/config/endpoints.dart';
-import 'package:frontend/blocs/provide_email_block.dart';
-import 'package:frontend/repository/user_repository.dart';
+import 'package:frontend/blocs/user/provide_email_block.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
-import 'package:frontend/views/screens/provide_email_screen.dart';
+import 'package:frontend/views/screens/user/provide_email_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 

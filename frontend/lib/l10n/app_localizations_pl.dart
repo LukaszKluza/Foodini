@@ -255,95 +255,95 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
 
   @override
-  String get dietType_FAT_LOSS => 'Utrata tłuszczu';
+  String get dietType_fatLoss => 'Utrata tłuszczu';
 
   @override
-  String get dietType_MUSCLE_GAIN => 'Przyrost masy mięśniowej';
+  String get dietType_muscleGain => 'Przyrost masy mięśniowej';
 
   @override
-  String get dietType_WEIGHT_MAINTENANCE => 'Utrzymanie wagi';
+  String get dietType_weightMaintenance => 'Utrzymanie wagi';
 
   @override
-  String get dietType_VEGETARIAN => 'Wegetariańska';
+  String get dietType_vegetarian => 'Wegetariańska';
 
   @override
-  String get dietType_VEGAN => 'Wegańska';
+  String get dietType_vegan => 'Wegańska';
 
   @override
-  String get dietType_KETO => 'Keto';
+  String get dietType_keto => 'Keto';
 
   @override
-  String get allergy_GLUTEN => 'Gluten';
+  String get allergy_gluten => 'Gluten';
 
   @override
-  String get allergy_PEANUTS => 'Orzeszki ziemne';
+  String get allergy_peanuts => 'Orzeszki ziemne';
 
   @override
-  String get allergy_LACTOSE => 'Laktoza';
+  String get allergy_lastose => 'Laktoza';
 
   @override
-  String get allergy_FISH => 'Ryby';
+  String get allergy_fish => 'Ryby';
 
   @override
-  String get allergy_SOY => 'Soja';
+  String get allergy_soy => 'Soja';
 
   @override
-  String get allergy_WHEAT => 'Pszenica';
+  String get allergy_wheat => 'Pszenica';
 
   @override
-  String get allergy_CELERY => 'Seler';
+  String get allergy_celery => 'Seler';
 
   @override
-  String get allergy_SULPHITES => 'Siarczyny';
+  String get allergy_sulphites => 'Siarczyny';
 
   @override
-  String get allergy_LUPIN => 'Łubin';
+  String get allergy_lupin => 'Łubin';
 
   @override
-  String get dietIntensity_SLOW => 'Powolna';
+  String get dietIntensity_slow => 'Powolna';
 
   @override
-  String get dietIntensity_MEDIUM => 'Średnia';
+  String get dietIntensity_medium => 'Średnia';
 
   @override
-  String get dietIntensity_FAST => 'Szybka';
+  String get dietIntensity_fast => 'Szybka';
 
   @override
-  String get activityLevel_VERY_LOW => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
+  String get activityLevel_veryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
 
   @override
-  String get activityLevel_LIGHT => 'Niska (2–3 dni w tygodniu)';
+  String get activityLevel_light => 'Niska (2–3 dni w tygodniu)';
 
   @override
-  String get activityLevel_MODERATE => 'Umiarkowana (3–4 dni w tygodniu)';
+  String get activityLevel_moderate => 'Umiarkowana (3–4 dni w tygodniu)';
 
   @override
-  String get activityLevel_ACTIVE => 'Aktywna (5–6 dni w tygodniu)';
+  String get activityLevel_active => 'Aktywna (5–6 dni w tygodniu)';
 
   @override
-  String get activityLevel_VERY_ACTIVE => 'Bardzo aktywna (codzienna aktywność)';
+  String get activityLevel_veryActive => 'Bardzo aktywna (codzienna aktywność)';
 
   @override
-  String get stressLevel_LOW => 'Niski';
+  String get stressLevel_low => 'Niski';
 
   @override
-  String get stressLevel_MEDIUM => 'Średni';
+  String get stressLevel_medium => 'Średni';
 
   @override
-  String get stressLevel_HIGH => 'Wysoki';
+  String get stressLevel_high => 'Wysoki';
 
   @override
-  String get stressLevel_EXTREME => 'Ekstremalny';
+  String get stressLevel_extreme => 'Ekstremalny';
 
   @override
-  String get sleepQuality_POOR => 'Słaba';
+  String get sleepQuality_poor => 'Słaba';
 
   @override
-  String get sleepQuality_FAIR => 'Średnia';
+  String get sleepQuality_fair => 'Średnia';
 
   @override
-  String get sleepQuality_GOOD => 'Dobra';
+  String get sleepQuality_good => 'Dobra';
 
   @override
-  String get sleepQuality_EXCELLENT => 'Świetna';
+  String get sleepQuality_excelent => 'Świetna';
 }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/utils/user/user_validators.dart';
 
 Future<BuildContext> pumpAppWithLocalization(WidgetTester tester) async {
   late BuildContext testContext;

@@ -255,95 +255,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateWeeklyDiet => 'Generate weekly diet';
 
   @override
-  String get dietType_FAT_LOSS => 'Fat Loss';
+  String get dietType_fatLoss => 'Fat Loss';
 
   @override
-  String get dietType_MUSCLE_GAIN => 'Muscle Gain';
+  String get dietType_muscleGain => 'Muscle Gain';
 
   @override
-  String get dietType_WEIGHT_MAINTENANCE => 'Weight Maintenance';
+  String get dietType_weightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietType_VEGETARIAN => 'Vegetarian';
+  String get dietType_vegetarian => 'Vegetarian';
 
   @override
-  String get dietType_VEGAN => 'Vegan';
+  String get dietType_vegan => 'Vegan';
 
   @override
-  String get dietType_KETO => 'Keto';
+  String get dietType_keto => 'Keto';
 
   @override
-  String get allergy_GLUTEN => 'Gluten';
+  String get allergy_gluten => 'Gluten';
 
   @override
-  String get allergy_PEANUTS => 'Peanuts';
+  String get allergy_peanuts => 'Peanuts';
 
   @override
-  String get allergy_LACTOSE => 'Lactose';
+  String get allergy_lastose => 'Lactose';
 
   @override
-  String get allergy_FISH => 'Fish';
+  String get allergy_fish => 'Fish';
 
   @override
-  String get allergy_SOY => 'Soy';
+  String get allergy_soy => 'Soy';
 
   @override
-  String get allergy_WHEAT => 'Wheat';
+  String get allergy_wheat => 'Wheat';
 
   @override
-  String get allergy_CELERY => 'Celery';
+  String get allergy_celery => 'Celery';
 
   @override
-  String get allergy_SULPHITES => 'Sulphites';
+  String get allergy_sulphites => 'Sulphites';
 
   @override
-  String get allergy_LUPIN => 'Lupin';
+  String get allergy_lupin => 'Lupin';
 
   @override
-  String get dietIntensity_SLOW => 'Slow';
+  String get dietIntensity_slow => 'Slow';
 
   @override
-  String get dietIntensity_MEDIUM => 'Medium';
+  String get dietIntensity_medium => 'Medium';
 
   @override
-  String get dietIntensity_FAST => 'Fast';
+  String get dietIntensity_fast => 'Fast';
 
   @override
-  String get activityLevel_VERY_LOW => 'Very Low (1–2 days a week or less)';
+  String get activityLevel_veryLow => 'Very Low (1–2 days a week or less)';
 
   @override
-  String get activityLevel_LIGHT => 'Low (2–3 days a week)';
+  String get activityLevel_light => 'Low (2–3 days a week)';
 
   @override
-  String get activityLevel_MODERATE => 'Moderate (3–4 days a week)';
+  String get activityLevel_moderate => 'Moderate (3–4 days a week)';
 
   @override
-  String get activityLevel_ACTIVE => 'Active (5–6 days a week)';
+  String get activityLevel_active => 'Active (5–6 days a week)';
 
   @override
-  String get activityLevel_VERY_ACTIVE => 'Very Active (daily activity)';
+  String get activityLevel_veryActive => 'Very Active (daily activity)';
 
   @override
-  String get stressLevel_LOW => 'Low';
+  String get stressLevel_low => 'Low';
 
   @override
-  String get stressLevel_MEDIUM => 'Medium';
+  String get stressLevel_medium => 'Medium';
 
   @override
-  String get stressLevel_HIGH => 'High';
+  String get stressLevel_high => 'High';
 
   @override
-  String get stressLevel_EXTREME => 'Extreme';
+  String get stressLevel_extreme => 'Extreme';
 
   @override
-  String get sleepQuality_POOR => 'Poor';
+  String get sleepQuality_poor => 'Poor';
 
   @override
-  String get sleepQuality_FAIR => 'Fair';
+  String get sleepQuality_fair => 'Fair';
 
   @override
-  String get sleepQuality_GOOD => 'Good';
+  String get sleepQuality_good => 'Good';
 
   @override
-  String get sleepQuality_EXCELLENT => 'Excellent';
+  String get sleepQuality_excelent => 'Excellent';
 }

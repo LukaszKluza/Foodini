@@ -15,7 +15,7 @@ total_LH=0
 excluded_files=0
 
 excluded_folders=(
-  "lib\assets"
+  "lib/l10n"
   "lib\l10n"
 )
 

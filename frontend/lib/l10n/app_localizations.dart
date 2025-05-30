@@ -591,187 +591,187 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Fat Loss'**
-  String get dietType_FAT_LOSS;
+  String get dietType_fatLoss;
 
   /// No description provided for @dietType_MUSCLE_GAIN.
   ///
   /// In en, this message translates to:
   /// **'Muscle Gain'**
-  String get dietType_MUSCLE_GAIN;
+  String get dietType_muscleGain;
 
   /// No description provided for @dietType_WEIGHT_MAINTENANCE.
   ///
   /// In en, this message translates to:
   /// **'Weight Maintenance'**
-  String get dietType_WEIGHT_MAINTENANCE;
+  String get dietType_weightMaintenance;
 
   /// No description provided for @dietType_VEGETARIAN.
   ///
   /// In en, this message translates to:
   /// **'Vegetarian'**
-  String get dietType_VEGETARIAN;
+  String get dietType_vegetarian;
 
   /// No description provided for @dietType_VEGAN.
   ///
   /// In en, this message translates to:
   /// **'Vegan'**
-  String get dietType_VEGAN;
+  String get dietType_vegan;
 
   /// No description provided for @dietType_KETO.
   ///
   /// In en, this message translates to:
   /// **'Keto'**
-  String get dietType_KETO;
+  String get dietType_keto;
 
   /// No description provided for @allergy_GLUTEN.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get allergy_GLUTEN;
+  String get allergy_gluten;
 
   /// No description provided for @allergy_PEANUTS.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get allergy_PEANUTS;
+  String get allergy_peanuts;
 
   /// No description provided for @allergy_LACTOSE.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get allergy_LACTOSE;
+  String get allergy_lastose;
 
   /// No description provided for @allergy_FISH.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get allergy_FISH;
+  String get allergy_fish;
 
   /// No description provided for @allergy_SOY.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get allergy_SOY;
+  String get allergy_soy;
 
   /// No description provided for @allergy_WHEAT.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get allergy_WHEAT;
+  String get allergy_wheat;
 
   /// No description provided for @allergy_CELERY.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get allergy_CELERY;
+  String get allergy_celery;
 
   /// No description provided for @allergy_SULPHITES.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get allergy_SULPHITES;
+  String get allergy_sulphites;
 
   /// No description provided for @allergy_LUPIN.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get allergy_LUPIN;
+  String get allergy_lupin;
 
   /// No description provided for @dietIntensity_SLOW.
   ///
   /// In en, this message translates to:
   /// **'Slow'**
-  String get dietIntensity_SLOW;
+  String get dietIntensity_slow;
 
   /// No description provided for @dietIntensity_MEDIUM.
   ///
   /// In en, this message translates to:
   /// **'Medium'**
-  String get dietIntensity_MEDIUM;
+  String get dietIntensity_medium;
 
   /// No description provided for @dietIntensity_FAST.
   ///
   /// In en, this message translates to:
   /// **'Fast'**
-  String get dietIntensity_FAST;
+  String get dietIntensity_fast;
 
   /// No description provided for @activityLevel_VERY_LOW.
   ///
   /// In en, this message translates to:
   /// **'Very Low (1–2 days a week or less)'**
-  String get activityLevel_VERY_LOW;
+  String get activityLevel_veryLow;
 
   /// No description provided for @activityLevel_LIGHT.
   ///
   /// In en, this message translates to:
   /// **'Low (2–3 days a week)'**
-  String get activityLevel_LIGHT;
+  String get activityLevel_light;
 
   /// No description provided for @activityLevel_MODERATE.
   ///
   /// In en, this message translates to:
   /// **'Moderate (3–4 days a week)'**
-  String get activityLevel_MODERATE;
+  String get activityLevel_moderate;
 
   /// No description provided for @activityLevel_ACTIVE.
   ///
   /// In en, this message translates to:
   /// **'Active (5–6 days a week)'**
-  String get activityLevel_ACTIVE;
+  String get activityLevel_active;
 
   /// No description provided for @activityLevel_VERY_ACTIVE.
   ///
   /// In en, this message translates to:
   /// **'Very Active (daily activity)'**
-  String get activityLevel_VERY_ACTIVE;
+  String get activityLevel_veryActive;
 
   /// No description provided for @stressLevel_LOW.
   ///
   /// In en, this message translates to:
   /// **'Low'**
-  String get stressLevel_LOW;
+  String get stressLevel_low;
 
   /// No description provided for @stressLevel_MEDIUM.
   ///
   /// In en, this message translates to:
   /// **'Medium'**
-  String get stressLevel_MEDIUM;
+  String get stressLevel_medium;
 
   /// No description provided for @stressLevel_HIGH.
   ///
   /// In en, this message translates to:
   /// **'High'**
-  String get stressLevel_HIGH;
+  String get stressLevel_high;
 
   /// No description provided for @stressLevel_EXTREME.
   ///
   /// In en, this message translates to:
   /// **'Extreme'**
-  String get stressLevel_EXTREME;
+  String get stressLevel_extreme;
 
   /// No description provided for @sleepQuality_POOR.
   ///
   /// In en, this message translates to:
   /// **'Poor'**
-  String get sleepQuality_POOR;
+  String get sleepQuality_poor;
 
   /// No description provided for @sleepQuality_FAIR.
   ///
   /// In en, this message translates to:
   /// **'Fair'**
-  String get sleepQuality_FAIR;
+  String get sleepQuality_fair;
 
   /// No description provided for @sleepQuality_GOOD.
   ///
   /// In en, this message translates to:
   /// **'Good'**
-  String get sleepQuality_GOOD;
+  String get sleepQuality_good;
 
   /// No description provided for @sleepQuality_EXCELLENT.
   ///
   /// In en, this message translates to:
   /// **'Excellent'**
-  String get sleepQuality_EXCELLENT;
+  String get sleepQuality_excelent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

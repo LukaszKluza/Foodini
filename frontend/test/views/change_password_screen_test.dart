@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user_details/change_password_bloc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/blocs/change_password_bloc.dart';
-import 'package:frontend/repository/user_repository.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
-import 'package:frontend/views/screens/change_password_screen.dart';
+import 'package:frontend/views/screens/user/change_password_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 

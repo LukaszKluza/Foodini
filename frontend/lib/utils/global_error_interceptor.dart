@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/app_router.dart';
-import 'package:frontend/repository/user_storage.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/logger.dart';
-
-import 'exception_converter.dart';
 
 class GlobalErrorInterceptor extends Interceptor {
   final ApiClient _apiClient;

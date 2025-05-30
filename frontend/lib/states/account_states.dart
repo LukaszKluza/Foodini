@@ -1,5 +1,5 @@
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/models/language.dart';
+import 'package:frontend/models/user/language.dart';
 
 abstract class AccountState {}
 

@@ -10,11 +10,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-import 'package:frontend/blocs/register_bloc.dart';
-import 'package:frontend/repository/user_repository.dart';
+import 'package:frontend/blocs/user/register_bloc.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/register_states.dart';
-import 'package:frontend/views/screens/register_screen.dart';
+import 'package:frontend/views/screens/user/register_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 

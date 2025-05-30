@@ -1,65 +1,67 @@
-import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart';
-import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
-import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
-
-import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/sleep_quality.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/stress_level.dart';
+import 'package:frontend/models/user_details/diet_type.dart';
 
 class AppConfig {
-  //Texts
-  static const String checkEmailAddressToSetNewPassword =
-      'Check your email address to set new password';
-  static const String passwordSuccessfullyChanged =
-      'Password successfully changed';
-
-  static const Map<DietType, String> dietTypeLabels = {
-    DietType.FAT_LOSS: 'Fat Loss',
-    DietType.MUSCLE_GAIN: 'Muscle Gain',
-    DietType.WEIGHT_MAINTENANCE: 'Weight Maintenance',
-    DietType.VEGETARIAN: 'Vegetarian',
-    DietType.VEGAN: 'Vegan',
-    DietType.KETO: 'Keto',
+  static Map<DietType, String> dietTypeLabels(BuildContext context) => {
+    DietType.fatLoss: AppLocalizations.of(context)!.dietType_fatLoss,
+    DietType.muscleGain: AppLocalizations.of(context)!.dietType_muscleGain,
+    DietType.weightMaintenance:
+        AppLocalizations.of(context)!.dietType_weightMaintenance,
+    DietType.vegetarian: AppLocalizations.of(context)!.dietType_vegetarian,
+    DietType.vegan: AppLocalizations.of(context)!.dietType_vegan,
+    DietType.keto: AppLocalizations.of(context)!.dietType_keto,
   };
 
-  static const Map<Allergy, String> allergyLabels = {
-    Allergy.GLUTEN: 'Gluten',
-    Allergy.PEANUTS: 'Peanuts',
-    Allergy.LACTOSE: 'Lactose',
-    Allergy.FISH: 'Fish',
-    Allergy.SOY: 'Soy',
-    Allergy.WHEAT: 'Wheat',
-    Allergy.CELERY: 'Celery',
-    Allergy.SULPHITES: 'Sulphites',
-    Allergy.LUPIN: 'Lupin',
+  static Map<Allergy, String> allergyLabels(BuildContext context) => {
+    Allergy.gluten: AppLocalizations.of(context)!.allergy_gluten,
+    Allergy.peanuts: AppLocalizations.of(context)!.allergy_peanuts,
+    Allergy.lactose: AppLocalizations.of(context)!.allergy_lastose,
+    Allergy.fish: AppLocalizations.of(context)!.allergy_fish,
+    Allergy.soy: AppLocalizations.of(context)!.allergy_soy,
+    Allergy.wheat: AppLocalizations.of(context)!.allergy_wheat,
+    Allergy.celery: AppLocalizations.of(context)!.allergy_celery,
+    Allergy.sulphites: AppLocalizations.of(context)!.allergy_sulphites,
+    Allergy.lupin: AppLocalizations.of(context)!.allergy_lupin,
   };
 
-  static const Map<DietIntensity, String> dietIntensityLabels = {
-    DietIntensity.SLOW: 'Slow',
-    DietIntensity.MEDIUM: 'Medium',
-    DietIntensity.FAST: 'Fast',
+  static Map<DietIntensity, String> dietIntensityLabels(
+    BuildContext context,
+  ) => {
+    DietIntensity.slow: AppLocalizations.of(context)!.dietIntensity_slow,
+    DietIntensity.medium: AppLocalizations.of(context)!.dietIntensity_medium,
+    DietIntensity.fast: AppLocalizations.of(context)!.dietIntensity_fast,
   };
 
-
-  static const Map<ActivityLevel, String> activityLevelLabels = {
-    ActivityLevel.VERY_LOW: 'Very Low (1–2 days a week or less)',
-    ActivityLevel.LIGHT: 'Low (2–3 days a week)',
-    ActivityLevel.MODERATE: 'Moderate (3–4 days a week)',
-    ActivityLevel.ACTIVE: 'Active (5–6 days a week)',
-    ActivityLevel.VERY_ACTIVE: 'Very Active (daily activity)',
+  static Map<ActivityLevel, String> activityLevelLabels(
+    BuildContext context,
+  ) => {
+    ActivityLevel.veryLow: AppLocalizations.of(context)!.activityLevel_veryLow,
+    ActivityLevel.light: AppLocalizations.of(context)!.activityLevel_light,
+    ActivityLevel.moderate:
+        AppLocalizations.of(context)!.activityLevel_moderate,
+    ActivityLevel.active: AppLocalizations.of(context)!.activityLevel_active,
+    ActivityLevel.veryActive:
+        AppLocalizations.of(context)!.activityLevel_veryActive,
   };
 
-  static const Map<StressLevel, String> stressLevelLabels = {
-    StressLevel.LOW: 'Low',
-    StressLevel.MEDIUM: 'Medium',
-    StressLevel.HIGH: 'High',
-    StressLevel.EXTREME: 'Extreme',
+  static Map<StressLevel, String> stressLevelLabels(BuildContext context) => {
+    StressLevel.low: AppLocalizations.of(context)!.stressLevel_low,
+    StressLevel.medium: AppLocalizations.of(context)!.stressLevel_medium,
+    StressLevel.high: AppLocalizations.of(context)!.stressLevel_high,
+    StressLevel.extreme: AppLocalizations.of(context)!.stressLevel_extreme,
   };
 
-  static const Map<SleepQuality, String> sleepQualityLabels = {
-    SleepQuality.POOR: 'Poor',
-    SleepQuality.FAIR: 'Fair',
-    SleepQuality.GOOD: 'Good',
-    SleepQuality.EXCELLENT: 'Excellent',
+  static Map<SleepQuality, String> sleepQualityLabels(BuildContext context) => {
+    SleepQuality.poor: AppLocalizations.of(context)!.sleepQuality_poor,
+    SleepQuality.fair: AppLocalizations.of(context)!.sleepQuality_fair,
+    SleepQuality.good: AppLocalizations.of(context)!.sleepQuality_good,
+    SleepQuality.excellent:
+        AppLocalizations.of(context)!.sleepQuality_excelent,
   };
 }
