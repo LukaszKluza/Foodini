@@ -6,8 +6,10 @@ import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_form_events.dart';
 import 'package:frontend/utils/profile_details_validators.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
@@ -22,6 +24,12 @@ class ProfileDetailsScreen extends StatelessWidget {
         ),
       ),
       body: _ProfileDetailsForm(),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+        mode: NavBarMode.wizard,
+        prevRoute: '/main_page',
+        nextRoute: '/diet_preferences',
+      ),
     );
   }
 }

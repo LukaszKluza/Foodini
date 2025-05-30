@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/listeners/account_listener.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/account_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/account_events.dart';
 import 'package:frontend/repository/auth_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
@@ -46,19 +47,18 @@ class _AccountScreenState extends State<_AccountBody> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/main_page');
-          },
-        ),
+        automaticallyImplyLeading: false,
         title: Center(
-          child: Text(AppConfig.foodini, style: Styles.titleStyle),
+          child: Text(AppConfig.myAccount, style: Styles.titleStyle),
         ),
       ),
       body: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
-          AccountListenerHelper.accountStateListener(context, state, mounted: mounted);
+          AccountListenerHelper.accountStateListener(
+            context,
+            state,
+            mounted: mounted,
+          );
         },
         child: SingleChildScrollView(
           child: Column(
@@ -78,7 +78,7 @@ class _AccountScreenState extends State<_AccountBody> {
                           Icons.settings,
                           screenWidth,
                           screenHeight,
-                          () => context.go('/provide_email'),
+                          () => context.push('/provide_email'),
                         ),
                         const SizedBox(height: 16),
                         rectangularButton(
@@ -127,6 +127,9 @@ class _AccountScreenState extends State<_AccountBody> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+      ),
     );
   }
 }
@@ -134,24 +137,25 @@ class _AccountScreenState extends State<_AccountBody> {
 void showDeleteAccountDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(AppConfig.confirmAccountDeletion),
-      content: Text(AppConfig.accountDeletionInformation),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(dialogContext).pop();
-          },
-          child: Text(AppConfig.cancel),
+    builder:
+        (dialogContext) => AlertDialog(
+          title: Text(AppConfig.confirmAccountDeletion),
+          content: Text(AppConfig.accountDeletionInformation),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text(AppConfig.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context.read<AccountBloc>().add(AccountDeleteRequested());
+              },
+              child: Text(AppConfig.delete),
+            ),
+          ],
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(dialogContext).pop();
-            context.read<AccountBloc>().add(AccountDeleteRequested());
-          },
-          child: Text(AppConfig.delete),
-        ),
-      ],
-    ),
   );
 }

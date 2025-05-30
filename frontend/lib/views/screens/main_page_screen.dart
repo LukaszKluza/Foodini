@@ -20,9 +20,7 @@ class _LoginScreenState extends State<MainPageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(AppConfig.foodini, style: Styles.titleStyle),
-        ),
+        title: Center(child: Text(AppConfig.foodini, style: Styles.titleStyle)),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +39,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Icons.person,
                       screenWidth,
                       screenHeight,
-                      () => context.go('/account'),
+                      () => context.push('/account'),
                     ),
                     SizedBox(height: 16),
                     rectangularButton(

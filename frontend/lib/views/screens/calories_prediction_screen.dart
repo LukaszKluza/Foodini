@@ -11,6 +11,8 @@ import 'package:frontend/events/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
@@ -24,6 +26,11 @@ class CaloriesPredictionScreen extends StatelessWidget {
         ),
       ),
       body: _CaloriesPredictionForm(),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+        mode: NavBarMode.wizard,
+        prevRoute: '/diet_preferences',
+      ),
     );
   }
 }
