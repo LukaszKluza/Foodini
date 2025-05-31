@@ -45,7 +45,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
-                      AppConfig.dietPreferences,
+                      AppLocalizations.of(context)!.dietPreferences,
                       Icons.food_bank_rounded,
                       screenWidth,
                       screenHeight,

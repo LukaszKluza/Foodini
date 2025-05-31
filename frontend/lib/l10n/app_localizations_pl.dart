@@ -255,95 +255,140 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
 
   @override
-  String get dietType_fatLoss => 'Utrata tłuszczu';
+  String get dietType_FatLoss => 'Utrata tłuszczu';
 
   @override
-  String get dietType_muscleGain => 'Przyrost masy mięśniowej';
+  String get dietType_MuscleGain => 'Przyrost masy mięśniowej';
 
   @override
-  String get dietType_weightMaintenance => 'Utrzymanie wagi';
+  String get dietType_WeightMaintenance => 'Utrzymanie wagi';
 
   @override
-  String get dietType_vegetarian => 'Wegetariańska';
+  String get dietType_Vegetarian => 'Wegetariańska';
 
   @override
-  String get dietType_vegan => 'Wegańska';
+  String get dietType_Vegan => 'Wegańska';
 
   @override
-  String get dietType_keto => 'Keto';
+  String get dietType_Keto => 'Keto';
 
   @override
-  String get allergy_gluten => 'Gluten';
+  String get allergy_Gluten => 'Gluten';
 
   @override
-  String get allergy_peanuts => 'Orzeszki ziemne';
+  String get allergy_Peanuts => 'Orzeszki ziemne';
 
   @override
-  String get allergy_lastose => 'Laktoza';
+  String get allergy_Lactose => 'Laktoza';
 
   @override
-  String get allergy_fish => 'Ryby';
+  String get allergy_Fish => 'Ryby';
 
   @override
-  String get allergy_soy => 'Soja';
+  String get allergy_Soy => 'Soja';
 
   @override
-  String get allergy_wheat => 'Pszenica';
+  String get allergy_Wheat => 'Pszenica';
 
   @override
-  String get allergy_celery => 'Seler';
+  String get allergy_Celery => 'Seler';
 
   @override
-  String get allergy_sulphites => 'Siarczyny';
+  String get allergy_Sulphites => 'Siarczyny';
 
   @override
-  String get allergy_lupin => 'Łubin';
+  String get allergy_Lupin => 'Łubin';
 
   @override
-  String get dietIntensity_slow => 'Powolna';
+  String get dietIntensity_Slow => 'Powolna';
 
   @override
-  String get dietIntensity_medium => 'Średnia';
+  String get dietIntensity_Medium => 'Średnia';
 
   @override
-  String get dietIntensity_fast => 'Szybka';
+  String get dietIntensity_Fast => 'Szybka';
 
   @override
-  String get activityLevel_veryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
+  String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
 
   @override
-  String get activityLevel_light => 'Niska (2–3 dni w tygodniu)';
+  String get activityLevel_Light => 'Niska (2–3 dni w tygodniu)';
 
   @override
-  String get activityLevel_moderate => 'Umiarkowana (3–4 dni w tygodniu)';
+  String get activityLevel_Moderate => 'Umiarkowana (3–4 dni w tygodniu)';
 
   @override
-  String get activityLevel_active => 'Aktywna (5–6 dni w tygodniu)';
+  String get activityLevel_Active => 'Aktywna (5–6 dni w tygodniu)';
 
   @override
-  String get activityLevel_veryActive => 'Bardzo aktywna (codzienna aktywność)';
+  String get activityLevel_VeryActive => 'Bardzo aktywna (codzienna aktywność)';
 
   @override
-  String get stressLevel_low => 'Niski';
+  String get stressLevel_Low => 'Niski';
 
   @override
-  String get stressLevel_medium => 'Średni';
+  String get stressLevel_Medium => 'Średni';
 
   @override
-  String get stressLevel_high => 'Wysoki';
+  String get stressLevel_High => 'Wysoki';
 
   @override
-  String get stressLevel_extreme => 'Ekstremalny';
+  String get stressLevel_Extreme => 'Ekstremalny';
 
   @override
-  String get sleepQuality_poor => 'Słaba';
+  String get sleepQuality_Poor => 'Słaba';
 
   @override
-  String get sleepQuality_fair => 'Średnia';
+  String get sleepQuality_Fair => 'Średnia';
 
   @override
-  String get sleepQuality_good => 'Dobra';
+  String get sleepQuality_Good => 'Dobra';
 
   @override
-  String get sleepQuality_excelent => 'Świetna';
+  String get sleepQuality_Excellent => 'Świetna';
+
+  @override
+  String get profileDetails => 'Szczegóły profilu';
+
+  @override
+  String get gender => 'Płeć';
+
+  @override
+  String get requiredGender => 'Płeć jest wymagana';
+
+  @override
+  String get gender_Male => 'Mężczyzna';
+
+  @override
+  String get gender_Female => 'Kobieta';
+
+  @override
+  String get height => 'Wzrost';
+
+  @override
+  String get enterYourHeight => 'Wprowadź swój wzrost';
+
+  @override
+  String get heightCm => 'Wzrost (cm)';
+
+  @override
+  String get heightShouldBeBetween => 'Wzrost powinien mieścić się w przedziale';
+
+  @override
+  String get cm => 'cm';
+
+  @override
+  String get weight => 'Waga';
+
+  @override
+  String get enterYourWeight => 'Wprowadź swoją wagę';
+
+  @override
+  String get weightShouldBeBetween => 'Waga powinna mieścić się w przedziale';
+
+  @override
+  String get dateOfBirth => 'Data urodzenia';
+
+  @override
+  String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
 }

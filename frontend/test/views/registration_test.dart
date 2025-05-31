@@ -70,7 +70,12 @@ void main() {
   ) async {
     when(mockApiClient.register(any)).thenAnswer(
       (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'john@example.com'},
+        data: {
+          'id': 1,
+          'email': 'jan4@example.com',
+          'name': 'Jan',
+          'language': 'pl'
+        },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.register),
       ),

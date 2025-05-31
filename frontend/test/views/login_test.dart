@@ -97,7 +97,12 @@ void main() {
 
     when(mockApiClient.getUser()).thenAnswer(
           (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'jan4@example.com', 'name': 'Jan', 'language': 'pl'},
+            data: {
+              'id': 1,
+              'email': 'jan4@example.com',
+              'name': 'Jan',
+              'language': 'pl'
+            },
         statusCode: 200,
         requestOptions: RequestOptions(path: '/user'),
       ),

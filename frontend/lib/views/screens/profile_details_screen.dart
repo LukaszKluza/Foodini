@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/assets/profile_details/gender.pbenum.dart';
 import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_form_events.dart';
-import 'package:frontend/utils/profile_details_validators.dart';
+import 'package:frontend/utils/user_details/profile_details_validators.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:intl/intl.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
   const ProfileDetailsScreen({super.key});
@@ -18,7 +19,10 @@ class ProfileDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.profileDetails, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.profileDetails,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: _ProfileDetailsForm(),
@@ -62,15 +66,17 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   Widget build(BuildContext context) {
     final fields = [
       DropdownButtonFormField<Gender>(
-        key: Key(AppConfig.gender),
+        key: Key('gender'),
         value: _selectedGender,
-        decoration: InputDecoration(labelText: AppConfig.gender),
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.gender,
+        ),
         items:
             Gender.values.map((gender) {
               return DropdownMenuItem<Gender>(
                 value: gender,
                 child: Text(
-                  AppConfig.genderLabels[gender]!,
+                  AppConfig.genderLabels(context)[gender]!,
                   style: TextStyle(color: Colors.black),
                 ),
               );
@@ -81,10 +87,10 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
           });
           context.read<DietFormBloc>().add(UpdateGender(value!));
         },
-        validator: (value) => validateGender(value),
+        validator: (value) => validateGender(value, context),
       ),
       HeightSlider(
-        key: Key(AppConfig.height),
+        key: Key('height'),
         initialValue: _selectedHeight,
         onChanged: (value) {
           setState(() {
@@ -94,10 +100,10 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
         },
       ),
       WeightSlider(
-        key: Key(AppConfig.weight),
+        key: Key('weight'),
         initialValue: _selectedWeight,
-        label: AppConfig.weight,
-        dialogTitle: AppConfig.enterYourWeight,
+        label: AppLocalizations.of(context)!.weight,
+        dialogTitle: AppLocalizations.of(context)!.enterYourWeight,
         onChanged: (value) {
           setState(() {
             _selectedWeight = value;
@@ -106,11 +112,11 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
         },
       ),
       TextFormField(
-        key: Key(AppConfig.dateOfBirth),
+        key: Key('date_of_birth'),
         controller: _dateOfBirthController,
         readOnly: true,
         decoration: InputDecoration(
-          labelText: AppConfig.dateOfBirth,
+          labelText: AppLocalizations.of(context)!.dateOfBirth,
           suffixIcon: Icon(Icons.calendar_today),
         ),
         onTap: () async {

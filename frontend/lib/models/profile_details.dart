@@ -1,4 +1,4 @@
-import 'package:frontend/assets/profile_details/gender.pbenum.dart';
+import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetails {
   final Gender gender;

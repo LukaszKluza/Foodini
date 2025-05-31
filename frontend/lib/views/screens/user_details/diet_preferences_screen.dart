@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/user_details/diet_preferences_bloc.dart';
+
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
@@ -14,6 +14,7 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/blocs/diet_form_bloc.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   const DietPreferencesScreen({super.key});
@@ -130,13 +131,15 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       ),
       WeightSlider(
         initialValue: _selectedDietGoal,
-        validator: validateDietGoal,
+        validator: (value) => validateDietGoal(value, context),
         onChanged: (value) {
           setState(() {
             _selectedDietGoal = value;
           });
           context.read<DietFormBloc>().add(UpdateDietGoal(value));
         },
+        label: AppLocalizations.of(context)!.dietGoal,
+        dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

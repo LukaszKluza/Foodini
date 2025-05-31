@@ -587,191 +587,281 @@ abstract class AppLocalizations {
   /// **'Generate weekly diet'**
   String get generateWeeklyDiet;
 
-  /// No description provided for @dietType_FAT_LOSS.
+  /// No description provided for @dietType_FatLoss.
   ///
   /// In en, this message translates to:
   /// **'Fat Loss'**
-  String get dietType_fatLoss;
+  String get dietType_FatLoss;
 
-  /// No description provided for @dietType_MUSCLE_GAIN.
+  /// No description provided for @dietType_MuscleGain.
   ///
   /// In en, this message translates to:
   /// **'Muscle Gain'**
-  String get dietType_muscleGain;
+  String get dietType_MuscleGain;
 
-  /// No description provided for @dietType_WEIGHT_MAINTENANCE.
+  /// No description provided for @dietType_WeightMaintenance.
   ///
   /// In en, this message translates to:
   /// **'Weight Maintenance'**
-  String get dietType_weightMaintenance;
+  String get dietType_WeightMaintenance;
 
-  /// No description provided for @dietType_VEGETARIAN.
+  /// No description provided for @dietType_Vegetarian.
   ///
   /// In en, this message translates to:
   /// **'Vegetarian'**
-  String get dietType_vegetarian;
+  String get dietType_Vegetarian;
 
-  /// No description provided for @dietType_VEGAN.
+  /// No description provided for @dietType_Vegan.
   ///
   /// In en, this message translates to:
   /// **'Vegan'**
-  String get dietType_vegan;
+  String get dietType_Vegan;
 
-  /// No description provided for @dietType_KETO.
+  /// No description provided for @dietType_Keto.
   ///
   /// In en, this message translates to:
   /// **'Keto'**
-  String get dietType_keto;
+  String get dietType_Keto;
 
-  /// No description provided for @allergy_GLUTEN.
+  /// No description provided for @allergy_Gluten.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get allergy_gluten;
+  String get allergy_Gluten;
 
-  /// No description provided for @allergy_PEANUTS.
+  /// No description provided for @allergy_Peanuts.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get allergy_peanuts;
+  String get allergy_Peanuts;
 
-  /// No description provided for @allergy_LACTOSE.
+  /// No description provided for @allergy_Lactose.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get allergy_lastose;
+  String get allergy_Lactose;
 
-  /// No description provided for @allergy_FISH.
+  /// No description provided for @allergy_Fish.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get allergy_fish;
+  String get allergy_Fish;
 
-  /// No description provided for @allergy_SOY.
+  /// No description provided for @allergy_Soy.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get allergy_soy;
+  String get allergy_Soy;
 
-  /// No description provided for @allergy_WHEAT.
+  /// No description provided for @allergy_Wheat.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get allergy_wheat;
+  String get allergy_Wheat;
 
-  /// No description provided for @allergy_CELERY.
+  /// No description provided for @allergy_Celery.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get allergy_celery;
+  String get allergy_Celery;
 
-  /// No description provided for @allergy_SULPHITES.
+  /// No description provided for @allergy_Sulphites.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get allergy_sulphites;
+  String get allergy_Sulphites;
 
-  /// No description provided for @allergy_LUPIN.
+  /// No description provided for @allergy_Lupin.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get allergy_lupin;
+  String get allergy_Lupin;
 
-  /// No description provided for @dietIntensity_SLOW.
+  /// No description provided for @dietIntensity_Slow.
   ///
   /// In en, this message translates to:
   /// **'Slow'**
-  String get dietIntensity_slow;
+  String get dietIntensity_Slow;
 
-  /// No description provided for @dietIntensity_MEDIUM.
+  /// No description provided for @dietIntensity_Medium.
   ///
   /// In en, this message translates to:
   /// **'Medium'**
-  String get dietIntensity_medium;
+  String get dietIntensity_Medium;
 
-  /// No description provided for @dietIntensity_FAST.
+  /// No description provided for @dietIntensity_Fast.
   ///
   /// In en, this message translates to:
   /// **'Fast'**
-  String get dietIntensity_fast;
+  String get dietIntensity_Fast;
 
-  /// No description provided for @activityLevel_VERY_LOW.
+  /// No description provided for @activityLevel_VeryLow.
   ///
   /// In en, this message translates to:
   /// **'Very Low (1–2 days a week or less)'**
-  String get activityLevel_veryLow;
+  String get activityLevel_VeryLow;
 
-  /// No description provided for @activityLevel_LIGHT.
+  /// No description provided for @activityLevel_Light.
   ///
   /// In en, this message translates to:
   /// **'Low (2–3 days a week)'**
-  String get activityLevel_light;
+  String get activityLevel_Light;
 
-  /// No description provided for @activityLevel_MODERATE.
+  /// No description provided for @activityLevel_Moderate.
   ///
   /// In en, this message translates to:
   /// **'Moderate (3–4 days a week)'**
-  String get activityLevel_moderate;
+  String get activityLevel_Moderate;
 
-  /// No description provided for @activityLevel_ACTIVE.
+  /// No description provided for @activityLevel_Active.
   ///
   /// In en, this message translates to:
   /// **'Active (5–6 days a week)'**
-  String get activityLevel_active;
+  String get activityLevel_Active;
 
-  /// No description provided for @activityLevel_VERY_ACTIVE.
+  /// No description provided for @activityLevel_VeryActive.
   ///
   /// In en, this message translates to:
   /// **'Very Active (daily activity)'**
-  String get activityLevel_veryActive;
+  String get activityLevel_VeryActive;
 
-  /// No description provided for @stressLevel_LOW.
+  /// No description provided for @stressLevel_Low.
   ///
   /// In en, this message translates to:
   /// **'Low'**
-  String get stressLevel_low;
+  String get stressLevel_Low;
 
-  /// No description provided for @stressLevel_MEDIUM.
+  /// No description provided for @stressLevel_Medium.
   ///
   /// In en, this message translates to:
   /// **'Medium'**
-  String get stressLevel_medium;
+  String get stressLevel_Medium;
 
-  /// No description provided for @stressLevel_HIGH.
+  /// No description provided for @stressLevel_High.
   ///
   /// In en, this message translates to:
   /// **'High'**
-  String get stressLevel_high;
+  String get stressLevel_High;
 
-  /// No description provided for @stressLevel_EXTREME.
+  /// No description provided for @stressLevel_Extreme.
   ///
   /// In en, this message translates to:
   /// **'Extreme'**
-  String get stressLevel_extreme;
+  String get stressLevel_Extreme;
 
-  /// No description provided for @sleepQuality_POOR.
+  /// No description provided for @sleepQuality_Poor.
   ///
   /// In en, this message translates to:
   /// **'Poor'**
-  String get sleepQuality_poor;
+  String get sleepQuality_Poor;
 
-  /// No description provided for @sleepQuality_FAIR.
+  /// No description provided for @sleepQuality_Fair.
   ///
   /// In en, this message translates to:
   /// **'Fair'**
-  String get sleepQuality_fair;
+  String get sleepQuality_Fair;
 
-  /// No description provided for @sleepQuality_GOOD.
+  /// No description provided for @sleepQuality_Good.
   ///
   /// In en, this message translates to:
   /// **'Good'**
-  String get sleepQuality_good;
+  String get sleepQuality_Good;
 
-  /// No description provided for @sleepQuality_EXCELLENT.
+  /// No description provided for @sleepQuality_Excellent.
   ///
   /// In en, this message translates to:
   /// **'Excellent'**
-  String get sleepQuality_excelent;
+  String get sleepQuality_Excellent;
+
+  /// No description provided for @profileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Details'**
+  String get profileDetails;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @requiredGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender is required'**
+  String get requiredGender;
+
+  /// No description provided for @gender_Male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get gender_Male;
+
+  /// No description provided for @gender_Female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get gender_Female;
+
+  /// No description provided for @height.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get height;
+
+  /// No description provided for @enterYourHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your height'**
+  String get enterYourHeight;
+
+  /// No description provided for @heightCm.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (cm)'**
+  String get heightCm;
+
+  /// No description provided for @heightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Height should be between'**
+  String get heightShouldBeBetween;
+
+  /// No description provided for @cm.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get cm;
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weight;
+
+  /// No description provided for @enterYourWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your weight'**
+  String get enterYourWeight;
+
+  /// No description provided for @weightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight should be between'**
+  String get weightShouldBeBetween;
+
+  /// No description provided for @dateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get dateOfBirth;
+
+  /// No description provided for @formSuccessfullySubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Form successfully submitted'**
+  String get formSuccessfullySubmitted;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

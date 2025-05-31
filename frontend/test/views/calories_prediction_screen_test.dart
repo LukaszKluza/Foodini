@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/blocs/user_details/calories_prediction_bloc.dart';
+import 'package:frontend/blocs/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 
 void main() {
-  setUp(() {
-    dietFormBloc = DietFormBloc();
-  });
+  final dietFormBloc = DietFormBloc();
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
-    WidgetTester tester,
-  ) async {
+      WidgetTester tester,) async {
     // Given, When
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -31,16 +31,18 @@ void main() {
     expect(find.text('Advance body parameters'), findsOneWidget);
   });
 
-  testWidgets('Activity enums are displayed after tap', (
-    WidgetTester tester,
-  ) async {
+  testWidgets(
+      'Activity enums are displayed after tap', (WidgetTester tester,) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -63,109 +65,98 @@ void main() {
   });
 
   testWidgets('Stress level enums are displayed after tap', (
-    WidgetTester tester,
-  ) async {
-    // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    // When
-    await tester.tap(find.byKey(Key(AppConfig.stressLevel)));
-    await tester.pumpAndSettle();
-
-    // Then
-    expect(
-      find.text(AppConfig.stressLevelLabels[StressLevel.LOW]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.stressLevelLabels[StressLevel.HIGH]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.stressLevelLabels[StressLevel.EXTREME]!),
-      findsOneWidget,
-    );
-
-    await tester.tap(
-      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
-    );
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('Sleep quality enums are displayed after tap', (
-    WidgetTester tester,
-  ) async {
-    // Given
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const CaloriesPredictionScreen(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    // When
-    await tester.tap(find.byKey(Key(AppConfig.sleepQuality)));
-    await tester.pumpAndSettle();
-
-    // Then
-    expect(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.POOR]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.FAIR]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.EXCELLENT]!),
-      findsOneWidget,
-    );
-
-    await tester.tap(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
-    );
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('Advanced options are displayed after tap', (
-    WidgetTester tester,
-  ) async {
+      WidgetTester tester,) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(Key('stress_level')));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.text('Low'), findsOneWidget);
+    expect(find.text('Medium'), findsOneWidget);
+    expect(find.text('High'), findsOneWidget);
+    expect(find.text('Extreme'), findsOneWidget);
+
+    await tester.tap(find.text('Medium'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Medium'), findsOneWidget);
+  });
+
+  testWidgets('Sleep quality enums are displayed after tap', (
+      WidgetTester tester,) async {
+    // Given
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(Key('sleep_quality')));
+        await tester.pumpAndSettle();
+
+    // Then
+    expect(
+      find.text('Poor'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Fair'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Good'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Excellent'),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.text('Good'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Good'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'Advanced options are displayed after tap', (WidgetTester tester,) async {
+    // Given
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -179,7 +170,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(tester.widget<CheckboxListTile>(checkboxFinder).value, isTrue);
+    expect(tester
+        .widget<CheckboxListTile>(checkboxFinder)
+        .value, isTrue);
     expect(find.textContaining('Muscle percentage'), findsOneWidget);
     expect(find.textContaining('Water percentage'), findsOneWidget);
     expect(
@@ -195,7 +188,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -223,7 +219,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -255,7 +254,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -283,7 +285,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -320,7 +325,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -360,7 +368,10 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: dietFormBloc),
+        home: BlocProvider<DietFormBloc>.value(
+          value: dietFormBloc,
+          child: const CaloriesPredictionScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

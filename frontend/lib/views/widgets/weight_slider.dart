@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/utils/user_details/profile_details_validators.dart';
 
 class WeightSlider extends StatefulWidget {
   final double min;
@@ -19,8 +19,8 @@ class WeightSlider extends StatefulWidget {
     this.max = Constants.maxWeight,
     required this.initialValue,
     required this.onChanged,
-    this.label = AppConfig.dietGoal,
-    this.dialogTitle = AppConfig.enterYourDietGoal,
+    required this.label,
+    required this.dialogTitle,
     this.validator,
   });
 
@@ -55,7 +55,9 @@ class WeightSliderState extends State<WeightSlider> {
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.weightKg,
                 ),
-                validator: widget.validator ?? (value) => validateWeight(value, context),
+                validator:
+                    widget.validator ??
+                    (value) => validateWeight(value, context),
               ),
             ),
             actions: [
@@ -91,7 +93,7 @@ class WeightSliderState extends State<WeightSlider> {
         InkWell(
           onTap: _showWeightDialog,
           child: Text(
-            "${widget.label}: ${_weight.toStringAsFixed(1)} ${AppConfig.kg}",
+            "${widget.label}: ${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
           ),
         ),
         GestureDetector(
@@ -100,7 +102,8 @@ class WeightSliderState extends State<WeightSlider> {
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
-            label: "${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
+            label:
+                "${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
             onChanged: (value) {
               setState(() {
                 _weight = value;

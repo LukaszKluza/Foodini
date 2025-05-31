@@ -255,95 +255,140 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateWeeklyDiet => 'Generate weekly diet';
 
   @override
-  String get dietType_fatLoss => 'Fat Loss';
+  String get dietType_FatLoss => 'Fat Loss';
 
   @override
-  String get dietType_muscleGain => 'Muscle Gain';
+  String get dietType_MuscleGain => 'Muscle Gain';
 
   @override
-  String get dietType_weightMaintenance => 'Weight Maintenance';
+  String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietType_vegetarian => 'Vegetarian';
+  String get dietType_Vegetarian => 'Vegetarian';
 
   @override
-  String get dietType_vegan => 'Vegan';
+  String get dietType_Vegan => 'Vegan';
 
   @override
-  String get dietType_keto => 'Keto';
+  String get dietType_Keto => 'Keto';
 
   @override
-  String get allergy_gluten => 'Gluten';
+  String get allergy_Gluten => 'Gluten';
 
   @override
-  String get allergy_peanuts => 'Peanuts';
+  String get allergy_Peanuts => 'Peanuts';
 
   @override
-  String get allergy_lastose => 'Lactose';
+  String get allergy_Lactose => 'Lactose';
 
   @override
-  String get allergy_fish => 'Fish';
+  String get allergy_Fish => 'Fish';
 
   @override
-  String get allergy_soy => 'Soy';
+  String get allergy_Soy => 'Soy';
 
   @override
-  String get allergy_wheat => 'Wheat';
+  String get allergy_Wheat => 'Wheat';
 
   @override
-  String get allergy_celery => 'Celery';
+  String get allergy_Celery => 'Celery';
 
   @override
-  String get allergy_sulphites => 'Sulphites';
+  String get allergy_Sulphites => 'Sulphites';
 
   @override
-  String get allergy_lupin => 'Lupin';
+  String get allergy_Lupin => 'Lupin';
 
   @override
-  String get dietIntensity_slow => 'Slow';
+  String get dietIntensity_Slow => 'Slow';
 
   @override
-  String get dietIntensity_medium => 'Medium';
+  String get dietIntensity_Medium => 'Medium';
 
   @override
-  String get dietIntensity_fast => 'Fast';
+  String get dietIntensity_Fast => 'Fast';
 
   @override
-  String get activityLevel_veryLow => 'Very Low (1–2 days a week or less)';
+  String get activityLevel_VeryLow => 'Very Low (1–2 days a week or less)';
 
   @override
-  String get activityLevel_light => 'Low (2–3 days a week)';
+  String get activityLevel_Light => 'Low (2–3 days a week)';
 
   @override
-  String get activityLevel_moderate => 'Moderate (3–4 days a week)';
+  String get activityLevel_Moderate => 'Moderate (3–4 days a week)';
 
   @override
-  String get activityLevel_active => 'Active (5–6 days a week)';
+  String get activityLevel_Active => 'Active (5–6 days a week)';
 
   @override
-  String get activityLevel_veryActive => 'Very Active (daily activity)';
+  String get activityLevel_VeryActive => 'Very Active (daily activity)';
 
   @override
-  String get stressLevel_low => 'Low';
+  String get stressLevel_Low => 'Low';
 
   @override
-  String get stressLevel_medium => 'Medium';
+  String get stressLevel_Medium => 'Medium';
 
   @override
-  String get stressLevel_high => 'High';
+  String get stressLevel_High => 'High';
 
   @override
-  String get stressLevel_extreme => 'Extreme';
+  String get stressLevel_Extreme => 'Extreme';
 
   @override
-  String get sleepQuality_poor => 'Poor';
+  String get sleepQuality_Poor => 'Poor';
 
   @override
-  String get sleepQuality_fair => 'Fair';
+  String get sleepQuality_Fair => 'Fair';
 
   @override
-  String get sleepQuality_good => 'Good';
+  String get sleepQuality_Good => 'Good';
 
   @override
-  String get sleepQuality_excelent => 'Excellent';
+  String get sleepQuality_Excellent => 'Excellent';
+
+  @override
+  String get profileDetails => 'Profile Details';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get requiredGender => 'Gender is required';
+
+  @override
+  String get gender_Male => 'Male';
+
+  @override
+  String get gender_Female => 'Female';
+
+  @override
+  String get height => 'Height';
+
+  @override
+  String get enterYourHeight => 'Enter your height';
+
+  @override
+  String get heightCm => 'Height (cm)';
+
+  @override
+  String get heightShouldBeBetween => 'Height should be between';
+
+  @override
+  String get cm => 'cm';
+
+  @override
+  String get weight => 'Weight';
+
+  @override
+  String get enterYourWeight => 'Enter your weight';
+
+  @override
+  String get weightShouldBeBetween => 'Weight should be between';
+
+  @override
+  String get dateOfBirth => 'Date of birth';
+
+  @override
+  String get formSuccessfullySubmitted => 'Form successfully submitted';
 }
