@@ -32,4 +32,4 @@ class User(SQLModel, table=True):
         sa_type=DateTime(timezone=True),
     )
 
-    # details: Optional["UserDetails"] = Relationship(back_populates="user")
+    details: Optional["UserDetails"] = Relationship(back_populates="user")
