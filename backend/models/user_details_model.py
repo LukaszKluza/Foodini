@@ -35,7 +35,7 @@ class UserDetails(SQLModel, table=True):
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
     allergies: List[Allergies] = Field(
-        sa_column=Column(ARRAY(Allergies)), default=[], nullable=False
+        sa_column=Column(ARRAY(Enum(Allergies))), default=[]
     )
     diet_goal_kg: float
     meals_per_day: int = Field(ge=2, le=5)
