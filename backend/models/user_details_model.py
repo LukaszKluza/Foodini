@@ -35,8 +35,8 @@ class UserDetails(SQLModel, table=True):
     gender_id: int = Field(foreign_key="gender.id")
     gender: Optional["Gender"] = Relationship()
 
-    height_cm: float
-    weight_kg: float
+    height_cm: float = Field(ge=50, le=230)
+    weight_kg: float = Field(ge=20, le=160)
     date_of_birth: date
 
     diet_type_id: int = Field(foreign_key="diet_type.id")
@@ -47,7 +47,7 @@ class UserDetails(SQLModel, table=True):
     )
 
     diet_goal_kg: float
-    meals_per_day: int = Field(ge=2, le=5)
+    meals_per_day: int = Field(ge=2, le=6)
 
     diet_intensity_id: int = Field(foreign_key="diet_intensity.id")
     diet_intensity: Optional["DietIntensity"] = Relationship()

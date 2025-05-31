@@ -9,10 +9,12 @@ from starlette.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from backend.settings import config
+from backend.user_details.user_details_router import user_details_router
 from backend.users.user_router import user_router
 
 app = FastAPI()
 app.include_router(user_router)
+app.include_router(user_details_router)
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.ERROR)
 
