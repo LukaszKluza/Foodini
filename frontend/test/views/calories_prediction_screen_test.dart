@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/calories_prediction_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 
-late CaloriesPredictionBloc caloriesPredictionBloc;
-
 void main() {
   setUp(() {
-    caloriesPredictionBloc = CaloriesPredictionBloc();
+    dietFormBloc = DietFormBloc();
   });
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
@@ -20,7 +19,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -41,7 +40,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -63,6 +62,100 @@ void main() {
     expect(find.text('Moderate (3–4 days a week)'), findsOneWidget);
   });
 
+  testWidgets('Stress level enums are displayed after tap', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const CaloriesPredictionScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(Key(AppConfig.stressLevel)));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(
+      find.text(AppConfig.stressLevelLabels[StressLevel.LOW]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.stressLevelLabels[StressLevel.HIGH]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.stressLevelLabels[StressLevel.EXTREME]!),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(AppConfig.stressLevelLabels[StressLevel.MEDIUM]!),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Sleep quality enums are displayed after tap', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<DietFormBloc>.value(
+          value: bloc,
+          child: const CaloriesPredictionScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(Key(AppConfig.sleepQuality)));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.POOR]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.FAIR]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.EXCELLENT]!),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(AppConfig.sleepQualityLabels[SleepQuality.GOOD]!),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('Advanced options are displayed after tap', (
     WidgetTester tester,
   ) async {
@@ -72,7 +165,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -130,7 +223,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -162,7 +255,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -190,7 +283,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -227,7 +320,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();
@@ -267,7 +360,7 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: CaloriesPredictionScreen(bloc: caloriesPredictionBloc),
+        home: CaloriesPredictionScreen(bloc: dietFormBloc),
       ),
     );
     await tester.pumpAndSettle();

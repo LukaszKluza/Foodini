@@ -1,76 +1,68 @@
 import 'package:flutter/material.dart';
-
-import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
+import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 
-class WeightSlider extends StatefulWidget {
+import 'package:frontend/utils/profile_details_validators.dart';
+
+class HeightSlider extends StatefulWidget {
   final double min;
   final double max;
   final double initialValue;
   final ValueChanged<double> onChanged;
-  final String label;
-  final String dialogTitle;
-  final FormFieldValidator<String>? validator;
 
-  const WeightSlider({
+  const HeightSlider({
     super.key,
-    this.min = Constants.minWeight,
-    this.max = Constants.maxWeight,
+    this.min = Constants.minHeight,
+    this.max = Constants.maxHeight,
     required this.initialValue,
     required this.onChanged,
-    this.label = AppConfig.dietGoal,
-    this.dialogTitle = AppConfig.enterYourDietGoal,
-    this.validator,
   });
 
   @override
-  WeightSliderState createState() => WeightSliderState();
+  HeightSliderState createState() => HeightSliderState();
 }
 
-class WeightSliderState extends State<WeightSlider> {
+class HeightSliderState extends State<HeightSlider> {
   final _formKey = GlobalKey<FormState>();
-  late double _weight;
+  late double _height;
 
   @override
   void initState() {
     super.initState();
-    _weight = widget.initialValue;
+    _height = widget.initialValue;
   }
 
-  void _showWeightDialog() {
-    final controller = TextEditingController(text: _weight.toStringAsFixed(1));
+  void _showHeightDialog() {
+    final controller = TextEditingController(text: _height.toStringAsFixed(1));
 
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(widget.dialogTitle),
+            title: Text(AppConfig.enterYourHeight),
             content: Form(
               key: _formKey,
               child: TextFormField(
-                key: Key("weight_kg"),
+                key: Key(AppConfig.heightCm),
                 controller: controller,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.weightKg,
-                ),
-                validator: widget.validator ?? (value) => validateWeight(value, context),
+                decoration: InputDecoration(labelText: AppConfig.heightCm),
+                validator: validateHeight,
               ),
             ),
             actions: [
               ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.cancel),
+                child: Text(AppConfig.cancel),
                 onPressed: () => Navigator.pop(context),
               ),
               ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.ok),
+                child: Text(AppConfig.ok),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final value = double.tryParse(controller.text);
                     if (value != null) {
                       setState(() {
-                        _weight = value;
+                        _height = value;
                       });
                       widget.onChanged(value);
                       Navigator.pop(context);
@@ -89,21 +81,21 @@ class WeightSliderState extends State<WeightSlider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: _showWeightDialog,
+          onTap: _showHeightDialog,
           child: Text(
-            "${widget.label}: ${_weight.toStringAsFixed(1)} ${AppConfig.kg}",
+            "${AppConfig.height}: ${_height.toStringAsFixed(1)} ${AppConfig.cm}",
           ),
         ),
         GestureDetector(
           child: Slider(
-            value: _weight,
+            value: _height,
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
-            label: "${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
+            label: "${_height.toStringAsFixed(1)} ${AppConfig.cm}",
             onChanged: (value) {
               setState(() {
-                _weight = value;
+                _height = value;
               });
               widget.onChanged(value);
             },

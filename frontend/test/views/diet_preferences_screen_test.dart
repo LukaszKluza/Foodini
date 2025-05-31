@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_preferences_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 
-late DietPreferencesBloc dietPreferencesBloc;
-
 void main() {
   setUp(() {
-    dietPreferencesBloc = DietPreferencesBloc();
+    dietFormBloc = DietFormBloc();
   });
 
   testWidgets('Diet preferences screen elements are displayed', (
@@ -18,7 +17,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -41,7 +40,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -49,7 +48,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key('diet_type')));
+    await tester.tap(find.byKey(Key(AppConfig.dietType)));
     await tester.pumpAndSettle();
 
     // Then
@@ -73,7 +72,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -118,7 +117,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -140,7 +139,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -172,7 +171,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
@@ -196,7 +195,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: Locale('en'),
-        home: DietPreferencesScreen(bloc: dietPreferencesBloc),
+        home: DietPreferencesScreen(bloc: dietFormBloc),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),

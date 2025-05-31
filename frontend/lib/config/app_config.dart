@@ -1,67 +1,192 @@
-import 'package:flutter/cupertino.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/allergy.dart';
-import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/sleep_quality.dart';
-import 'package:frontend/models/user_details/diet_intensity.dart';
-import 'package:frontend/models/user_details/stress_level.dart';
-import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/assets/calories_prediction_enums/activity_level.pb.dart';
+import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pb.dart';
+import 'package:frontend/assets/calories_prediction_enums/stress_level.pb.dart';
+import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pb.dart';
+import 'package:frontend/assets/profile_details/gender.pbenum.dart';
+
+import '../assets/diet_preferences_enums/allergy.pbenum.dart';
+import '../assets/diet_preferences_enums/diet_type.pbenum.dart';
 
 class AppConfig {
-  static Map<DietType, String> dietTypeLabels(BuildContext context) => {
-    DietType.fatLoss: AppLocalizations.of(context)!.dietType_fatLoss,
-    DietType.muscleGain: AppLocalizations.of(context)!.dietType_muscleGain,
-    DietType.weightMaintenance:
-        AppLocalizations.of(context)!.dietType_weightMaintenance,
-    DietType.vegetarian: AppLocalizations.of(context)!.dietType_vegetarian,
-    DietType.vegan: AppLocalizations.of(context)!.dietType_vegan,
-    DietType.keto: AppLocalizations.of(context)!.dietType_keto,
+  //Texts
+  static const String foodini = 'Foodini';
+  static const String myAccount = 'My Account';
+  static const String changePassword = 'Change password';
+  static const String deleteAccount = 'Delete account';
+  static const String home = 'Home';
+  static const String homePage = 'Foodini Home Page';
+  static const String welcome = 'Welcome in Foodini';
+
+  static const String requiredName = 'Name is required';
+  static const String provideCorrectName = 'Provide correct name';
+  static const String requiredCountry = 'Select your country';
+  static const String requiredEmail = 'E-mail is required';
+  static const String requiredPassword = 'Password is required';
+  static const String requiredPasswordConfirmation =
+      'Password confirmation is required';
+  static const String samePasswords = 'Passwords must be the same';
+  static const String passwordLengthMustBeBetween =
+      "Password length must be between";
+  static const String passwordComplexityError =
+      'Password must contain letters (capital and lowercase) and numbers';
+  static const String invalidEmail = 'Enter valid e-mail';
+  static const String registration = 'Registration';
+  static const String register = 'Register';
+  static const String account = 'Account';
+  static const String alreadyHaveAnAccount = 'Already have an account? Login';
+  static const String firstName = 'First name';
+  static const String lastName = 'Last name';
+  static const String country = 'Country';
+  static const String email = 'E-mail';
+  static const String password = 'Password';
+  static const String confirmPassword = 'Confirm password';
+  static const String newPassword = 'New password';
+
+  static const String login = 'Login';
+  static const String dontHaveAccount = 'Do not have an account';
+  static const String forgotPassword = 'Forgot my password';
+  static const String successfullyLoggedIn = 'Successfully logged in';
+  static const String successfullyLoggedOut = 'Account logged out successfully';
+  static const String successfullyDeletedAccount =
+      'Account deleted successfully';
+  static const String accountActivatedSuccessfully =
+      'Account has been activated successfully';
+  static const String accountHasNotBeenConfirmed =
+      'Your account has not been confirmed.';
+  static const String successfullyResendEmailVerification =
+      'Email account verification send successfully';
+  static const String sendVerificationEmailAgain =
+      'Send verification email again';
+  static const String accountDeletionInformation =
+      'Are you sure you want to delete your account? This action cannot be undone.';
+  static const String confirmAccountDeletion = 'Confirm Account Deletion';
+  static const String delete = 'Delete';
+  static const String cancel = 'Cancel';
+  static const String ok = 'Ok';
+  static const String loginFailed = 'Login failed';
+  static const String logout = 'Logout';
+  static const String somethingWentWrong = 'Something went wrong';
+  static const String unknownError = 'Unknown error';
+  static const String checkAndConfirmEmailAddress =
+      'Check and confirm your email address';
+  static const String checkEmailAddressToSetNewPassword =
+      'Check your email address to set new password';
+  static const String passwordSuccessfullyChanged =
+      'Password successfully changed';
+  static const String wrongChangePasswordUrl =
+      "You can't access change password form";
+
+  static const String dietPreferences = 'Diet preferences';
+
+  static const String dietType = 'Diet type';
+  static const String requiredDietType = 'Diet type is required';
+  static const Map<DietType, String> dietTypeLabels = {
+    DietType.FAT_LOSS: 'Fat Loss',
+    DietType.MUSCLE_GAIN: 'Muscle Gain',
+    DietType.WEIGHT_MAINTENANCE: 'Weight Maintenance',
+    DietType.VEGETARIAN: 'Vegetarian',
+    DietType.VEGAN: 'Vegan',
+    DietType.KETO: 'Keto',
   };
 
-  static Map<Allergy, String> allergyLabels(BuildContext context) => {
-    Allergy.gluten: AppLocalizations.of(context)!.allergy_gluten,
-    Allergy.peanuts: AppLocalizations.of(context)!.allergy_peanuts,
-    Allergy.lactose: AppLocalizations.of(context)!.allergy_lastose,
-    Allergy.fish: AppLocalizations.of(context)!.allergy_fish,
-    Allergy.soy: AppLocalizations.of(context)!.allergy_soy,
-    Allergy.wheat: AppLocalizations.of(context)!.allergy_wheat,
-    Allergy.celery: AppLocalizations.of(context)!.allergy_celery,
-    Allergy.sulphites: AppLocalizations.of(context)!.allergy_sulphites,
-    Allergy.lupin: AppLocalizations.of(context)!.allergy_lupin,
+  static const String allergies = 'Allergies';
+  static const Map<Allergy, String> allergyLabels = {
+    Allergy.GLUTEN: 'Gluten',
+    Allergy.PEANUTS: 'Peanuts',
+    Allergy.LACTOSE: 'Lactose',
+    Allergy.FISH: 'Fish',
+    Allergy.SOY: 'Soy',
+    Allergy.WHEAT: 'Wheat',
+    Allergy.CELERY: 'Celery',
+    Allergy.SULPHITES: 'Sulphites',
+    Allergy.LUPIN: 'Lupin',
   };
 
-  static Map<DietIntensity, String> dietIntensityLabels(
-    BuildContext context,
-  ) => {
-    DietIntensity.slow: AppLocalizations.of(context)!.dietIntensity_slow,
-    DietIntensity.medium: AppLocalizations.of(context)!.dietIntensity_medium,
-    DietIntensity.fast: AppLocalizations.of(context)!.dietIntensity_fast,
+  static const String dietGoal = 'Diet goal';
+  static const String enterYourDietGoal = 'Enter your diet goal';
+  static const String weightKg = 'Weight (kg)';
+
+  static const String dietGoalShouldBeBetween = 'Diet goal should be between';
+  static const String kg = 'kg';
+
+  static const String mealsPerDay = 'Meals per day';
+
+  static const String dietIntensity = 'Diet intensity';
+  static const String requiredDietIntensity = 'Diet intensity is required';
+  static const Map<DietIntensity, String> dietIntensityLabels = {
+    DietIntensity.SLOW: 'Slow',
+    DietIntensity.MEDIUM: 'Medium',
+    DietIntensity.FAST: 'Fast',
   };
 
-  static Map<ActivityLevel, String> activityLevelLabels(
-    BuildContext context,
-  ) => {
-    ActivityLevel.veryLow: AppLocalizations.of(context)!.activityLevel_veryLow,
-    ActivityLevel.light: AppLocalizations.of(context)!.activityLevel_light,
-    ActivityLevel.moderate:
-        AppLocalizations.of(context)!.activityLevel_moderate,
-    ActivityLevel.active: AppLocalizations.of(context)!.activityLevel_active,
-    ActivityLevel.veryActive:
-        AppLocalizations.of(context)!.activityLevel_veryActive,
+  static const String caloriesPrediction = 'Calories prediction';
+
+  static const String activityLevel = 'Activity level';
+  static const String requiredActivityLevel = 'Activity level is required';
+  static const Map<ActivityLevel, String> activityLevelLabels = {
+    ActivityLevel.VERY_LOW: 'Very Low (1–2 days a week or less)',
+    ActivityLevel.LIGHT: 'Low (2–3 days a week)',
+    ActivityLevel.MODERATE: 'Moderate (3–4 days a week)',
+    ActivityLevel.ACTIVE: 'Active (5–6 days a week)',
+    ActivityLevel.VERY_ACTIVE: 'Very Active (daily activity)',
   };
 
-  static Map<StressLevel, String> stressLevelLabels(BuildContext context) => {
-    StressLevel.low: AppLocalizations.of(context)!.stressLevel_low,
-    StressLevel.medium: AppLocalizations.of(context)!.stressLevel_medium,
-    StressLevel.high: AppLocalizations.of(context)!.stressLevel_high,
-    StressLevel.extreme: AppLocalizations.of(context)!.stressLevel_extreme,
+  static const String stressLevel = 'Stress level';
+  static const String requiredStressLevel = 'Stress level is required';
+  static const Map<StressLevel, String> stressLevelLabels = {
+    StressLevel.LOW: 'Low',
+    StressLevel.MEDIUM: 'Medium',
+    StressLevel.HIGH: 'High',
+    StressLevel.EXTREME: 'Extreme',
   };
 
-  static Map<SleepQuality, String> sleepQualityLabels(BuildContext context) => {
-    SleepQuality.poor: AppLocalizations.of(context)!.sleepQuality_poor,
-    SleepQuality.fair: AppLocalizations.of(context)!.sleepQuality_fair,
-    SleepQuality.good: AppLocalizations.of(context)!.sleepQuality_good,
-    SleepQuality.excellent:
-        AppLocalizations.of(context)!.sleepQuality_excelent,
+  static const String sleepQuality = 'Sleep quality';
+  static const String requiredSleepQuality = 'Sleep quality is required';
+  static const Map<SleepQuality, String> sleepQualityLabels = {
+    SleepQuality.POOR: 'Poor',
+    SleepQuality.FAIR: 'Fair',
+    SleepQuality.GOOD: 'Good',
+    SleepQuality.EXCELLENT: 'Excellent',
   };
+
+  static const String advancedBodyParameters = "Advance body parameters";
+
+  static const String musclePercentage = "Muscle percentage";
+  static const String enterMusclePercentage = 'Enter your muscle %';
+  static const String musclePercentageShouldBeBetween =
+      'Muscle % should be between';
+
+  static const String waterPercentage = "Water percentage";
+  static const String enterWaterPercentage = 'Enter your water percentage';
+  static const String waterPercentageShouldBeBetween = 'Water % should be %';
+
+  static const String fatPercentage = "Fat percentage";
+  static const String enterFatPercentage = 'Enter your fat percentage';
+  static const String fatPercentageShouldBeBetween = 'Fat % should be %';
+
+  static const String generateWeeklyDiet = 'Generate weekly diet';
+
+  static const String profileDetails = "Profile details";
+
+  static const String gender = "Gender";
+  static const String requiredGender = 'Gender is required';
+  static const Map<Gender, String> genderLabels = {
+    Gender.MALE: 'Male',
+    Gender.FEMALE: 'Female',
+  };
+
+  static const String height = "Height";
+  static const String enterYourHeight = "Enter your height";
+  static const String heightCm = 'Height (cm)';
+
+  static const String heightShouldBeBetween = 'Height should be between';
+  static const String cm = 'cm';
+
+  static const String weight = "Weight";
+  static const String enterYourWeight = "Enter your weight";
+  static const String weightShouldBeBetween = "Weight should be between";
+
+  static const String dateOfBirth = "Date of birth";
+
+  static const String formSuccessfullySubmitted = "Form successfully submitted";
 }

@@ -4,6 +4,7 @@ import 'package:frontend/blocs/user_details/diet_preferences_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/events/diet_form_events.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -15,24 +16,10 @@ import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
-  final DietPreferencesBloc? bloc;
-
-  const DietPreferencesScreen({super.key, this.bloc});
+  const DietPreferencesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<DietPreferencesBloc>.value(
-          value: bloc!,
-          child: _buildScaffold(context),
-        )
-        : BlocProvider<DietPreferencesBloc>(
-          create: (_) => DietPreferencesBloc(),
-          child: _buildScaffold(context),
-        );
-  }
-
-  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -65,7 +52,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   List<Allergy>? _selectedAllergies;
   DietIntensity? _selectedDietIntensity;
 
-  //TODO Simone please set the initial value to user's weight
   double _selectedDietGoal = 70;
   int _selectedMealsPerDay = 3;
   String? _message;
@@ -74,6 +60,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   @override
   void initState() {
     super.initState();
+
+    DietFormBloc dietFormBloc = context.read<DietFormBloc>();
+
+    final state = dietFormBloc.state;
+    if (state.weight != null) {
+      _selectedDietGoal = state.weight!;
+    }
   }
 
   @override
@@ -109,6 +102,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           setState(() {
             _selectedDietType = value!;
           });
+          context.read<DietFormBloc>().add(UpdateDietType(value!));
         },
         validator: (value) => validateDietType(value, context),
       ),
@@ -131,14 +125,17 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           setState(() {
             _selectedAllergies = values;
           });
+          context.read<DietFormBloc>().add(UpdateAllergies(values));
         },
       ),
       WeightSlider(
         initialValue: _selectedDietGoal,
+        validator: validateDietGoal,
         onChanged: (value) {
           setState(() {
             _selectedDietGoal = value;
           });
+          context.read<DietFormBloc>().add(UpdateDietGoal(value));
         },
       ),
       Column(
@@ -156,6 +153,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
               selected: <int>{_selectedMealsPerDay},
               onSelectionChanged: (newSelection) {
                 setState(() => _selectedMealsPerDay = newSelection.first);
+                context.read<DietFormBloc>().add(
+                  UpdateMealsPerDay(_selectedMealsPerDay),
+                );
               },
             ),
           ),
@@ -181,6 +181,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           setState(() {
             _selectedDietIntensity = value!;
           });
+          context.read<DietFormBloc>().add(UpdateDietIntensity(value!));
         },
         validator: (value) => validateDietIntensity(value, context),
       ),
