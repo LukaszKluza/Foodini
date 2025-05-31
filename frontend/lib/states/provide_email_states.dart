@@ -1,5 +1,5 @@
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/models/user_response.dart';
+import 'package:frontend/models/user/user_response.dart';
 
 abstract class ProvideEmailState {}
 

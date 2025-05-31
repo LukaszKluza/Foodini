@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({super.key});
@@ -21,7 +21,10 @@ class _LoginScreenState extends State<MainPageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppConfig.foodini, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.foodini,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: Column(
@@ -37,7 +40,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     rectangularButton(
-                      AppConfig.myAccount,
+                      AppLocalizations.of(context)!.myAccount,
                       Icons.person,
                       screenWidth,
                       screenHeight,
@@ -45,7 +48,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
-                      AppConfig.dietPreferences,
+                      AppLocalizations.of(context)!.dietPreferences,
                       Icons.food_bank_rounded,
                       screenWidth,
                       screenHeight,

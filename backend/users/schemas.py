@@ -1,6 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
+
+from pydantic import BaseModel, EmailStr, Field
+
 from .mixins import PasswordValidationMixin, CountryValidationMixin
+from ..models.user_model import Language
 
 
 class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
@@ -13,6 +16,10 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+
+
+class ChangeLanguageRequest(BaseModel):
+    language: Language
 
 
 class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
@@ -41,12 +48,19 @@ class UserLogout(BaseModel):
     email: EmailStr
 
 
-class UserResponse(BaseModel):
+class DefaultResponse(BaseModel):
     id: int = Field(..., gt=0)
     email: EmailStr
 
 
-class LoginUserResponse(UserResponse):
+class UserResponse(DefaultResponse):
+    id: int = Field(..., gt=0)
+    name: str
+    email: EmailStr
+    language: Language
+
+
+class LoginUserResponse(DefaultResponse):
     id: int
     email: EmailStr
     access_token: str

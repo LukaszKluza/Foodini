@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:frontend/models/logged_user.dart';
+import 'package:frontend/models/user/logged_user.dart';
 
 void main() {
   group('LoggedUser', () {

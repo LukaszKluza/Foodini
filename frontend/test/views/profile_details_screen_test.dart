@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/assets/profile_details/gender.pbenum.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
-import 'package:frontend/config/app_config.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/profile_details_screen.dart';
 
 void main() {
@@ -19,15 +18,18 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(Key(AppConfig.gender)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.height)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.weight)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.dateOfBirth)), findsOneWidget);
+    expect(find.byKey(Key('gender')), findsOneWidget);
+    expect(find.byKey(Key('height')), findsOneWidget);
+    expect(find.byKey(Key('weight')), findsOneWidget);
+    expect(find.byKey(Key('date_of_birth')), findsOneWidget);
   });
 
   testWidgets('Gender enums are displayed after tap', (
@@ -40,22 +42,25 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.gender)));
+    await tester.tap(find.byKey(Key('gender')));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.genderLabels[Gender.MALE]!), findsOneWidget);
-    expect(find.text(AppConfig.genderLabels[Gender.FEMALE]!), findsOneWidget);
+    expect(find.text('Male'), findsOneWidget);
+    expect(find.text('Female'), findsOneWidget);
 
-    await tester.tap(find.text(AppConfig.genderLabels[Gender.FEMALE]!));
+    await tester.tap(find.text('Female'));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppConfig.genderLabels[Gender.FEMALE]!), findsOneWidget);
+    expect(find.text('Female'), findsOneWidget);
   });
 
   testWidgets('Height slider works properly', (WidgetTester tester) async {
@@ -66,12 +71,15 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // // When
-    final sliderFinder = find.byKey(Key(AppConfig.height));
+    final sliderFinder = find.byKey(Key('height'));
 
     await tester.drag(sliderFinder, const Offset(15, 0));
     await tester.pumpAndSettle();
@@ -88,12 +96,15 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // // When
-    final sliderFinder = find.byKey(Key(AppConfig.weight));
+    final sliderFinder = find.byKey(Key('weight'));
 
     await tester.drag(sliderFinder, const Offset(15, 0));
     await tester.pumpAndSettle();
@@ -110,23 +121,26 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // // When
-    await tester.tap(find.textContaining(AppConfig.height));
+    await tester.tap(find.textContaining('Height'));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.enterYourHeight), findsOneWidget);
-    expect(find.textContaining(AppConfig.heightCm), findsOneWidget);
-    expect(find.text(AppConfig.ok), findsOneWidget);
-    expect(find.text(AppConfig.cancel), findsOneWidget);
+    expect(find.text('Enter your height'), findsOneWidget);
+    expect(find.textContaining('Height (cm)'), findsOneWidget);
+    expect(find.text('Ok'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
 
-    await tester.enterText(find.byKey(Key(AppConfig.heightCm)), '177');
+    await tester.enterText(find.byKey(Key('height-cm')), '177');
 
-    await tester.tap(find.textContaining(AppConfig.ok));
+    await tester.tap(find.textContaining('Ok'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('177'), findsOneWidget);
@@ -140,23 +154,26 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // // When
-    await tester.tap(find.textContaining(AppConfig.weight));
+    await tester.tap(find.textContaining('Weight'));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.enterYourWeight), findsOneWidget);
-    expect(find.textContaining(AppConfig.weightKg), findsOneWidget);
-    expect(find.text(AppConfig.ok), findsOneWidget);
-    expect(find.text(AppConfig.cancel), findsOneWidget);
+    expect(find.text('Enter your weight'), findsOneWidget);
+    expect(find.textContaining('Weight (kg)'), findsOneWidget);
+    expect(find.text('Ok'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
 
-    await tester.enterText(find.byKey(Key(AppConfig.weightKg)), '77');
+    await tester.enterText(find.byKey(Key('weight_kg')), '77');
 
-    await tester.tap(find.textContaining(AppConfig.ok));
+    await tester.tap(find.textContaining('Ok'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('77'), findsOneWidget);
@@ -170,12 +187,15 @@ void main() {
           value: bloc,
           child: const ProfileDetailsScreen(),
         ),
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
     await tester.pumpAndSettle();
 
     // When
-    final dateField = find.byKey(Key(AppConfig.dateOfBirth));
+    final dateField = find.byKey(Key('date_of_birth'));
     expect(dateField, findsOneWidget);
 
     await tester.tap(dateField);

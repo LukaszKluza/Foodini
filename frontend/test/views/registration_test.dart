@@ -1,19 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-import 'package:frontend/blocs/register_bloc.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/blocs/user/register_bloc.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/register_states.dart';
-import 'package:frontend/views/screens/register_screen.dart';
+import 'package:frontend/views/screens/user/register_screen.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -29,7 +30,16 @@ Widget wrapWithProviders(Widget child) {
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp(
+      home: child,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+    ),
   );
 }
 
@@ -52,7 +62,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.text(AppConfig.registration),findsOneWidget);
+    expect(find.text("Registration"),findsOneWidget);
   });
 
   testWidgets('Register form submits with valid data', (
@@ -60,7 +70,12 @@ void main() {
   ) async {
     when(mockApiClient.register(any)).thenAnswer(
       (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'john@example.com'},
+        data: {
+          'id': 1,
+          'email': 'jan4@example.com',
+          'name': 'Jan',
+          'language': 'pl'
+        },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.register),
       ),
@@ -75,39 +90,49 @@ void main() {
         ),
         GoRoute(
           path: '/login',
-          builder: (context, state) => Scaffold(body: Text(AppConfig.login)),
+          builder: (context, state) => Scaffold(body: Text('Login')),
         ),
       ],
     );
 
     await tester.pumpWidget(
-      wrapWithProviders(MaterialApp.router(routerConfig: goRouter)),
+      MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: authRepository),
+          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+        ],
+        child: MaterialApp.router(
+          routerConfig: goRouter,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(Key(AppConfig.firstName)), 'John');
-    await tester.enterText(find.byKey(Key(AppConfig.lastName)), 'Doe');
+    await tester.enterText(find.byKey(Key("first_name")), 'John');
+    await tester.enterText(find.byKey(Key("last_name")), 'Doe');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(Key(AppConfig.country)));
+    await tester.tap(find.byKey(Key("country")));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Argentina'));
     await tester.pumpAndSettle();
 
     await tester.enterText(
-      find.byKey(Key(AppConfig.email)),
+      find.byKey(Key('e-mail')),
       'john@example.com',
     );
-    await tester.enterText(find.byKey(Key(AppConfig.password)), 'Password1234');
+    await tester.enterText(find.byKey(Key('password')), 'Password1234');
     await tester.enterText(
-      find.byKey(Key(AppConfig.confirmPassword)),
+      find.byKey(Key('confirm_password')),
       'Password1234',
     );
 
     expect(registerBloc.state, isA<RegisterInitial>());
 
-    await tester.tap(find.byKey(Key(AppConfig.register)));
+    await tester.tap(find.byKey(Key('register')));
     await tester.pumpAndSettle();
 
     expect(registerBloc.state, isA<RegisterSuccess>());
@@ -116,7 +141,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.login), findsOneWidget);
+    expect(find.text('Login'), findsOneWidget);
   });
 
   testWidgets('Registration without filled form', (WidgetTester tester) async {
@@ -137,13 +162,13 @@ void main() {
   ) async {
     await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
-    await tester.enterText(find.byKey(Key(AppConfig.password)), 'password123');
+    await tester.enterText(find.byKey(Key('password')), 'password123');
     await tester.enterText(
-      find.byKey(Key(AppConfig.confirmPassword)),
+      find.byKey(Key('confirm_password')),
       '321drowddap',
     );
 
-    await tester.tap(find.byKey(Key(AppConfig.register)));
+    await tester.tap(find.byKey(Key('register')));
     await tester.pumpAndSettle();
 
     expect(find.text('Passwords must be the same'), findsOneWidget);

@@ -1,10 +1,10 @@
-import 'package:frontend/assets/calories_prediction_enums/activity_level.pbenum.dart';
-import 'package:frontend/assets/calories_prediction_enums/sleep_quality.pbenum.dart';
-import 'package:frontend/assets/calories_prediction_enums/stress_level.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_type.pbenum.dart';
-import 'package:frontend/assets/profile_details/gender.pbenum.dart';
+import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/models/user_details/sleep_quality.dart';
+import 'package:frontend/models/user_details/stress_level.dart';
 
 class DietForm {
   final Gender gender;
