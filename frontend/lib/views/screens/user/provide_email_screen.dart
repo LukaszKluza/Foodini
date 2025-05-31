@@ -11,6 +11,7 @@ import 'package:frontend/config/styles.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 class ProvideEmailScreen extends StatelessWidget {
   final ProvideEmailBloc? bloc;
@@ -48,6 +49,12 @@ class ProvideEmailScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: _ProvideEmailForm(),
     );

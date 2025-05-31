@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -14,7 +14,7 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 
 class DietPreferencesScreen extends StatelessWidget {
   const DietPreferencesScreen({super.key});

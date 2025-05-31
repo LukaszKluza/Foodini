@@ -21,7 +21,10 @@ class _LoginScreenState extends State<MainPageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(AppLocalizations.of(context)!.foodini, style: Styles.titleStyle),
+          child: Text(
+            AppLocalizations.of(context)!.foodini,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: Column(

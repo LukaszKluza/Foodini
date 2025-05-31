@@ -126,7 +126,7 @@ class _AccountScreenState extends State<_AccountBody> {
                                 Icons.auto_delete,
                                 screenWidth,
                                 screenHeight,
-                                () => showDeleteAccountDialog(context),
+                                () => _showDeleteAccountDialog(context),
                               ),
                         ),
                       ],
@@ -183,7 +183,7 @@ void _pickLanguage(BuildContext mainContext) {
   );
 }
 
-void showDeleteAccountDialog(BuildContext mainContext) {
+void _showDeleteAccountDialog(BuildContext mainContext) {
   showDialog(
     context: mainContext,
     builder:

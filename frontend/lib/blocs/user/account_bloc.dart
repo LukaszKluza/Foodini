@@ -10,7 +10,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final AuthRepository authRepository;
   final TokenStorageRepository tokenStorageRepository;
 
-  AccountBloc(this.authRepository, this.tokenStorageRepository) : super(AccountInitial()) {
+  AccountBloc(this.authRepository, this.tokenStorageRepository)
+    : super(AccountInitial()) {
     on<AccountLogoutRequested>((event, emit) async {
       emit(AccountActionInProgress());
       try {
@@ -29,8 +30,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountChangeLanguageRequested>((event, emit) async {
       emit(AccountActionInProgress());
       try {
-        var userId = UserStorage().getUserId!;
-        await authRepository.changeLanguage(event.request, userId);
+        var userId = UserStorage().getUserId;
+
+        if (userId != null) {
+          await authRepository.changeLanguage(event.request, userId);
+        }
 
         emit(AccountChangeLanguageSuccess(event.request.language));
       } on ApiException catch (error) {

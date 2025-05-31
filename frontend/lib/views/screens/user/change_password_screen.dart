@@ -14,6 +14,7 @@ import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/blocs/user_details/change_password_bloc.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordBloc? bloc;
@@ -46,6 +47,12 @@ class ChangePasswordScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: _ChangePasswordForm(),
     );

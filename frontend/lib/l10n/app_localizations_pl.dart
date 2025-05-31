@@ -117,7 +117,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get accountActivatedSuccessfully => 'Konto zostało aktywowane';
 
   @override
-  String get accountHasNotBeenConfirmed => 'Twoje konto nie zostało potwierdzone.';
+  String get accountHasNotBeenConfirmed => 'Twoje konto nie zostało aktywowane.';
 
   @override
   String get successfullyResendEmailVerification => 'E-mail weryfikacyjny wysłano pomyślnie';
@@ -192,34 +192,34 @@ class AppLocalizationsPl extends AppLocalizations {
   String get kg => 'kg';
 
   @override
-  String get mealsPerDay => 'Posiłków dziennie';
+  String get mealsPerDay => 'Liczba posiłków dziennie';
 
   @override
   String get dietIntensity => 'Intensywność diety';
 
   @override
-  String get requiredDietIntensity => 'Wymagana intensywność diety';
+  String get requiredDietIntensity => 'Wybierz intensywność diety';
 
   @override
-  String get caloriesPrediction => 'Prognoza kalorii';
+  String get caloriesPrediction => 'Prognoza zapotrzebowania kalorycznego';
 
   @override
   String get activityLevel => 'Poziom aktywności';
 
   @override
-  String get requiredActivityLevel => 'Wymagany poziom aktywności';
+  String get requiredActivityLevel => 'Wskaż poziom swojej aktywności';
 
   @override
   String get stressLevel => 'Poziom stresu';
 
   @override
-  String get requiredStressLevel => 'Wymagany poziom stresu';
+  String get requiredStressLevel => 'Wskaż poziom stresu';
 
   @override
   String get sleepQuality => 'Jakość snu';
 
   @override
-  String get requiredSleepQuality => 'Wymagana jakość snu';
+  String get requiredSleepQuality => 'Wskaż poziom snu';
 
   @override
   String get advancedBodyParameters => 'Zaawansowane parametry ciała';
@@ -228,7 +228,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get musclePercentage => 'Procent mięśni';
 
   @override
-  String get enterMusclePercentage => 'Wprowadź procent mięśni';
+  String get enterMusclePercentage => 'Procent mięśn';
 
   @override
   String get musclePercentageShouldBeBetween => 'Procent mięśni powinien być pomiędzy';
@@ -372,7 +372,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get heightCm => 'Wzrost (cm)';
 
   @override
-  String get heightShouldBeBetween => 'Wzrost powinien mieścić się w przedziale';
+  String get heightShouldBeBetween => 'Wzrost powinien być pomiędzy';
 
   @override
   String get cm => 'cm';
@@ -384,7 +384,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterYourWeight => 'Wprowadź swoją wagę';
 
   @override
-  String get weightShouldBeBetween => 'Waga powinna mieścić się w przedziale';
+  String get weightShouldBeBetween => 'Waga powinna być pomiędzy';
 
   @override
   String get dateOfBirth => 'Data urodzenia';

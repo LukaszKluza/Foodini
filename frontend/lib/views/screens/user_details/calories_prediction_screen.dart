@@ -9,8 +9,8 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
-import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
