@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock, AsyncMock
 import pytest
 from fastapi import HTTPException, status
 
-from backend.models import UserDetails, User, Allergies
+from backend.models import UserDetails, User
 from backend.user_details import enums
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 
@@ -51,7 +51,7 @@ basic_user_details = UserDetails(
     weight_kg=75.0,
     date_of_birth=date(2002, 5, 15),
     diet_type_id=4,
-    allergies=[Allergies(id=1, name="lactose")],
+    allergies=[enums.Allergies.LACTOSE],
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity_id=2,
@@ -71,7 +71,7 @@ updated_user_details = UserDetails(
     weight_kg=75.0,
     date_of_birth=date(2002, 5, 15),
     diet_type_id=4,
-    allergies=[Allergies(id=1, name="lactose")],
+    allergies=[enums.Allergies.LACTOSE],
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity_id=2,
