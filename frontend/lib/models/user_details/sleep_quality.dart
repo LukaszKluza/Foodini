@@ -1,8 +1,8 @@
 enum SleepQuality {
-  poor(0, 'POOR'),
-  fair(1, 'FAIR'),
-  good(2, 'GOOD'),
-  excellent(3, 'EXCELLENT');
+  poor(0, 'poor'),
+  fair(1, 'fair'),
+  good(2, 'good'),
+  excellent(3, 'excellent');
 
   final int value;
   final String nameStr;

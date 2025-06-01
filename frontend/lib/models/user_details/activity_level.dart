@@ -1,9 +1,9 @@
 enum ActivityLevel {
-  veryLow(0, 'VERY_LOW'),
-  light(1, 'LIGHT'),
-  moderate(2, 'MODERATE'),
-  active(3, 'ACTIVE'),
-  veryActive(4, 'VERY_ACTIVE');
+  veryLow(0, 'very_low'),
+  light(1, 'light'),
+  moderate(2, 'moderate'),
+  active(3, 'active'),
+  veryActive(4, 'very_active');
 
   final int value;
   final String nameStr;

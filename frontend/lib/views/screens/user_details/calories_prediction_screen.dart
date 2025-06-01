@@ -205,7 +205,9 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ElevatedButton(
         key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
         onPressed: () {
-          context.read<DietFormBloc>().add(SubmitForm());
+          if (_formKey.currentState!.validate()) {
+            context.read<DietFormBloc>().add(SubmitForm());
+          }
         },
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFB2F2BB)),
         child: Text(AppLocalizations.of(context)!.generateWeeklyDiet),

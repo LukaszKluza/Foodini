@@ -1,9 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/models/user_details/diet_form.dart';
+import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/states/diet_form_states.dart';
 
 class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
-  DietFormBloc() : super(DietFormState()) {
+  final UserDetailsRepository userDetailsRepository;
+
+  DietFormBloc(this.userDetailsRepository) : super(DietFormState()) {
     on<UpdateGender>((event, emit) {
       emit(state.copyWith(gender: event.gender));
     });
@@ -59,14 +64,61 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
   ) async {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
+    print('''
+      DietFormState:
+        gender: ${state.gender}
+        height: ${state.height}
+        weight: ${state.weight}
+        dateOfBirth: ${state.dateOfBirth}
+
+        dietType: ${state.dietType}
+        allergies: ${state.allergies}
+        dietGoal: ${state.dietGoal}
+        mealsPerDay: ${state.mealsPerDay}
+        dietIntensity: ${state.dietIntensity}
+
+        activityLevel: ${state.activityLevel}
+        stressLevel: ${state.stressLevel}
+        sleepQuality: ${state.sleepQuality}
+        musclePercentage: ${state.musclePercentage}
+        fatPercentage: ${state.fatPercentage}
+        waterPercentage: ${state.waterPercentage}
+
+        isSubmitting: ${state.isSubmitting}
+        isSuccess: ${state.isSuccess}
+        errorMessage: ${state.errorMessage}
+      ''');
+
     try {
-      // TODO here add comunication with backend:
+      final dietForm = DietForm(
+        gender: state.gender!,
+        height: state.height!,
+        weight: state.weight!,
+        dateOfBirth: state.dateOfBirth!,
+        dietType: state.dietType!,
+        allergies: state.allergies!,
+        dietGoal: state.dietGoal!,
+        mealsPerDay: state.mealsPerDay!,
+        dietIntensity: state.dietIntensity!,
+        activityLevel: state.activityLevel!,
+        stressLevel: state.stressLevel!,
+        sleepQuality: state.sleepQuality!,
+        musclePercentage: state.musclePercentage,
+        fatPercentage: state.fatPercentage,
+        waterPercentage: state.waterPercentage,
+      );
+
+      var userId = UserStorage().getUserId!;
+      await userDetailsRepository.submitDietForm(dietForm, userId);
+
       emit(state.copyWith(isSubmitting: false, isSuccess: true));
     } catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        errorMessage: 'Submit failed: ${e.toString()}',
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: 'Submit failed: ${e.toString()}',
+        ),
+      );
     }
   }
 }

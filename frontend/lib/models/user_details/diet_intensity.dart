@@ -1,7 +1,7 @@
 enum DietIntensity {
-  slow(0, 'SLOW'),
-  medium(1, 'MEDIUM'),
-  fast(2, 'FAST');
+  slow(0, 'slow'),
+  medium(1, 'normal'),
+  fast(2, 'fast');
 
   final int value;
   final String nameStr;

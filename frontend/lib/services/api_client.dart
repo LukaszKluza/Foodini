@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user/change_password_request.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
@@ -125,4 +126,13 @@ class ApiClient {
       ),
     );
   }
+
+  Future<Response> submitDietForm(DietForm request, int userId) {
+    return _client.post(
+      Endpoints.submitDietForm,
+      data: request.toJson(),
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+}
 }
