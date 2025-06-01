@@ -85,7 +85,7 @@ class HeightSliderState extends State<HeightSlider> {
         InkWell(
           onTap: _showHeightDialog,
           child: Text(
-            "${AppLocalizations.of(context)!.height}: ${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}",
+            '${AppLocalizations.of(context)!.height}: ${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
           ),
         ),
         GestureDetector(
@@ -95,7 +95,7 @@ class HeightSliderState extends State<HeightSlider> {
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
             label:
-                "${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}",
+                '${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
             onChanged: (value) {
               setState(() {
                 _height = value;

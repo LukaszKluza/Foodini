@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 
 class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';

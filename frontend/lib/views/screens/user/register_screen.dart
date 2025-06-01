@@ -13,6 +13,7 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 class RegisterScreen extends StatelessWidget {
   final RegisterBloc? bloc;
@@ -44,6 +45,12 @@ class RegisterScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: _RegisterForm(),
     );
@@ -92,41 +99,51 @@ class _RegisterFormState extends State<_RegisterForm> {
           child: Column(
             children: [
               TextFormField(
-                key: Key("first_name"),
+                key: Key('first_name'),
                 controller: _firstNameController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.firstName),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.firstName,
+                ),
                 validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key("last_name"),
+                key: Key('last_name'),
                 controller: _lastNameController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.lastName),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.lastName,
+                ),
                 validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key("country"),
+                key: Key('country'),
                 readOnly: true,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.country),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.country,
+                ),
                 controller: _countryController,
                 onTap: () => _pickCountry(context),
                 validator: (value) => validateCountry(value, context),
               ),
               TextFormField(
-                key: Key("e-mail"),
+                key: Key('e-mail'),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => validateEmail(value, context),
               ),
               TextFormField(
-                key: Key("password"),
+                key: Key('password'),
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.password,
+                ),
                 obscureText: true,
                 validator: (value) => validatePassword(value, context),
               ),
               TextFormField(
-                key: Key("confirm_password"),
+                key: Key('confirm_password'),
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.confirmPassword,
@@ -136,7 +153,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                     (value) => validateConfirmPassword(
                       value,
                       _passwordController.text,
-                      context
+                      context,
                     ),
               ),
               SizedBox(height: 20),
@@ -156,7 +173,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                     return CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key("register"),
+                      key: Key('register'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = RegisterRequest(
@@ -182,12 +199,12 @@ class _RegisterFormState extends State<_RegisterForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
-                key: Key("already_have_an_account"),
+                key: Key('already_have_an_account'),
                 onPressed: () => context.go('/login'),
                 child: Text(AppLocalizations.of(context)!.alreadyHaveAnAccount),
               ),
               TextButton(
-                key: Key("home"),
+                key: Key('home'),
                 onPressed: () => context.go('/'),
                 child: Text(AppLocalizations.of(context)!.home),
               ),

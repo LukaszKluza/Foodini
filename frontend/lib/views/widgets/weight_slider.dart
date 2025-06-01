@@ -49,7 +49,7 @@ class WeightSliderState extends State<WeightSlider> {
             content: Form(
               key: _formKey,
               child: TextFormField(
-                key: Key("weight_kg"),
+                key: Key('weight_kg'),
                 controller: controller,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
@@ -93,7 +93,7 @@ class WeightSliderState extends State<WeightSlider> {
         InkWell(
           onTap: _showWeightDialog,
           child: Text(
-            "${widget.label}: ${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
+            '${widget.label}: ${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}',
           ),
         ),
         GestureDetector(
@@ -103,7 +103,7 @@ class WeightSliderState extends State<WeightSlider> {
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
             label:
-                "${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}",
+                '${_weight.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}',
             onChanged: (value) {
               setState(() {
                 _weight = value;

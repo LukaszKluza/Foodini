@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -11,10 +12,8 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
-import 'package:frontend/models/user/language.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/account_listener.dart';
-import 'package:frontend/models/user/change_language_request.dart';
 
 class AccountScreen extends StatelessWidget {
   final AccountBloc? bloc;
@@ -115,7 +114,7 @@ class _AccountScreenState extends State<_AccountBody> {
                                 Icons.translate_rounded,
                                 screenWidth,
                                 screenHeight,
-                                () => _pickLanguage(context),
+                                () => LanguagePicker.show(context, isAccountScreen: true),
                               ),
                         ),
                         const SizedBox(height: 16),
@@ -126,7 +125,7 @@ class _AccountScreenState extends State<_AccountBody> {
                                 Icons.auto_delete,
                                 screenWidth,
                                 screenHeight,
-                                () => showDeleteAccountDialog(context),
+                                () => _showDeleteAccountDialog(context),
                               ),
                         ),
                       ],
@@ -150,40 +149,7 @@ class _AccountScreenState extends State<_AccountBody> {
   }
 }
 
-void _pickLanguage(BuildContext mainContext) {
-  final languages = Language.values;
-
-  showModalBottomSheet(
-    context: mainContext,
-    builder: (dialogContext) {
-      return Builder(
-        builder:
-            (innerContext) => ListView.builder(
-              itemCount: languages.length,
-              itemBuilder: (context, index) {
-                final lang = languages[index];
-                return ListTile(
-                  leading: Text(
-                    lang.flag,
-                    style: const TextStyle(fontSize: 32),
-                  ),
-                  title: Text(lang.name, style: const TextStyle(fontSize: 20)),
-                  onTap: () {
-                    final request = ChangeLanguageRequest(language: lang);
-                    mainContext.read<AccountBloc>().add(
-                      AccountChangeLanguageRequested(request),
-                    );
-                    Navigator.of(dialogContext).pop();
-                  },
-                );
-              },
-            ),
-      );
-    },
-  );
-}
-
-void showDeleteAccountDialog(BuildContext mainContext) {
+void _showDeleteAccountDialog(BuildContext mainContext) {
   showDialog(
     context: mainContext,
     builder:

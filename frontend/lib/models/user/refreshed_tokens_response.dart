@@ -8,8 +8,8 @@ class RefreshedTokensResponse {
   });
 
   Map<String, dynamic> toJson() => {
-    "access_token": accessToken,
-    "refresh_token": refreshToken,
+    'access_token': accessToken,
+    'refresh_token': refreshToken,
   };
 
   factory RefreshedTokensResponse.fromJson(Map<String, dynamic> json) {

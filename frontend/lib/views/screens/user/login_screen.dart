@@ -11,10 +11,11 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginBloc? bloc;
@@ -47,6 +48,12 @@ class LoginScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: _LoginForm(),
     );
@@ -74,11 +81,11 @@ class _LoginFormState extends State<_LoginForm> {
       if (pathAndQuery.length > 1) {
         final Map<String, String> queryParameters =
             QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
-        if (queryParameters["status"] != null) {
-          context.read<LoginBloc>().add(InitFromUrl(queryParameters["status"]));
+        if (queryParameters['status'] != null) {
+          context.read<LoginBloc>().add(InitFromUrl(queryParameters['status']));
         }
-        if (queryParameters["email"] != null) {
-          _emailController.text = queryParameters["email"]!;
+        if (queryParameters['email'] != null) {
+          _emailController.text = queryParameters['email']!;
         }
       }
     });
@@ -101,17 +108,20 @@ class _LoginFormState extends State<_LoginForm> {
           child: Column(
             children: [
               TextFormField(
-                key: Key("e-mail"),
+                key: Key('e-mail'),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => validateEmail(value, context),
-
               ),
               TextFormField(
-                key: Key("password"),
+                key: Key('password'),
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.password,
+                ),
                 obscureText: true,
                 validator: (value) => validatePassword(value, context),
               ),
@@ -137,25 +147,31 @@ class _LoginFormState extends State<_LoginForm> {
                         Icon(Icons.warning, color: Colors.orange, size: 36),
                         SizedBox(height: 16),
                         Text(
-                          AppLocalizations.of(context)!.accountHasNotBeenConfirmed,
+                          AppLocalizations.of(
+                            context,
+                          )!.accountHasNotBeenConfirmed,
                           style: Styles.warningStyle,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16),
                         ElevatedButton(
-                          key: Key("send_verification_email_again"),
+                          key: Key('send_verification_email_again'),
                           onPressed: () {
                             context.read<LoginBloc>().add(
                               ResendVerificationEmail(_emailController.text),
                             );
                           },
-                          child: Text(AppLocalizations.of(context)!.sendVerificationEmailAgain),
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.sendVerificationEmailAgain,
+                          ),
                         ),
                       ],
                     );
                   } else {
                     return ElevatedButton(
-                      key: Key("login"),
+                      key: Key('login'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = LoginRequest(
@@ -178,17 +194,17 @@ class _LoginFormState extends State<_LoginForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
-                key: Key("forgot_password"),
+                key: Key('forgot_password'),
                 onPressed: () => context.go('/provide_email'),
                 child: Text(AppLocalizations.of(context)!.forgotPassword),
               ),
               TextButton(
-                key: Key("dont_have_account"),
+                key: Key('dont_have_account'),
                 onPressed: () => context.go('/register'),
                 child: Text(AppLocalizations.of(context)!.dontHaveAccount),
               ),
               TextButton(
-                key: Key("home"),
+                key: Key('home'),
                 onPressed: () => context.go('/'),
                 child: Text(AppLocalizations.of(context)!.home),
               ),

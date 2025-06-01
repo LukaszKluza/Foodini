@@ -1,10 +1,10 @@
-import '../models/user_details/activity_level.dart';
-import '../models/user_details/allergy.dart';
-import '../models/user_details/diet_intensity.dart';
-import '../models/user_details/diet_type.dart';
-import '../models/user_details/gender.dart';
-import '../models/user_details/sleep_quality.dart';
-import '../models/user_details/stress_level.dart';
+import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/models/user_details/sleep_quality.dart';
+import 'package:frontend/models/user_details/stress_level.dart';
 
 class DietFormState {
   final Gender? gender;

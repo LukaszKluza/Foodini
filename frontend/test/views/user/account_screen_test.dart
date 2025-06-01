@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
@@ -18,7 +20,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late AccountBloc accountBloc;
@@ -26,16 +28,21 @@ late MockApiClient mockApiClient;
 late AuthRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
+late MockLanguageCubit mockLanguageCubit;
 
-Widget wrapWithProviders(Widget child) {
+Widget wrapWithProviders(
+  Widget child, {
+  List<Provider<dynamic>> additionalProviders = const [],
+}) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+      ...additionalProviders,
     ],
     child: MaterialApp(
       home: child,
-      locale: Locale('en'),
+      locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
@@ -50,6 +57,7 @@ void main() {
     mockApiClient = MockApiClient();
     userStorage = UserStorage();
     authRepository = AuthRepository(mockApiClient);
+    mockLanguageCubit = MockLanguageCubit();
     mockTokenStorageRepository = MockTokenStorageRepository();
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
     when(mockDio.interceptors).thenReturn(Interceptors());
@@ -263,4 +271,65 @@ void main() {
     expect(find.text('Delete account'), findsOneWidget);
     expect(find.text('Foodini'), findsOneWidget);
   });
+
+  testWidgets(
+    'User can successfully change the language',
+    (WidgetTester tester) async {
+      // Given
+      tester.view.physicalSize = Size(1170, 2532);
+      tester.view.devicePixelRatio = 1.5;
+
+      when(
+        mockApiClient.changeLanguage(
+          argThat(
+            isA<ChangeLanguageRequest>().having(
+              (r) => r.language,
+              'language',
+              Language.pl,
+            ),
+          ),
+          1,
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          data: {
+            'id': 1,
+            'email': 'jan4@example.com',
+            'name': 'Jan',
+            'language': 'pl',
+          },
+          statusCode: 200,
+          requestOptions: RequestOptions(path: Endpoints.changeLanguage),
+        ),
+      );
+
+      UserStorage().setUser(
+        UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+      );
+
+      // When
+      await tester.pumpWidget(
+        wrapWithProviders(
+          AccountScreen(bloc: accountBloc),
+          additionalProviders: [
+            Provider<LanguageCubit>.value(value: mockLanguageCubit),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Change language'));
+      await tester.pump();
+
+      await tester.ensureVisible(find.text("Polski"));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Polski'), findsOneWidget);
+      await tester.tap(find.text("Polski"));
+
+      await tester.pumpAndSettle();
+      expect(accountBloc.state, isA<AccountChangeLanguageSuccess>());
+    },
+  );
 }

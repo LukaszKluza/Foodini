@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
+import 'package:frontend/foodini.dart';
 
 class LoginListenerHelper {
   static void onLoginListener({
@@ -19,6 +21,10 @@ class LoginListenerHelper {
         setMessage(state.getMessage!(context));
         setMessageStyle(Styles.successStyle);
       });
+
+      var newLanguage = state.userResponse.language.code;
+      context.read<LanguageCubit>().change(Locale(newLanguage.toLowerCase()));
+
       Future.delayed(
         const Duration(milliseconds: Constants.redirectionDelay),
         () {
@@ -37,7 +43,9 @@ class LoginListenerHelper {
       });
     } else if (state is LoginFailure) {
       setState(() {
-        setMessage(ExceptionConverter.formatErrorMessage(state.error.data, context));
+        setMessage(
+          ExceptionConverter.formatErrorMessage(state.error.data, context),
+        );
         setMessageStyle(Styles.errorStyle);
       });
     }

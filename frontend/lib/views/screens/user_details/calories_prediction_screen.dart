@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/listeners/calories_prediction.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
-import 'package:frontend/events/diet_form_events.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
@@ -221,19 +222,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       padding: EdgeInsets.all(35.0),
       child: BlocListener<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          if (state.isSuccess == true) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context)!.formSuccessfullySubmitted,
-                ),
-              ),
-            );
-          } else if (state.errorMessage != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-          }
+          CaloriesPredictionListenerHelper.handle(
+            context: context,
+            state: state,
+            successMessageBuilder:
+                (context) =>
+                    AppLocalizations.of(context)!.formSuccessfullySubmitted,
+          );
         },
         child: Form(
           key: _formKey,

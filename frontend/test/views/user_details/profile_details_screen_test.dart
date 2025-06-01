@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/views/screens/profile_details_screen.dart';
+import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 
 void main() {
   final bloc = DietFormBloc();

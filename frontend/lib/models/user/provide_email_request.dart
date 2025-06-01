@@ -8,7 +8,7 @@ class ProvideEmailRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "email": email,
-    "id": id,
+    'email': email,
+    'id': id,
   };
 }

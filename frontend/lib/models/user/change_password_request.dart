@@ -12,9 +12,9 @@ class ChangePasswordRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "email": email,
-    "password": newPassword,
-    "token": token,
-    "id": id,
+    'email': email,
+    'password': newPassword,
+    'token': token,
+    'id': id,
   };
 }

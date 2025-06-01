@@ -14,6 +14,7 @@ import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/blocs/user_details/change_password_bloc.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordBloc? bloc;
@@ -46,6 +47,12 @@ class ChangePasswordScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: _ChangePasswordForm(),
     );
@@ -79,16 +86,16 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
         final Map<String, String> queryParameters =
             QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
 
-        final token = queryParameters["token"];
+        final token = queryParameters['token'];
         if (token != null && token.isNotEmpty) {
           setState(() {
             _token = token;
           });
         } else {
-          router.go("/provide_email");
+          router.go('/provide_email');
         }
       } else {
-        router.go("/provide_email");
+        router.go('/provide_email');
       }
     });
   }
@@ -104,7 +111,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                key: Key("e-mail"),
+                key: Key('e-mail'),
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
@@ -113,7 +120,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 validator: (value) => validateEmail(value, context),
               ),
               TextFormField(
-                key: Key("new_password"),
+                key: Key('new_password'),
                 controller: _newPasswordController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.newPassword,
@@ -122,7 +129,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                 validator: (value) => validatePassword(value, context),
               ),
               TextFormField(
-                key: Key("confirm_password"),
+                key: Key('confirm_password'),
                 controller: _confirmNewPasswordController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.confirmPassword,
@@ -152,7 +159,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                     return const CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key("change_password"),
+                      key: Key('change_password'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = ChangePasswordRequest(

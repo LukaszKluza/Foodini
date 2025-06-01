@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,6 +18,12 @@ class HomeScreen extends StatelessWidget {
             style: Styles.titleStyle,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.translate_rounded),
+            onPressed: () => LanguagePicker.show(context),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
