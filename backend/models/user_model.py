@@ -2,7 +2,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional, TYPE_CHECKING
 
-from pydantic import field_validator
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import DateTime
 from backend.settings import config
@@ -32,4 +31,4 @@ class User(SQLModel, table=True):
         sa_type=DateTime(timezone=True),
     )
 
-    # details: Optional["UserDetails"] = Relationship(back_populates="user")
+    details: Optional["UserDetails"] = Relationship(back_populates="user")

@@ -136,7 +136,7 @@ class UserService:
         self,
         token_payload: dict,
         user_id_from_request: int,
-        change_change_request: ChangeLanguageRequest,
+        change_language_request: ChangeLanguageRequest,
     ):
         user_id_from_token = token_payload["id"]
         self.user_validators.check_user_permission(
@@ -145,9 +145,8 @@ class UserService:
         user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
 
         temp = await self.user_repository.change_language(
-            user_.id, change_change_request.language
+            user_.id, change_language_request.language
         )
-        print(temp)
         return temp
 
     async def delete(self, token_payload: dict, user_id_from_request: int):
