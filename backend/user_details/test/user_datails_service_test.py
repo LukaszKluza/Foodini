@@ -223,30 +223,34 @@ async def test_add_user_details_when_details_exist(
 
 
 @pytest.mark.asyncio
-async def test_update_user_details_when_not_exist(
+async def test_update_user_details_when_details_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
+    mock_user_details_validators,
 ):
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.get_user_details_by_id.return_value = None
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
+        basic_user_details
+    )
+    mock_user_details_repository.update_user_details.return_value = updated_user_details
 
     # When
-    with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.update_user_details(
-            token_payload, user_details_update, 1
-        )
+    result = await user_details_service.update_user_details(
+        token_payload, user_details_update, 1
+    )
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "User details do not exist"
-    mock_user_details_repository.update_user_details.assert_not_called()
+    assert result == updated_user_details
+    mock_user_details_repository.update_user_details.assert_called_once_with(
+        "1", user_details_update
+    )
 
 
 @pytest.mark.asyncio
-async def test_update_user_details_when_not_exist(
+async def test_update_user_details_when_details_not_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
