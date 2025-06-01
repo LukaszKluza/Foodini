@@ -21,7 +21,9 @@ class UserGateway:
     async def ensure_user_exists_by_id(self, user_id: int) -> User:
         return await self.user_validation_service.ensure_user_exists_by_id(user_id)
 
-    def check_user_permission(self, user_param_from_token, user_param_from_request) -> None:
+    def check_user_permission(
+        self, user_param_from_token, user_param_from_request
+    ) -> None:
         self.user_validation_service.check_user_permission(
             user_param_from_token, user_param_from_request
         )

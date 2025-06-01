@@ -31,6 +31,7 @@ def mock_user_gateway():
     gateway.ensure_user_exists_by_id = AsyncMock()
     return gateway
 
+
 @pytest.fixture
 def mock_user_details_validators():
     validators = MagicMock()
@@ -40,14 +41,12 @@ def mock_user_details_validators():
 
 @pytest.fixture
 def user_details_service(
-    mock_user_details_repository,
-    mock_user_gateway,
-    mock_user_details_validators
+    mock_user_details_repository, mock_user_gateway, mock_user_details_validators
 ):
     return UserDetailsService(
         user_details_repository=mock_user_details_repository,
         user_gateway=mock_user_gateway,
-        user_details_validators=mock_user_details_validators
+        user_details_validators=mock_user_details_validators,
     )
 
 
@@ -126,7 +125,8 @@ async def test_get_user_details_when_user_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
-    mock_user_details_validators):
+    mock_user_details_validators,
+):
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
@@ -176,9 +176,15 @@ async def test_add_user_details_when_details_not_exist(
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = None
-    mock_user_details_repository.add_user_details = AsyncMock(return_value=basic_user_details)
-    user_details_service.get_user_details_by_user_id = AsyncMock(side_effect=HTTPException(status_code=404, detail="Not found"))
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
+        None
+    )
+    mock_user_details_repository.add_user_details = AsyncMock(
+        return_value=basic_user_details
+    )
+    user_details_service.get_user_details_by_user_id = AsyncMock(
+        side_effect=HTTPException(status_code=404, detail="Not found")
+    )
 
     # When
     response = await user_details_service.add_user_details(
@@ -251,8 +257,8 @@ async def test_update_user_details_when_not_exist(
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
 
     # Tu mockujemy metodę, która rzuca wyjątek
-    mock_user_details_validators.ensure_user_details_exist_by_user_id.side_effect = HTTPException(
-        status_code=404, detail="User details not found"
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.side_effect = (
+        HTTPException(status_code=404, detail="User details not found")
     )
 
     # When / Then

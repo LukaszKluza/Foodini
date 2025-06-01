@@ -2,8 +2,11 @@ import pytest
 from fastapi import HTTPException, status
 from unittest.mock import AsyncMock
 
-from backend.user_details.service.user_details_validation_service import UserDetailsValidationService
+from backend.user_details.service.user_details_validation_service import (
+    UserDetailsValidationService,
+)
 from backend.models import UserDetails
+
 
 @pytest.mark.asyncio
 async def test_ensure_user_details_exist_by_user_id_when_exists():
@@ -16,7 +19,7 @@ async def test_ensure_user_details_exist_by_user_id_when_exists():
         weight=75,
         muscle_percentage=40.0,
         fat_percentage=18.0,
-        water_percentage=50.0
+        water_percentage=50.0,
     )
     mock_repo.get_user_details_by_user_id.return_value = expected_user_details
     validator = UserDetailsValidationService(user_details_repository=mock_repo)
