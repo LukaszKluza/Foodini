@@ -147,7 +147,6 @@ class UserService:
         temp = await self.user_repository.change_language(
             user_.id, change_change_request.language
         )
-        print(temp)
         return temp
 
     async def delete(self, token_payload: dict, user_id_from_request: int):

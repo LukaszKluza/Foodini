@@ -31,7 +31,6 @@ class UserDetailsService:
         )
         await self.user_gateway.ensure_user_exists_by_id(user_id_from_token)
         await self.user_details_validators.ensure_user_details_exist_by_user_id(user_id_from_token)
-
         return await self.user_details_repository.get_user_details_by_user_id(
             user_id_from_token
         )
@@ -40,23 +39,20 @@ class UserDetailsService:
         self, token_payload: dict, user_details_data: UserDetailsCreate, user_id_from_request: int
     ):
         user_id_from_token = token_payload["id"]
-        print("111")
         self.user_gateway.check_user_permission(
             user_id_from_token, user_id_from_request
         )
-        print("222")
         await self.user_gateway.ensure_user_exists_by_id(user_id_from_token)
-        print("333")
 
         user_details_data.user_id = user_id_from_token
 
-        # if await self.get_user_details_by_user_id(token_payload, user_id_from_request):
-        #     return await self.update_user_details(
-        #         token_payload, UserDetailsUpdate.map(user_details_data), user_id_from_request
-        #     )
-        print("444")
-
-        return await self.user_details_repository.add_user_details(user_details_data)
+        try:
+            await self.get_user_details_by_user_id(token_payload, user_id_from_request)
+            return await self.update_user_details(
+                token_payload, UserDetailsUpdate.map(user_details_data), user_id_from_request
+            )
+        except HTTPException:
+            return await self.user_details_repository.add_user_details(user_details_data)
 
     async def update_user_details(
         self, token_payload: dict, user_details_data: UserDetailsUpdate, user_id_from_request: int
@@ -66,12 +62,8 @@ class UserDetailsService:
             user_id_from_token, user_id_from_request
         )
         await self.user_gateway.ensure_user_exists_by_id(user_id_from_token)
+        await self.get_user_details_by_user_id(token_payload, user_id_from_request)
 
-        if await self.get_user_details_by_user_id(token_payload, user_id_from_request) is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User details do not exist",
-            )
         return await self.user_details_repository.update_user_details(
             user_id_from_token, user_details_data
         )

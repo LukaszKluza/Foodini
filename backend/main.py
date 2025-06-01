@@ -37,8 +37,6 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
             {"request": request, "redirect_path": config.FRONTEND_URL},
             status_code=404,
         )
-    print("CHUJ")
-    print(exc)
     return await http_exception_handler(request, exc)
 
 
