@@ -13,7 +13,7 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/views/screens/user/provide_email_screen.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
@@ -68,6 +68,7 @@ void main() {
 
     expect(find.byKey(Key('e-mail')), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
   });

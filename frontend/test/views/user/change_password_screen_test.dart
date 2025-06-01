@@ -11,7 +11,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
@@ -60,6 +60,7 @@ void main() {
     expect(find.byKey(Key('confirm_password')), findsOneWidget);
     expect(find.byKey(Key('change_password')), findsOneWidget);
     expect(find.text("Change password"), findsNWidgets(2));
+    expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
 
     expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
   });

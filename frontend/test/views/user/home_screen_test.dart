@@ -19,5 +19,6 @@ void main() {
     expect(find.text('Login'), findsOneWidget);
     expect(find.text('Register'), findsOneWidget);
     expect(find.text('Welcome in Foodini'), findsOneWidget);
+    expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
   });
 }
