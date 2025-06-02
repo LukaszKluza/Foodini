@@ -8,9 +8,9 @@ import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
-abstract class DietFormState{} 
+abstract class DietFormState {}
 
-class DietFormSubmit extends DietFormState{
+class DietFormSubmit extends DietFormState {
   final Gender? gender;
   final double? height;
   final double? weight;
@@ -97,9 +97,9 @@ class DietFormSubmit extends DietFormState{
   }
 }
 
-class DietFormSubmitSuccess extends DietFormState{}
+class DietFormSubmitSuccess extends DietFormState {}
 
-class DietFormSubmitFailure extends DietFormState{
+class DietFormSubmitFailure extends DietFormState {
   final String Function(BuildContext)? getMessage;
   final ApiException? error;
 

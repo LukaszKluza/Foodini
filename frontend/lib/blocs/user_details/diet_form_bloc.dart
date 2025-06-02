@@ -118,7 +118,8 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     if (requiredFields.any((field) => field == null)) {
       emit(
         DietFormSubmitFailure(
-          getMessage: (context) => AppLocalizations.of(context)!.fillAllNecessaryFields,
+          getMessage:
+              (context) => AppLocalizations.of(context)!.fillAllNecessaryFields,
         ),
       );
       return;

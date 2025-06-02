@@ -32,10 +32,6 @@ async def add_user_details(
     user_details_service: UserDetailsService = Depends(),
     token_payload: dict = Depends(AuthorizationService.verify_access_token),
 ):
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="User details not found",
-    )
     return await user_details_service.add_user_details(
         token_payload, user_details, user_id
     )

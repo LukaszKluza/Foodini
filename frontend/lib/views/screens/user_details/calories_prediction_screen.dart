@@ -36,13 +36,15 @@ class _CaloriesPredictionForm extends StatefulWidget {
   const _CaloriesPredictionForm();
 
   @override
-  State<_CaloriesPredictionForm> createState() => _CaloriesPredictionFormState();
+  State<_CaloriesPredictionForm> createState() =>
+      _CaloriesPredictionFormState();
 }
 
 class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   final _formKey = GlobalKey<FormState>();
   bool _isChecked = false;
-  final TextEditingController _activityLevelController = TextEditingController();
+  final TextEditingController _activityLevelController =
+      TextEditingController();
   final TextEditingController _stressLevelController = TextEditingController();
   final TextEditingController _sleepQualityController = TextEditingController();
 
@@ -72,15 +74,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.activityLevel,
         ),
-        items: ActivityLevel.values.map((activityLevel) {
-          return DropdownMenuItem<ActivityLevel>(
-            value: activityLevel,
-            child: Text(
-              AppConfig.activityLevelLabels(context)[activityLevel]!,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList(),
+        items:
+            ActivityLevel.values.map((activityLevel) {
+              return DropdownMenuItem<ActivityLevel>(
+                value: activityLevel,
+                child: Text(
+                  AppConfig.activityLevelLabels(context)[activityLevel]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedActivityLevel = value!;
@@ -95,15 +98,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.stressLevel,
         ),
-        items: StressLevel.values.map((stressLevel) {
-          return DropdownMenuItem<StressLevel>(
-            value: stressLevel,
-            child: Text(
-              AppConfig.stressLevelLabels(context)[stressLevel]!,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList(),
+        items:
+            StressLevel.values.map((stressLevel) {
+              return DropdownMenuItem<StressLevel>(
+                value: stressLevel,
+                child: Text(
+                  AppConfig.stressLevelLabels(context)[stressLevel]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedStressLevel = value!;
@@ -118,15 +122,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
         ),
-        items: SleepQuality.values.map((sleepQuality) {
-          return DropdownMenuItem<SleepQuality>(
-            value: sleepQuality,
-            child: Text(
-              AppConfig.sleepQualityLabels(context)[sleepQuality]!,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList(),
+        items:
+            SleepQuality.values.map((sleepQuality) {
+              return DropdownMenuItem<SleepQuality>(
+                value: sleepQuality,
+                child: Text(
+                  AppConfig.sleepQualityLabels(context)[sleepQuality]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedSleepQuality = value!;

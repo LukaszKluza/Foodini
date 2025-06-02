@@ -37,15 +37,16 @@ class DietFormListenerHelper {
       );
     } else if (state is DietFormSubmitFailure) {
       String message = AppLocalizations.of(context)!.unknownError;
-      if (state.error != null){
-        message = ExceptionConverter.formatErrorMessage(state.error?.data, context);
-      } else if(state.getMessage != null){
-          message = state.getMessage!(context);
+      if (state.error != null) {
+        message = ExceptionConverter.formatErrorMessage(
+          state.error?.data,
+          context,
+        );
+      } else if (state.getMessage != null) {
+        message = state.getMessage!(context);
       }
       setState(() {
-        setMessage(
-          message
-        );
+        setMessage(message);
       });
 
       if (mounted) {
