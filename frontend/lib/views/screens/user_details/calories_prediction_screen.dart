@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -12,6 +12,7 @@ import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
+import 'package:provider/provider.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
@@ -33,16 +34,16 @@ class CaloriesPredictionScreen extends StatelessWidget {
 }
 
 class _CaloriesPredictionForm extends StatefulWidget {
+  const _CaloriesPredictionForm();
+
   @override
-  State<_CaloriesPredictionForm> createState() =>
-      _CaloriesPredictionFormState();
+  State<_CaloriesPredictionForm> createState() => _CaloriesPredictionFormState();
 }
 
 class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   final _formKey = GlobalKey<FormState>();
   bool _isChecked = false;
-  final TextEditingController _activityLevelController =
-      TextEditingController();
+  final TextEditingController _activityLevelController = TextEditingController();
   final TextEditingController _stressLevelController = TextEditingController();
   final TextEditingController _sleepQualityController = TextEditingController();
 
@@ -54,11 +55,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   double _selectedFatPercentage = 15.0;
   String? _message;
   final TextStyle _messageStyle = Styles.errorStyle;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -77,16 +73,15 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.activityLevel,
         ),
-        items:
-            ActivityLevel.values.map((activityLevel) {
-              return DropdownMenuItem<ActivityLevel>(
-                value: activityLevel,
-                child: Text(
-                  AppConfig.activityLevelLabels(context)[activityLevel]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: ActivityLevel.values.map((activityLevel) {
+          return DropdownMenuItem<ActivityLevel>(
+            value: activityLevel,
+            child: Text(
+              AppConfig.activityLevelLabels(context)[activityLevel]!,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedActivityLevel = value!;
@@ -101,16 +96,15 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.stressLevel,
         ),
-        items:
-            StressLevel.values.map((stressLevel) {
-              return DropdownMenuItem<StressLevel>(
-                value: stressLevel,
-                child: Text(
-                  AppConfig.stressLevelLabels(context)[stressLevel]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: StressLevel.values.map((stressLevel) {
+          return DropdownMenuItem<StressLevel>(
+            value: stressLevel,
+            child: Text(
+              AppConfig.stressLevelLabels(context)[stressLevel]!,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedStressLevel = value!;
@@ -125,16 +119,15 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
         ),
-        items:
-            SleepQuality.values.map((sleepQuality) {
-              return DropdownMenuItem<SleepQuality>(
-                value: sleepQuality,
-                child: Text(
-                  AppConfig.sleepQualityLabels(context)[sleepQuality]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: SleepQuality.values.map((sleepQuality) {
+          return DropdownMenuItem<SleepQuality>(
+            value: sleepQuality,
+            child: Text(
+              AppConfig.sleepQualityLabels(context)[sleepQuality]!,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedSleepQuality = value!;
@@ -202,28 +195,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         ),
       ],
       SizedBox(height: 16),
-      ElevatedButton(
-        key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            context.read<DietFormBloc>().add(SubmitForm());
-          }
-        },
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFB2F2BB)),
-        child: Text(AppLocalizations.of(context)!.generateWeeklyDiet),
-      ),
-      if (_message != null)
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(_message!, style: _messageStyle),
-        ),
     ];
 
     return Padding(
       padding: EdgeInsets.all(35.0),
-      child: BlocListener<DietFormBloc, DietFormState>(
+      child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          if (state.isSuccess == true) {
+          if (state is DietFormSubmitSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -231,22 +209,48 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                 ),
               ),
             );
-          } else if (state.errorMessage != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          } else if (state is DietFormSubmitFailure) {
+            setState(() {
+              _message = state.error.toString();
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error.toString())),
+            );
           }
         },
-        child: Form(
-          key: _formKey,
-          child: ListView.separated(
-            key: Key('calories_prediction'),
-            shrinkWrap: true,
-            itemCount: fields.length,
-            separatorBuilder: (_, _) => SizedBox(height: 20),
-            itemBuilder: (_, index) => fields[index],
-          ),
-        ),
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                ...fields,
+                if (state is DietFormSubmit && state.isSubmitting)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  ElevatedButton(
+                    key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<DietFormBloc>().add(SubmitForm());
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFB2F2BB),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.generateWeeklyDiet,
+                    ),
+                  ),
+                if (_message != null)
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(_message!, style: _messageStyle),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

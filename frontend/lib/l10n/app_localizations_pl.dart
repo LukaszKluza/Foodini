@@ -48,8 +48,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredPassword => 'Hasło jest wymagane';
 
   @override
-  String get requiredPasswordConfirmation =>
-      'Potwierdzenie hasła jest wymagane';
+  String get requiredPasswordConfirmation => 'Potwierdzenie hasła jest wymagane';
 
   @override
   String get samePasswords => 'Hasła muszą być takie same';
@@ -58,8 +57,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get passwordLengthMustBeBetween => 'Długość hasła musi być między';
 
   @override
-  String get passwordComplexityError =>
-      'Hasło musi zawierać wielkie i małe litery oraz cyfry';
+  String get passwordComplexityError => 'Hasło musi zawierać wielkie i małe litery oraz cyfry';
 
   @override
   String get invalidEmail => 'Podaj poprawny adres e-mail';
@@ -119,20 +117,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get accountActivatedSuccessfully => 'Konto zostało aktywowane';
 
   @override
-  String get accountHasNotBeenConfirmed =>
-      'Twoje konto nie zostało aktywowane.';
+  String get accountHasNotBeenConfirmed => 'Twoje konto nie zostało aktywowane.';
 
   @override
-  String get successfullyResendEmailVerification =>
-      'E-mail weryfikacyjny wysłano pomyślnie';
+  String get successfullyResendEmailVerification => 'E-mail weryfikacyjny wysłano pomyślnie';
 
   @override
-  String get sendVerificationEmailAgain =>
-      'Wyślij e-mail weryfikacyjny ponownie';
+  String get sendVerificationEmailAgain => 'Wyślij e-mail weryfikacyjny ponownie';
 
   @override
-  String get accountDeletionInformation =>
-      'Czy na pewno chcesz usunąć konto? Tej operacji nie można cofnąć.';
+  String get accountDeletionInformation => 'Czy na pewno chcesz usunąć konto? Tej operacji nie można cofnąć.';
 
   @override
   String get confirmAccountDeletion => 'Potwierdź usunięcie konta';
@@ -162,15 +156,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get checkAndConfirmEmailAddress => 'Sprawdź i potwierdź adres e-mail';
 
   @override
-  String get checkEmailAddressToSetNewPassword =>
-      'Sprawdź e-mail, aby ustawić nowe hasło';
+  String get checkEmailAddressToSetNewPassword => 'Sprawdź e-mail, aby ustawić nowe hasło';
 
   @override
   String get passwordSuccessfullyChanged => 'Hasło zostało zmienione';
 
   @override
-  String get wrongChangePasswordUrl =>
-      'Nie możesz otworzyć formularza zmiany hasła';
+  String get wrongChangePasswordUrl => 'Nie możesz otworzyć formularza zmiany hasła';
 
   @override
   String get dietPreferences => 'Preferencje dietetyczne';
@@ -239,8 +231,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterMusclePercentage => 'Procent mięśn';
 
   @override
-  String get musclePercentageShouldBeBetween =>
-      'Procent mięśni powinien być pomiędzy';
+  String get musclePercentageShouldBeBetween => 'Procent mięśni powinien być pomiędzy';
 
   @override
   String get waterPercentage => 'Procent wody';
@@ -318,8 +309,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietIntensity_Fast => 'Szybka';
 
   @override
-  String get activityLevel_VeryLow =>
-      'Bardzo niska (1–2 dni w tygodniu lub mniej)';
+  String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
 
   @override
   String get activityLevel_Light => 'Niska (2–3 dni w tygodniu)';
