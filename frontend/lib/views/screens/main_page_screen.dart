@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,14 +40,17 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.hey,
-                  style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
+                  style: Styles.kaushanScriptStyle(dynamicFontSize),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
+                padding: EdgeInsets.only(
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                ),
                 child: Text(
                   UserStorage().getName!,
-                  style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
+                  style: Styles.kaushanScriptStyle(dynamicFontSize),
                 ),
               ),
               const SizedBox(height: 24),
@@ -64,7 +68,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.person,
                             screenWidth,
                             screenHeight,
-                            () => context.go('/account'),
+                            () => context.push('/account'),
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
@@ -72,7 +76,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.food_bank_rounded,
                             screenWidth,
                             screenHeight,
-                            () => context.go('/profile_details'),
+                            () => context.push('/profile_details'),
                           ),
                         ],
                       ),

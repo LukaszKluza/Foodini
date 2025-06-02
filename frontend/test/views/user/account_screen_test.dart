@@ -65,6 +65,15 @@ void main() {
 
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {
     // Given
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+
     await tester.pumpWidget(
       wrapWithProviders(AccountScreen(bloc: accountBloc)),
     );
@@ -76,7 +85,7 @@ void main() {
     expect(find.text('Change password'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
+    expect(find.text('Account'), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
@@ -92,6 +101,15 @@ void main() {
               (context, state) => const Scaffold(key: Key('change_password')),
         ),
       ],
+    );
+
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     // When
@@ -121,6 +139,9 @@ void main() {
 
   testWidgets('User can log out successfully', (WidgetTester tester) async {
     // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
+
     when(mockApiClient.logout(1)).thenAnswer(
       (_) async => Response<dynamic>(
         statusCode: 204,
@@ -128,8 +149,13 @@ void main() {
       ),
     );
 
-    UserStorage().setUser(
-      UserResponse(id: 1, name: "Jan", language: Language.en, email: 'jan4@example.com'),
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     final goRouter = GoRouter(
@@ -191,8 +217,13 @@ void main() {
       ),
     );
 
-    UserStorage().setUser(
-      UserResponse(id: 1, name: "Jan", language: Language.pl, email: 'jan4@example.com'),
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     final goRouter = GoRouter(
@@ -248,9 +279,19 @@ void main() {
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+
     await tester.pumpWidget(
       wrapWithProviders(AccountScreen(bloc: accountBloc)),
     );
+  
 
     // When
     await tester.pumpAndSettle();
@@ -269,67 +310,70 @@ void main() {
     verifyZeroInteractions(mockTokenStorageRepository);
     expect(accountBloc.state, isA<AccountInitial>());
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
   });
 
-  testWidgets(
-    'User can successfully change the language',
-    (WidgetTester tester) async {
-      // Given
-      tester.view.physicalSize = Size(1170, 2532);
-      tester.view.devicePixelRatio = 1.5;
+  testWidgets('User can successfully change the language', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
 
-      when(
-        mockApiClient.changeLanguage(
-          argThat(
-            isA<ChangeLanguageRequest>().having(
-              (r) => r.language,
-              'language',
-              Language.pl,
-            ),
+    when(
+      mockApiClient.changeLanguage(
+        argThat(
+          isA<ChangeLanguageRequest>().having(
+            (r) => r.language,
+            'language',
+            Language.pl,
           ),
-          1,
         ),
-      ).thenAnswer(
-        (_) async => Response<dynamic>(
-          data: {
-            'id': 1,
-            'email': 'jan4@example.com',
-            'name': 'Jan',
-            'language': 'pl',
-          },
-          statusCode: 200,
-          requestOptions: RequestOptions(path: Endpoints.changeLanguage),
-        ),
-      );
+        1,
+      ),
+    ).thenAnswer(
+      (_) async => Response<dynamic>(
+        data: {
+          'id': 1,
+          'email': 'jan4@example.com',
+          'name': 'Jan',
+          'language': 'pl',
+        },
+        statusCode: 200,
+        requestOptions: RequestOptions(path: Endpoints.changeLanguage),
+      ),
+    );
 
-      UserStorage().setUser(
-        UserResponse(id: 1, name: "Jan", language: Language.en, email: 'jan4@example.com'),
-      );
+    userStorage.setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
 
-      // When
-      await tester.pumpWidget(
-        wrapWithProviders(
-          AccountScreen(bloc: accountBloc),
-          additionalProviders: [
-            Provider<LanguageCubit>.value(value: mockLanguageCubit),
-          ],
-        ),
-      );
+    // When
+    await tester.pumpWidget(
+      wrapWithProviders(
+        AccountScreen(bloc: accountBloc),
+        additionalProviders: [
+          Provider<LanguageCubit>.value(value: mockLanguageCubit),
+        ],
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Change language'));
-      await tester.pump();
+    await tester.tap(find.text('Change language'));
+    await tester.pump();
 
-      await tester.ensureVisible(find.text("Polski"));
-      await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text("Polski"));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Polski'), findsOneWidget);
-      await tester.tap(find.text("Polski"));
+    expect(find.text('Polski'), findsOneWidget);
+    await tester.tap(find.text("Polski"));
 
-      await tester.pumpAndSettle();
-      expect(accountBloc.state, isA<AccountChangeLanguageSuccess>());
-    },
-  );
+    await tester.pumpAndSettle();
+    expect(accountBloc.state, isA<AccountChangeLanguageSuccess>());
+  });
 }
