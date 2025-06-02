@@ -68,6 +68,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final state = dietFormBloc.state;
     if (state is DietFormSubmit && state.weight != null) {
       _selectedDietGoal = state.weight!;
+      context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
     }
   }
 

@@ -35,13 +35,13 @@ class DietFormSubmit extends DietFormState {
 
   DietFormSubmit({
     this.gender,
-    this.height,
-    this.weight,
+    this.height = 175.0,
+    this.weight = 65.0,
     this.dateOfBirth,
     this.dietType,
-    this.allergies,
-    this.dietGoal,
-    this.mealsPerDay,
+    this.allergies = const [],
+    this.dietGoal = 70.0,
+    this.mealsPerDay = 3,
     this.dietIntensity,
     this.activityLevel,
     this.stressLevel,

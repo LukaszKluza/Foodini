@@ -205,8 +205,8 @@ void main() {
     expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
     expect(find.textContaining('4'), findsOneWidget);
-    expect(find.textContaining('5'), findsOneWidget);
-    expect(find.textContaining('6'), findsOneWidget);
+    expect(find.textContaining('5'), findsNWidgets(2));
+    expect(find.textContaining('6'), findsNWidgets(2));
   });
 
   testWidgets('Diet intensity enums are displayed after tap', (
