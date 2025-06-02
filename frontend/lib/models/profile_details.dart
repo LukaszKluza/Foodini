@@ -1,4 +1,4 @@
-import 'package:frontend/assets/profile_details/gender.pbenum.dart';
+import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetails {
   final Gender gender;
@@ -14,9 +14,9 @@ class ProfileDetails {
   });
 
   Map<String, dynamic> toJson() => {
-    "gender": gender,
-    "height": height,
-    "weight": weight,
-    "date_of_birth": dateOfBirth,
+    'gender': gender,
+    'height': height,
+    'weight': weight,
+    'date_of_birth': dateOfBirth,
   };
 }

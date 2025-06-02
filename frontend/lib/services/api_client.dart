@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
-import 'package:frontend/models/change_password_request.dart';
-import 'package:frontend/models/login_request.dart';
-import 'package:frontend/models/provide_email_request.dart';
-import 'package:frontend/models/register_request.dart';
+import 'package:frontend/models/user/change_password_request.dart';
+import 'package:frontend/models/user/login_request.dart';
+import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/models/user/change_language_request.dart';
+import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 
@@ -12,8 +13,10 @@ class ApiClient {
   final TokenStorageRepository _tokenStorage;
 
   ApiClient([Dio? client, TokenStorageRepository? tokenStorage])
-      : _client = client ?? Dio(BaseOptions(headers: {'Content-Type': 'application/json'})),
-        _tokenStorage = tokenStorage ?? TokenStorageRepository() {
+    : _client =
+          client ??
+          Dio(BaseOptions(headers: {'Content-Type': 'application/json'})),
+      _tokenStorage = tokenStorage ?? TokenStorageRepository() {
     _client.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -71,15 +74,20 @@ class ApiClient {
     );
   }
 
+  Future<Response> changeLanguage(ChangeLanguageRequest request, int userId) {
+    return _client.patch(
+      Endpoints.changeLanguage,
+      data: request.toJson(),
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
   Future<Response> refreshTokens() async {
     final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
       Endpoints.refreshTokens,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $refreshToken',
-        },
-      ),
+      options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
     );
   }
 

@@ -15,9 +15,9 @@ total_LH=0
 excluded_files=0
 
 excluded_folders=(
-  "lib\assets"
+  "lib/l10n"
+  "lib\l10n"
 )
-
 
 # Loop through the lcov file and sum all LF and LH values
 while IFS= read -r line; do
@@ -25,7 +25,7 @@ while IFS= read -r line; do
     filepath="${BASH_REMATCH[1]}"
     is_excluded=0
     for folder in "${excluded_folders[@]}"; do
-      if [[ "$filepath" == "$folder"* ]]; then
+      if [[ "$filepath" == *"$folder"* ]]; then
         is_excluded=1
         excluded_files=$((excluded_files+1))
         break

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/repository/token_storage_mobile_repository.dart';
+import 'package:frontend/repository/user/token_storage_mobile_repository.dart';
 import 'package:mockito/mockito.dart';
 
 import '../mocks/mocks.mocks.dart';
