@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
@@ -14,7 +11,6 @@ import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 final TokenStorageRepository _storage = TokenStorageRepository();
 
