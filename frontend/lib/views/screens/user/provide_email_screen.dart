@@ -86,7 +86,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                key: Key("e-mail"),
+                key: Key('e-mail'),
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
@@ -111,7 +111,7 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                     return const CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key("change_password"),
+                      key: Key('change_password'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = ProvideEmailRequest(

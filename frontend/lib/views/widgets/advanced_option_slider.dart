@@ -91,7 +91,7 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
         InkWell(
           onTap: _showPercentageOptionDialog,
           child: Text(
-            "${widget.propertiesName}: ${_value.toStringAsFixed(1)}%",
+            '${widget.propertiesName}: ${_value.toStringAsFixed(1)}%',
           ),
         ),
         GestureDetector(
@@ -101,7 +101,7 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt(),
-            label: "${_value.toStringAsFixed(1)}%",
+            label: '${_value.toStringAsFixed(1)}%',
             onChanged: (value) {
               setState(() {
                 _value = value;

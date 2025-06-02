@@ -84,7 +84,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   Widget build(BuildContext context) {
     final fields = [
       DropdownButtonFormField<DietType>(
-        key: Key("diet_type"),
+        key: Key('diet_type'),
         value: _selectedDietType,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietType,
@@ -165,7 +165,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         ],
       ),
       DropdownButtonFormField<DietIntensity>(
-        key: Key("diet_intensity"),
+        key: Key('diet_intensity'),
         value: _selectedDietIntensity,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietIntensity,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/listeners/calories_prediction.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -221,19 +222,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       padding: EdgeInsets.all(35.0),
       child: BlocListener<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          if (state.isSuccess == true) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context)!.formSuccessfullySubmitted,
-                ),
-              ),
-            );
-          } else if (state.errorMessage != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-          }
+          CaloriesPredictionListenerHelper.handle(
+            context: context,
+            state: state,
+            successMessageBuilder:
+                (context) =>
+                    AppLocalizations.of(context)!.formSuccessfullySubmitted,
+          );
         },
         child: Form(
           key: _formKey,

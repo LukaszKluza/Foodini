@@ -15,7 +15,7 @@ class GlobalErrorInterceptor extends Interceptor {
   Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response != null) {
       final statusCode = err.response?.statusCode;
-      String message = "Default error message.";
+      String message = 'Default error message.';
 
       switch (statusCode) {
         case 400:
@@ -23,7 +23,7 @@ class GlobalErrorInterceptor extends Interceptor {
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
-          if(err.response?.data["detail"] == 'Revoked token'){
+          if(err.response?.data['detail'] == 'Revoked token'){
             await _handleForbiddenError(err, handler);
           }
           message = 'Error $statusCode: Forbidden';
@@ -40,7 +40,7 @@ class GlobalErrorInterceptor extends Interceptor {
         case 504:
           message = 'Error $statusCode: Gateway timeout';
         default:
-          message = "Error $statusCode";
+          message = 'Error $statusCode';
       }
 
       _showErrorDialog(message);
@@ -74,10 +74,10 @@ class GlobalErrorInterceptor extends Interceptor {
           );
         }
       } catch (e) {
-        _showErrorDialog("Session expired.");
+        _showErrorDialog('Session expired.');
       }
     } else {
-      _showErrorDialog("Session expired.");
+      _showErrorDialog('Session expired.');
     }
   }
 

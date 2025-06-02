@@ -10,8 +10,8 @@ class AdvancedBodyParameters {
   });
 
   Map<String, dynamic> toJson() => {
-    "muscle_percentage": musclePercentage,
-    "water_percentage": waterPercentage,
-    "fat_percentage": fatPercentage,
+    'muscle_percentage': musclePercentage,
+    'water_percentage': waterPercentage,
+    'fat_percentage': fatPercentage,
   };
 }
