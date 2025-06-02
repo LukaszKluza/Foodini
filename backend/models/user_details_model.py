@@ -30,7 +30,7 @@ class UserDetails(SQLModel, table=True):
             unique=True,
         )
     )
-    # user: Optional["User"] = Relationship(back_populates="details")
+    user: Optional["User"] = Relationship(back_populates="details")
 
     gender_id: int = Field(foreign_key="gender.id")
     gender: Optional["Gender"] = Relationship()
