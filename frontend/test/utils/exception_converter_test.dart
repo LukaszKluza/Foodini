@@ -2,20 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
-Future<void> runWithContext(WidgetTester tester, void Function(BuildContext) body) async {
-  await tester.pumpWidget(MaterialApp(
-    home: Builder(
-      builder: (context) {
-        body(context);
-        return Container();
-      },
+Future<void> runWithContext(
+  WidgetTester tester,
+  void Function(BuildContext) body,
+) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Builder(
+        builder: (context) {
+          body(context);
+          return Container();
+        },
+      ),
     ),
-  ));
+  );
 }
 
 void main() {
   group('ExceptionConverter.formatErrorMessage', () {
-    testWidgets('should return the same string if error is a string', (tester) async {
+    testWidgets('should return the same string if error is a string', (
+      tester,
+    ) async {
       final input = "Simple error";
 
       await runWithContext(tester, (context) {
@@ -24,12 +31,14 @@ void main() {
       });
     });
 
-    testWidgets('should flatten a map with a "detail" key containing a list', (tester) async {
+    testWidgets('should flatten a map with a "detail" key containing a list', (
+      tester,
+    ) async {
       final input = {
         'detail': [
           'error one',
-          {'sub_error': 'error two'}
-        ]
+          {'sub_error': 'error two'},
+        ],
       };
 
       await runWithContext(tester, (context) {
@@ -38,15 +47,20 @@ void main() {
       });
     });
 
-    testWidgets('should recursively format a map without a "detail" key', (tester) async {
+    testWidgets('should recursively format a map without a "detail" key', (
+      tester,
+    ) async {
       final input = {
         'field1': 'error1',
-        'field2': {'nestedField': 'nestedError'}
+        'field2': {'nestedField': 'nestedError'},
       };
 
       await runWithContext(tester, (context) {
         final result = ExceptionConverter.formatErrorMessage(input, context);
-        expect(result, equals('field1: error1\nfield2: nestedField: nestedError'));
+        expect(
+          result,
+          equals('field1: error1\nfield2: nestedField: nestedError'),
+        );
       });
     });
 

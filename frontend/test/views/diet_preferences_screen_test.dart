@@ -5,8 +5,13 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 
+import '../mocks/mocks.mocks.dart';
+
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 void main() {
-  final dietFormBloc = DietFormBloc();
+  final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
 
   testWidgets('Diet preferences screen elements are displayed', (
     WidgetTester tester,

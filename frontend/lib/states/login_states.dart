@@ -11,7 +11,8 @@ class LoginInitial extends LoginState {}
 class ActionInProgress extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  LoginSuccess(String Function(BuildContext) getMessage) : super(getMessage: getMessage);
+  LoginSuccess(String Function(BuildContext) getMessage)
+    : super(getMessage: getMessage);
 }
 
 class LoginFailure extends LoginState {
@@ -21,7 +22,8 @@ class LoginFailure extends LoginState {
 }
 
 class AccountSuccessVerification extends LoginState {
-  AccountSuccessVerification(String Function(BuildContext) getMessage) : super(getMessage: getMessage);
+  AccountSuccessVerification(String Function(BuildContext) getMessage)
+    : super(getMessage: getMessage);
 }
 
 class AccountNotVerified extends LoginState {
@@ -29,5 +31,6 @@ class AccountNotVerified extends LoginState {
 }
 
 class ResendAccountVerificationSuccess extends LoginState {
-  ResendAccountVerificationSuccess(String Function(BuildContext) getMessage) : super(getMessage: getMessage);
+  ResendAccountVerificationSuccess(String Function(BuildContext) getMessage)
+    : super(getMessage: getMessage);
 }

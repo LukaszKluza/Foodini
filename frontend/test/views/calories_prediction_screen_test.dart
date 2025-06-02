@@ -5,11 +5,17 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 
+import '../mocks/mocks.mocks.dart';
+
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 void main() {
-  final dietFormBloc = DietFormBloc();
+  final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
-      WidgetTester tester,) async {
+    WidgetTester tester,
+  ) async {
     // Given, When
     await tester.pumpWidget(
       MaterialApp(
@@ -31,8 +37,9 @@ void main() {
     expect(find.text('Advance body parameters'), findsOneWidget);
   });
 
-  testWidgets(
-      'Activity enums are displayed after tap', (WidgetTester tester,) async {
+  testWidgets('Activity enums are displayed after tap', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
@@ -65,7 +72,8 @@ void main() {
   });
 
   testWidgets('Stress level enums are displayed after tap', (
-      WidgetTester tester,) async {
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
@@ -97,7 +105,8 @@ void main() {
   });
 
   testWidgets('Sleep quality enums are displayed after tap', (
-      WidgetTester tester,) async {
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
@@ -114,39 +123,23 @@ void main() {
 
     // When
     await tester.tap(find.byKey(Key('sleep_quality')));
-        await tester.pumpAndSettle();
-
-    // Then
-    expect(
-      find.text('Poor'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('Fair'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('Good'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('Excellent'),
-      findsOneWidget,
-    );
-
-    await tester.tap(
-      find.text('Good'),
-    );
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('Good'),
-      findsOneWidget,
-    );
+    // Then
+    expect(find.text('Poor'), findsOneWidget);
+    expect(find.text('Fair'), findsOneWidget);
+    expect(find.text('Good'), findsOneWidget);
+    expect(find.text('Excellent'), findsOneWidget);
+
+    await tester.tap(find.text('Good'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Good'), findsOneWidget);
   });
 
-  testWidgets(
-      'Advanced options are displayed after tap', (WidgetTester tester,) async {
+  testWidgets('Advanced options are displayed after tap', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(
       MaterialApp(
@@ -170,9 +163,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(tester
-        .widget<CheckboxListTile>(checkboxFinder)
-        .value, isTrue);
+    expect(tester.widget<CheckboxListTile>(checkboxFinder).value, isTrue);
     expect(find.textContaining('Muscle percentage'), findsOneWidget);
     expect(find.textContaining('Water percentage'), findsOneWidget);
     expect(

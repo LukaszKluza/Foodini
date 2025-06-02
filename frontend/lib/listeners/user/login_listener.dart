@@ -37,7 +37,9 @@ class LoginListenerHelper {
       });
     } else if (state is LoginFailure) {
       setState(() {
-        setMessage(ExceptionConverter.formatErrorMessage(state.error.data, context));
+        setMessage(
+          ExceptionConverter.formatErrorMessage(state.error.data, context),
+        );
         setMessageStyle(Styles.errorStyle);
       });
     }

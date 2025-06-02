@@ -62,7 +62,7 @@ void main() {
 
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.text("Registration"),findsOneWidget);
+    expect(find.text("Registration"), findsOneWidget);
   });
 
   testWidgets('Register form submits with valid data', (
@@ -74,7 +74,7 @@ void main() {
           'id': 1,
           'email': 'jan4@example.com',
           'name': 'Jan',
-          'language': 'pl'
+          'language': 'pl',
         },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.register),
@@ -99,7 +99,9 @@ void main() {
       MultiProvider(
         providers: [
           Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: goRouter,
@@ -120,15 +122,9 @@ void main() {
     await tester.tap(find.text('Argentina'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(
-      find.byKey(Key('e-mail')),
-      'john@example.com',
-    );
+    await tester.enterText(find.byKey(Key('e-mail')), 'john@example.com');
     await tester.enterText(find.byKey(Key('password')), 'Password1234');
-    await tester.enterText(
-      find.byKey(Key('confirm_password')),
-      'Password1234',
-    );
+    await tester.enterText(find.byKey(Key('confirm_password')), 'Password1234');
 
     expect(registerBloc.state, isA<RegisterInitial>());
 
@@ -163,10 +159,7 @@ void main() {
     await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
     await tester.enterText(find.byKey(Key('password')), 'password123');
-    await tester.enterText(
-      find.byKey(Key('confirm_password')),
-      '321drowddap',
-    );
+    await tester.enterText(find.byKey(Key('confirm_password')), '321drowddap');
 
     await tester.tap(find.byKey(Key('register')));
     await tester.pumpAndSettle();

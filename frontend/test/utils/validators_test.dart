@@ -125,14 +125,8 @@ void main() {
       (tester) async {
         final context = await pumpAppWithLocalization(tester);
 
-        expect(
-          validatePassword(null, context),
-          equals('Password is required'),
-        );
-        expect(
-          validatePassword('', context),
-          equals('Password is required'),
-        );
+        expect(validatePassword(null, context), equals('Password is required'));
+        expect(validatePassword('', context), equals('Password is required'));
       },
     );
 

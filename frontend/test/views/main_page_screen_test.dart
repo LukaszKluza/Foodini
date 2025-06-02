@@ -26,10 +26,7 @@ void main() {
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
     final goRouter = GoRouter(
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => MainPageScreen(),
-        ),
+        GoRoute(path: '/', builder: (context, state) => MainPageScreen()),
         GoRoute(
           path: '/account',
           builder: (context, state) => const Scaffold(key: Key('my_account')),

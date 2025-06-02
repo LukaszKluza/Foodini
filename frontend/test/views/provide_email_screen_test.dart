@@ -23,9 +23,7 @@ late MockTokenStorageRepository mockTokenStorageRepository;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-    ],
+    providers: [Provider<AuthRepository>.value(value: authRepository)],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -91,7 +89,12 @@ void main() {
   ) async {
     when(mockApiClient.provideEmail(any)).thenAnswer(
       (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'john@example.com', 'name': 'John', 'language': 'pl'},
+        data: {
+          'id': 1,
+          'email': 'john@example.com',
+          'name': 'John',
+          'language': 'pl',
+        },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.changePassword),
       ),
@@ -114,9 +117,7 @@ void main() {
 
     await tester.pumpWidget(
       MultiProvider(
-        providers: [
-          Provider<AuthRepository>.value(value: authRepository),
-        ],
+        providers: [Provider<AuthRepository>.value(value: authRepository)],
         child: MaterialApp.router(
           routerConfig: goRouter,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

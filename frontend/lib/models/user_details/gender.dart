@@ -22,7 +22,7 @@ enum Gender {
 
   static Gender? fromInt(int value) {
     return Gender.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid gender value: $value'),
     );
   }

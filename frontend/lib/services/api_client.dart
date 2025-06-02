@@ -134,5 +134,5 @@ class ApiClient {
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
-}
+  }
 }

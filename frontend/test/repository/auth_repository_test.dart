@@ -16,7 +16,10 @@ void main() {
   });
 
   test('login returns LoggedUser on success', () async {
-    final loginRequest = LoginRequest(email: 'test@example.com', password: 'pass123');
+    final loginRequest = LoginRequest(
+      email: 'test@example.com',
+      password: 'pass123',
+    );
 
     final responsePayload = {
       'id': 1,
@@ -26,7 +29,7 @@ void main() {
     };
 
     when(mockApiClient.login(loginRequest)).thenAnswer(
-          (_) async => Response(
+      (_) async => Response(
         requestOptions: RequestOptions(path: ''),
         data: responsePayload,
         statusCode: 200,
@@ -47,7 +50,7 @@ void main() {
     };
 
     when(mockApiClient.refreshTokens()).thenAnswer(
-          (_) async => Response(
+      (_) async => Response(
         requestOptions: RequestOptions(path: ''),
         data: responsePayload,
         statusCode: 200,

@@ -13,7 +13,7 @@ enum SleepQuality {
 
   static SleepQuality fromJson(String value) {
     return SleepQuality.values.firstWhere(
-          (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value.toUpperCase(),
       orElse: () => throw ArgumentError('Unknown sleep quality: $value'),
     );
   }
@@ -22,7 +22,7 @@ enum SleepQuality {
 
   static SleepQuality fromInt(int value) {
     return SleepQuality.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid sleep quality value: $value'),
     );
   }

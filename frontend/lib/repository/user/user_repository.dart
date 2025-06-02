@@ -100,7 +100,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse> changeLanguage(ChangeLanguageRequest request, int userId) async {
+  Future<UserResponse> changeLanguage(
+    ChangeLanguageRequest request,
+    int userId,
+  ) async {
     try {
       final response = await apiClient.updateLanguage(request, userId);
       return UserResponse.fromJson(response.data);

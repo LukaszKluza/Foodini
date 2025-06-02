@@ -17,7 +17,6 @@ class LanguageCubit extends Cubit<Locale> {
   void change(Locale locale) => emit(locale);
 }
 
-
 class Foodini extends StatelessWidget {
   const Foodini({super.key});
 
@@ -26,7 +25,9 @@ class Foodini extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<ApiClient>(create: (_) => ApiClient()),
-        Provider<TokenStorageRepository>(create: (_) => TokenStorageRepository()),
+        Provider<TokenStorageRepository>(
+          create: (_) => TokenStorageRepository(),
+        ),
         ProxyProvider<ApiClient, AuthRepository>(
           update: (_, apiClient, __) => AuthRepository(apiClient),
         ),
@@ -38,9 +39,9 @@ class Foodini extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => LanguageCubit()),
           BlocProvider(
-            create: (context) => DietFormBloc(
-            context.read<UserDetailsRepository>(),
-            ),
+            create:
+                (context) =>
+                    DietFormBloc(context.read<UserDetailsRepository>()),
           ),
         ],
         child: BlocBuilder<LanguageCubit, Locale>(
@@ -48,7 +49,8 @@ class Foodini extends StatelessWidget {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               locale: locale,
-              localeResolutionCallback: (deviceLocale, supportedLocales) => locale,
+              localeResolutionCallback:
+                  (deviceLocale, supportedLocales) => locale,
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [
                 AppLocalizations.delegate,

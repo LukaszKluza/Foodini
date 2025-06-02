@@ -13,7 +13,7 @@ enum StressLevel {
 
   static StressLevel fromJson(String value) {
     return StressLevel.values.firstWhere(
-          (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value.toUpperCase(),
       orElse: () => throw ArgumentError('Unknown stress level: $value'),
     );
   }
@@ -22,7 +22,7 @@ enum StressLevel {
 
   static StressLevel fromInt(int value) {
     return StressLevel.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid stress level value: $value'),
     );
   }

@@ -12,7 +12,10 @@ class GlobalErrorInterceptor extends Interceptor {
   GlobalErrorInterceptor(this._apiClient, this._tokenStorage);
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     if (err.response != null) {
       final statusCode = err.response?.statusCode;
       String message = "Default error message.";
@@ -23,7 +26,7 @@ class GlobalErrorInterceptor extends Interceptor {
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
-          if(err.response?.data["detail"] == 'Revoked token'){
+          if (err.response?.data["detail"] == 'Revoked token') {
             await _handleForbiddenError(err, handler);
           }
           message = 'Error $statusCode: Forbidden';
@@ -48,7 +51,10 @@ class GlobalErrorInterceptor extends Interceptor {
     return handler.reject(err);
   }
 
-  Future<void> _handleUnauthorizedError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> _handleUnauthorizedError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final refreshToken = await _tokenStorage.getRefreshToken();
 
     if (refreshToken != null) {
@@ -81,7 +87,10 @@ class GlobalErrorInterceptor extends Interceptor {
     }
   }
 
-  Future<void> _handleForbiddenError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> _handleForbiddenError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     UserStorage().removeUser();
     await TokenStorageRepository().deleteAccessToken();
     await TokenStorageRepository().deleteRefreshToken();

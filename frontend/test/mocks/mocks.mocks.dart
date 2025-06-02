@@ -7,7 +7,7 @@ import 'dart:async' as _i11;
 
 import 'package:dio/dio.dart' as _i9;
 import 'package:dio/src/dio_mixin.dart' as _i10;
-import 'package:flutter/foundation.dart' as _i21;
+import 'package:flutter/foundation.dart' as _i23;
 import 'package:flutter_bloc/flutter_bloc.dart' as _i19;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i8;
 import 'package:frontend/blocs/user/register_bloc.dart' as _i17;
@@ -20,7 +20,10 @@ import 'package:frontend/models/user/provide_email_request.dart' as _i14;
 import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i5;
 import 'package:frontend/models/user/register_request.dart' as _i13;
 import 'package:frontend/models/user/user_response.dart' as _i3;
+import 'package:frontend/models/user_details/diet_form.dart' as _i22;
 import 'package:frontend/repository/user/user_repository.dart' as _i6;
+import 'package:frontend/repository/user_details/user_details_repository.dart'
+    as _i21;
 import 'package:frontend/services/api_client.dart' as _i2;
 import 'package:frontend/services/token_storage_service.dart' as _i20;
 import 'package:frontend/states/register_states.dart' as _i7;
@@ -437,6 +440,33 @@ class MockTokenStorageRepository extends _i1.Mock
           as _i11.Future<void>);
 }
 
+/// A class which mocks [UserDetailsRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserDetailsRepository extends _i1.Mock
+    implements _i21.UserDetailsRepository {
+  MockUserDetailsRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.ApiClient get apiClient =>
+      (super.noSuchMethod(
+            Invocation.getter(#apiClient),
+            returnValue: _FakeApiClient_0(this, Invocation.getter(#apiClient)),
+          )
+          as _i2.ApiClient);
+
+  @override
+  _i11.Future<void> submitDietForm(_i22.DietForm? request, int? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#submitDietForm, [request, userId]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+}
+
 /// A class which mocks [FlutterSecureStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -512,7 +542,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void registerListener({
     required String? key,
-    required _i21.ValueChanged<String?>? listener,
+    required _i23.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -521,7 +551,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i21.ValueChanged<String?>? listener,
+    required _i23.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -851,6 +881,22 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               _FakeResponse_12<dynamic>(
                 this,
                 Invocation.method(#refreshRequest, [requestOptions]),
+              ),
+            ),
+          )
+          as _i11.Future<_i9.Response<dynamic>>);
+
+  @override
+  _i11.Future<_i9.Response<dynamic>> submitDietForm(
+    _i22.DietForm? request,
+    int? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#submitDietForm, [request, userId]),
+            returnValue: _i11.Future<_i9.Response<dynamic>>.value(
+              _FakeResponse_12<dynamic>(
+                this,
+                Invocation.method(#submitDietForm, [request, userId]),
               ),
             ),
           )

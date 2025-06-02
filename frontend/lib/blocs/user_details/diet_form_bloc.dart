@@ -64,31 +64,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
   ) async {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
-    print('''
-      DietFormState:
-        gender: ${state.gender}
-        height: ${state.height}
-        weight: ${state.weight}
-        dateOfBirth: ${state.dateOfBirth}
-
-        dietType: ${state.dietType}
-        allergies: ${state.allergies}
-        dietGoal: ${state.dietGoal}
-        mealsPerDay: ${state.mealsPerDay}
-        dietIntensity: ${state.dietIntensity}
-
-        activityLevel: ${state.activityLevel}
-        stressLevel: ${state.stressLevel}
-        sleepQuality: ${state.sleepQuality}
-        musclePercentage: ${state.musclePercentage}
-        fatPercentage: ${state.fatPercentage}
-        waterPercentage: ${state.waterPercentage}
-
-        isSubmitting: ${state.isSubmitting}
-        isSuccess: ${state.isSuccess}
-        errorMessage: ${state.errorMessage}
-      ''');
-
     try {
       final dietForm = DietForm(
         gender: state.gender!,

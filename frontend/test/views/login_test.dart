@@ -32,7 +32,7 @@ Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository)
+      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
     child: MaterialApp(
       home: child,
@@ -59,7 +59,9 @@ void main() {
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
-  testWidgets('Login screen elements are displayed', (WidgetTester tester) async {
+  testWidgets('Login screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
     // Given, When
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
@@ -75,15 +77,11 @@ void main() {
   testWidgets('User can log in successfully', (WidgetTester tester) async {
     // Given
     UserStorage().setUser(
-        UserResponse(
-          id: 1,
-          language: Language.en,
-          email: 'jan4@example.com',
-        )
+      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
     );
 
     when(mockApiClient.login(any)).thenAnswer(
-          (_) async => Response<dynamic>(
+      (_) async => Response<dynamic>(
         data: {
           'id': 1,
           'email': 'jan4@example.com',
@@ -96,13 +94,13 @@ void main() {
     );
 
     when(mockApiClient.getUser()).thenAnswer(
-          (_) async => Response<dynamic>(
-            data: {
-              'id': 1,
-              'email': 'jan4@example.com',
-              'name': 'Jan',
-              'language': 'pl'
-            },
+      (_) async => Response<dynamic>(
+        data: {
+          'id': 1,
+          'email': 'jan4@example.com',
+          'name': 'Jan',
+          'language': 'pl',
+        },
         statusCode: 200,
         requestOptions: RequestOptions(path: '/user'),
       ),
@@ -127,7 +125,9 @@ void main() {
       MultiProvider(
         providers: [
           Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: goRouter,
@@ -161,7 +161,9 @@ void main() {
     expect(loggedUser?.email, 'jan4@example.com');
   });
 
-  testWidgets('Login with missing email and password', (WidgetTester tester) async {
+  testWidgets('Login with missing email and password', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
@@ -174,7 +176,9 @@ void main() {
     expect(find.text('Password is required'), findsOneWidget);
   });
 
-  testWidgets('Login with missing unverified account', (WidgetTester tester) async {
+  testWidgets('Login with missing unverified account', (
+    WidgetTester tester,
+  ) async {
     // Given
     when(mockApiClient.login(any)).thenThrow(
       DioException(
@@ -182,17 +186,17 @@ void main() {
         response: Response(
           requestOptions: RequestOptions(path: Endpoints.login),
           statusCode: 403,
-          data: {
-            'detail': 'EMAIL_NOT_VERIFIED',
-          },
+          data: {'detail': 'EMAIL_NOT_VERIFIED'},
         ),
       ),
     );
 
     when(mockApiClient.resendVerificationMail(any)).thenAnswer(
-          (_) async => Response<dynamic>(
+      (_) async => Response<dynamic>(
         statusCode: 204,
-        requestOptions: RequestOptions(path: '/users/confirm/resend-verification-new-account'),
+        requestOptions: RequestOptions(
+          path: '/users/confirm/resend-verification-new-account',
+        ),
       ),
     );
 
@@ -211,7 +215,9 @@ void main() {
       MultiProvider(
         providers: [
           Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+          Provider<TokenStorageRepository>.value(
+            value: mockTokenStorageRepository,
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: goRouter,
@@ -240,10 +246,15 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(loginBloc.state, isA<ResendAccountVerificationSuccess>());
-    expect(find.text('Email account verification send successfully'), findsOneWidget);
+    expect(
+      find.text('Email account verification send successfully'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Properly message after successful account verification', (WidgetTester tester) async {
+  testWidgets('Properly message after successful account verification', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
@@ -252,10 +263,15 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Account has been activated successfully'), findsOneWidget);
+    expect(
+      find.text('Account has been activated successfully'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Properly message when account has not been confirmed', (WidgetTester tester) async {
+  testWidgets('Properly message when account has not been confirmed', (
+    WidgetTester tester,
+  ) async {
     // Given
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 

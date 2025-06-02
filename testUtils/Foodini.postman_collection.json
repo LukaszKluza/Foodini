@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "bf9ba21d-5ca7-471e-a81f-3f027310699b",
+		"_postman_id": "880b9558-3015-49c8-8156-4656a6ca0c08",
 		"name": "Foodini",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43666064",
-		"_collection_link": "https://foodini-9310435.postman.co/workspace/Foodini's-Workspace~c4ed0f8f-fcd4-4969-82db-6cfbc231ee8f/collection/43666064-bf9ba21d-5ca7-471e-a81f-3f027310699b?action=share&source=collection_link&creator=43666064"
+		"_exporter_id": "35056117"
 	},
 	"item": [
 		{
@@ -27,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Jan\",\r\n  \"last_name\": \"Kowalski\",\r\n  \"country\": \"Poland\"\r\n}\r\n",
+							"raw": "{\r\n  \"name\": \"Jan\",\r\n  \"last_name\": \"Kowalski\",\r\n  \"age\": 30,\r\n  \"country\": \"Poland\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -98,7 +97,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Szymon\",\r\n  \"last_name\": \"Janik\",\r\n  \"country\": \"Poland\",\r\n  \"email\": \"simone@gmail.com\",\r\n  \"password\": \"Password123\"\r\n}\r\n",
+							"raw": "{\r\n  \"name\": \"Szymon\",\r\n  \"last_name\": \"Janik\",\r\n  \"age\": 22,\r\n  \"country\": \"Poland\",\r\n  \"email\": \"lacey70597@bariswc.com\",\r\n  \"password\": \"Password123\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -190,18 +189,15 @@
 				},
 				{
 					"name": "New password request",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 2,\r\n    \"email\": \"betapif111@noroasis.com\"\r\n}",
+							"raw": "{\r\n    \"email\": \"sapekod150@daupload.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -232,7 +228,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/logout?user_id=47",
+							"raw": "{{foodiniUrl}}/v1/users/logout?user_id=3",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -244,7 +240,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "47"
+									"value": "3"
 								}
 							]
 						}
@@ -285,7 +281,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"betapif111@noroasis.com\",\r\n  \"password\": \"Password12345678\"\r\n}\r\n",
+							"raw": "{\r\n  \"email\": \"jarigap497@daxiake.com\",\r\n  \"password\": \"Password12345678\",\r\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYXJpZ2FwNDk3QGRheGlha2UuY29tIiwiaWQiOjMsImp0aSI6ImU5M2QwNTEyLTc3OTQtNDMwZC1iN2RhLWU1OTEyZTM0ZDEwZCIsImxpbmtlZF9qdGkiOiI5YjYzZGY3Ni04ZTVhLTRmNzgtOThiYS1hYjAxYzQ3ZjNhOTMiLCJleHAiOjE3NDg1NjA2NzEsInR5cGUiOiJhY2Nlc3MifQ.Pg9f6waQ7MClT74O21mOyjZRJOpkQsBeBVmsBOnx_Is\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -293,7 +289,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/confirm/new-password/{{newPasswordConfirmationToken}}",
+							"raw": "{{foodiniUrl}}/v1/users/confirm/new-password",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -301,8 +297,7 @@
 								"v1",
 								"users",
 								"confirm",
-								"new-password",
-								"{{newPasswordConfirmationToken}}"
+								"new-password"
 							]
 						}
 					},
@@ -346,6 +341,35 @@
 								}
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserDetails",
+			"item": [
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Add User Details",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Details",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}

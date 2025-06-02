@@ -46,7 +46,11 @@ String? validatePassword(String? value, BuildContext context) {
   return null;
 }
 
-String? validateConfirmPassword(String? value, String originalPassword, BuildContext context) {
+String? validateConfirmPassword(
+  String? value,
+  String originalPassword,
+  BuildContext context,
+) {
   if (value == null || value.isEmpty) {
     return AppLocalizations.of(context)!.requiredPasswordConfirmation;
   }

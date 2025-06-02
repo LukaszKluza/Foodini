@@ -16,12 +16,18 @@ class AccountListenerHelper {
   }) {
     if (state is AccountDeleteSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.successfullyDeletedAccount)),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.successfullyDeletedAccount,
+          ),
+        ),
       );
       goHome(mounted, context);
     } else if (state is AccountLogoutSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.successfullyLoggedOut)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.successfullyLoggedOut),
+        ),
       );
       goHome(mounted, context);
     } else if (state is AccountChangeLanguageSuccess) {

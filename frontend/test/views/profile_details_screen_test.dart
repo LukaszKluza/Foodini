@@ -5,8 +5,13 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 
+import '../mocks/mocks.mocks.dart';
+
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 void main() {
-  final bloc = DietFormBloc();
+  final bloc = DietFormBloc(mockUserDetailsRepository);
 
   testWidgets('Profile details screen elements are displayed', (
     WidgetTester tester,
