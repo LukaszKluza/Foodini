@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/repository/user_details/user_details_repository.dart';
+import 'package:frontend/listeners/user_details/diet_form_listener.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -12,7 +12,6 @@ import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
-import 'package:provider/provider.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
@@ -54,7 +53,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   double _selectedWaterPercentage = 60.0;
   double _selectedFatPercentage = 15.0;
   String? _message;
-  final TextStyle _messageStyle = Styles.errorStyle;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void dispose() {
@@ -201,22 +200,14 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       padding: EdgeInsets.all(35.0),
       child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          if (state is DietFormSubmitSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context)!.formSuccessfullySubmitted,
-                ),
-              ),
-            );
-          } else if (state is DietFormSubmitFailure) {
-            setState(() {
-              _message = state.error.toString();
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error.toString())),
-            );
-          }
+          DietFormListenerHelper.onDietFormSubmitListener(
+            context: context,
+            state: state,
+            mounted: mounted,
+            setState: setState,
+            setMessage: (msg) => _message = msg,
+            setMessageStyle: (style) => _messageStyle = style,
+          );
         },
         builder: (context, state) {
           return Form(

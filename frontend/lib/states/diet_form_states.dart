@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/allergy.dart';
@@ -99,7 +100,8 @@ class DietFormSubmit extends DietFormState{
 class DietFormSubmitSuccess extends DietFormState{}
 
 class DietFormSubmitFailure extends DietFormState{
-  final ApiException error;
+  final String Function(BuildContext)? getMessage;
+  final ApiException? error;
 
-  DietFormSubmitFailure(this.error);
+  DietFormSubmitFailure({this.getMessage, this.error});
 }

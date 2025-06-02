@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
@@ -85,6 +86,10 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       emit(currentState.copyWith(fatPercentage: event.fatPercentage));
     });
 
+    on<DietFormResetRequested>((event, emit) {
+      emit(DietFormSubmit());
+    });
+
     on<SubmitForm>(_onSubmitForm);
   }
 
@@ -94,6 +99,30 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
   ) async {
     final currentState = state as DietFormSubmit;
     emit(currentState.copyWith(isSubmitting: true, errorMessage: null));
+
+    final requiredFields = [
+      currentState.gender,
+      currentState.height,
+      currentState.weight,
+      currentState.dateOfBirth,
+      currentState.dietType,
+      currentState.allergies,
+      currentState.dietGoal,
+      currentState.mealsPerDay,
+      currentState.dietIntensity,
+      currentState.activityLevel,
+      currentState.stressLevel,
+      currentState.sleepQuality,
+    ];
+
+    if (requiredFields.any((field) => field == null)) {
+      emit(
+        DietFormSubmitFailure(
+          getMessage: (context) => AppLocalizations.of(context)!.fillAllNecessaryFields,
+        ),
+      );
+      return;
+    }
 
     try {
       final dietForm = DietForm(
@@ -114,12 +143,12 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         waterPercentage: currentState.waterPercentage,
       );
 
-      var userId = UserStorage().getUserId!;
+      final userId = UserStorage().getUserId!;
       await userDetailsRepository.submitDietForm(dietForm, userId);
 
       emit(DietFormSubmitSuccess());
     } on ApiException catch (e) {
-      emit(DietFormSubmitFailure(e));
+      emit(DietFormSubmitFailure(error: e));
     }
   }
 }
