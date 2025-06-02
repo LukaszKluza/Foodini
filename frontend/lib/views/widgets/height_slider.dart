@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/config/constants.dart';
 
-import 'package:frontend/utils/profile_details_validators.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/utils/user_details/profile_details_validators.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 class HeightSlider extends StatefulWidget {
   final double min;
@@ -39,24 +39,26 @@ class HeightSliderState extends State<HeightSlider> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppConfig.enterYourHeight),
+            title: Text(AppLocalizations.of(context)!.enterYourHeight),
             content: Form(
               key: _formKey,
               child: TextFormField(
-                key: Key(AppConfig.heightCm),
+                key: Key('height-cm'),
                 controller: controller,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: AppConfig.heightCm),
-                validator: validateHeight,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.heightCm,
+                ),
+                validator: (value) => validateHeight(value, context),
               ),
             ),
             actions: [
               ElevatedButton(
-                child: Text(AppConfig.cancel),
+                child: Text(AppLocalizations.of(context)!.cancel),
                 onPressed: () => Navigator.pop(context),
               ),
               ElevatedButton(
-                child: Text(AppConfig.ok),
+                child: Text(AppLocalizations.of(context)!.ok),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final value = double.tryParse(controller.text);
@@ -83,7 +85,7 @@ class HeightSliderState extends State<HeightSlider> {
         InkWell(
           onTap: _showHeightDialog,
           child: Text(
-            "${AppConfig.height}: ${_height.toStringAsFixed(1)} ${AppConfig.cm}",
+            '${AppLocalizations.of(context)!.height}: ${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
           ),
         ),
         GestureDetector(
@@ -92,7 +94,8 @@ class HeightSliderState extends State<HeightSlider> {
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt() * 10,
-            label: "${_height.toStringAsFixed(1)} ${AppConfig.cm}",
+            label:
+                '${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
             onChanged: (value) {
               setState(() {
                 _height = value;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
 const double horizontalPaddingRatio = 0.05;
 const double fontSizeRatio = 0.12;
@@ -37,7 +38,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                   bottom: 4.0,
                 ),
                 child: Text(
-                  AppConfig.hey,
+                  AppLocalizations.of(context)!.hey,
                   style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
                 ),
               ),
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
-                            AppConfig.myAccount,
+                            AppLocalizations.of(context)!.myAccount,
                             Icons.person,
                             screenWidth,
                             screenHeight,
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
-                            AppConfig.dietPreferences,
+                            AppLocalizations.of(context)!.dietPreferences,
                             Icons.food_bank_rounded,
                             screenWidth,
                             screenHeight,
