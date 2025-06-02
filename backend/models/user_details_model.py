@@ -1,15 +1,16 @@
 from typing import List, Optional, TYPE_CHECKING
 from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import ARRAY, Column, Integer, ForeignKey, Enum
-from backend.user_details.enums import (
-    ActivityLevel,
-    Allergies,
-    DietIntensity,
-    DietType,
+from sqlalchemy import Column, Integer, ForeignKey
+from .user_properties_models import (
     Gender,
-    SleepQuality,
+    DietType,
+    DietIntensity,
+    ActivityLevel,
     StressLevel,
+    SleepQuality,
+    Allergies,
+    AllergyLink,
 )
 
 if TYPE_CHECKING:
@@ -20,6 +21,7 @@ class UserDetails(SQLModel, table=True):
     __tablename__ = "user_details"
 
     id: int = Field(default=None, primary_key=True)
+
     user_id: int = Field(
         sa_column=Column(
             Integer,
@@ -29,20 +31,36 @@ class UserDetails(SQLModel, table=True):
         )
     )
     user: Optional["User"] = Relationship(back_populates="details")
-    gender: Gender = Field(nullable=False)
+
+    gender_id: int = Field(foreign_key="gender.id")
+    gender: Optional["Gender"] = Relationship()
+
     height_cm: float
     weight_kg: float
     date_of_birth: date
-    diet_type: DietType = Field(nullable=False)
-    allergies: List[Allergies] = Field(
-        sa_column=Column(ARRAY(Enum(Allergies))), default=[]
+
+    diet_type_id: int = Field(foreign_key="diet_type.id")
+    diet_type: Optional["DietType"] = Relationship()
+
+    allergies: List["Allergies"] = Relationship(
+        back_populates="user_details", link_model=AllergyLink
     )
+
     diet_goal_kg: float
     meals_per_day: int = Field(ge=2, le=5)
-    diet_intensity: DietIntensity = Field(nullable=False)
-    activity_level: ActivityLevel = Field(nullable=False)
-    stress_level: StressLevel = Field(nullable=False)
-    sleep_quality: SleepQuality = Field(nullable=False)
+
+    diet_intensity_id: int = Field(foreign_key="diet_intensity.id")
+    diet_intensity: Optional["DietIntensity"] = Relationship()
+
+    activity_level_id: int = Field(foreign_key="activity_level.id")
+    activity_level: Optional["ActivityLevel"] = Relationship()
+
+    stress_level_id: int = Field(foreign_key="stress_level.id")
+    stress_level: Optional["StressLevel"] = Relationship()
+
+    sleep_quality_id: int = Field(foreign_key="sleep_quality.id")
+    sleep_quality: Optional["SleepQuality"] = Relationship()
+
     muscle_percentage: float = Field(ge=0, le=100)
     water_percentage: float = Field(ge=0, le=100)
     fat_percentage: float = Field(ge=0, le=100)
