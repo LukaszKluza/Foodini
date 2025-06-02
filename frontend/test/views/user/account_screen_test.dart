@@ -129,7 +129,7 @@ void main() {
     );
 
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+      UserResponse(id: 1, name: "Jan", language: Language.en, email: 'jan4@example.com'),
     );
 
     final goRouter = GoRouter(
@@ -192,7 +192,7 @@ void main() {
     );
 
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.pl, email: 'jan4@example.com'),
+      UserResponse(id: 1, name: "Jan", language: Language.pl, email: 'jan4@example.com'),
     );
 
     final goRouter = GoRouter(
@@ -304,7 +304,7 @@ void main() {
       );
 
       UserStorage().setUser(
-        UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+        UserResponse(id: 1, name: "Jan", language: Language.en, email: 'jan4@example.com'),
       );
 
       // When

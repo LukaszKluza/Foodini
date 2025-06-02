@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:frontend/config/styles.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<MainPageScreen> {
               Padding(
                 padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
                 child: Text(
-                  'Simone!',
+                  UserStorage().getName!,
                   style: TextStyle(fontSize: dynamicFontSize, fontFamily: 'KaushanScript'),
                 ),
               ),

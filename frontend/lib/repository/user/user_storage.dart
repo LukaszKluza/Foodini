@@ -19,6 +19,8 @@ class UserStorage {
 
   int? get getUserId => _user?.id;
 
+  String? get getName => _user?.name;
+
   void setUser(UserResponse user) {
     _user = user;
   }
