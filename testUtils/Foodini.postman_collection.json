@@ -351,25 +351,133 @@
 			"item": [
 				{
 					"name": "Get User Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id=1",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"user_details"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Add User Details",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"gender\": \"male\",\r\n  \"height_cm\": 180,\r\n  \"weight_kg\": 75,\r\n  \"date_of_birth\": \"1995-06-15\",\r\n  \"diet_type\": \"vegetarian\",\r\n  \"allergies\": [],\r\n  \"diet_goal_kg\": 70,\r\n  \"meals_per_day\": 4,\r\n  \"diet_intensity\": \"normal\",\r\n  \"activity_level\": \"active\",\r\n  \"stress_level\": \"low\",\r\n  \"sleep_quality\": \"good\",\r\n  \"muscle_percentage\": 27.0,\r\n  \"water_percentage\": 27.0,\r\n  \"fat_percentage\": 27.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id=1",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"user_details"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Update User Details",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"diet_type\": \"keto\",\r\n  \"allergies\": [\"lactose\", \"peanuts\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id=1",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"user_details"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
 					},
 					"response": []
 				}
