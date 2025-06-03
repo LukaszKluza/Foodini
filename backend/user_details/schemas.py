@@ -37,7 +37,6 @@ class UserDetailsResponse(UserDetailsCreate):
 
 
 class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
-    user_id: Optional[int] = None
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
@@ -57,7 +56,6 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     @staticmethod
     def map(data: UserDetailsCreate) -> "UserDetailsUpdate":
         return UserDetailsUpdate(
-            user_id=data.user_id,
             gender=data.gender,
             height_cm=data.height_cm,
             weight_kg=data.weight_kg,

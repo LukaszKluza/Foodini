@@ -44,6 +44,6 @@ async def test_ensure_user_details_exist_by_user_id_failure():
         await validator.ensure_user_details_exist_by_user_id(1)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
     assert exc_info.value.detail == "User details not found"
     mock_repo.get_user_details_by_user_id.assert_awaited_once_with(1)
