@@ -22,7 +22,7 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     diet_type: DietType
     allergies: List[Allergies]
     diet_goal_kg: float = Field(..., ge=20, le=160)
-    meals_per_day: int = Field(ge=2, le=6)
+    meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
     activity_level: ActivityLevel
     stress_level: StressLevel
@@ -45,7 +45,7 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     diet_type: Optional[DietType] = None
     allergies: Optional[List[Allergies]] = None
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
-    meals_per_day: Optional[int] = Field(None, ge=2, le=6)
+    meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None

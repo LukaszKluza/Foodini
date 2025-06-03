@@ -1,19 +1,13 @@
 from datetime import datetime
-from enum import Enum
 from typing import Optional, TYPE_CHECKING
 
-from pydantic import field_validator
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import DateTime
 from backend.settings import config
+from ..users.enums.language import Language
 
 if TYPE_CHECKING:
     from .user_details_model import UserDetails
-
-
-class Language(Enum):
-    PL = "PL"
-    EN = "EN"
 
 
 class User(SQLModel, table=True):

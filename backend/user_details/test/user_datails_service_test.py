@@ -206,7 +206,9 @@ async def test_add_user_details_when_details_exist(
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.update_user_details.return_value = basic_user_details
+    mock_user_details_repository.update_user_details_by_user_id.return_value = (
+        basic_user_details
+    )
     mock_user_details_repository.get_user_details_by_id.return_value = (
         basic_user_details
     )
@@ -219,7 +221,7 @@ async def test_add_user_details_when_details_exist(
     # Then
     assert response == basic_user_details
     mock_user_details_repository.add_user_details.assert_not_called()
-    mock_user_details_repository.update_user_details.assert_called_once()
+    mock_user_details_repository.update_user_details_by_user_id.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -235,7 +237,9 @@ async def test_update_user_details_when_details_exist(
     mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
         basic_user_details
     )
-    mock_user_details_repository.update_user_details.return_value = updated_user_details
+    mock_user_details_repository.update_user_details_by_user_id.return_value = (
+        updated_user_details
+    )
 
     # When
     result = await user_details_service.update_user_details(
@@ -244,7 +248,7 @@ async def test_update_user_details_when_details_exist(
 
     # Then
     assert result == updated_user_details
-    mock_user_details_repository.update_user_details.assert_called_once_with(
+    mock_user_details_repository.update_user_details_by_user_id.assert_called_once_with(
         "1", user_details_update
     )
 
@@ -260,7 +264,6 @@ async def test_update_user_details_when_details_not_exist(
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
 
-    # Tu mockujemy metodę, która rzuca wyjątek
     mock_user_details_validators.ensure_user_details_exist_by_user_id.side_effect = (
         HTTPException(status_code=404, detail="User details not found")
     )

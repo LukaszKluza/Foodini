@@ -82,6 +82,6 @@ class UserDetailsService:
         await self.user_gateway.ensure_user_exists_by_id(user_id_from_token)
         await self.get_user_details_by_user_id(token_payload, user_id_from_request)
 
-        return await self.user_details_repository.update_user_details(
+        return await self.user_details_repository.update_user_details_by_user_id(
             user_id_from_token, user_details_data
         )

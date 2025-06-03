@@ -9,7 +9,7 @@ from backend.models import UserDetails
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_details_exist_by_user_id_when_exists():
+async def test_ensure_user_details_exist_by_user_id():
     # Given
     mock_repo = AsyncMock()
     expected_user_details = UserDetails(
@@ -33,7 +33,7 @@ async def test_ensure_user_details_exist_by_user_id_when_exists():
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_details_exist_by_user_id_when_not_exists():
+async def test_ensure_user_details_exist_by_user_id_failure():
     # Given
     mock_repo = AsyncMock()
     mock_repo.get_user_details_by_user_id.return_value = None
