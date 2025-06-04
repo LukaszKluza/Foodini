@@ -1,11 +1,18 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional, TYPE_CHECKING
+
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import DateTime
 from backend.settings import config
 
 if TYPE_CHECKING:
     from .user_details_model import UserDetails
+
+
+class Language(Enum):
+    PL = "PL"
+    EN = "EN"
 
 
 class User(SQLModel, table=True):
@@ -16,6 +23,7 @@ class User(SQLModel, table=True):
     last_name: str
     country: str
     email: str = Field(unique=True, nullable=False)
+    language: Language = Field(default=Language.EN)
     is_verified: bool = Field(default=False)
     password: str
     last_password_update: datetime = Field(

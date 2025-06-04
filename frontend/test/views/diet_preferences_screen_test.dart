@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/assets/diet_preferences_enums/allergy.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_intensity.pbenum.dart';
-import 'package:frontend/assets/diet_preferences_enums/diet_type.pb.dart';
-import 'package:frontend/blocs/diet_form_bloc.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/views/screens/diet_preferences_screen.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
@@ -23,8 +20,11 @@ void main() {
     bloc.close();
   });
 
-  Widget wrapWithRouter(Widget child) {
+  Widget wrapWithRouter(Widget child, {required DietFormBloc bloc}) {
     return MaterialApp.router(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: GoRouter(
         routes: [
           GoRoute(
@@ -42,16 +42,18 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(Key(AppConfig.dietType)), findsOneWidget);
-    expect(find.byKey(Key(AppConfig.dietIntensity)), findsOneWidget);
-    expect(find.text(AppConfig.allergies), findsOneWidget);
-    expect(find.textContaining(AppConfig.dietGoal), findsOneWidget);
-    expect(find.text(AppConfig.mealsPerDay), findsOneWidget);
-    expect(find.text(AppConfig.dietIntensity), findsOneWidget);
+    expect(find.byKey(Key('diet_type')), findsOneWidget);
+    expect(find.byKey(Key('diet_intensity')), findsOneWidget);
+    expect(find.text('Allergies'), findsOneWidget);
+    expect(find.textContaining('Diet goal'), findsOneWidget);
+    expect(find.text('Meals per day'), findsOneWidget);
+    expect(find.text('Diet intensity'), findsOneWidget);
     expect(find.byType(BottomNavBar), findsOneWidget);
   });
 
@@ -59,108 +61,76 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.dietType)));
+    await tester.tap(find.byKey(Key('diet_type')));
     await tester.pumpAndSettle();
 
     // Then
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.FAT_LOSS]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.MUSCLE_GAIN]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.WEIGHT_MAINTENANCE]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.VEGETARIAN]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.VEGAN]!),
-      findsOneWidget,
-    );
-    expect(find.text(AppConfig.dietTypeLabels[DietType.KETO]!), findsOneWidget);
+    expect(find.text('Fat Loss'), findsOneWidget);
+    expect(find.text('Muscle Gain'), findsOneWidget);
+    expect(find.text('Weight Maintenance'), findsOneWidget);
+    expect(find.text('Vegetarian'), findsOneWidget);
+    expect(find.text('Vegan'), findsOneWidget);
+    expect(find.text('Keto'), findsOneWidget);
 
-    await tester.tap(
-      find.text(AppConfig.dietTypeLabels[DietType.WEIGHT_MAINTENANCE]!),
-    );
+    await tester.tap(find.text('Weight Maintenance'));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(AppConfig.dietTypeLabels[DietType.WEIGHT_MAINTENANCE]!),
-      findsOneWidget,
-    );
+    expect(find.text('Weight Maintenance'), findsOneWidget);
   });
 
   testWidgets('Allergies enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.text(AppConfig.allergies));
+    await tester.tap(find.text('Allergies'));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.allergyLabels[Allergy.GLUTEN]!), findsOneWidget);
+    expect(find.text('Gluten'), findsOneWidget);
+    expect(find.text('Peanuts'), findsOneWidget);
+    expect(find.text('Lactose'), findsOneWidget);
+    expect(find.text('Fish'), findsOneWidget);
+    expect(find.text('Soy'), findsOneWidget);
+    expect(find.text('Wheat'), findsOneWidget);
+    expect(find.text('Celery'), findsOneWidget);
+    expect(find.text('Sulphites'), findsOneWidget);
+    expect(find.text('Lupin', skipOffstage: false), findsOneWidget);
+
+    expect(find.text('Ok'.toUpperCase(), skipOffstage: false), findsOneWidget);
     expect(
-      find.text(AppConfig.allergyLabels[Allergy.PEANUTS]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.allergyLabels[Allergy.LACTOSE]!),
-      findsOneWidget,
-    );
-    expect(find.text(AppConfig.allergyLabels[Allergy.FISH]!), findsOneWidget);
-    expect(find.text(AppConfig.allergyLabels[Allergy.SOY]!), findsOneWidget);
-    expect(find.text(AppConfig.allergyLabels[Allergy.WHEAT]!), findsOneWidget);
-    expect(find.text(AppConfig.allergyLabels[Allergy.CELERY]!), findsOneWidget);
-    expect(
-      find.text(AppConfig.allergyLabels[Allergy.SULPHITES]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.allergyLabels[Allergy.LUPIN]!, skipOffstage: false),
+      find.text('Cancel'.toUpperCase(), skipOffstage: false),
       findsOneWidget,
     );
 
-    expect(
-      find.text(AppConfig.ok.toUpperCase(), skipOffstage: false),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.cancel.toUpperCase(), skipOffstage: false),
-      findsOneWidget,
-    );
+    await tester.tap(find.text('Lactose'));
+    await tester.tap(find.text('Soy'));
+    await tester.tap(find.text('Celery'));
 
-    await tester.tap(find.text(AppConfig.allergyLabels[Allergy.LACTOSE]!));
-    await tester.tap(find.text(AppConfig.allergyLabels[Allergy.SOY]!));
-    await tester.tap(find.text(AppConfig.allergyLabels[Allergy.CELERY]!));
-
-    await tester.tap(find.text(AppConfig.ok.toUpperCase()));
+    await tester.tap(find.text('Ok'.toUpperCase()));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(AppConfig.allergyLabels[Allergy.LACTOSE]!),
-      findsOneWidget,
-    );
-    expect(find.text(AppConfig.allergyLabels[Allergy.SOY]!), findsOneWidget);
-    expect(find.text(AppConfig.allergyLabels[Allergy.CELERY]!), findsOneWidget);
+    expect(find.text('Lactose'), findsOneWidget);
+    expect(find.text('Soy'), findsOneWidget);
+    expect(find.text('Celery'), findsOneWidget);
   });
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // When
@@ -175,22 +145,24 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.textContaining(AppConfig.dietGoal));
+    await tester.tap(find.textContaining('Diet goal'));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.enterYourDietGoal), findsOneWidget);
-    expect(find.textContaining(AppConfig.weightKg), findsOneWidget);
-    expect(find.text(AppConfig.ok), findsOneWidget);
-    expect(find.text(AppConfig.cancel), findsOneWidget);
+    expect(find.text('Enter your diet goal'), findsOneWidget);
+    expect(find.textContaining('Weight (kg)'), findsOneWidget);
+    expect(find.text('Ok'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
 
-    await tester.enterText(find.byKey(Key(AppConfig.weightKg)), '77');
+    await tester.enterText(find.byKey(Key('weight_kg')), '77');
 
-    await tester.tap(find.textContaining(AppConfig.ok));
+    await tester.tap(find.textContaining('Ok'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('77'), findsOneWidget);
@@ -200,11 +172,13 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text(AppConfig.mealsPerDay), findsOneWidget);
+    expect(find.text('Meals per day'), findsOneWidget);
     expect(find.textContaining('1'), findsOneWidget);
     expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
@@ -217,35 +191,23 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithRouter(const DietPreferencesScreen()));
+    await tester.pumpWidget(
+      wrapWithRouter(const DietPreferencesScreen(), bloc: bloc),
+    );
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.byKey(Key(AppConfig.dietIntensity)));
+    await tester.tap(find.byKey(Key('diet_intensity')));
     await tester.pumpAndSettle();
 
     // Then
-    expect(
-      find.text(AppConfig.dietIntensityLabels[DietIntensity.SLOW]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietIntensityLabels[DietIntensity.MEDIUM]!),
-      findsOneWidget,
-    );
-    expect(
-      find.text(AppConfig.dietIntensityLabels[DietIntensity.FAST]!),
-      findsOneWidget,
-    );
+    expect(find.text('Slow'), findsOneWidget);
+    expect(find.text('Medium'), findsOneWidget);
+    expect(find.text('Fast'), findsOneWidget);
 
-    await tester.tap(
-      find.text(AppConfig.dietIntensityLabels[DietIntensity.MEDIUM]!),
-    );
+    await tester.tap(find.text('Medium'));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(AppConfig.dietIntensityLabels[DietIntensity.MEDIUM]!),
-      findsOneWidget,
-    );
+    expect(find.text('Medium'), findsOneWidget);
   });
 }
