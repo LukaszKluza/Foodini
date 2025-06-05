@@ -233,4 +233,27 @@ void main() {
 
     expect(find.text('Medium'), findsOneWidget);
   });
+
+  testWidgets('Weight slider is hidden when diet type is Weight Maintenance', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    await tester.pumpWidget(
+      wrapWithProvidersForTest(
+        const DietPreferencesScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(const Key('diet_type')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Weight Maintenance'));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.byType(Slider), findsNothing);
+  });
 }

@@ -41,6 +41,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/profile_details',
       builder: (context, state) => ProfileDetailsScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
       path: '/diet_preferences',

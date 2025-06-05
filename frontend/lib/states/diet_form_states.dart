@@ -40,7 +40,7 @@ class DietFormSubmit extends DietFormState {
     this.dateOfBirth,
     this.dietType,
     this.allergies = const [],
-    this.dietGoal = 70.0,
+    this.dietGoal = 65.0,
     this.mealsPerDay = 3,
     this.dietIntensity,
     this.activityLevel,
