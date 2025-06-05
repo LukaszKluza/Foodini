@@ -14,22 +14,21 @@ from .mixins import DateOfBirthValidationMixin
 
 
 class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
-    user_id: Optional[int] = None
     gender: Gender
-    height_cm: float = Field(..., ge=50, le=300)
-    weight_kg: float = Field(..., ge=20, le=400)
+    height_cm: float = Field(..., ge=60, le=230)
+    weight_kg: float = Field(..., ge=20, le=160)
     date_of_birth: date
     diet_type: DietType
     allergies: List[Allergies]
-    diet_goal_kg: float = Field(..., ge=20, le=400)
-    meals_per_day: int = Field(ge=2, le=5)
+    diet_goal_kg: float = Field(..., ge=20, le=160)
+    meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
-    muscle_percentage: float = Field(ge=0, le=100)
-    water_percentage: float = Field(ge=0, le=100)
-    fat_percentage: float = Field(ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(None, ge=0, le=100)
+    water_percentage: Optional[float] = Field(None, ge=0, le=100)
+    fat_percentage: Optional[float] = Field(None, ge=0, le=100)
 
 
 class UserDetailsResponse(UserDetailsCreate):
@@ -37,15 +36,14 @@ class UserDetailsResponse(UserDetailsCreate):
 
 
 class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
-    user_id: Optional[int] = None
     gender: Optional[Gender] = None
-    height_cm: Optional[float] = Field(None, ge=50, le=300)
-    weight_kg: Optional[float] = Field(None, ge=20, le=400)
+    height_cm: Optional[float] = Field(None, ge=60, le=230)
+    weight_kg: Optional[float] = Field(None, ge=20, le=160)
     date_of_birth: Optional[date] = None
     diet_type: Optional[DietType] = None
     allergies: Optional[List[Allergies]] = None
-    diet_goal_kg: Optional[float] = Field(None, ge=20, le=400)
-    meals_per_day: Optional[int] = Field(None, ge=2, le=5)
+    diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
+    meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
@@ -57,7 +55,6 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     @staticmethod
     def map(data: UserDetailsCreate) -> "UserDetailsUpdate":
         return UserDetailsUpdate(
-            user_id=data.user_id,
             gender=data.gender,
             height_cm=data.height_cm,
             weight_kg=data.weight_kg,

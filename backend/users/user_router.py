@@ -23,6 +23,7 @@ from .schemas import (
     UserResponse,
     ChangeLanguageRequest,
 )
+from ..models.user_model import Language
 
 user_router = APIRouter(prefix="/v1/users")
 
