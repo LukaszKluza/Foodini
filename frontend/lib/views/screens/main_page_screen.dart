@@ -44,7 +44,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Icons.person,
                       screenWidth,
                       screenHeight,
-                      () => context.go('/account'),
+                      () => context.push('/account'),
                     ),
                     SizedBox(height: 16),
                     rectangularButton(

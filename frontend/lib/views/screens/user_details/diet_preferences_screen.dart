@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
@@ -31,6 +33,12 @@ class DietPreferencesScreen extends StatelessWidget {
         ),
       ),
       body: _DietPreferencesForm(),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+        mode: NavBarMode.wizard,
+        prevRoute: '/profile_details',
+        nextRoute: '/calories_prediction',
+      ),
     );
   }
 }

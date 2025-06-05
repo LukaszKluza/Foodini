@@ -6,6 +6,8 @@ import 'package:frontend/config/styles.dart';
 import 'package:frontend/listeners/calories_prediction.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
@@ -29,6 +31,11 @@ class CaloriesPredictionScreen extends StatelessWidget {
         ),
       ),
       body: _CaloriesPredictionForm(),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+        mode: NavBarMode.wizard,
+        prevRoute: '/diet_preferences',
+      ),
     );
   }
 }

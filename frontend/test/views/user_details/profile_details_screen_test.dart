@@ -1,27 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 
 void main() {
-  final bloc = DietFormBloc();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late DietFormBloc bloc;
 
-  testWidgets('Profile details screen elements are displayed', (
+  setUp(() {
+    bloc = DietFormBloc();
+  });
+
+  tearDown(() {
+    bloc.close();
+  });
+
+  Widget wrapWithRouter(Widget child, {required DietFormBloc bloc}) {
+    return MaterialApp.router(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      routerConfig: GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) =>
+                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
+          ),
+        ],
+      ),
+    );
+  }
+
+  testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
-    // Given, When
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -30,6 +51,7 @@ void main() {
     expect(find.byKey(Key('height')), findsOneWidget);
     expect(find.byKey(Key('weight')), findsOneWidget);
     expect(find.byKey(Key('date_of_birth')), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
   });
 
   testWidgets('Gender enums are displayed after tap', (
@@ -37,15 +59,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -66,15 +80,7 @@ void main() {
   testWidgets('Height slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -91,15 +97,7 @@ void main() {
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -116,15 +114,7 @@ void main() {
   testWidgets('Height pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -149,15 +139,7 @@ void main() {
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 
@@ -182,15 +164,7 @@ void main() {
   testWidgets('Date picker appears on tap', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<DietFormBloc>.value(
-          value: bloc,
-          child: const ProfileDetailsScreen(),
-        ),
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-      ),
+      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
     await tester.pumpAndSettle();
 

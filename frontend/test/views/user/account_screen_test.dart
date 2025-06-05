@@ -33,15 +33,21 @@ late MockLanguageCubit mockLanguageCubit;
 Widget wrapWithProviders(
   Widget child, {
   List<Provider<dynamic>> additionalProviders = const [],
+  String initialLocation = '/',
 }) {
+  final goRouter = GoRouter(
+    initialLocation: initialLocation,
+    routes: [GoRoute(path: '/', builder: (_, __) => child)],
+  );
+
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
       ...additionalProviders,
     ],
-    child: MaterialApp(
-      home: child,
+    child: MaterialApp.router(
+      routerConfig: goRouter,
       locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -272,64 +278,63 @@ void main() {
     expect(find.text('Foodini'), findsOneWidget);
   });
 
-  testWidgets(
-    'User can successfully change the language',
-    (WidgetTester tester) async {
-      // Given
-      tester.view.physicalSize = Size(1170, 2532);
-      tester.view.devicePixelRatio = 1.5;
+  testWidgets('User can successfully change the language', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
 
-      when(
-        mockApiClient.changeLanguage(
-          argThat(
-            isA<ChangeLanguageRequest>().having(
-              (r) => r.language,
-              'language',
-              Language.pl,
-            ),
+    when(
+      mockApiClient.changeLanguage(
+        argThat(
+          isA<ChangeLanguageRequest>().having(
+            (r) => r.language,
+            'language',
+            Language.pl,
           ),
-          1,
         ),
-      ).thenAnswer(
-        (_) async => Response<dynamic>(
-          data: {
-            'id': 1,
-            'email': 'jan4@example.com',
-            'name': 'Jan',
-            'language': 'pl',
-          },
-          statusCode: 200,
-          requestOptions: RequestOptions(path: Endpoints.changeLanguage),
-        ),
-      );
+        1,
+      ),
+    ).thenAnswer(
+      (_) async => Response<dynamic>(
+        data: {
+          'id': 1,
+          'email': 'jan4@example.com',
+          'name': 'Jan',
+          'language': 'pl',
+        },
+        statusCode: 200,
+        requestOptions: RequestOptions(path: Endpoints.changeLanguage),
+      ),
+    );
 
-      UserStorage().setUser(
-        UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
-      );
+    UserStorage().setUser(
+      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+    );
 
-      // When
-      await tester.pumpWidget(
-        wrapWithProviders(
-          AccountScreen(bloc: accountBloc),
-          additionalProviders: [
-            Provider<LanguageCubit>.value(value: mockLanguageCubit),
-          ],
-        ),
-      );
+    // When
+    await tester.pumpWidget(
+      wrapWithProviders(
+        AccountScreen(bloc: accountBloc),
+        additionalProviders: [
+          Provider<LanguageCubit>.value(value: mockLanguageCubit),
+        ],
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Change language'));
-      await tester.pump();
+    await tester.tap(find.text('Change language'));
+    await tester.pump();
 
-      await tester.ensureVisible(find.text("Polski"));
-      await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text("Polski"));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Polski'), findsOneWidget);
-      await tester.tap(find.text("Polski"));
+    expect(find.text('Polski'), findsOneWidget);
+    await tester.tap(find.text("Polski"));
 
-      await tester.pumpAndSettle();
-      expect(accountBloc.state, isA<AccountChangeLanguageSuccess>());
-    },
-  );
+    await tester.pumpAndSettle();
+    expect(accountBloc.state, isA<AccountChangeLanguageSuccess>());
+  });
 }
