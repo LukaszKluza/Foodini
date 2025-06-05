@@ -30,7 +30,7 @@ class UserDetails(SQLModel, table=True):
     )
     user: Optional["User"] = Relationship(back_populates="details")
     gender: Gender = Field(nullable=False)
-    height_cm: float = Field(ge=50, le=230)
+    height_cm: float = Field(ge=60, le=230)
     weight_kg: float = Field(ge=20, le=160)
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
@@ -38,7 +38,7 @@ class UserDetails(SQLModel, table=True):
         sa_column=Column(ARRAY(Enum(Allergies))), default=[]
     )
     diet_goal_kg: float
-    meals_per_day: int = Field(ge=2, le=5)
+    meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)

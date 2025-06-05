@@ -18,10 +18,10 @@ class DietPreferences {
   });
 
   Map<String, dynamic> toJson() => {
-    "diet_type": dietType,
-    "allergies": allergies,
-    "diet_goal_kg": dietGoal,
-    "meals_per_day": mealsPerDay,
-    "diet_intensity": dietIntensity,
+    'diet_type': dietType,
+    'allergies': allergies,
+    'diet_goal_kg': dietGoal,
+    'meals_per_day': mealsPerDay,
+    'diet_intensity': dietIntensity,
   };
 }

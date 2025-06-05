@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
@@ -16,28 +17,29 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
 late AuthRepository authRepository;
+late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child) {
+Widget wrapWithProviders(
+  Widget child, {
+  List<Provider<dynamic>> additionalProviders = const [],
+}) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+      ...additionalProviders,
     ],
     child: MaterialApp(
       home: child,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        AppLocalizations.delegate,
-      ],
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
   );
@@ -49,6 +51,7 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
+    mockLanguageCubit = MockLanguageCubit();
     authRepository = AuthRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
     mockTokenStorageRepository = MockTokenStorageRepository();
@@ -60,6 +63,7 @@ void main() {
   ) async {
     await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
 
+    expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(ElevatedButton), findsOneWidget);
     expect(find.text("Registration"), findsOneWidget);
@@ -165,5 +169,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Passwords must be the same'), findsOneWidget);
+  });
+
+  testWidgets('User can successfully change the language', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
+
+    // When
+    await tester.pumpWidget(
+      wrapWithProviders(
+        RegisterScreen(bloc: registerBloc),
+        additionalProviders: [
+          Provider<LanguageCubit>.value(value: mockLanguageCubit),
+          Provider<AccountBloc>.value(value: AccountBloc(authRepository, mockTokenStorageRepository)),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.translate_rounded));
+
+    await tester.pump();
+
+    await tester.ensureVisible(find.text("Polski"));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Polski'), findsOneWidget);
+    await tester.tap(find.text("Polski"));
   });
 }

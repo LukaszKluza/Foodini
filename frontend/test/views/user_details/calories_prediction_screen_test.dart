@@ -3,12 +3,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
+
+Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
+  return MultiProvider(
+    providers: [
+      Provider<AuthRepository>.value(value: MockAuthRepository()),
+      Provider<TokenStorageRepository>.value(
+        value: MockTokenStorageRepository(),
+      ),
+      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
+    ],
+    child: MaterialApp.router(
+      routerConfig: GoRouter(
+        routes: [GoRoute(path: '/', builder: (_, __) => child)],
+      ),
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+    ),
+  );
+}
 
 void main() {
   final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
@@ -18,14 +42,9 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -42,14 +61,9 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -76,14 +90,9 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -109,14 +118,9 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -142,14 +146,9 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -175,14 +174,9 @@ void main() {
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -206,14 +200,9 @@ void main() {
   testWidgets('Water slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -227,11 +216,11 @@ void main() {
     await tester.pumpAndSettle();
 
     final sliderFinder = find.byKey(Key('water_percentage'));
-    await tester.drag(sliderFinder, const Offset(100, 0));
+    await tester.drag(sliderFinder, const Offset(50, 0));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Water percentage: 65.0%'), findsOneWidget);
+    expect(find.text('Water percentage: 57.0%'), findsOneWidget);
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {
@@ -241,14 +230,9 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -272,14 +256,9 @@ void main() {
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -312,14 +291,9 @@ void main() {
   testWidgets('Water pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();
@@ -355,14 +329,9 @@ void main() {
     tester.view.devicePixelRatio = 1.5;
 
     await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<DietFormBloc>.value(
-          value: dietFormBloc,
-          child: const CaloriesPredictionScreen(),
-        ),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
     await tester.pumpAndSettle();

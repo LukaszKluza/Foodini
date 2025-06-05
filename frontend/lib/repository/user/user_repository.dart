@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user/change_password_request.dart';
+import 'package:frontend/models/user/default_response.dart';
 import 'package:frontend/models/user/logged_user.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
@@ -67,10 +68,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse?> register(RegisterRequest request) async {
+  Future<DefaultResponse?> register(RegisterRequest request) async {
     try {
       final response = await apiClient.register(request);
-      return UserResponse.fromJson(response.data);
+      return DefaultResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
@@ -78,10 +79,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse> provideEmail(ProvideEmailRequest request) async {
+  Future<DefaultResponse> provideEmail(ProvideEmailRequest request) async {
     try {
       final response = await apiClient.provideEmail(request);
-      return UserResponse.fromJson(response.data);
+      return DefaultResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
@@ -89,10 +90,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse> changePassword(ChangePasswordRequest request) async {
+  Future<DefaultResponse> changePassword(ChangePasswordRequest request) async {
     try {
       final response = await apiClient.changePassword(request);
-      return UserResponse.fromJson(response.data);
+      return DefaultResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
@@ -100,13 +101,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserResponse> changeLanguage(
-    ChangeLanguageRequest request,
-    int userId,
-  ) async {
+  Future<DefaultResponse> changeLanguage(ChangeLanguageRequest request, int userId) async {
     try {
-      final response = await apiClient.updateLanguage(request, userId);
-      return UserResponse.fromJson(response.data);
+      final response = await apiClient.changeLanguage(request, userId);
+      return DefaultResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {

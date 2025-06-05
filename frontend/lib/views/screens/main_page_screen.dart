@@ -44,7 +44,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Icons.person,
                       screenWidth,
                       screenHeight,
-                      () => context.go('/account'),
+                      () => context.push('/account'),
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     rectangularButton(
-                      "Button 3",
+                      'Button 3',
                       Icons.do_not_disturb,
                       screenWidth,
                       screenHeight,
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                     ),
                     SizedBox(height: 16),
                     rectangularButton(
-                      "Button 4",
+                      'Button 4',
                       Icons.do_not_disturb,
                       screenWidth,
                       screenHeight,

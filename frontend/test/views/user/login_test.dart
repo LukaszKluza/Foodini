@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/user/login_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
@@ -20,28 +20,30 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
 
-import '../mocks/mocks.mocks.dart';
+import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late LoginBloc loginBloc;
 late MockApiClient mockApiClient;
 late AuthRepository authRepository;
+late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child) {
+Widget wrapWithProviders(
+  Widget child, {
+  List<Provider<dynamic>> additionalProviders = const [],
+}) {
   return MultiProvider(
     providers: [
       Provider<AuthRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+      Provider<LanguageCubit>.value(value: mockLanguageCubit),
+      ...additionalProviders,
     ],
     child: MaterialApp(
-      home: child,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        AppLocalizations.delegate,
-      ],
+      home: Builder(builder: (context) => child),
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
   );
@@ -53,10 +55,13 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
+    mockLanguageCubit = MockLanguageCubit();
     authRepository = AuthRepository(mockApiClient);
     mockTokenStorageRepository = MockTokenStorageRepository();
     loginBloc = LoginBloc(authRepository, mockTokenStorageRepository);
+
     when(mockDio.interceptors).thenReturn(Interceptors());
+    when(mockLanguageCubit.state).thenReturn(Locale(Language.en.code));
   });
 
   testWidgets('Login screen elements are displayed', (
@@ -66,6 +71,7 @@ void main() {
     await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
 
     // Then
+    expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(TextButton), findsNWidgets(3));
     expect(find.byType(ElevatedButton), findsOneWidget);
@@ -122,14 +128,8 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
-          ),
-        ],
-        child: MaterialApp.router(
+      wrapWithProviders(
+        MaterialApp.router(
           routerConfig: goRouter,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -212,14 +212,8 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
-          ),
-        ],
-        child: MaterialApp.router(
+      wrapWithProviders(
+        MaterialApp.router(
           routerConfig: goRouter,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

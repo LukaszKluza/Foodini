@@ -14,9 +14,9 @@ class ProfileDetails {
   });
 
   Map<String, dynamic> toJson() => {
-    "gender": gender,
-    "height_cm": height,
-    "weight_kg": weight,
-    "date_of_birth": dateOfBirth,
+    'gender': gender,
+    'height_cm': height,
+    'weight_kg': weight,
+    'date_of_birth': dateOfBirth,
   };
 }

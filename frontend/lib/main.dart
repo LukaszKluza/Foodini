@@ -27,7 +27,7 @@ void main() async {
     await fetchTokenTaskCallback();
 
     await Workmanager().registerPeriodicTask(
-      "refreshAccessTokenTask",
+      'refreshAccessTokenTask',
       fetchTokenTask,
       frequency: Duration(minutes: 25),
       initialDelay: Duration(seconds: 0),

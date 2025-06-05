@@ -99,7 +99,7 @@ class _RegisterFormState extends State<_RegisterForm> {
           child: Column(
             children: [
               TextFormField(
-                key: Key("first_name"),
+                key: Key('first_name'),
                 controller: _firstNameController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.firstName,
@@ -107,7 +107,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key("last_name"),
+                key: Key('last_name'),
                 controller: _lastNameController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
@@ -115,7 +115,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 validator: (value) => validateName(value, context),
               ),
               TextFormField(
-                key: Key("country"),
+                key: Key('country'),
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.country,
@@ -125,7 +125,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 validator: (value) => validateCountry(value, context),
               ),
               TextFormField(
-                key: Key("e-mail"),
+                key: Key('e-mail'),
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
@@ -134,7 +134,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 validator: (value) => validateEmail(value, context),
               ),
               TextFormField(
-                key: Key("password"),
+                key: Key('password'),
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.password,
@@ -143,7 +143,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 validator: (value) => validatePassword(value, context),
               ),
               TextFormField(
-                key: Key("confirm_password"),
+                key: Key('confirm_password'),
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.confirmPassword,
@@ -173,7 +173,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                     return CircularProgressIndicator();
                   } else {
                     return ElevatedButton(
-                      key: Key("register"),
+                      key: Key('register'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = RegisterRequest(
@@ -199,12 +199,12 @@ class _RegisterFormState extends State<_RegisterForm> {
                   child: Text(_message!, style: _messageStyle),
                 ),
               TextButton(
-                key: Key("already_have_an_account"),
+                key: Key('already_have_an_account'),
                 onPressed: () => context.go('/login'),
                 child: Text(AppLocalizations.of(context)!.alreadyHaveAnAccount),
               ),
               TextButton(
-                key: Key("home"),
+                key: Key('home'),
                 onPressed: () => context.go('/'),
                 child: Text(AppLocalizations.of(context)!.home),
               ),
