@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
@@ -6,7 +8,9 @@ import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
-class DietFormState {
+abstract class DietFormState {}
+
+class DietFormSubmit extends DietFormState {
   final Gender? gender;
   final double? height;
   final double? weight;
@@ -29,15 +33,15 @@ class DietFormState {
   final bool isSuccess;
   final String? errorMessage;
 
-  DietFormState({
+  DietFormSubmit({
     this.gender,
-    this.height,
-    this.weight,
+    this.height = 175.0,
+    this.weight = 65.0,
     this.dateOfBirth,
     this.dietType,
-    this.allergies,
-    this.dietGoal,
-    this.mealsPerDay,
+    this.allergies = const [],
+    this.dietGoal = 70.0,
+    this.mealsPerDay = 3,
     this.dietIntensity,
     this.activityLevel,
     this.stressLevel,
@@ -70,7 +74,7 @@ class DietFormState {
     bool? isSuccess,
     String? errorMessage,
   }) {
-    return DietFormState(
+    return DietFormSubmit(
       gender: gender ?? this.gender,
       height: height ?? this.height,
       weight: weight ?? this.weight,
@@ -91,4 +95,13 @@ class DietFormState {
       errorMessage: errorMessage,
     );
   }
+}
+
+class DietFormSubmitSuccess extends DietFormState {}
+
+class DietFormSubmitFailure extends DietFormState {
+  final String Function(BuildContext)? getMessage;
+  final ApiException? error;
+
+  DietFormSubmitFailure({this.getMessage, this.error});
 }

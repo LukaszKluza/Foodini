@@ -159,7 +159,7 @@ class _RegisterFormState extends State<_RegisterForm> {
               SizedBox(height: 20),
               BlocConsumer<RegisterBloc, RegisterState>(
                 listener: (context, state) {
-                  RegisterListenerHelper.onChangePasswordListener(
+                  RegisterListenerHelper.onRegisterListener(
                     context: context,
                     state: state,
                     setState: setState,

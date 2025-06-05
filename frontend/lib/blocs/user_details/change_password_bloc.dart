@@ -25,6 +25,5 @@ class ChangePasswordBloc
         emit(ChangePasswordFailure(error));
       }
     });
-
   }
 }

@@ -16,7 +16,7 @@
   "requiredPassword": "Hasło jest wymagane",
   "requiredPasswordConfirmation": "Potwierdzenie hasła jest wymagane",
   "samePasswords": "Hasła muszą być takie same",
-  "passwordLengthMustBeBetween": "Długość hasła musi być między",
+  "passwordLengthMustBeBetween": "Długość hasła musi być pomiędzy",
   "passwordComplexityError": "Hasło musi zawierać wielkie i małe litery oraz cyfry",
   "invalidEmail": "Podaj poprawny adres e-mail",
   "registration": "Rejestracja",
@@ -71,17 +71,17 @@
   "stressLevel": "Poziom stresu",
   "requiredStressLevel": "Wskaż poziom stresu",
   "sleepQuality": "Jakość snu",
-  "requiredSleepQuality": "Wskaż poziom snu",
+  "requiredSleepQuality": "Wskaż jakość snu",
   "advancedBodyParameters": "Zaawansowane parametry ciała",
   "musclePercentage": "Procent mięśni",
-  "enterMusclePercentage": "Procent mięśn",
+  "enterMusclePercentage": "Procent mięśni",
   "musclePercentageShouldBeBetween": "Procent mięśni powinien być pomiędzy",
   "waterPercentage": "Procent wody",
   "enterWaterPercentage": "Wprowadź procent wody",
-  "waterPercentageShouldBeBetween": "Procent wody powinien być %",
+  "waterPercentageShouldBeBetween": "Procent wody powinien być pomiędzy",
   "fatPercentage": "Procent tłuszczu",
   "enterFatPercentage": "Wprowadź procent tłuszczu",
-  "fatPercentageShouldBeBetween": "Procent tłuszczu powinien być %",
+  "fatPercentageShouldBeBetween": "Procent tłuszczu powinien być pomiędzy",
   "generateWeeklyDiet": "Wygeneruj tygodniową dietę",
 
   "dietType_FatLoss": "Utrata tłuszczu",
@@ -139,5 +139,6 @@
   "weightShouldBeBetween": "Waga powinna być pomiędzy",
 
   "dateOfBirth": "Data urodzenia",
-  "formSuccessfullySubmitted": "Formularz został pomyślnie wysłany"
+  "formSuccessfullySubmitted": "Formularz został pomyślnie wysłany",
+  "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola"
 }

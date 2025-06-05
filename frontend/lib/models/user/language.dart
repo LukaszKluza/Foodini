@@ -11,9 +11,12 @@ Language {
 
   static Language fromJson(String value) {
     switch (value.toUpperCase()) {
-      case 'PL': return Language.pl;
-      case 'EN': return Language.en;
-      default: throw ArgumentError('Unknown language: $value');
+      case 'PL':
+        return Language.pl;
+      case 'EN':
+        return Language.en;
+      default:
+        throw ArgumentError('Unknown language: $value');
     }
   }
 

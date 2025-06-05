@@ -868,6 +868,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Form successfully submitted'**
   String get formSuccessfullySubmitted;
+
+  /// No description provided for @fillAllNecessaryFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill all necessary fields'**
+  String get fillAllNecessaryFields;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -11,9 +11,9 @@ class UserDetailsRepository:
         self.db = db
 
     async def add_user_details(
-        self, user_details_data: UserDetailsCreate
+        self, user_details_data: UserDetailsCreate, user_id: int
     ) -> UserDetails:
-        user_details = UserDetails(**user_details_data.model_dump())
+        user_details = UserDetails(user_id=user_id, **user_details_data.model_dump())
         self.db.add(user_details)
         await self.db.commit()
         await self.db.refresh(user_details)
@@ -24,16 +24,16 @@ class UserDetailsRepository:
 
     async def get_user_details_by_user_id(self, user_id: int) -> UserDetails:
         query = select(UserDetails).where(UserDetails.user_id == user_id)
-        result = await self.db.exec(query)
-        return result.first()
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
 
-    async def update_user_details(
-        self, user_details_id: int, user_details_data: UserDetailsUpdate
+    async def update_user_details_by_user_id(
+        self, user_id: int, user_details_data: UserDetailsUpdate
     ) -> UserDetails | None:
-        user = await self.get_user_details_by_id(user_details_id)
-        if user:
+        user_details = await self.get_user_details_by_user_id(user_id)
+        if user_details:
             user_details_request = UserDetails(
-                id=user_details_id, **user_details_data.model_dump(exclude_unset=True)
+                id=user_details.id, **user_details_data.model_dump(exclude_unset=True)
             )
             updated_user_details = await self.db.merge(user_details_request)
             await self.db.commit()

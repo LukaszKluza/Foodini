@@ -7,9 +7,12 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'app_router.dart';
 import 'models/user/refreshed_tokens_response.dart';
 
-Future<void> fetchTokenTaskCallback([TokenStorageRepository? tokenStorage]) async {
+Future<void> fetchTokenTaskCallback([
+  TokenStorageRepository? tokenStorage,
+]) async {
   final UserStorage userStorage = UserStorage();
-  final String? refreshToken = await (tokenStorage ?? TokenStorageRepository()).getAccessToken();
+  final String? refreshToken =
+      await (tokenStorage ?? TokenStorageRepository()).getAccessToken();
 
   if (refreshToken != null) {
     final apiClient = ApiClient();
@@ -19,8 +22,12 @@ Future<void> fetchTokenTaskCallback([TokenStorageRepository? tokenStorage]) asyn
 
     try {
       refreshedTokens = await authRepository.refreshTokens();
-      await TokenStorageRepository().saveAccessToken(refreshedTokens.accessToken);
-      await TokenStorageRepository().saveRefreshToken(refreshedTokens.refreshToken);
+      await TokenStorageRepository().saveAccessToken(
+        refreshedTokens.accessToken,
+      );
+      await TokenStorageRepository().saveRefreshToken(
+        refreshedTokens.refreshToken,
+      );
 
       userResponse = await authRepository.getUser();
       userStorage.setUser(userResponse);

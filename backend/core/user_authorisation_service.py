@@ -184,6 +184,7 @@ class AuthorizationService:
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
                 else status.HTTP_403_FORBIDDEN,
+                detail="Revoked token",
             )
 
     @staticmethod

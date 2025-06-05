@@ -22,10 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
-    await Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode: false,
-    );
+    await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
     await fetchTokenTaskCallback();
 
@@ -34,9 +31,7 @@ void main() async {
       fetchTokenTask,
       frequency: Duration(minutes: 25),
       initialDelay: Duration(seconds: 0),
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
+      constraints: Constraints(networkType: NetworkType.connected),
     );
   } else {
     await fetchTokenTaskCallback();

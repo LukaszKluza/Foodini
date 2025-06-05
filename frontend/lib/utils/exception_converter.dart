@@ -26,4 +26,3 @@ class ExceptionConverter extends RegisterState {
     return error.toString();
   }
 }
-

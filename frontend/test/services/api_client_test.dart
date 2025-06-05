@@ -219,9 +219,7 @@ void main() {
     const email = 'test@example.com';
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(
-        path: Endpoints.resendVerificationEmail,
-      ),
+      requestOptions: RequestOptions(path: Endpoints.resendVerificationEmail),
       data: {'status': 'resent'},
       statusCode: 200,
     );

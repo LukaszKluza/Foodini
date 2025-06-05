@@ -1,10 +1,10 @@
 enum DietType {
-  fatLoss(0, 'FAT_LOSS'),
-  muscleGain(1, 'MUSCLE_GAIN'),
-  weightMaintenance(2, 'WEIGHT_MAINTENANCE'),
-  vegetarian(3, 'VEGETARIAN'),
-  vegan(4, 'VEGAN'),
-  keto(5, 'KETO');
+  fatLoss(0, 'fat_loss'),
+  muscleGain(1, 'muscle_gain'),
+  weightMaintenance(2, 'weight_maintenance'),
+  vegetarian(3, 'vegetarian'),
+  vegan(4, 'vegan'),
+  keto(5, 'keto');
 
   final int value;
   final String nameStr;
@@ -15,7 +15,7 @@ enum DietType {
 
   static DietType fromJson(String value) {
     return DietType.values.firstWhere(
-          (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value.toUpperCase(),
       orElse: () => throw ArgumentError('Unknown diet type: $value'),
     );
   }
@@ -24,7 +24,7 @@ enum DietType {
 
   static DietType fromInt(int value) {
     return DietType.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid diet type value: $value'),
     );
   }

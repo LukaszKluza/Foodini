@@ -5,6 +5,7 @@ import 'package:frontend/events/user/provide_email_events.dart';
 import 'package:frontend/listeners/user/provide_email_listener.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/states/provide_email_states.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/config/styles.dart';
@@ -37,12 +38,7 @@ class ProvideEmailScreen extends StatelessWidget {
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/account');
-          },
-        ),
+        automaticallyImplyLeading: false,
         title: Center(
           child: Text(
             AppLocalizations.of(context)!.changePassword,
@@ -57,6 +53,9 @@ class ProvideEmailScreen extends StatelessWidget {
         ],
       ),
       body: _ProvideEmailForm(),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+      ),
     );
   }
 }

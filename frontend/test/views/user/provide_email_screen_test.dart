@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/blocs/user/provide_email_block.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
@@ -21,15 +22,19 @@ late AuthRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child) {
+Widget wrapWithProviders(Widget child, {List<GoRoute> routes = const []}) {
+  final goRouter = GoRouter(
+    initialLocation: '/',
+    routes: [GoRoute(path: '/', builder: (context, state) => child), ...routes],
+    errorBuilder: (context, state) => child,
+  );
+
   return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-    ],
-    child: MaterialApp(
+    providers: [Provider<AuthRepository>.value(value: authRepository)],
+    child: MaterialApp.router(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: child,
+      routerConfig: goRouter,
     ),
   );
 }
@@ -57,7 +62,7 @@ void main() {
     await provideEmailBloc.close();
   });
 
-  testWidgets('Provide email elements are displayed', (
+  testWidgets('Provide email elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -68,6 +73,7 @@ void main() {
 
     expect(find.byKey(Key('e-mail')), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
 
     expect(provideEmailBloc.state, isA<ProvideEmailInitial>());
@@ -92,7 +98,12 @@ void main() {
   ) async {
     when(mockApiClient.provideEmail(any)).thenAnswer(
       (_) async => Response<dynamic>(
-        data: {'id': 1, 'email': 'john@example.com', 'name': 'John', 'language': 'pl'},
+        data: {
+          'id': 1,
+          'email': 'john@example.com',
+          'name': 'John',
+          'language': 'pl',
+        },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.changePassword),
       ),
@@ -115,9 +126,7 @@ void main() {
 
     await tester.pumpWidget(
       MultiProvider(
-        providers: [
-          Provider<AuthRepository>.value(value: authRepository),
-        ],
+        providers: [Provider<AuthRepository>.value(value: authRepository)],
         child: MaterialApp.router(
           routerConfig: goRouter,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

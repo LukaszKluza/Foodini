@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock, AsyncMock
 import pytest
 from fastapi import HTTPException, status
 
-from backend.models import UserDetails, User, Allergies
+from backend.models import UserDetails, User
 from backend.user_details import enums
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 
@@ -17,7 +17,7 @@ with patch.dict(
 
 @pytest.fixture
 def mock_user_details_repository():
-    repo = MagicMock()
+    repo = AsyncMock()
     repo.add_user_details = AsyncMock()
     repo.get_user_details_by_id = AsyncMock()
     repo.update_user_details = AsyncMock()
@@ -33,13 +33,20 @@ def mock_user_gateway():
 
 
 @pytest.fixture
+def mock_user_details_validators():
+    validators = MagicMock()
+    validators.ensure_user_details_exist_by_user_id = AsyncMock()
+    return validators
+
+
+@pytest.fixture
 def user_details_service(
-    mock_user_details_repository,
-    mock_user_gateway,
+    mock_user_details_repository, mock_user_gateway, mock_user_details_validators
 ):
     return UserDetailsService(
         user_details_repository=mock_user_details_repository,
         user_gateway=mock_user_gateway,
+        user_details_validators=mock_user_details_validators,
     )
 
 
@@ -51,7 +58,7 @@ basic_user_details = UserDetails(
     weight_kg=75.0,
     date_of_birth=date(2002, 5, 15),
     diet_type_id=4,
-    allergies=[Allergies(id=1, name="lactose")],
+    allergies=[enums.Allergies.LACTOSE],
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity_id=2,
@@ -71,7 +78,7 @@ updated_user_details = UserDetails(
     weight_kg=75.0,
     date_of_birth=date(2002, 5, 15),
     diet_type_id=4,
-    allergies=[Allergies(id=1, name="lactose")],
+    allergies=[enums.Allergies.LACTOSE],
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity_id=2,
@@ -118,16 +125,18 @@ async def test_get_user_details_when_user_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
+    mock_user_details_validators,
 ):
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.get_user_details_by_id.return_value = (
+    mock_user_gateway.check_user_permission.return_value = None
+    mock_user_details_repository.get_user_details_by_user_id.return_value = (
         basic_user_details
     )
 
     # When
-    response = await user_details_service.get_user_details_by_user_id(token_payload)
+    response = await user_details_service.get_user_details_by_user_id(token_payload, 1)
 
     # Then
     assert response == basic_user_details
@@ -150,7 +159,7 @@ async def test_get_user_details_when_not_exist(
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.get_user_details_by_user_id(token_payload)
+        await user_details_service.get_user_details_by_user_id(token_payload, 1)
 
     # Then
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
@@ -162,16 +171,24 @@ async def test_add_user_details_when_details_not_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
+    mock_user_details_validators,
 ):
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.add_user_details.return_value = basic_user_details
-    mock_user_details_repository.get_user_details_by_id.return_value = None
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
+        None
+    )
+    mock_user_details_repository.add_user_details = AsyncMock(
+        return_value=basic_user_details
+    )
+    user_details_service.get_user_details_by_user_id = AsyncMock(
+        side_effect=HTTPException(status_code=404, detail="Not found")
+    )
 
     # When
     response = await user_details_service.add_user_details(
-        token_payload, user_details_create
+        token_payload, user_details_create, 1
     )
 
     # Then
@@ -189,43 +206,22 @@ async def test_add_user_details_when_details_exist(
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.update_user_details.return_value = basic_user_details
+    mock_user_details_repository.update_user_details_by_user_id.return_value = (
+        basic_user_details
+    )
     mock_user_details_repository.get_user_details_by_id.return_value = (
         basic_user_details
     )
 
     # When
     response = await user_details_service.add_user_details(
-        token_payload, user_details_create
+        token_payload, user_details_create, 1
     )
 
     # Then
     assert response == basic_user_details
     mock_user_details_repository.add_user_details.assert_not_called()
-    mock_user_details_repository.update_user_details.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_update_user_details_when_not_exist(
-    user_details_service,
-    mock_user_details_repository,
-    mock_user_gateway,
-):
-    # Given
-    token_payload = {"id": "1"}
-    mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.get_user_details_by_id.return_value = None
-
-    # When
-    with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.update_user_details(
-            token_payload, user_details_update
-        )
-
-    # Then
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "User details do not exist"
-    mock_user_details_repository.update_user_details.assert_not_called()
+    mock_user_details_repository.update_user_details_by_user_id.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -233,19 +229,50 @@ async def test_update_user_details_when_details_exist(
     user_details_service,
     mock_user_details_repository,
     mock_user_gateway,
+    mock_user_details_validators,
 ):
     # Given
     token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
-    mock_user_details_repository.update_user_details.return_value = updated_user_details
-    mock_user_details_repository.get_user_details_by_id.return_value = (
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
         basic_user_details
+    )
+    mock_user_details_repository.update_user_details_by_user_id.return_value = (
+        updated_user_details
     )
 
     # When
-    response = await user_details_service.update_user_details(
-        token_payload, user_details_update
+    result = await user_details_service.update_user_details(
+        token_payload, user_details_update, 1
     )
 
     # Then
-    assert response == updated_user_details
+    assert result == updated_user_details
+    mock_user_details_repository.update_user_details_by_user_id.assert_called_once_with(
+        "1", user_details_update
+    )
+
+
+@pytest.mark.asyncio
+async def test_update_user_details_when_details_not_exist(
+    user_details_service,
+    mock_user_details_repository,
+    mock_user_gateway,
+    mock_user_details_validators,
+):
+    # Given
+    token_payload = {"id": "1"}
+    mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
+
+    mock_user_details_validators.ensure_user_details_exist_by_user_id.side_effect = (
+        HTTPException(status_code=404, detail="User details not found")
+    )
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc_info:
+        await user_details_service.update_user_details(
+            token_payload, user_details_update, 1
+        )
+
+    assert exc_info.value.status_code == 404
+    assert exc_info.value.detail == "User details not found"

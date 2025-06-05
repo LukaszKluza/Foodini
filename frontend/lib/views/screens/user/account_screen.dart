@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 
 import 'package:go_router/go_router.dart';
@@ -172,6 +173,9 @@ class _AccountScreenState extends State<_AccountBody> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
       ),
     );
   }

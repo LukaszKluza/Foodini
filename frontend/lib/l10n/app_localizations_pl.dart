@@ -57,7 +57,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get samePasswords => 'Hasła muszą być takie same';
 
   @override
-  String get passwordLengthMustBeBetween => 'Długość hasła musi być między';
+  String get passwordLengthMustBeBetween => 'Długość hasła musi być pomiędzy';
 
   @override
   String get passwordComplexityError => 'Hasło musi zawierać wielkie i małe litery oraz cyfry';
@@ -222,7 +222,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sleepQuality => 'Jakość snu';
 
   @override
-  String get requiredSleepQuality => 'Wskaż poziom snu';
+  String get requiredSleepQuality => 'Wskaż jakość snu';
 
   @override
   String get advancedBodyParameters => 'Zaawansowane parametry ciała';
@@ -231,7 +231,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get musclePercentage => 'Procent mięśni';
 
   @override
-  String get enterMusclePercentage => 'Procent mięśn';
+  String get enterMusclePercentage => 'Procent mięśni';
 
   @override
   String get musclePercentageShouldBeBetween => 'Procent mięśni powinien być pomiędzy';
@@ -243,7 +243,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterWaterPercentage => 'Wprowadź procent wody';
 
   @override
-  String get waterPercentageShouldBeBetween => 'Procent wody powinien być %';
+  String get waterPercentageShouldBeBetween => 'Procent wody powinien być pomiędzy';
 
   @override
   String get fatPercentage => 'Procent tłuszczu';
@@ -252,7 +252,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterFatPercentage => 'Wprowadź procent tłuszczu';
 
   @override
-  String get fatPercentageShouldBeBetween => 'Procent tłuszczu powinien być %';
+  String get fatPercentageShouldBeBetween => 'Procent tłuszczu powinien być pomiędzy';
 
   @override
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
@@ -394,4 +394,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
+
+  @override
+  String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
 }

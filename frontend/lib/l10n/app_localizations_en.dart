@@ -394,4 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formSuccessfullySubmitted => 'Form successfully submitted';
+
+  @override
+  String get fillAllNecessaryFields => 'Fill all necessary fields';
 }
