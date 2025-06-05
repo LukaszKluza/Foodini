@@ -11,9 +11,9 @@ class UserDetailsRepository:
         self.db = db
 
     async def add_user_details(
-        self, user_details_data: UserDetailsCreate
+        self, user_details_data: UserDetailsCreate, user_id: int
     ) -> UserDetails:
-        user_details = UserDetails(**user_details_data.model_dump())
+        user_details = UserDetails(user_id = user_id, **user_details_data.model_dump())
         self.db.add(user_details)
         await self.db.commit()
         await self.db.refresh(user_details)

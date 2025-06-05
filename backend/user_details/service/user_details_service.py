@@ -55,8 +55,6 @@ class UserDetailsService:
         )
         await self.user_gateway.ensure_user_exists_by_id(user_id_from_token)
 
-        user_details_data.user_id = user_id_from_token
-
         try:
             await self.get_user_details_by_user_id(token_payload, user_id_from_request)
             return await self.update_user_details(
@@ -66,7 +64,7 @@ class UserDetailsService:
             )
         except HTTPException:
             return await self.user_details_repository.add_user_details(
-                user_details_data
+                user_details_data, user_id_from_token
             )
 
     async def update_user_details(

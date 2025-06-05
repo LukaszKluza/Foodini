@@ -14,7 +14,6 @@ from .mixins import DateOfBirthValidationMixin
 
 
 class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
-    user_id: Optional[int] = None
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
