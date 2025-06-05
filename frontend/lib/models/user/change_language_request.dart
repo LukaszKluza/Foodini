@@ -8,6 +8,6 @@ class ChangeLanguageRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "language": language.toJson()
+    'language': language.toJson()
   };
 }

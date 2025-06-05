@@ -74,7 +74,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> updateLanguage(ChangeLanguageRequest request, int userId) {
+  Future<Response> changeLanguage(ChangeLanguageRequest request, int userId) {
     return _client.patch(
       Endpoints.changeLanguage,
       data: request.toJson(),

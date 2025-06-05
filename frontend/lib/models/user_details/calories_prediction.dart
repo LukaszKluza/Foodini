@@ -19,10 +19,10 @@ class CaloriesPrediction {
   });
 
   Map<String, dynamic> toJson() => {
-    "activity_level": activityLevel,
-    "password": stressLevel,
-    "token": sleepQuality,
-    "advanced_body_parameters_enabled": advancedBodyParametersEnabled,
-    "advanced_body_parameters": advancedBodyParameters,
+    'activity_level': activityLevel,
+    'password': stressLevel,
+    'token': sleepQuality,
+    'advanced_body_parameters_enabled': advancedBodyParametersEnabled,
+    'advanced_body_parameters': advancedBodyParameters,
   };
 }

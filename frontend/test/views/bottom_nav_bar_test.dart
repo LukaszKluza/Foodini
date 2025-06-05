@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+
+void main() {
+  group('BottomNavBar Widget Tests', () {
+    testWidgets('renders all three buttons', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            bottomNavigationBar: BottomNavBar(currentRoute: '/profile'),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.byIcon(Icons.home), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
+    });
+
+    testWidgets('Home button navigates to /main_page', (tester) async {
+      final router = GoRouter(
+        initialLocation: '/profile',
+        routes: [
+          GoRoute(
+            path: '/main_page',
+            builder: (_, __) => const Scaffold(body: Text('Main Page')),
+          ),
+          GoRoute(
+            path: '/profile',
+            builder:
+                (_, __) => Scaffold(
+                  body: const Text('Profile'),
+                  bottomNavigationBar: const BottomNavBar(
+                    currentRoute: '/profile',
+                  ),
+                ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Profile'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.home));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Main Page'), findsOneWidget);
+    });
+
+    testWidgets('Back button triggers pop in normal mode if possible', (
+      tester,
+    ) async {
+      final navigatorKey = GlobalKey<NavigatorState>();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          navigatorKey: navigatorKey,
+          home: Builder(
+            builder: (context) {
+              return Scaffold(
+                body: Center(
+                  child: ElevatedButton(
+                    child: const Text('Go to Page 2'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) => Scaffold(
+                                appBar: AppBar(title: const Text('Page 2')),
+                                bottomNavigationBar: const BottomNavBar(
+                                  currentRoute: '/page2',
+                                ),
+                                body: const Text('Page 2 Content'),
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Go to Page 2'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Page 2 Content'), findsOneWidget);
+
+      await tester.tap(
+        find.byWidgetPredicate((widget) {
+          return widget is Icon &&
+              widget.icon == Icons.arrow_back &&
+              widget.semanticLabel == 'Back';
+        }),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Go to Page 2'), findsOneWidget);
+    });
+
+    testWidgets('Next button navigates to nextRoute in wizard mode', (
+      tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/wizard1',
+        routes: [
+          GoRoute(
+            path: '/wizard1',
+            builder:
+                (_, __) => Scaffold(
+                  body: Column(
+                    children: const [
+                      Text('Wizard Step 1'),
+                      BottomNavBar(
+                        currentRoute: '/wizard1',
+                        mode: NavBarMode.wizard,
+                        nextRoute: '/wizard2',
+                      ),
+                    ],
+                  ),
+                ),
+          ),
+          GoRoute(
+            path: '/wizard2',
+            builder: (_, __) => const Scaffold(body: Text('Wizard Step 2')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Wizard Step 1'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_forward));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Wizard Step 2'), findsOneWidget);
+    });
+
+    testWidgets('Back button navigates to prevRoute in wizard mode', (
+      tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/wizard2',
+        routes: [
+          GoRoute(
+            path: '/wizard1',
+            builder: (_, __) => const Scaffold(body: Text('Wizard Step 1')),
+          ),
+          GoRoute(
+            path: '/wizard2',
+            builder:
+                (_, __) => Scaffold(
+                  body: Column(
+                    children: const [
+                      Text('Wizard Step 2'),
+                      BottomNavBar(
+                        currentRoute: '/wizard2',
+                        mode: NavBarMode.wizard,
+                        prevRoute: '/wizard1',
+                      ),
+                    ],
+                  ),
+                ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Wizard Step 2'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Wizard Step 1'), findsOneWidget);
+    });
+  });
+}

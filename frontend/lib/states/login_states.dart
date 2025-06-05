@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/user/user_response.dart';
 
 abstract class LoginState {
   final String Function(BuildContext)? getMessage;
@@ -11,7 +12,12 @@ class LoginInitial extends LoginState {}
 class ActionInProgress extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  LoginSuccess(String Function(BuildContext) getMessage) : super(getMessage: getMessage);
+  final UserResponse userResponse;
+
+  LoginSuccess({
+    required this.userResponse,
+    required String Function(BuildContext) getMessage,
+  }) : super(getMessage: getMessage);
 }
 
 class LoginFailure extends LoginState {

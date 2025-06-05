@@ -3,65 +3,65 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:integration_test/integration_test.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  late DietFormBloc bloc;
+import '../../mocks/mocks.mocks.dart';
 
-  setUp(() {
-    bloc = DietFormBloc();
-  });
-
-  tearDown(() {
-    bloc.close();
-  });
-
-  Widget wrapWithRouter(Widget child, {required DietFormBloc bloc}) {
-    return MaterialApp.router(
+Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
+  return MultiProvider(
+    providers: [
+      Provider<AuthRepository>.value(value: MockAuthRepository()),
+      Provider<TokenStorageRepository>.value(
+        value: MockTokenStorageRepository(),
+      ),
+      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc()),
+    ],
+    child: MaterialApp.router(
+      routerConfig: GoRouter(
+        routes: [GoRoute(path: '/', builder: (_, __) => child)],
+      ),
       locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder:
-                (_, __) =>
-                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
-          ),
-        ],
+    ),
+  );
+}
+
+void main() {
+  final dietFormBloc = DietFormBloc();
+
+  testWidgets('Basic Calories prediction screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
+    // Given, When
+    await tester.pumpWidget(
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
       ),
     );
-  }
+    await tester.pumpAndSettle();
 
-  testWidgets(
-    'Basic Calories prediction screen elements and navbar are displayed',
-    (WidgetTester tester) async {
-      // Given, When
-      await tester.pumpWidget(
-        wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
-      );
-      await tester.pumpAndSettle();
-
-      // Then
-      expect(find.byKey(Key('activity_level')), findsOneWidget);
-      expect(find.byKey(Key('stress_level')), findsOneWidget);
-      expect(find.byKey(Key('sleep_quality')), findsOneWidget);
-      expect(find.text('Advance body parameters'), findsOneWidget);
-      expect(find.byType(BottomNavBar), findsOneWidget);
-    },
-  );
+    // Then
+    expect(find.byKey(Key('activity_level')), findsOneWidget);
+    expect(find.byKey(Key('stress_level')), findsOneWidget);
+    expect(find.byKey(Key('sleep_quality')), findsOneWidget);
+    expect(find.text('Advance body parameters'), findsOneWidget);
+  });
 
   testWidgets('Activity enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -87,7 +87,10 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -112,7 +115,10 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -137,10 +143,12 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
-
     // When
     final checkboxFinder = find.widgetWithText(
       CheckboxListTile,
@@ -163,7 +171,10 @@ void main() {
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -180,13 +191,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text("Muscle percentage: 35.0%"), findsOneWidget);
+    expect(find.text('Muscle percentage: 35.0%'), findsOneWidget);
   });
 
   testWidgets('Water slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -199,18 +213,11 @@ void main() {
     await tester.pumpAndSettle();
 
     final sliderFinder = find.byKey(Key('water_percentage'));
-
-    final slider = tester.getCenter(sliderFinder);
-    await tester.dragFrom(slider, const Offset(100, 0));
+    await tester.drag(sliderFinder, const Offset(100, 0));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining("Water percentage:"), findsOneWidget);
-
-    final textFinder = find.textContaining("Water percentage:");
-    expect(textFinder, findsOneWidget);
-    final textWidget = tester.widget<Text>(textFinder);
-    expect(textWidget.data, contains("60.0%"));
+    expect(find.text('Water percentage: 60.0%'), findsOneWidget);
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {
@@ -220,7 +227,10 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -237,13 +247,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text("Fat percentage: 12.0%"), findsOneWidget);
+    expect(find.text('Fat percentage: 12.0%'), findsOneWidget);
   });
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -275,7 +288,10 @@ void main() {
   testWidgets('Water pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -308,10 +324,12 @@ void main() {
     // Given
     tester.view.physicalSize = Size(1170, 2532);
     tester.view.devicePixelRatio = 1.5;
-    await tester.pumpAndSettle();
 
     await tester.pumpWidget(
-      wrapWithRouter(const CaloriesPredictionScreen(), bloc: bloc),
+      wrapWithProvidersForTest(
+        const CaloriesPredictionScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
     );
     await tester.pumpAndSettle();
 

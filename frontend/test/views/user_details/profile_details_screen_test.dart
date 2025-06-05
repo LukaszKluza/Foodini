@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
-import 'package:go_router/go_router.dart';
 
 void main() {
-  final bloc = DietFormBloc();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late DietFormBloc bloc;
+
+  setUp(() {
+    bloc = DietFormBloc();
+  });
+
+  tearDown(() {
+    bloc.close();
+  });
 
   Widget wrapWithRouter(Widget child, {required DietFormBloc bloc}) {
     return MaterialApp.router(
@@ -27,10 +38,9 @@ void main() {
     );
   }
 
-  testWidgets('Profile details screen elements are displayed', (
+  testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
-    // Given, When
     await tester.pumpWidget(
       wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
     );
@@ -41,6 +51,7 @@ void main() {
     expect(find.byKey(Key('height')), findsOneWidget);
     expect(find.byKey(Key('weight')), findsOneWidget);
     expect(find.byKey(Key('date_of_birth')), findsOneWidget);
+    expect(find.byType(BottomNavBar), findsOneWidget);
   });
 
   testWidgets('Gender enums are displayed after tap', (

@@ -26,9 +26,9 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
-    muscle_percentage: float = Field(ge=0, le=100)
-    water_percentage: float = Field(ge=0, le=100)
-    fat_percentage: float = Field(ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(None, ge=0, le=100)
+    water_percentage: Optional[float] = Field(None, ge=0, le=100)
+    fat_percentage: Optional[float] = Field(None, ge=0, le=100)
 
 
 class UserDetailsResponse(UserDetailsCreate):
