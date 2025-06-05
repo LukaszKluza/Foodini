@@ -132,7 +132,7 @@ void main() {
     expect(find.byKey(Key('change_password')), findsOneWidget);
   });
 
-  // TODO identify why with navbar build on the screen is called two times, second with empty UserStorage()s
+  // TODO identify why with navbar build on the screen is called two times, second with empty UserStorage()
   // testWidgets('User can log out successfully', (WidgetTester tester) async {
   //   // Given
   //   tester.view.physicalSize = Size(1170, 2532);

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 
@@ -49,16 +50,18 @@ class _AccountScreenState extends State<_AccountBody> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final horizontalPadding = screenWidth * horizontalPaddingRatio;
-    final dynamicFontSize = screenWidth * fontSizeRatio;
+    final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
+    final nameFontSize = ResponsiveUtils.scaledFontSize(context, Constants.nameFontRatio);
+    final labelFontSize = ResponsiveUtils.scaledFontSize(context, Constants.labelFontRatio);
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.push('/main_page');
-          },
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.foodini,
+            style: Styles.titleStyle,
+          ),
         ),
       ),
       body: BlocListener<AccountBloc, AccountState>(
@@ -83,7 +86,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     '${UserStorage().getName!}\'s',
-                    style: Styles.kaushanScriptStyle(dynamicFontSize),
+                    style: Styles.kaushanScriptStyle(nameFontSize),
                   ),
                 ),
                 Padding(
@@ -93,7 +96,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.account,
-                    style: Styles.kaushanScriptStyle(dynamicFontSize),
+                    style: Styles.kaushanScriptStyle(labelFontSize),
                   ),
                 ),
                 const SizedBox(height: 24),

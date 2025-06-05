@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:frontend/views/widgets/rectangular_button.dart';
@@ -22,10 +24,20 @@ class _LoginScreenState extends State<MainPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final horizontalPadding = screenWidth * horizontalPaddingRatio;
-    final dynamicFontSize = screenWidth * fontSizeRatio;
+    final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
+    final nameFontSize = ResponsiveUtils.scaledFontSize(context, Constants.nameFontRatio);
+    final labelFontSize = ResponsiveUtils.scaledFontSize(context, Constants.labelFontRatio);
 
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.foodini,
+            style: Styles.titleStyle,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -40,7 +52,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.hey,
-                  style: Styles.kaushanScriptStyle(dynamicFontSize),
+                  style: Styles.kaushanScriptStyle(labelFontSize),
                 ),
               ),
               Padding(
@@ -50,7 +62,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   UserStorage().getName!,
-                  style: Styles.kaushanScriptStyle(dynamicFontSize),
+                  style: Styles.kaushanScriptStyle(nameFontSize),
                 ),
               ),
               const SizedBox(height: 24),

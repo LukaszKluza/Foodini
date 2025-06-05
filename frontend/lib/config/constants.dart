@@ -7,4 +7,8 @@ class Constants {
   static const double minHeight = 60;
   static const double maxHeight = 230;
   static const int maxMealsPerDay = 6;
+
+  static const double horizontalPaddingRatio = 0.05;
+  static const double nameFontRatio = 52;
+  static const double labelFontRatio = 44;
 }
