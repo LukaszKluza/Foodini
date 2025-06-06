@@ -14,15 +14,18 @@ void main() {
   });
 
   test('saveAccessToken stores token', () async {
-    when(mockStorage.write(key: "abc123", value: "access_token"))
-        .thenAnswer((_) async {});
+    when(
+      mockStorage.write(key: "abc123", value: "access_token"),
+    ).thenAnswer((_) async {});
 
     await tokenStorageMobile.saveAccessToken('abc123');
     verify(mockStorage.write(key: 'access_token', value: 'abc123')).called(1);
   });
 
   test('getAccessToken retrieves token', () async {
-    when(mockStorage.read(key: 'access_token')).thenAnswer((_) async => 'xyz789');
+    when(
+      mockStorage.read(key: 'access_token'),
+    ).thenAnswer((_) async => 'xyz789');
 
     final token = await tokenStorageMobile.getAccessToken();
     expect(token, 'xyz789');

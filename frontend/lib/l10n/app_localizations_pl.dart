@@ -391,4 +391,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
+
+  @override
+  String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
 }

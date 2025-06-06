@@ -11,6 +11,9 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mocks.mocks.dart';
 
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
   return MultiProvider(
     providers: [
@@ -18,7 +21,7 @@ Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
       Provider<TokenStorageRepository>.value(
         value: MockTokenStorageRepository(),
       ),
-      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc()),
+      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
     ],
     child: MaterialApp.router(
       routerConfig: GoRouter(
@@ -32,7 +35,7 @@ Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
 }
 
 void main() {
-  final dietFormBloc = DietFormBloc();
+  final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
     WidgetTester tester,
@@ -213,11 +216,11 @@ void main() {
     await tester.pumpAndSettle();
 
     final sliderFinder = find.byKey(Key('water_percentage'));
-    await tester.drag(sliderFinder, const Offset(100, 0));
+    await tester.drag(sliderFinder, const Offset(50, 0));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Water percentage: 60.0%'), findsOneWidget);
+    expect(find.text('Water percentage: 57.0%'), findsOneWidget);
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {

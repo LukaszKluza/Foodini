@@ -10,6 +10,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../mocks/mocks.mocks.dart';
 
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
   return MultiProvider(
     providers: [
@@ -17,7 +20,7 @@ Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
       Provider<TokenStorageRepository>.value(
         value: MockTokenStorageRepository(),
       ),
-      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc()),
+      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
     ],
     child: MaterialApp.router(
       routerConfig: GoRouter(
@@ -34,7 +37,7 @@ void main() {
   late DietFormBloc dietFormBloc;
 
   setUp(() {
-    dietFormBloc = DietFormBloc();
+    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
   });
 
   tearDown(() {
@@ -200,8 +203,8 @@ void main() {
     expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
     expect(find.textContaining('4'), findsOneWidget);
-    expect(find.textContaining('5'), findsOneWidget);
-    expect(find.textContaining('6'), findsOneWidget);
+    expect(find.textContaining('5'), findsAtLeastNWidgets(2));
+    expect(find.textContaining('6'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('Diet intensity enums are displayed after tap', (
@@ -229,5 +232,28 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Medium'), findsOneWidget);
+  });
+
+  testWidgets('Weight slider is hidden when diet type is Weight Maintenance', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    await tester.pumpWidget(
+      wrapWithProvidersForTest(
+        const DietPreferencesScreen(),
+        dietFormBloc: dietFormBloc,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // When
+    await tester.tap(find.byKey(const Key('diet_type')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Weight Maintenance'));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.byType(Slider), findsNothing);
   });
 }

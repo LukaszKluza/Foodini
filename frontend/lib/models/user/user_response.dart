@@ -5,11 +5,7 @@ class UserResponse {
   final Language language;
   final String email;
 
-  UserResponse({
-    required this.id,
-    required this.language,
-    required this.email,
-  });
+  UserResponse({required this.id, required this.language, required this.email});
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     return UserResponse(

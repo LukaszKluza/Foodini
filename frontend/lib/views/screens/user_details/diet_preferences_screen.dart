@@ -7,6 +7,7 @@ import 'package:frontend/config/styles.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -54,14 +55,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final TextEditingController _allergiesController = TextEditingController();
   final TextEditingController _dietGoalController = TextEditingController();
   final TextEditingController _mealsPerDeyController = TextEditingController();
-  final TextEditingController _dietIntensityController =
-      TextEditingController();
+  final TextEditingController _dietIntensityController = TextEditingController();
 
   DietType? _selectedDietType;
   List<Allergy>? _selectedAllergies;
   DietIntensity? _selectedDietIntensity;
 
-  double _selectedDietGoal = 70;
+  double _selectedDietGoal = 65;
   int _selectedMealsPerDay = 3;
   String? _message;
   final TextStyle _messageStyle = Styles.errorStyle;
@@ -70,11 +70,10 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   void initState() {
     super.initState();
 
-    DietFormBloc dietFormBloc = context.read<DietFormBloc>();
-
-    final state = dietFormBloc.state;
-    if (state.weight != null) {
+    final state = context.read<DietFormBloc>().state;
+    if (state is DietFormSubmit && state.weight != null) {
       _selectedDietGoal = state.weight!;
+      context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
     }
   }
 
@@ -97,32 +96,37 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietType,
         ),
-        items:
-            DietType.values.map((diet) {
-              return DropdownMenuItem<DietType>(
-                value: diet,
-                child: Text(
-                  AppConfig.dietTypeLabels(context)[diet]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: DietType.values.map((diet) {
+          return DropdownMenuItem<DietType>(
+            value: diet,
+            child: Text(
+              AppConfig.dietTypeLabels(context)[diet]!,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedDietType = value!;
+            if (_selectedDietType == DietType.weightMaintenance) {
+              final state = context.read<DietFormBloc>().state;
+              if (state is DietFormSubmit && state.weight != null) {
+                _selectedDietGoal = state.weight!;
+                context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
+              }
+            }
           });
           context.read<DietFormBloc>().add(UpdateDietType(value!));
         },
         validator: (value) => validateDietType(value, context),
       ),
       MultiSelectDialogField<Allergy>(
-        items:
-            Allergy.values.map((allergy) {
-              return MultiSelectItem<Allergy>(
-                allergy,
-                AppConfig.allergyLabels(context)[allergy]!,
-              );
-            }).toList(),
+        items: Allergy.values.map((allergy) {
+          return MultiSelectItem<Allergy>(
+            allergy,
+            AppConfig.allergyLabels(context)[allergy]!,
+          );
+        }).toList(),
         title: Text(AppLocalizations.of(context)!.allergies),
         selectedColor: Colors.purpleAccent,
         chipDisplay: MultiSelectChipDisplay(
@@ -137,18 +141,19 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           context.read<DietFormBloc>().add(UpdateAllergies(values));
         },
       ),
-      WeightSlider(
-        initialValue: _selectedDietGoal,
-        validator: (value) => validateDietGoal(value, context),
-        onChanged: (value) {
-          setState(() {
-            _selectedDietGoal = value;
-          });
-          context.read<DietFormBloc>().add(UpdateDietGoal(value));
-        },
-        label: AppLocalizations.of(context)!.dietGoal,
-        dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
-      ),
+      if (_selectedDietType != DietType.weightMaintenance)
+        WeightSlider(
+          initialValue: _selectedDietGoal,
+          validator: (value) => validateDietGoal(value, context),
+          onChanged: (value) {
+            setState(() {
+              _selectedDietGoal = value;
+            });
+            context.read<DietFormBloc>().add(UpdateDietGoal(value));
+          },
+          label: AppLocalizations.of(context)!.dietGoal,
+          dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
+        ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,16 +183,15 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietIntensity,
         ),
-        items:
-            DietIntensity.values.map((diet) {
-              return DropdownMenuItem<DietIntensity>(
-                value: diet,
-                child: Text(
-                  AppConfig.dietIntensityLabels(context)[diet]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: DietIntensity.values.map((intensity) {
+          return DropdownMenuItem<DietIntensity>(
+            value: intensity,
+            child: Text(
+              AppConfig.dietIntensityLabels(context)[intensity]!,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedDietIntensity = value!;
@@ -217,3 +221,4 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 }
+

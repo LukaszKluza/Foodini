@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/listeners/calories_prediction.dart';
+import 'package:frontend/listeners/user_details/diet_form_listener.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -41,6 +41,8 @@ class CaloriesPredictionScreen extends StatelessWidget {
 }
 
 class _CaloriesPredictionForm extends StatefulWidget {
+  const _CaloriesPredictionForm();
+
   @override
   State<_CaloriesPredictionForm> createState() =>
       _CaloriesPredictionFormState();
@@ -61,12 +63,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   double _selectedWaterPercentage = 60.0;
   double _selectedFatPercentage = 15.0;
   String? _message;
-  final TextStyle _messageStyle = Styles.errorStyle;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void dispose() {
@@ -210,43 +207,54 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         ),
       ],
       SizedBox(height: 16),
-      ElevatedButton(
-        key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
-        onPressed: () {
-          context.read<DietFormBloc>().add(SubmitForm());
-        },
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFB2F2BB)),
-        child: Text(AppLocalizations.of(context)!.generateWeeklyDiet),
-      ),
-      if (_message != null)
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(_message!, style: _messageStyle),
-        ),
     ];
 
     return Padding(
       padding: EdgeInsets.all(35.0),
-      child: BlocListener<DietFormBloc, DietFormState>(
+      child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          CaloriesPredictionListenerHelper.handle(
+          DietFormListenerHelper.onDietFormSubmitListener(
             context: context,
             state: state,
-            successMessageBuilder:
-                (context) =>
-                    AppLocalizations.of(context)!.formSuccessfullySubmitted,
+            mounted: mounted,
+            setState: setState,
+            setMessage: (msg) => _message = msg,
+            setMessageStyle: (style) => _messageStyle = style,
           );
         },
-        child: Form(
-          key: _formKey,
-          child: ListView.separated(
-            key: Key('calories_prediction'),
-            shrinkWrap: true,
-            itemCount: fields.length,
-            separatorBuilder: (_, _) => SizedBox(height: 20),
-            itemBuilder: (_, index) => fields[index],
-          ),
-        ),
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                ...fields,
+                if (state is DietFormSubmit && state.isSubmitting)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  ElevatedButton(
+                    key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<DietFormBloc>().add(SubmitForm());
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFB2F2BB),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.generateWeeklyDiet,
+                    ),
+                  ),
+                if (_message != null)
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(_message!, style: _messageStyle),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

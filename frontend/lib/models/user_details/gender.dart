@@ -1,6 +1,6 @@
 enum Gender {
-  male(0, 'MALE'),
-  female(1, 'FEMALE');
+  male(0, 'male'),
+  female(1, 'female');
 
   final int value;
   final String nameStr;
@@ -9,9 +9,9 @@ enum Gender {
 
   static Gender fromJson(String value) {
     switch (value.toUpperCase()) {
-      case 'MALE':
+      case 'male':
         return Gender.male;
-      case 'FEMALE':
+      case 'female':
         return Gender.female;
       default:
         throw ArgumentError('Unknown gender: $value');
@@ -22,7 +22,7 @@ enum Gender {
 
   static Gender? fromInt(int value) {
     return Gender.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid gender value: $value'),
     );
   }

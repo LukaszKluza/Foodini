@@ -1,9 +1,9 @@
 enum ActivityLevel {
-  veryLow(0, 'VERY_LOW'),
-  light(1, 'LIGHT'),
-  moderate(2, 'MODERATE'),
-  active(3, 'ACTIVE'),
-  veryActive(4, 'VERY_ACTIVE');
+  veryLow(0, 'very_low'),
+  light(1, 'light'),
+  moderate(2, 'moderate'),
+  active(3, 'active'),
+  veryActive(4, 'very_active');
 
   final int value;
   final String nameStr;
@@ -14,7 +14,7 @@ enum ActivityLevel {
 
   static ActivityLevel fromJson(String value) {
     return ActivityLevel.values.firstWhere(
-          (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value.toUpperCase(),
       orElse: () => throw ArgumentError('Unknown activity level: $value'),
     );
   }
@@ -23,7 +23,7 @@ enum ActivityLevel {
 
   static ActivityLevel fromInt(int value) {
     return ActivityLevel.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid activity level value: $value'),
     );
   }

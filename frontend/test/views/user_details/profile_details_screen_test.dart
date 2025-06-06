@@ -8,12 +8,18 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 
+import '../../mocks/mocks.mocks.dart';
+
+
+MockUserDetailsRepository mockUserDetailsRepository =
+    MockUserDetailsRepository();
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   late DietFormBloc bloc;
 
   setUp(() {
-    bloc = DietFormBloc();
+    bloc = DietFormBloc(mockUserDetailsRepository);
   });
 
   tearDown(() {

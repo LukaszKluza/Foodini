@@ -7,7 +7,7 @@ import 'package:frontend/states/register_states.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 
 class RegisterListenerHelper {
-  static void onChangePasswordListener({
+  static void onRegisterListener({
     required BuildContext context,
     required RegisterState state,
     required void Function(void Function()) setState,

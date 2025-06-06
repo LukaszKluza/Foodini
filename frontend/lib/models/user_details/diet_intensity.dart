@@ -1,7 +1,7 @@
 enum DietIntensity {
-  slow(0, 'SLOW'),
-  medium(1, 'MEDIUM'),
-  fast(2, 'FAST');
+  slow(0, 'slow'),
+  medium(1, 'normal'),
+  fast(2, 'fast');
 
   final int value;
   final String nameStr;
@@ -12,7 +12,7 @@ enum DietIntensity {
 
   static DietIntensity fromJson(String value) {
     return DietIntensity.values.firstWhere(
-          (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value.toUpperCase(),
       orElse: () => throw ArgumentError('Unknown diet intensity: $value'),
     );
   }
@@ -21,7 +21,7 @@ enum DietIntensity {
 
   static DietIntensity fromInt(int value) {
     return DietIntensity.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => throw ArgumentError('Invalid diet intensity value: $value'),
     );
   }

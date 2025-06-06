@@ -4,7 +4,9 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 
 void main() {
-  testWidgets('Home screen elements are displayed', (WidgetTester tester) async {
+  testWidgets('Home screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         home: HomeScreen(),

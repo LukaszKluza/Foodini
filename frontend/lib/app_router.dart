@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
-import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
-import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
+import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
@@ -40,29 +40,17 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/profile_details',
-      builder:
-          (context, state) => BlocProvider(
-            create: (_) => DietFormBloc(),
-            child: ProfileDetailsScreen(),
-          ),
+      builder: (context, state) => ProfileDetailsScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
       path: '/diet_preferences',
-      builder:
-          (context, state) => BlocProvider(
-            create: (_) => DietFormBloc(),
-            child: DietPreferencesScreen(),
-          ),
+      builder: (context, state) => DietPreferencesScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
       path: '/calories_prediction',
-      builder:
-          (context, state) => BlocProvider(
-            create: (_) => DietFormBloc(),
-            child: CaloriesPredictionScreen(),
-          ),
+      builder: (context, state) => CaloriesPredictionScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(

@@ -43,12 +43,6 @@ class UserDetails(SQLModel, table=True):
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)
-    muscle_percentage: Optional[float] = Field(
-        default=None, sa_column_kwargs={"nullable": True}, ge=0, le=100
-    )
-    water_percentage: Optional[float] = Field(
-        default=None, sa_column_kwargs={"nullable": True}, ge=0, le=100
-    )
-    fat_percentage: Optional[float] = Field(
-        default=None, sa_column_kwargs={"nullable": True}, ge=0, le=100
-    )
+    muscle_percentage: Optional[float] = Field(default=None, ge=0, le=100)
+    water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
+    fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
