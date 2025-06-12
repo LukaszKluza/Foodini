@@ -30,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
         : BlocProvider<RegisterBloc>(
           create:
               (_) => RegisterBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );

@@ -25,7 +25,7 @@ import '../../mocks/mocks.mocks.dart';
 late MockDio mockDio;
 late AccountBloc accountBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
 late MockLanguageCubit mockLanguageCubit;
@@ -42,7 +42,7 @@ Widget wrapWithProviders(
 
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: authRepository),
+      Provider<UserRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
       ...additionalProviders,
     ],
@@ -62,7 +62,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     userStorage = UserStorage();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     mockLanguageCubit = MockLanguageCubit();
     mockTokenStorageRepository = MockTokenStorageRepository();
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
@@ -104,7 +104,7 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          Provider<AuthRepository>.value(value: authRepository),
+          Provider<UserRepository>.value(value: authRepository),
           Provider<TokenStorageRepository>.value(
             value: mockTokenStorageRepository,
           ),
@@ -156,7 +156,7 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          Provider<AuthRepository>.value(value: authRepository),
+          Provider<UserRepository>.value(value: authRepository),
           Provider<TokenStorageRepository>.value(
             value: mockTokenStorageRepository,
           ),
@@ -219,7 +219,7 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          Provider<AuthRepository>.value(value: authRepository),
+          Provider<UserRepository>.value(value: authRepository),
           Provider<TokenStorageRepository>.value(
             value: mockTokenStorageRepository,
           ),

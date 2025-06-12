@@ -36,9 +36,10 @@ class ApiClient {
 
   get dio => _client;
 
-  Future<Response> getUser() {
+  Future<Response> getUser(int userId) {
     return _client.get(
       Endpoints.getUser,
+      queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
@@ -110,7 +111,8 @@ class ApiClient {
 
   Future<Response> delete(int userId) {
     return _client.delete(
-      '${Endpoints.delete}/$userId',
+      Endpoints.delete,
+      queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
   }

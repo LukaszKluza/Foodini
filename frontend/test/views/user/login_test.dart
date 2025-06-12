@@ -25,7 +25,7 @@ import '../../mocks/mocks.mocks.dart';
 late MockDio mockDio;
 late LoginBloc loginBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
@@ -35,7 +35,7 @@ Widget wrapWithProviders(
 }) {
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: authRepository),
+      Provider<UserRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
       Provider<LanguageCubit>.value(value: mockLanguageCubit),
       ...additionalProviders,
@@ -56,7 +56,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     mockTokenStorageRepository = MockTokenStorageRepository();
     loginBloc = LoginBloc(authRepository, mockTokenStorageRepository);
 
@@ -99,7 +99,7 @@ void main() {
       ),
     );
 
-    when(mockApiClient.getUser()).thenAnswer(
+    when(mockApiClient.getUser(1)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
           'id': 1,

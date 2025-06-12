@@ -16,7 +16,7 @@ Future<void> fetchTokenTaskCallback([
 
   if (refreshToken != null) {
     final apiClient = ApiClient();
-    final authRepository = AuthRepository(apiClient);
+    final authRepository = UserRepository(apiClient);
     RefreshedTokensResponse refreshedTokens;
     UserResponse userResponse;
 
@@ -29,7 +29,9 @@ Future<void> fetchTokenTaskCallback([
         refreshedTokens.refreshToken,
       );
 
-      userResponse = await authRepository.getUser();
+      final user = UserStorage().getUserId;
+
+      userResponse = await authRepository.getUser(user!);
       userStorage.setUser(userResponse);
 
       router.go('/account');

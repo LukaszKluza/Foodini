@@ -22,7 +22,7 @@ import '../../mocks/mocks.mocks.dart';
 late MockDio mockDio;
 late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
@@ -32,7 +32,7 @@ Widget wrapWithProviders(
 }) {
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: authRepository),
+      Provider<UserRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
       ...additionalProviders,
     ],
@@ -52,7 +52,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
     mockTokenStorageRepository = MockTokenStorageRepository();
     when(mockDio.interceptors).thenReturn(Interceptors());
@@ -102,7 +102,7 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          Provider<AuthRepository>.value(value: authRepository),
+          Provider<UserRepository>.value(value: authRepository),
           Provider<TokenStorageRepository>.value(
             value: mockTokenStorageRepository,
           ),

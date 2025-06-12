@@ -8,7 +8,7 @@ import 'package:frontend/states/login_states.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository authRepository;
+  final UserRepository authRepository;
   final TokenStorageRepository tokenStorageRepository;
 
   LoginBloc(this.authRepository, this.tokenStorageRepository)
@@ -36,7 +36,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         tokenStorageRepository.saveAccessToken(accessToken);
         tokenStorageRepository.saveRefreshToken(refreshToken);
 
-        final user = await authRepository.getUser();
+        final user = await authRepository.getUser(response.id);
         UserStorage().setUser(user);
 
         emit(

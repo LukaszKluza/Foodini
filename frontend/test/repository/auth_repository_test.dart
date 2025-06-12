@@ -8,11 +8,11 @@ import '../mocks/mocks.mocks.dart';
 
 void main() {
   late MockApiClient mockApiClient;
-  late AuthRepository authRepository;
+  late UserRepository authRepository;
 
   setUp(() {
     mockApiClient = MockApiClient();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
   });
 
   test('login returns LoggedUser on success', () async {

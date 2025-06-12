@@ -11,14 +11,14 @@ import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/services/api_client.dart';
 
-class AuthRepository {
+class UserRepository {
   final ApiClient apiClient;
 
-  AuthRepository(this.apiClient);
+  UserRepository(this.apiClient);
 
-  Future<UserResponse> getUser() async {
+  Future<UserResponse> getUser(int userId) async {
     try {
-      final response = await apiClient.getUser();
+      final response = await apiClient.getUser(userId);
       return UserResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);

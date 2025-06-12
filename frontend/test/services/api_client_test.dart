@@ -160,15 +160,19 @@ void main() {
   test('should call getUser with requiresAuth set to true', () async {
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: Endpoints.getUser),
-      data: {'name': 'Jane', 'email': 'jane@example.com'},
+      data: {'id': 1, 'name': 'Jane', 'email': 'jane@example.com'},
       statusCode: 200,
     );
 
     when(
-      mockDio.get(Endpoints.getUser, options: anyNamed('options')),
+      mockDio.get(
+        Endpoints.getUser,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.getUser();
+    final response = await apiClient.getUser(1);
 
     expect(response.statusCode, 200);
     expect(response.data['email'], 'jane@example.com');
@@ -176,6 +180,7 @@ void main() {
     verify(
       mockDio.get(
         Endpoints.getUser,
+        queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>((opt) => opt.extra?['requiresAuth'] == true),
           named: 'options',
@@ -256,7 +261,8 @@ void main() {
 
     when(
       mockDio.delete(
-        '${Endpoints.delete}/$userId',
+        Endpoints.delete,
+        queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
@@ -267,7 +273,8 @@ void main() {
 
     verify(
       mockDio.delete(
-        '${Endpoints.delete}/$userId',
+        Endpoints.delete,
+        queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
     ).called(1);

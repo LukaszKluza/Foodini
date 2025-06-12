@@ -15,14 +15,14 @@ import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late ChangePasswordBloc changePasswordBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: authRepository),
+      Provider<UserRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
     child: MaterialApp(
@@ -37,7 +37,7 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     mockTokenStorageRepository = MockTokenStorageRepository();
     changePasswordBloc = ChangePasswordBloc(
       authRepository,

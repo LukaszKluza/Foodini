@@ -7,7 +7,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
-  final AuthRepository authRepository;
+  final UserRepository authRepository;
   final TokenStorageRepository tokenStorageRepository;
 
   AccountBloc(this.authRepository, this.tokenStorageRepository)

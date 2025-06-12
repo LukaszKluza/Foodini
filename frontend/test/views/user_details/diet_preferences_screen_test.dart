@@ -16,7 +16,7 @@ MockUserDetailsRepository mockUserDetailsRepository =
 Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: MockAuthRepository()),
+      Provider<UserRepository>.value(value: MockUserRepository()),
       Provider<TokenStorageRepository>.value(
         value: MockTokenStorageRepository(),
       ),
