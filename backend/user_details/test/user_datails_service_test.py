@@ -136,7 +136,7 @@ async def test_get_user_details_when_user_exist(
     )
 
     # When
-    response = await user_details_service.get_user_details_by_user_id(token_payload, 1)
+    response = await user_details_service.get_user_details_by_user(token_payload, 1)
 
     # Then
     assert response == basic_user_details
@@ -159,7 +159,7 @@ async def test_get_user_details_when_not_exist(
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.get_user_details_by_user_id(token_payload, 1)
+        await user_details_service.get_user_details_by_user(token_payload, 1)
 
     # Then
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
@@ -182,7 +182,7 @@ async def test_add_user_details_when_details_not_exist(
     mock_user_details_repository.add_user_details = AsyncMock(
         return_value=basic_user_details
     )
-    user_details_service.get_user_details_by_user_id = AsyncMock(
+    user_details_service.get_user_details_by_user = AsyncMock(
         side_effect=HTTPException(status_code=404, detail="Not found")
     )
 

@@ -1,19 +1,19 @@
-from fastapi import HTTPException, status, Depends
 from datetime import datetime
 
+from fastapi import HTTPException, status
 from pydantic import EmailStr
 
-from backend.users.user_repository import UserRepository, get_user_repository
 from backend.models import User
 from backend.settings import config
+from backend.users.user_repository import UserRepository
 
 
 class UserValidationService:
-    def __init__(self, user_repository: UserRepository = Depends(get_user_repository)):
+    def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    @staticmethod
-    def ensure_verified_user(user) -> User:
+    @classmethod
+    def ensure_verified_user(cls, user) -> User:
         if not user.is_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -22,16 +22,16 @@ class UserValidationService:
             )
         return user
 
-    @staticmethod
-    def check_user_permission(user_param_from_token, user_param_from_request):
+    @classmethod
+    def check_user_permission(cls, user_param_from_token, user_param_from_request):
         if user_param_from_token != user_param_from_request:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid token",
             )
 
-    @staticmethod
-    def check_last_password_change_data_time(user):
+    @classmethod
+    def check_last_password_change_data_time(cls, user):
         time_diff = (
             datetime.now(config.TIMEZONE) - user.last_password_update
         ).total_seconds()
@@ -59,9 +59,3 @@ class UserValidationService:
                 detail="User does not exist",
             )
         return user
-
-
-def get_user_validators(
-    user_repository: UserRepository = Depends(get_user_repository),
-) -> UserValidationService:
-    return UserValidationService(user_repository)

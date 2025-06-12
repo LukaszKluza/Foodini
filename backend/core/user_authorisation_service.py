@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any
 
 import jwt
+import redis.asyncio as aioredis
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from itsdangerous import (
@@ -15,19 +16,20 @@ from itsdangerous import (
     BadData,
 )
 
-from backend.core.database import get_redis
 from backend.settings import config
 from backend.users.enums.token import Token
-
+from backend.users.schemas import RefreshTokensResponse
 
 security = HTTPBearer()
 
 
 class AuthorizationService:
-    @staticmethod
-    async def create_tokens(data: dict):
-        redis_tokens = await AuthorizationService.get_redis_or_throw()
+    def __init__(self, redis: aioredis):
+        if not redis:
+            raise HTTPException(500, "Redis connection error")
+        self.redis = redis
 
+    async def create_tokens(self, data: dict):
         access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
             minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
         )
@@ -65,17 +67,14 @@ class AuthorizationService:
             refresh_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
         )
 
-        await redis_tokens.setex(
+        await self.redis.setex(
             refresh_token_jti, config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, refresh_token
         )
 
         return access_token, refresh_token
 
-    @staticmethod
-    async def revoke_tokens(token_jti: str, linked_token_jti: str):
-        redis_tokens = await AuthorizationService.get_redis_or_throw()
-
-        async with redis_tokens.pipeline() as pipe:
+    async def revoke_tokens(self, token_jti: str, linked_token_jti: str):
+        async with self.redis.pipeline() as pipe:
             await pipe.setex(
                 f"blacklist:{token_jti}",
                 config.REFRESH_TOKEN_EXPIRE_HOURS * 3600,
@@ -88,49 +87,46 @@ class AuthorizationService:
             )
             await pipe.execute()
 
-    @staticmethod
-    async def refresh_access_token(
+    async def refresh_tokens(
+        self,
         refresh_token: HTTPAuthorizationCredentials = Security(security),
-    ):
-        payload = await AuthorizationService.verify_refresh_token(refresh_token)
+    ) -> RefreshTokensResponse:
+        payload = await self.verify_refresh_token(refresh_token)
 
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
 
-        new_access_token, new_refresh_token = await AuthorizationService.create_tokens(
+        new_access_token, new_refresh_token = await self.create_tokens(
             {"sub": payload["sub"], "id": payload["id"]}
         )
 
-        await AuthorizationService.revoke_tokens(refresh_token_jti, access_token_jti)
+        await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
-        return {"access_token": new_access_token, "refresh_token": new_refresh_token}
+        return RefreshTokensResponse(
+            id=payload["id"],
+            email=payload["sub"],
+            access_token=new_access_token,
+            refresh_token=new_refresh_token,
+        )
 
-    @staticmethod
     async def verify_access_token(
+        self,
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(
-            credentials, Token.ACCESS.value
-        )
+        return await self.verify_token_by_type(credentials, Token.ACCESS.value)
 
-    @staticmethod
     async def verify_refresh_token(
+        self,
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await AuthorizationService.verify_token_by_type(
-            credentials, Token.REFRESH.value
-        )
+        return await self.verify_token_by_type(credentials, Token.REFRESH.value)
 
-    @staticmethod
     async def verify_token_by_type(
+        self,
         credentials: HTTPAuthorizationCredentials,
         expected_type: str,
     ):
-        redis_tokens = await AuthorizationService.get_redis_or_throw()
-
-        token = await AuthorizationService.get_payload_from_token(
-            credentials, expected_type
-        )
+        token = await self.get_payload_from_token(credentials, expected_type)
         token_type = token.get("type")
         token_jti = token.get("jti")
         linked_jti = token.get("linked_jti")
@@ -144,7 +140,7 @@ class AuthorizationService:
             )
 
         redis_key = token_jti if expected_type == "refresh" else linked_jti
-        stored_token = await redis_tokens.get(redis_key)
+        stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
             raise HTTPException(
@@ -152,7 +148,7 @@ class AuthorizationService:
                 detail="Invalid token",
             )
 
-        async with redis_tokens.pipeline() as pipe:
+        async with self.redis.pipeline() as pipe:
             pipe.exists(f"blacklist:{token_jti}")
             if linked_jti:
                 pipe.exists(f"blacklist:{linked_jti}")
@@ -168,8 +164,9 @@ class AuthorizationService:
 
         return token
 
-    @staticmethod
+    @classmethod
     async def get_payload_from_token(
+        cls,
         credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
     ):
@@ -187,8 +184,8 @@ class AuthorizationService:
                 detail="Revoked token",
             )
 
-    @staticmethod
-    async def extract_email_from_base64(token: str) -> str | None:
+    @classmethod
+    async def extract_email_from_base64(cls, token: str) -> str | None:
         try:
             padding = len(token) % 4
             if padding:
@@ -200,30 +197,29 @@ class AuthorizationService:
         except Exception:
             return None
 
-    @staticmethod
-    async def get_serializer(salt: str = config.NEW_ACCOUNT_SALT):
-        await AuthorizationService.verify_salt(salt)
+    async def get_serializer(self, salt: str = config.NEW_ACCOUNT_SALT):
+        await self.verify_salt(salt)
 
         return URLSafeTimedSerializer(secret_key=config.SECRET_KEY, salt=salt)
 
-    @staticmethod
-    async def verify_salt(salt):
+    @classmethod
+    async def verify_salt(cls, salt):
         if salt not in config.SALTS:
             raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
 
-    @staticmethod
     async def create_url_safe_token(
-        data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT
+        self, data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT
     ):
-        await AuthorizationService.verify_salt(salt)
-        serializer = await AuthorizationService.get_serializer(salt)
+        await self.verify_salt(salt)
+        serializer = await self.get_serializer(salt)
 
         return serializer.dumps(data)
 
-    @staticmethod
-    async def decode_url_safe_token(token: str, salt: str = config.NEW_ACCOUNT_SALT):
-        await AuthorizationService.verify_salt(salt)
-        serializer = await AuthorizationService.get_serializer(salt)
+    async def decode_url_safe_token(
+        self, token: str, salt: str = config.NEW_ACCOUNT_SALT
+    ):
+        await self.verify_salt(salt)
+        serializer = await self.get_serializer(salt)
 
         try:
             return serializer.loads(
@@ -234,13 +230,3 @@ class AuthorizationService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",
             )
-
-    @staticmethod
-    async def get_redis_or_throw():
-        redis_tokens = await get_redis()
-        if not redis_tokens:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Redis connection error",
-            )
-        return redis_tokens

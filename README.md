@@ -9,7 +9,7 @@ python -m backend.core.migrate
 #### 2. Running the backend
 ``` bash
 cd Foodini
-uvicorn backend.main:app --reload
+uvicorn backend.main:app --reload --log-config backend/logging_config.yaml --port 8000
 ```
 
 #### 3. Running the frontend

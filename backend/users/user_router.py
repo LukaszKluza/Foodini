@@ -5,13 +5,13 @@ from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
-from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
 from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
-    get_email_verification_service,
 )
-from backend.users.service.user_service import UserService, get_user_service
+from backend.users.service.user_service import UserService
+from .auth_dependencies import AuthDependency
+from .dependencies import get_user_service, get_email_verification_service
 from .schemas import (
     UserCreate,
     DefaultResponse,
@@ -23,7 +23,7 @@ from .schemas import (
     UserResponse,
     ChangeLanguageRequest,
 )
-from ..models.user_model import Language
+from ..models import User
 
 user_router = APIRouter(prefix="/v1/users")
 
@@ -32,17 +32,35 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/users/login")
 
 @user_router.get("/", response_model=UserResponse)
 async def get_user(
-    user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_access_token),
+    user_token: tuple[User, dict] = Depends(AuthDependency().get_current_user),
 ):
-    return await user_service.get_user(token_payload=token_payload)
+    return user_token[0]
 
 
-@user_router.post("/register", response_model=DefaultResponse)
+@user_router.post("/", response_model=DefaultResponse)
 async def register_user(
     user: UserCreate, user_service: UserService = Depends(get_user_service)
 ):
     return await user_service.register(user)
+
+
+@user_router.patch("/", response_model=DefaultResponse)
+async def update_user(
+    user_update: UserUpdate,
+    user_service: UserService = Depends(get_user_service),
+    user_token: tuple[User, dict] = Depends(AuthDependency().get_current_user),
+):
+    user, token_payload = user_token
+    return await user_service.update(user, user_update)
+
+
+@user_router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+    user_service: UserService = Depends(get_user_service),
+    user_token: tuple[User, dict] = Depends(AuthDependency().get_current_user),
+):
+    user, token_payload = user_token
+    return await user_service.delete(user, token_payload)
 
 
 @user_router.post("/login", response_model=LoginUserResponse)
@@ -54,23 +72,18 @@ async def login_user(
 
 @user_router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout_user(
-    user_id: int = Query(...),
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_access_token),
+    user_token: tuple[User, dict] = Depends(AuthDependency().get_current_user),
 ):
-    return await user_service.logout(
-        token_payload=token_payload, user_id_from_request=user_id
-    )
+    _, token_payload = user_token
+    return await user_service.logout(token_payload)
 
 
 @user_router.post("/refresh-tokens")
 async def refresh_tokens(
-    tokens: dict = Depends(AuthorizationService.refresh_access_token),
+    tokens: dict = Depends(AuthDependency().get_refreshed_tokens),
 ):
-    return {
-        "access_token": tokens["access_token"],
-        "refresh_token": tokens["refresh_token"],
-    }
+    return tokens
 
 
 @user_router.post("/reset-password/request", response_model=DefaultResponse)
@@ -82,33 +95,14 @@ async def reset_password(
     return await user_service.reset_password(password_reset_request, form_url)
 
 
-@user_router.patch("/update/{user_id}", response_model=DefaultResponse)
-async def update_user(
-    user_id: int,
-    user: UserUpdate,
-    user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_access_token),
-):
-    return await user_service.update(token_payload, user_id, user)
-
-
-@user_router.patch("/change/language", response_model=UserResponse)
+@user_router.patch("/language", response_model=UserResponse)
 async def update_language(
     request: ChangeLanguageRequest,
-    user_id: int = Query(...),
     user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_access_token),
+    user_token: tuple[User, dict] = Depends(AuthDependency().get_current_user),
 ):
-    return await user_service.change_language(token_payload, user_id, request)
-
-
-@user_router.delete("/delete/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(
-    user_id: int,
-    user_service: UserService = Depends(get_user_service),
-    token_payload: dict = Depends(AuthorizationService.verify_access_token),
-):
-    return await user_service.delete(token_payload, user_id)
+    user, _ = user_token
+    return await user_service.change_language(user, request)
 
 
 @user_router.post("/confirm/new-password", response_model=DefaultResponse)

@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 
-from sqlmodel import SQLModel, Field, Relationship
+from pydantic import EmailStr
 from sqlalchemy import DateTime
+from sqlmodel import SQLModel, Field, Relationship
+
 from backend.settings import config
 from backend.users.enums.language import Language
 
@@ -17,7 +19,7 @@ class User(SQLModel, table=True):
     name: str
     last_name: str
     country: str
-    email: str = Field(unique=True, nullable=False)
+    email: EmailStr = Field(unique=True, nullable=False)
     language: Language = Field(default=Language.EN)
     is_verified: bool = Field(default=False)
     password: str
@@ -26,4 +28,6 @@ class User(SQLModel, table=True):
         sa_type=DateTime(timezone=True),
     )
 
-    details: Optional["UserDetails"] = Relationship(back_populates="user")
+    details: Optional["UserDetails"] = Relationship(
+        back_populates="user", cascade_delete=True
+    )
