@@ -25,15 +25,20 @@ env:
 
 
 on:
+  push:
+    branches:
+      - '*'
   pull_request:
-    branches: [ "*" ]
+    branches:
+      - '*'
+
 permissions:
   contents: read
 jobs:
-  build:
+  backend:
     runs-on: ubuntu-latest
     steps:
-       # Python Setup Steps
+      # Python Setup Steps
       - uses: actions/checkout@v4
       - name: Set up Python 3.11
         uses: actions/setup-python@v3
@@ -58,19 +63,31 @@ jobs:
           cd scripts 
           chmod +x ./backendTestCoverage.sh
           ./backendTestCoverage.sh ${{ env.BACKEND_TEST_COVERAGE_THRESHOLD }}
-      # Frontend Setup Steps
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.29.1"
-      - name: Install Frontend dependencies
+
+      - name: Build frontend
         run: |
           cd frontend
           flutter pub get
-      - name: Run Frontend tests
+          flutter build web
+
+      - name: Checkstyle frontend
         run: |
-          cd frontend
+          flutter analyze
+
+      - name: Test frontend
+        run: |
           flutter test --coverage 
+
       - name: Frontend test coverage
         run: |
           cd scripts 

@@ -1,4 +1,4 @@
-import 'language.dart';
+import 'package:frontend/models/user/language.dart';
 
 class UserResponse {
   final int id;

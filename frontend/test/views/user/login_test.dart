@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user/login_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/user/login_events.dart';
@@ -8,17 +9,15 @@ import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/states/login_states.dart';
+import 'package:frontend/views/screens/user/login_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/login_bloc.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
-import 'package:frontend/states/login_states.dart';
-import 'package:frontend/views/screens/user/login_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
 

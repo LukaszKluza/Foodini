@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
@@ -8,8 +10,6 @@ import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:mockito/mockito.dart';
-import 'package:frontend/api_exception.dart';
-import 'package:frontend/models/user_details/diet_form.dart';
 
 import '../mocks/mocks.mocks.dart';
 

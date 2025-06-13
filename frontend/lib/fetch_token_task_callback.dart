@@ -1,11 +1,10 @@
+import 'package:frontend/app_router.dart';
+import 'package:frontend/models/user/refreshed_tokens_response.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
-import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
-
-import 'app_router.dart';
-import 'models/user/refreshed_tokens_response.dart';
 
 Future<void> fetchTokenTaskCallback([
   TokenStorageRepository? tokenStorage,

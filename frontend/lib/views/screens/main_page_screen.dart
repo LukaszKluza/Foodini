@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:go_router/go_router.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({super.key});

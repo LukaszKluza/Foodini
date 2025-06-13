@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/events/user/account_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/language.dart';
-import 'package:frontend/foodini.dart';
 
 class LanguagePicker {
   static void show(BuildContext mainContext, {bool isAccountScreen = false}) {

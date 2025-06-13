@@ -23,7 +23,7 @@ void main() {
     testWidgets('should return the same string if error is a string', (
       tester,
     ) async {
-      final input = "Simple error";
+      final input = 'Simple error';
 
       await runWithContext(tester, (context) {
         final result = ExceptionConverter.formatErrorMessage(input, context);

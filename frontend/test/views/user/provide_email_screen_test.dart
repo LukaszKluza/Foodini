@@ -1,18 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user/provide_email_block.dart';
 import 'package:frontend/config/endpoints.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/states/provide_email_states.dart';
+import 'package:frontend/views/screens/user/provide_email_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/provide_email_block.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/states/provide_email_states.dart';
-import 'package:frontend/views/screens/user/provide_email_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
 
@@ -119,7 +118,7 @@ void main() {
         ),
         GoRoute(
           path: '/account',
-          builder: (context, state) => const Scaffold(body: Text("Account")),
+          builder: (context, state) => const Scaffold(body: Text('Account')),
         ),
       ],
     );

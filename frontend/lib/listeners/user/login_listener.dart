@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
-import 'package:frontend/foodini.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginListenerHelper {
   static void onLoginListener({

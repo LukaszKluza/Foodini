@@ -21,7 +21,9 @@ Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
       Provider<TokenStorageRepository>.value(
         value: MockTokenStorageRepository(),
       ),
-      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
+      BlocProvider<DietFormBloc>.value(
+        value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository),
+      ),
     ],
     child: MaterialApp.router(
       routerConfig: GoRouter(

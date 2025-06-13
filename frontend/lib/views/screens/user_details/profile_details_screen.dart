@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
   const ProfileDetailsScreen({super.key});
@@ -129,6 +129,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
         ),
         onTap: () async {
           FocusScope.of(context).requestFocus(FocusNode());
+          final bloc = context.read<DietFormBloc>();
 
           final now = DateTime.now();
           final earliestDate = DateTime(now.year - 120, now.month, now.day);
@@ -143,13 +144,15 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             initialDatePickerMode: DatePickerMode.year,
           );
 
+          if (!mounted) return;
+
           if (pickedDate != null) {
             setState(() {
               final formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
               _dateOfBirthController.text = formattedDate;
             });
 
-            context.read<DietFormBloc>().add(UpdateDateOfBirth(pickedDate));
+            bloc.add(UpdateDateOfBirth(pickedDate));
           }
         },
       ),

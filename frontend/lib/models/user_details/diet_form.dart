@@ -42,20 +42,20 @@ class DietForm {
   });
 
   Map<String, dynamic> toJson() => {
-  'gender': gender.nameStr,
-  'height_cm': height,
-  'weight_kg': weight,
-  'date_of_birth': dateOfBirth.toIso8601String(),
-  'diet_type': dietType.nameStr,
-  'allergies': allergies.map((a) => a.nameStr).toList(),
-  'diet_goal_kg': dietGoal,
-  'meals_per_day': mealsPerDay,
-  'diet_intensity': dietIntensity.nameStr,
-  'activity_level': activityLevel.nameStr,
-  'stress_level': stressLevel.nameStr,
-  'sleep_quality': sleepQuality.nameStr,
-  'muscle_percentage': musclePercentage,
-  'fat_percentage': fatPercentage,
-  'water_percentage': waterPercentage,
-};
+    'gender': gender.nameStr,
+    'height_cm': height,
+    'weight_kg': weight,
+    'date_of_birth': dateOfBirth.toIso8601String(),
+    'diet_type': dietType.nameStr,
+    'allergies': allergies.map((a) => a.nameStr).toList(),
+    'diet_goal_kg': dietGoal,
+    'meals_per_day': mealsPerDay,
+    'diet_intensity': dietIntensity.nameStr,
+    'activity_level': activityLevel.nameStr,
+    'stress_level': stressLevel.nameStr,
+    'sleep_quality': sleepQuality.nameStr,
+    'muscle_percentage': musclePercentage,
+    'fat_percentage': fatPercentage,
+    'water_percentage': waterPercentage,
+  };
 }

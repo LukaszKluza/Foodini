@@ -2,14 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/change_password_bloc.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 
 import '../../mocks/mocks.mocks.dart';
 
@@ -59,7 +58,7 @@ void main() {
     expect(find.byKey(Key('new_password')), findsOneWidget);
     expect(find.byKey(Key('confirm_password')), findsOneWidget);
     expect(find.byKey(Key('change_password')), findsOneWidget);
-    expect(find.text("Change password"), findsNWidgets(2));
+    expect(find.text('Change password'), findsNWidgets(2));
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
 
     expect(changePasswordBloc.state, isA<ChangePasswordInitial>());
@@ -74,7 +73,7 @@ void main() {
     );
 
     // When
-    await tester.tap(find.byKey(Key("change_password")));
+    await tester.tap(find.byKey(Key('change_password')));
     await tester.pumpAndSettle();
 
     // Then

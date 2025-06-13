@@ -1,10 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/services/api_client.dart';
-
-import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
 
 import '../mocks/mocks.mocks.dart';
@@ -33,7 +32,7 @@ void main() {
 
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: Endpoints.register),
-      data: {"result": "ok"},
+      data: {'result': 'ok'},
       statusCode: 200,
     );
 

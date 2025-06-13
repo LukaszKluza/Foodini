@@ -26,7 +26,7 @@ class GlobalErrorInterceptor extends Interceptor {
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
-          if(err.response?.data['detail'] == 'Revoked token'){
+          if (err.response?.data['detail'] == 'Revoked token') {
             await _handleForbiddenError(err, handler);
           }
           message = 'Error $statusCode: Forbidden';

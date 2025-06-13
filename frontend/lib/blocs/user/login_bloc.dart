@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/user/login_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository authRepository;
@@ -40,10 +40,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         UserStorage().setUser(user);
 
         emit(
-            LoginSuccess(
-              userResponse: user,
-              getMessage: (context) => AppLocalizations.of(context)!.successfullyLoggedIn,
-            )
+          LoginSuccess(
+            userResponse: user,
+            getMessage:
+                (context) => AppLocalizations.of(context)!.successfullyLoggedIn,
+          ),
         );
       } on ApiException catch (error) {
         if (error.data?['detail'] == 'EMAIL_NOT_VERIFIED') {
