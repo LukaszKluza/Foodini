@@ -36,4 +36,4 @@ class MailService:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Email service temporarily unavailable",
-            )
+            ) from e
