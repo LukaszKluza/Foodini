@@ -56,16 +56,12 @@ def get_email_verification_service(
     mail_service: MailService = Depends(get_mail_service),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> EmailVerificationService:
-    return EmailVerificationService(
-        user_repository, user_validators, mail_service, authorization_service
-    )
+    return EmailVerificationService(user_repository, user_validators, mail_service, authorization_service)
 
 
 def get_user_service(
     user_repository: UserRepository = Depends(get_user_repository),
-    email_verification_service: EmailVerificationService = Depends(
-        get_email_verification_service
-    ),
+    email_verification_service: EmailVerificationService = Depends(get_email_verification_service),
     user_validators: UserValidationService = Depends(get_user_validators),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> UserService:

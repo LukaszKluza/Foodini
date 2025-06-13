@@ -27,12 +27,8 @@ class UserGateway:
     async def get_current_user(self) -> tuple[User, dict]:
         return await self.auth_dependency.get_current_user()
 
-    def check_user_permission(
-        self, user_param_from_token, user_param_from_request
-    ) -> None:
-        self.user_validation_service.check_user_permission(
-            user_param_from_token, user_param_from_request
-        )
+    def check_user_permission(self, user_param_from_token, user_param_from_request) -> None:
+        self.user_validation_service.check_user_permission(user_param_from_token, user_param_from_request)
 
 
 def get_user_gateway(

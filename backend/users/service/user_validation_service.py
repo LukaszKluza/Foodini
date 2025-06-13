@@ -32,9 +32,7 @@ class UserValidationService:
 
     @classmethod
     def check_last_password_change_data_time(cls, user):
-        time_diff = (
-            datetime.now(config.TIMEZONE) - user.last_password_update
-        ).total_seconds()
+        time_diff = (datetime.now(config.TIMEZONE) - user.last_password_update).total_seconds()
         if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

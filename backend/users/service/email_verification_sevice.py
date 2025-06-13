@@ -26,9 +26,7 @@ class EmailVerificationService:
         self.authorization_service = authorization_service
         self.templates = Jinja2Templates(directory="backend/users/templates")
 
-    async def send_password_reset_verification(
-        self, email: EmailStr, form_url: str, token: str
-    ):
+    async def send_password_reset_verification(self, email: EmailStr, form_url: str, token: str):
         message_link = f"{form_url}/?token={token}"
         message_subject = "FoodiniApp new password request"
         message_body = self.templates.get_template("confirmation_template.html").render(
@@ -55,9 +53,7 @@ class EmailVerificationService:
             )
         await self._send_new_account_verification(email, token)
 
-    async def process_password_reset_verification(
-        self, email: EmailStr, form_url: str, token: str
-    ):
+    async def process_password_reset_verification(self, email: EmailStr, form_url: str, token: str):
         await self.user_validators.ensure_user_exists_by_email(email)
         await self.send_password_reset_verification(email, form_url, token)
 
@@ -72,9 +68,7 @@ class EmailVerificationService:
         await self.process_new_account_verification(email, token)
 
     async def _send_new_account_verification(self, email: EmailStr, token: str):
-        message_link = (
-            f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
-        )
+        message_link = f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
         message_subject = "FoodiniApp email verification"
         message_body = self.templates.get_template("confirmation_template.html").render(
             header="Welcome to FoodiniApp!",

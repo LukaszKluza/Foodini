@@ -17,13 +17,9 @@ from backend.users.use_gateway import UserGateway, get_user_gateway
 class UserDetailsService:
     def __init__(
         self,
-        user_details_repository: UserDetailsRepository = Depends(
-            get_user_details_repository
-        ),
+        user_details_repository: UserDetailsRepository = Depends(get_user_details_repository),
         user_gateway: UserGateway = Depends(get_user_gateway),
-        user_details_validators: UserDetailsValidationService = Depends(
-            get_user_details_validators
-        ),
+        user_details_validators: UserDetailsValidationService = Depends(get_user_details_validators),
     ):
         self.user_details_repository = user_details_repository
         self.user_gateway = user_gateway
@@ -45,9 +41,7 @@ class UserDetailsService:
                 user,
             )
         except HTTPException:
-            return await self.user_details_repository.add_user_details(
-                user_details_data, user.id
-            )
+            return await self.user_details_repository.add_user_details(user_details_data, user.id)
 
     async def update_user_details(
         self,
@@ -56,6 +50,4 @@ class UserDetailsService:
     ):
         await self.get_user_details_by_user(user)
 
-        return await self.user_details_repository.update_user_details_by_user_id(
-            user.id, user_details_data
-        )
+        return await self.user_details_repository.update_user_details_by_user_id(user.id, user_details_data)
