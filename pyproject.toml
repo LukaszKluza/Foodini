@@ -1,9 +1,9 @@
 [tool.ruff]
-line-length = 88
+line-length = 120
 exclude = [".venv", "__pycache__", "migrations"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "W", "C90"]  # C90 = McCabe
+select = ["E", "F", "I", "B", "W", "C90"]
 extend-ignore = ["E203", "B008"]
 per-file-ignores = { "__init__.py" = ["F401"] }
 

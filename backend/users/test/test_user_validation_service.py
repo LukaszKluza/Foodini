@@ -1,7 +1,8 @@
-import pytest
-from fastapi import HTTPException, status
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+from fastapi import HTTPException, status
 
 from backend.settings import config
 from backend.users.service.user_validation_service import UserValidationService
@@ -96,9 +97,7 @@ async def test_check_last_password_change_data_time_failure(user_validators):
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_exists_by_email_success(
-    user_validators, mock_user_repository
-):
+async def test_ensure_user_exists_by_email_success(user_validators, mock_user_repository):
     # Given
     mock_user = MagicMock()
     mock_user_repository.get_user_by_email = AsyncMock(return_value=mock_user)
@@ -112,9 +111,7 @@ async def test_ensure_user_exists_by_email_success(
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_exists_by_email_failure(
-    user_validators, mock_user_repository
-):
+async def test_ensure_user_exists_by_email_failure(user_validators, mock_user_repository):
     # Given
     mock_user_repository.get_user_by_email = AsyncMock(return_value=None)
 

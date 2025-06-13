@@ -2,14 +2,14 @@ import datetime
 
 from fastapi.params import Depends
 from pydantic import EmailStr
+from sqlalchemy.future import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.models import User
-from .schemas import UserCreate, UserUpdate
-from sqlalchemy.future import select
-
 from backend.core.database import get_db
+from backend.models import User
+
 from ..models.user_model import Language
+from .schemas import UserCreate, UserUpdate
 
 
 class UserRepository:
@@ -52,9 +52,7 @@ class UserRepository:
             return updated_user
         return None
 
-    async def update_password(
-        self, user_id: int, new_password: str, current_datetime: datetime
-    ) -> User | None:
+    async def update_password(self, user_id: int, new_password: str, current_datetime: datetime) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.password = new_password

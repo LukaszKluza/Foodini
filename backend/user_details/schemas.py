@@ -1,14 +1,16 @@
 from datetime import date
-from pydantic import BaseModel, Field
 from typing import List, Optional
+
+from pydantic import BaseModel, Field
+
 from .enums import (
-    Gender,
-    DietType,
-    DietIntensity,
     ActivityLevel,
+    Allergies,
+    DietIntensity,
+    DietType,
+    Gender,
     SleepQuality,
     StressLevel,
-    Allergies,
 )
 from .mixins import DateOfBirthValidationMixin
 

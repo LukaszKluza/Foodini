@@ -1,6 +1,8 @@
-from pydantic import field_validator
-from backend.settings import config
 from datetime import date, datetime
+
+from pydantic import field_validator
+
+from backend.settings import config
 
 
 class DateOfBirthValidationMixin:

@@ -1,19 +1,19 @@
 import sys
 from datetime import datetime, timedelta
-from unittest.mock import MagicMock, AsyncMock, patch, Mock, ANY
+from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException, status
-from pydantic import TypeAdapter, EmailStr
+from pydantic import EmailStr, TypeAdapter
 
 from backend.models import User
 from backend.settings import config
 from backend.users.schemas import (
+    NewPasswordConfirm,
+    PasswordResetRequest,
     UserCreate,
     UserLogin,
     UserUpdate,
-    PasswordResetRequest,
-    NewPasswordConfirm,
 )
 from backend.users.service.password_service import PasswordService
 
@@ -127,9 +127,7 @@ async def test_register_user_new(
     # Given
     mock_user_repository.get_user_by_email.return_value = None
     mock_password_service["hash_password"].return_value = "hashed_password"
-    mock_user_repository.create_user.return_value = MagicMock(
-        id=1, email="test@example.com"
-    )
+    mock_user_repository.create_user.return_value = MagicMock(id=1, email="test@example.com")
 
     # When
     new_user = await user_service.register(user_create)
@@ -157,9 +155,7 @@ async def test_login_user_not_found(user_service, mock_user_validators):
 
 
 @pytest.mark.asyncio
-async def test_login_user_incorrect_password(
-    mock_password_service, mock_user_validators, user_service
-):
+async def test_login_user_incorrect_password(mock_password_service, mock_user_validators, user_service):
     # Given
     mock_user = MagicMock(password="hashed_password")
     user_login = UserLogin(
@@ -175,9 +171,7 @@ async def test_login_user_incorrect_password(
 
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-    mock_password_service["verify_password"].assert_called_once_with(
-        "Password123", "hashed_password"
-    )
+    mock_password_service["verify_password"].assert_called_once_with("Password123", "hashed_password")
 
 
 @pytest.mark.asyncio
@@ -224,12 +218,8 @@ async def test_login_user_success(
 
 
 @pytest.mark.asyncio
-async def test_logout_user_success(
-    mock_user_validators, mock_authorization_service, user_service
-):
-    response = await user_service.logout(
-        {"id": 1, "jti": "jti", "linked_jti": "linked_jti"}
-    )
+async def test_logout_user_success(mock_user_validators, mock_authorization_service, user_service):
+    response = await user_service.logout({"id": 1, "jti": "jti", "linked_jti": "linked_jti"})
 
     # Then
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -254,9 +244,7 @@ async def test_reset_password_user_unlogged(
 
     # When
     await user_service.reset_password(
-        PasswordResetRequest(
-            email=TypeAdapter(EmailStr).validate_python("test@example.com")
-        ),
+        PasswordResetRequest(email=TypeAdapter(EmailStr).validate_python("test@example.com")),
         "form_url",
     )
 
@@ -287,9 +275,7 @@ async def test_reset_password_user_logged_successful(
     mock_authorization_service["revoke_tokens"].return_value = True
 
     await user_service.reset_password(
-        PasswordResetRequest(
-            email=TypeAdapter(EmailStr).validate_python("test@example.com")
-        ),
+        PasswordResetRequest(email=TypeAdapter(EmailStr).validate_python("test@example.com")),
         "form_url",
     )
 
@@ -303,33 +289,25 @@ async def test_reset_password_too_early(
     mock_authorization_service,
 ):
     # Given
-    password_reset_data = PasswordResetRequest(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com")
-    )
+    password_reset_data = PasswordResetRequest(email=TypeAdapter(EmailStr).validate_python("test@example.com"))
     user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
 
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
     mock_user_validators.ensure_verified_user.return_value = None
 
-    mock_user_validators.check_last_password_change_data_time.side_effect = (
-        HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You must wait at least 1 day before changing your password again",
-        )
+    mock_user_validators.check_last_password_change_data_time.side_effect = HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="You must wait at least 1 day before changing your password again",
     )
 
     # When / Then
     with pytest.raises(HTTPException) as exc_info:
-        await user_service.reset_password(
-            password_reset_data, form_url="https://reset.example.com"
-        )
+        await user_service.reset_password(password_reset_data, form_url="https://reset.example.com")
 
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
     assert "1 day" in exc_info.value.detail
 
-    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(
-        user_
-    )
+    mock_user_validators.check_last_password_change_data_time.assert_called_once_with(user_)
 
 
 # @pytest.mark.asyncio
@@ -348,9 +326,7 @@ async def test_reset_password_too_early(
 
 
 @pytest.mark.asyncio
-async def test_update_when_user_exist(
-    user_service, mock_user_validators, mock_user_repository
-):
+async def test_update_when_user_exist(user_service, mock_user_validators, mock_user_repository):
     # Given
     update_user = UserUpdate(name="Newname", last_name="Newlastname")
     mock_user_validators.ensure_user_exists_by_id.return_value = basic_user
@@ -398,42 +374,30 @@ async def test_delete_account_when_user_exist(
 
     # Assert
     assert response == basic_user
-    mock_authorization_service.revoke_tokens.assert_called_once_with(
-        "fake_jti", "fake_linked_jti"
-    )
+    mock_authorization_service.revoke_tokens.assert_called_once_with("fake_jti", "fake_linked_jti")
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_account_successfully(
-    user_service, mock_user_validators, mock_authorization_service
-):
+async def test_confirm_new_account_successfully(user_service, mock_user_validators, mock_authorization_service):
     # Given
-    mock_authorization_service.decode_url_safe_token.return_value = {
-        "email": "test@email.com"
-    }
+    mock_authorization_service.decode_url_safe_token.return_value = {"email": "test@email.com"}
 
     # When
     response = await user_service.confirm_new_account("test_token")
 
     # Assert
     assert response.status_code == 302
-    assert (
-        response.headers["location"] == "http://localhost:3000/#/login?status=success"
-    )
+    assert response.headers["location"] == "http://localhost:3000/#/login?status=success"
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_account_with_revoked_token(
-    user_service, mock_user_validators, mock_authorization_service
-):
+async def test_confirm_new_account_with_revoked_token(user_service, mock_user_validators, mock_authorization_service):
     # Given
     mock_authorization_service.decode_url_safe_token.side_effect = HTTPException(
         status_code=400,
         detail="Token verification failed",
     )
-    mock_authorization_service.extract_email_from_base64.return_value = (
-        "test@example.com"
-    )
+    mock_authorization_service.extract_email_from_base64.return_value = "test@example.com"
     mock_user_validators.ensure_user_exists_by_email.return_value = basic_user
 
     # When
@@ -441,16 +405,11 @@ async def test_confirm_new_account_with_revoked_token(
 
     # Assert
     assert response.status_code == 302
-    assert (
-        response.headers["location"]
-        == "http://localhost:3000/#/login?status=error&email=test@example.com"
-    )
+    assert response.headers["location"] == "http://localhost:3000/#/login?status=error&email=test@example.com"
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_account_with_corrupted_token(
-    user_service, mock_user_validators, mock_authorization_service
-):
+async def test_confirm_new_account_with_corrupted_token(user_service, mock_user_validators, mock_authorization_service):
     # Given
     mock_authorization_service.decode_url_safe_token.side_effect = HTTPException(
         status_code=400,
@@ -485,9 +444,7 @@ async def test_confirm_new_password_success(
     user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
-    mock_authorization_service.decode_url_safe_token.return_value = {
-        "email": "test@example.com"
-    }
+    mock_authorization_service.decode_url_safe_token.return_value = {"email": "test@example.com"}
 
     mock_password_service["hash_password"].return_value = "hashed_password"
     mock_user_repository.update_password.return_value = {"success": True}
@@ -497,23 +454,15 @@ async def test_confirm_new_password_success(
 
     # Then
     assert response == {"success": True}
-    mock_user_validators.ensure_user_exists_by_email.assert_called_with(
-        "test@example.com"
-    )
-    mock_authorization_service.decode_url_safe_token.assert_awaited_once_with(
-        "valid_token", ANY
-    )
-    mock_user_validators.check_user_permission.assert_called_once_with(
-        "test@example.com", "test@example.com"
-    )
+    mock_user_validators.ensure_user_exists_by_email.assert_called_with("test@example.com")
+    mock_authorization_service.decode_url_safe_token.assert_awaited_once_with("valid_token", ANY)
+    mock_user_validators.check_user_permission.assert_called_once_with("test@example.com", "test@example.com")
     mock_password_service["hash_password"].assert_awaited_once_with("NewPassword123")
     mock_user_repository.update_password.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_password_invalid_token(
-    user_service, mock_user_validators, mock_authorization_service
-):
+async def test_confirm_new_password_invalid_token(user_service, mock_user_validators, mock_authorization_service):
     # Given
     new_password_data = NewPasswordConfirm(
         email=TypeAdapter(EmailStr).validate_python("test@example.com"),
@@ -524,9 +473,7 @@ async def test_confirm_new_password_invalid_token(
     user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
-    mock_authorization_service.decode_url_safe_token.side_effect = Exception(
-        "Decode failed"
-    )
+    mock_authorization_service.decode_url_safe_token.side_effect = Exception("Decode failed")
 
     # When
     with pytest.raises(Exception) as exc_info:
@@ -535,15 +482,11 @@ async def test_confirm_new_password_invalid_token(
     # Then
     assert str(exc_info.value) == "Decode failed"
 
-    mock_authorization_service.decode_url_safe_token.assert_awaited_once_with(
-        "invalid_token", ANY
-    )
+    mock_authorization_service.decode_url_safe_token.assert_awaited_once_with("invalid_token", ANY)
 
 
 @pytest.mark.asyncio
-async def test_confirm_new_password_missing_token(
-    user_service, mock_user_validators, mock_authorization_service
-):
+async def test_confirm_new_password_missing_token(user_service, mock_user_validators, mock_authorization_service):
     # Given
     new_password_data = NewPasswordConfirm(
         email=TypeAdapter(EmailStr).validate_python("test@example.com"),

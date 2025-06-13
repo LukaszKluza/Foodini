@@ -1,12 +1,12 @@
 import logging
 
 import psycopg2
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
-from starlette.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.templating import Jinja2Templates
 
 from backend.settings import config
 from backend.user_details.user_details_router import user_details_router

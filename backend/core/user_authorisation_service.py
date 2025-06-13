@@ -2,18 +2,18 @@ import base64
 import re
 import uuid
 from datetime import datetime, timedelta
-from typing import Dict, Any
+from typing import Any, Dict
 
 import jwt
 import redis.asyncio as aioredis
 from fastapi import HTTPException, Security, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from itsdangerous import (
-    URLSafeTimedSerializer,
-    SignatureExpired,
+    BadData,
     BadSignature,
     BadTimeSignature,
-    BadData,
+    SignatureExpired,
+    URLSafeTimedSerializer,
 )
 
 from backend.settings import config
@@ -30,12 +30,8 @@ class AuthorizationService:
         self.redis = redis
 
     async def create_tokens(self, data: dict):
-        access_token_expire = datetime.now(config.TIMEZONE) + timedelta(
-            minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        refresh_token_expire = datetime.now(config.TIMEZONE) + timedelta(
-            hours=config.REFRESH_TOKEN_EXPIRE_HOURS
-        )
+        access_token_expire = datetime.now(config.TIMEZONE) + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        refresh_token_expire = datetime.now(config.TIMEZONE) + timedelta(hours=config.REFRESH_TOKEN_EXPIRE_HOURS)
 
         access_token_jti = str(uuid.uuid4())
         refresh_token_jti = str(uuid.uuid4())
@@ -60,16 +56,10 @@ class AuthorizationService:
             }
         )
 
-        access_token = jwt.encode(
-            access_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
-        )
-        refresh_token = jwt.encode(
-            refresh_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM
-        )
+        access_token = jwt.encode(access_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM)
+        refresh_token = jwt.encode(refresh_token_data, config.SECRET_KEY, algorithm=config.ALGORITHM)
 
-        await self.redis.setex(
-            refresh_token_jti, config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, refresh_token
-        )
+        await self.redis.setex(refresh_token_jti, config.REFRESH_TOKEN_EXPIRE_HOURS * 3600, refresh_token)
 
         return access_token, refresh_token
 
@@ -96,9 +86,7 @@ class AuthorizationService:
         refresh_token_jti = payload.get("jti")
         access_token_jti = payload.get("linked_jti")
 
-        new_access_token, new_refresh_token = await self.create_tokens(
-            {"sub": payload["sub"], "id": payload["id"]}
-        )
+        new_access_token, new_refresh_token = await self.create_tokens({"sub": payload["sub"], "id": payload["id"]})
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
@@ -176,13 +164,13 @@ class AuthorizationService:
                 config.SECRET_KEY,
                 algorithms=[config.ALGORITHM],
             )
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
                 else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
-            )
+            ) from e
 
     @classmethod
     async def extract_email_from_base64(cls, token: str) -> str | None:
@@ -207,26 +195,20 @@ class AuthorizationService:
         if salt not in config.SALTS:
             raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
 
-    async def create_url_safe_token(
-        self, data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT
-    ):
+    async def create_url_safe_token(self, data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)
         serializer = await self.get_serializer(salt)
 
         return serializer.dumps(data)
 
-    async def decode_url_safe_token(
-        self, token: str, salt: str = config.NEW_ACCOUNT_SALT
-    ):
+    async def decode_url_safe_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)
         serializer = await self.get_serializer(salt)
 
         try:
-            return serializer.loads(
-                token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60
-            )
-        except (SignatureExpired, BadTimeSignature, BadSignature, BadData):
+            return serializer.loads(token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60)
+        except (SignatureExpired, BadTimeSignature, BadSignature, BadData) as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",
-            )
+            ) from e

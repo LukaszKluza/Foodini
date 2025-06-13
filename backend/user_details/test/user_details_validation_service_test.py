@@ -1,11 +1,12 @@
-import pytest
-from fastapi import HTTPException, status
 from unittest.mock import AsyncMock
 
+import pytest
+from fastapi import HTTPException, status
+
+from backend.models import UserDetails
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
-from backend.models import UserDetails
 
 
 @pytest.mark.asyncio

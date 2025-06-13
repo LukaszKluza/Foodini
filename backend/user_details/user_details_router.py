@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status
 
 from backend.user_details.schemas import (
-    UserDetailsResponse,
     UserDetailsCreate,
+    UserDetailsResponse,
     UserDetailsUpdate,
 )
 from backend.user_details.service.user_details_service import UserDetailsService
@@ -21,9 +21,7 @@ async def get_user_details(
     return await user_details_service.get_user_details_by_user(user)
 
 
-@user_details_router.post(
-    "/", status_code=status.HTTP_201_CREATED, response_model=UserDetailsResponse
-)
+@user_details_router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserDetailsResponse)
 async def add_user_details(
     user_details: UserDetailsCreate,
     user_details_service: UserDetailsService = Depends(),

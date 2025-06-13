@@ -1,7 +1,9 @@
-from typing import List, Optional, TYPE_CHECKING
 from datetime import date
-from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import ARRAY, Column, Integer, ForeignKey, Enum
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import ARRAY, Column, Enum, ForeignKey, Integer
+from sqlmodel import Field, Relationship, SQLModel
+
 from backend.user_details.enums import (
     ActivityLevel,
     Allergies,
@@ -34,9 +36,7 @@ class UserDetails(SQLModel, table=True):
     weight_kg: float = Field(ge=20, le=160)
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
-    allergies: List[Allergies] = Field(
-        sa_column=Column(ARRAY(Enum(Allergies))), default=[]
-    )
+    allergies: List[Allergies] = Field(sa_column=Column(ARRAY(Enum(Allergies))), default=[])
     diet_goal_kg: float
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)

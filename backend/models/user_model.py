@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import EmailStr
 from sqlalchemy import DateTime
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.settings import config
 from backend.users.enums.language import Language
@@ -28,6 +28,4 @@ class User(SQLModel, table=True):
         sa_type=DateTime(timezone=True),
     )
 
-    details: Optional["UserDetails"] = Relationship(
-        back_populates="user", cascade_delete=True
-    )
+    details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
