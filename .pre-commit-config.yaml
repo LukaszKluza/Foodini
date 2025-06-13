@@ -3,5 +3,5 @@ repos:
   rev: v0.11.0
   hooks:
     - id: ruff
-      args: [ --fix, --extend-ignore, F401 ]
+      args: [ --fix ]
     - id: ruff-format
