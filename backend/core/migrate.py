@@ -3,6 +3,10 @@ import asyncio
 from sqlmodel import SQLModel
 
 from backend.core.database import engine
+from backend.models import (
+    User,
+    UserDetails,
+)
 
 
 async def create_tables():
