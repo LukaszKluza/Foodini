@@ -164,9 +164,8 @@ class AuthorizationService:
 
         return token
 
-    @classmethod
     async def get_payload_from_token(
-        cls,
+        self,
         credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
     ):
@@ -184,8 +183,7 @@ class AuthorizationService:
                 detail="Revoked token",
             )
 
-    @classmethod
-    async def extract_email_from_base64(cls, token: str) -> str | None:
+    async def extract_email_from_base64(self, token: str) -> str | None:
         try:
             padding = len(token) % 4
             if padding:
@@ -202,8 +200,7 @@ class AuthorizationService:
 
         return URLSafeTimedSerializer(secret_key=config.SECRET_KEY, salt=salt)
 
-    @classmethod
-    async def verify_salt(cls, salt):
+    async def verify_salt(self, salt):
         if salt not in config.SALTS:
             raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
 

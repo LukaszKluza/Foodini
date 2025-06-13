@@ -2,10 +2,10 @@ import redis.asyncio as aioredis
 from fastapi import Depends, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_mail import ConnectionConfig, FastMail
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from backend.core.database import get_redis
 from backend.core.user_authorisation_service import AuthorizationService
+from backend.settings import MailSettings
 from backend.users.mail import MailService
 from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.users.service.user_service import UserService
@@ -13,21 +13,6 @@ from backend.users.service.user_validation_service import UserValidationService
 from backend.users.user_repository import UserRepository, get_user_repository
 
 security = HTTPBearer()
-
-
-class MailSettings(BaseSettings):
-    MAIL_USERNAME: str
-    MAIL_PASSWORD: str
-    MAIL_FROM: str
-    MAIL_PORT: int
-    MAIL_SERVER: str
-    MAIL_FROM_NAME: str
-    MAIL_STARTTLS: bool = True
-    MAIL_SSL_TLS: bool = False
-    USE_CREDENTIALS: bool = True
-    VALIDATE_CERTS: bool = True
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 def get_mail_config() -> FastMail:

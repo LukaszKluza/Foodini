@@ -13,9 +13,8 @@ class MailService:
     def __init__(self, mail: FastMail):
         self.mail = mail
 
-    @classmethod
     async def build_message(
-        cls,
+        self,
         recipients: List[EmailStr],
         subject: str,
         body: str,
