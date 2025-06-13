@@ -29,10 +29,10 @@ loggers:
     handlers: [default]
     propagate: false
 
-#  watchfiles:
-#    level: WARNING
-#    handlers: [ default ]
-#    propagate: false
+  watchfiles:
+    level: WARNING
+    handlers: [ default ]
+    propagate: false
 
 root:
   level: INFO
