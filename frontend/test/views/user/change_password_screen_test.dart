@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/change_password_bloc.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
@@ -19,21 +17,11 @@ late AuthRepository authRepository;
 late ChangePasswordBloc changePasswordBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
-    ],
-    child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: child,
-    ),
-  );
-}
-
 void main() {
+  Widget buildTestWidget(Widget child) {
+    return TestWrapperBuilder(child).build();
+  }
+
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
@@ -51,7 +39,7 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)),
+      buildTestWidget(ChangePasswordScreen(bloc: changePasswordBloc)),
     );
 
     // Then
@@ -70,7 +58,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProviders(ChangePasswordScreen(bloc: changePasswordBloc)),
+      buildTestWidget(ChangePasswordScreen(bloc: changePasswordBloc)),
     );
 
     // When
@@ -89,7 +77,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(ChangePasswordScreen()));
+    await tester.pumpWidget(buildTestWidget(ChangePasswordScreen()));
 
     // When
     await tester.enterText(find.byKey(Key('e-mail')), 'test@example.com');

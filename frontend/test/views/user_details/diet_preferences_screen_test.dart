@@ -2,39 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
 
-Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: MockAuthRepository()),
-      Provider<TokenStorageRepository>.value(
-        value: MockTokenStorageRepository(),
-      ),
-      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
-    ],
-    child: MaterialApp.router(
-      routerConfig: GoRouter(
-        routes: [GoRoute(path: '/', builder: (_, __) => child)],
-      ),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
-  );
-}
-
 void main() {
   late DietFormBloc dietFormBloc;
+
+  Widget buildTestWidget(Widget child, {DietFormBloc? customBloc}) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(
+          BlocProvider<DietFormBloc>.value(value: customBloc ?? dietFormBloc),
+        )
+        .build();
+  }
 
   setUp(() {
     dietFormBloc = DietFormBloc(mockUserDetailsRepository);
@@ -47,15 +32,13 @@ void main() {
   testWidgets('Diet preferences screen elements are displayed', (
     WidgetTester tester,
   ) async {
+    // Given, When
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
-
     await tester.pumpAndSettle();
 
+    // Then
     expect(find.byKey(const Key('diet_type')), findsOneWidget);
     expect(find.byKey(const Key('diet_intensity')), findsOneWidget);
     expect(find.text('Allergies'), findsOneWidget);
@@ -67,18 +50,17 @@ void main() {
   testWidgets('Diet type enums are displayed after tap', (
     WidgetTester tester,
   ) async {
+    // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
-
     await tester.pumpAndSettle();
 
+    // When
     await tester.tap(find.byKey(const Key('diet_type')));
     await tester.pumpAndSettle();
 
+    // Then
     expect(find.text('Fat Loss'), findsOneWidget);
     expect(find.text('Muscle Gain'), findsOneWidget);
     expect(find.text('Weight Maintenance'), findsOneWidget);
@@ -97,10 +79,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 
@@ -140,10 +119,7 @@ void main() {
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 
@@ -160,10 +136,7 @@ void main() {
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 
@@ -190,10 +163,7 @@ void main() {
   ) async {
     // Given, When
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 
@@ -212,10 +182,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 
@@ -239,10 +206,7 @@ void main() {
   ) async {
     // Given
     await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const DietPreferencesScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
+      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
     );
     await tester.pumpAndSettle();
 

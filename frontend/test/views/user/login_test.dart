@@ -5,7 +5,6 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/user/login_events.dart';
 import 'package:frontend/foodini.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
@@ -16,11 +15,11 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/user/login_bloc.dart';
 import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late LoginBloc loginBloc;
@@ -29,28 +28,19 @@ late AuthRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(
-  Widget child, {
-  List<Provider<dynamic>> additionalProviders = const [],
-}) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
-      Provider<LanguageCubit>.value(value: mockLanguageCubit),
-      ...additionalProviders,
-    ],
-    child: MaterialApp(
-      home: Builder(builder: (context) => child),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
-  );
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  Widget buildTestWidget(
+    Widget child, {
+    List<GoRoute> additionalRoutes = const [],
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
+        .addRoutes(additionalRoutes)
+        .build();
+  }
 
   setUp(() {
     mockDio = MockDio();
@@ -68,7 +58,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
+    await tester.pumpWidget(buildTestWidget(LoginScreen(bloc: loginBloc)));
 
     // Then
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
@@ -112,28 +102,20 @@ void main() {
       ),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/login',
-      routes: [
-        GoRoute(
-          path: '/login',
-          builder: (context, state) => LoginScreen(bloc: loginBloc),
-        ),
-        GoRoute(
-          path: '/main_page',
-          builder: (context, state) => Scaffold(body: Text('Foodini')),
-        ),
-      ],
-    );
-
     // When
     await tester.pumpWidget(
-      wrapWithProviders(
-        MaterialApp.router(
-          routerConfig: goRouter,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
+      buildTestWidget(
+        LoginScreen(bloc: loginBloc),
+        additionalRoutes: [
+          GoRoute(
+            path: '/login',
+            builder: (context, state) => LoginScreen(bloc: loginBloc),
+          ),
+          GoRoute(
+            path: '/main_page',
+            builder: (context, state) => Scaffold(body: Text('Foodini')),
+          ),
+        ],
       ),
     );
     await tester.pumpAndSettle();
@@ -165,7 +147,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
+    await tester.pumpWidget(buildTestWidget(LoginScreen(bloc: loginBloc)));
 
     // When
     await tester.tap(find.byKey(Key('login')));
@@ -200,24 +182,16 @@ void main() {
       ),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/login',
-      routes: [
-        GoRoute(
-          path: '/login',
-          builder: (context, state) => LoginScreen(bloc: loginBloc),
-        ),
-      ],
-    );
-
     // When
     await tester.pumpWidget(
-      wrapWithProviders(
-        MaterialApp.router(
-          routerConfig: goRouter,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
+      buildTestWidget(
+        LoginScreen(bloc: loginBloc),
+        additionalRoutes: [
+          GoRoute(
+            path: '/login',
+            builder: (context, state) => LoginScreen(bloc: loginBloc),
+          ),
+        ],
       ),
     );
     await tester.pumpAndSettle();
@@ -250,7 +224,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
+    await tester.pumpWidget(buildTestWidget(LoginScreen(bloc: loginBloc)));
 
     // When
     loginBloc.add(InitFromUrl('success'));
@@ -267,7 +241,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(wrapWithProviders(LoginScreen(bloc: loginBloc)));
+    await tester.pumpWidget(buildTestWidget(LoginScreen(bloc: loginBloc)));
 
     // When
     loginBloc.add(InitFromUrl('error'));
