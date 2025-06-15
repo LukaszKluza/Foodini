@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
