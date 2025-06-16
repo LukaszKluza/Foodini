@@ -12,8 +12,7 @@ class UserValidationService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    @classmethod
-    def ensure_verified_user(cls, user) -> User:
+    def ensure_verified_user(self, user) -> User:
         if not user.is_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -22,16 +21,14 @@ class UserValidationService:
             )
         return user
 
-    @classmethod
-    def check_user_permission(cls, user_param_from_token, user_param_from_request):
+    def check_user_permission(self, user_param_from_token, user_param_from_request):
         if user_param_from_token != user_param_from_request:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid token",
             )
 
-    @classmethod
-    def check_last_password_change_data_time(cls, user):
+    def check_last_password_change_data_time(self, user):
         time_diff = (datetime.now(config.TIMEZONE) - user.last_password_update).total_seconds()
         if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
             raise HTTPException(

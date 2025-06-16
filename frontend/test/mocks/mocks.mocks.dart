@@ -276,13 +276,13 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i13.Future<_i5.DefaultResponse>);
 
   @override
-  _i13.Future<_i6.RefreshedTokensResponse> refreshTokens() =>
+  _i13.Future<_i6.RefreshedTokensResponse> refreshTokens(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#refreshTokens, []),
+            Invocation.method(#refreshTokens, [userId]),
             returnValue: _i13.Future<_i6.RefreshedTokensResponse>.value(
               _FakeRefreshedTokensResponse_4(
                 this,
-                Invocation.method(#refreshTokens, []),
+                Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )
@@ -837,13 +837,13 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i13.Future<_i10.Response<dynamic>>);
 
   @override
-  _i13.Future<_i10.Response<dynamic>> refreshTokens() =>
+  _i13.Future<_i10.Response<dynamic>> refreshTokens(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#refreshTokens, []),
+            Invocation.method(#refreshTokens, [userId]),
             returnValue: _i13.Future<_i10.Response<dynamic>>.value(
               _FakeResponse_13<dynamic>(
                 this,
-                Invocation.method(#refreshTokens, []),
+                Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )

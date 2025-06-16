@@ -49,7 +49,7 @@ void main() {
       'refresh_token': 'newRefreshToken',
     };
 
-    when(mockApiClient.refreshTokens()).thenAnswer(
+    when(mockApiClient.refreshTokens(1)).thenAnswer(
       (_) async => Response(
         requestOptions: RequestOptions(path: ''),
         data: responsePayload,
@@ -57,10 +57,10 @@ void main() {
       ),
     );
 
-    final result = await authRepository.refreshTokens();
+    final result = await authRepository.refreshTokens(1);
 
     expect(result.accessToken, 'newAccessToken');
     expect(result.refreshToken, 'newRefreshToken');
-    verify(mockApiClient.refreshTokens()).called(1);
+    verify(mockApiClient.refreshTokens(1)).called(1);
   });
 }

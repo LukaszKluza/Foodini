@@ -6,7 +6,7 @@ from backend.user_details.schemas import (
     UserDetailsUpdate,
 )
 from backend.user_details.service.user_details_service import UserDetailsService
-from backend.users.use_gateway import UserGateway, get_user_gateway
+from backend.users.user_gateway import UserGateway, get_user_gateway
 
 user_details_router = APIRouter(prefix="/v1/user_details")
 

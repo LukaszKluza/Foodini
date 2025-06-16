@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:mockito/mockito.dart';
 
@@ -38,7 +41,7 @@ void main() {
 
     when(
       mockDio.post(
-        Endpoints.register,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -51,7 +54,7 @@ void main() {
 
     verify(
       mockDio.post(
-        Endpoints.register,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -120,6 +123,10 @@ void main() {
   test('should call refreshTokens with Authorization header', () async {
     const testRefreshToken = 'test-refresh-token';
 
+    UserStorage().setUser(
+      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+    );
+
     when(
       mockTokenStorage.getRefreshToken(),
     ).thenAnswer((_) async => testRefreshToken);
@@ -134,10 +141,14 @@ void main() {
     );
 
     when(
-      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.refreshTokens();
+    final response = await apiClient.refreshTokens(1);
 
     expect(response.statusCode, 200);
     expect(response.data['access_token'], 'new-access-token');
@@ -145,6 +156,7 @@ void main() {
     verify(
       mockDio.post(
         Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>(
             (opt) =>
@@ -158,14 +170,14 @@ void main() {
 
   test('should call getUser with requiresAuth set to true', () async {
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: Endpoints.getUser),
+      requestOptions: RequestOptions(path: Endpoints.users),
       data: {'id': 1, 'name': 'Jane', 'email': 'jane@example.com'},
       statusCode: 200,
     );
 
     when(
       mockDio.get(
-        Endpoints.getUser,
+        Endpoints.users,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
@@ -178,7 +190,7 @@ void main() {
 
     verify(
       mockDio.get(
-        Endpoints.getUser,
+        Endpoints.users,
         queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>((opt) => opt.extra?['requiresAuth'] == true),
@@ -254,13 +266,13 @@ void main() {
     const userId = 42;
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: '${Endpoints.delete}/$userId'),
+      requestOptions: RequestOptions(path: Endpoints.users),
       statusCode: 204,
     );
 
     when(
       mockDio.delete(
-        Endpoints.delete,
+        Endpoints.users,
         queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
@@ -272,7 +284,7 @@ void main() {
 
     verify(
       mockDio.delete(
-        Endpoints.delete,
+        Endpoints.users,
         queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),

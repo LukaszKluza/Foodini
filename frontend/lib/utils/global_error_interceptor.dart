@@ -56,10 +56,11 @@ class GlobalErrorInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     final refreshToken = await _tokenStorage.getRefreshToken();
+    final userId = UserStorage().getUserId;
 
-    if (refreshToken != null) {
+    if (refreshToken != null && userId!= null) {
       try {
-        final response = await _apiClient.refreshTokens();
+        final response = await _apiClient.refreshTokens(userId);
 
         if (response.statusCode == 200) {
           final newAccessToken = response.data['access_token'];

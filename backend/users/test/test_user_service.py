@@ -202,21 +202,6 @@ async def test_login_user_success(
     assert result.access_token == "access_token"
 
 
-# @pytest.mark.asyncio
-# async def test_logout_user_not_found(mock_user_validators, user_service):
-#     # Given
-#     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-#         status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
-#     )
-#
-#     # When
-#     with pytest.raises(HTTPException) as exc_info:
-#         await user_service.logout({"id": 1})
-#
-#     # Then
-#     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-
-
 @pytest.mark.asyncio
 async def test_logout_user_success(mock_user_validators, mock_authorization_service, user_service):
     response = await user_service.logout({"id": 1, "jti": "jti", "linked_jti": "linked_jti"})
@@ -310,21 +295,6 @@ async def test_reset_password_too_early(
     mock_user_validators.check_last_password_change_data_time.assert_called_once_with(user_)
 
 
-# @pytest.mark.asyncio
-# async def test_update_when_user_not_found(user_service, mock_user_validators):
-#     # Given
-#     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-#         status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
-#     )
-#
-#     # When
-#     with pytest.raises(HTTPException) as exc_info:
-#         await user_service.update(basic_user, UserUpdate(name="Newname", last_name="Newlastname"))
-#
-#     # Assert
-#     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-
-
 @pytest.mark.asyncio
 async def test_update_when_user_exist(user_service, mock_user_validators, mock_user_repository):
     # Given
@@ -337,24 +307,6 @@ async def test_update_when_user_exist(user_service, mock_user_validators, mock_u
 
     # Assert
     assert response == update_user
-
-
-# @pytest.mark.asyncio
-# async def test_delete_account_when_user_not_found(user_service, mock_user_validators):
-#     # Given
-#     token_payload = {"id": "1"}
-#     mock_user_validators.ensure_user_exists_by_id.side_effect = HTTPException(
-#         status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
-#     )
-#     # When
-#     with pytest.raises(HTTPException) as exc_info:
-#         await user_service.delete(
-#             token_payload,
-#             1,
-#         )
-#
-#     # Assert
-#     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.asyncio

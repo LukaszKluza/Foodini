@@ -11,7 +11,7 @@ from backend.user_details.user_details_repository import (
     UserDetailsRepository,
     get_user_details_repository,
 )
-from backend.users.use_gateway import UserGateway, get_user_gateway
+from backend.users.user_gateway import UserGateway, get_user_gateway
 
 
 class UserDetailsService:

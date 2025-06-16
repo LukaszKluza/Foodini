@@ -115,9 +115,9 @@ class UserRepository {
     }
   }
 
-  Future<RefreshedTokensResponse> refreshTokens() async {
+  Future<RefreshedTokensResponse> refreshTokens(int userId) async {
     try {
-      final response = await apiClient.refreshTokens();
+      final response = await apiClient.refreshTokens(userId);
       return RefreshedTokensResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
