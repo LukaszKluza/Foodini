@@ -1,11 +1,12 @@
 import redis.asyncio as aioredis
-from fastapi import Depends, Security
+from fastapi import Depends, Security, Query
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_mail import ConnectionConfig, FastMail
 
 from backend.core.database import get_redis
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
+from backend.users.auth_dependencies import AuthDependency
 from backend.users.mail import MailService
 from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.users.service.user_service import UserService
@@ -67,3 +68,11 @@ async def get_token_payload(
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     return await authorization_service.verify_access_token(credentials)
+
+async def get_auth_dependency(
+    user_id: int = Query(...),
+    credentials: HTTPAuthorizationCredentials = Security(security),
+    user_validators: UserValidationService = Depends(get_user_validators),
+    authorization_service: AuthorizationService = Depends(get_authorization_service),
+) -> AuthDependency:
+    return AuthDependency(user_id, credentials, user_validators, authorization_service)

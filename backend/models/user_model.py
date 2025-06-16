@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 
 from pydantic import EmailStr
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Column, func
 from sqlmodel import SQLModel, Field, Relationship
 
 from backend.settings import config
@@ -25,9 +25,13 @@ class User(SQLModel, table=True):
     password: str
     last_password_update: datetime = Field(
         default_factory=lambda: datetime.now(config.TIMEZONE),
-        sa_type=DateTime(timezone=True),
+        sa_column=Column(DateTime(timezone=True))
     )
 
     details: Optional["UserDetails"] = Relationship(
         back_populates="user", cascade_delete=True
+    )
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )

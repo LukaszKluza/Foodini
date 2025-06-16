@@ -3,7 +3,7 @@ from pydantic import EmailStr
 
 from backend.models import User
 from backend.users.auth_dependencies import AuthDependency
-from backend.users.dependencies import get_user_validators
+from backend.users.dependencies import get_user_validators, get_auth_dependency
 from backend.users.service.user_validation_service import (
     UserValidationService,
 )
@@ -37,6 +37,6 @@ class UserGateway:
 
 def get_user_gateway(
     user_validation_service: UserValidationService = Depends(get_user_validators),
-    auth_dependency: AuthDependency = Depends(AuthDependency),
+    auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ) -> UserGateway:
     return UserGateway(auth_dependency, user_validation_service)
