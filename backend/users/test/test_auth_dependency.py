@@ -1,6 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock
 
+import pytest
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import EmailStr, TypeAdapter
 
@@ -54,14 +54,10 @@ def auth_dependency(mock_user_validators, mock_authorization_service, mock_crede
 
 
 @pytest.mark.asyncio
-async def test_get_token_payload(
-    auth_dependency, mock_credentials, mock_authorization_service
-):
+async def test_get_token_payload(auth_dependency, mock_credentials, mock_authorization_service):
     payload = await auth_dependency.get_token_payload(mock_credentials)
     assert payload == {"id": 1}
-    mock_authorization_service.verify_access_token.assert_awaited_once_with(
-        mock_credentials
-    )
+    mock_authorization_service.verify_access_token.assert_awaited_once_with(mock_credentials)
 
 
 @pytest.mark.asyncio

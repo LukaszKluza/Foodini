@@ -48,7 +48,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       try {
         final userId = UserStorage().getUserId;
         if(userId == null){
-          emit(AccountFailure(ApiException("Unknown error")));
+          emit(AccountFailure(ApiException('Unknown error')));
         }
         await authRepository.delete(UserStorage().getUserId!);
         UserStorage().removeUser();

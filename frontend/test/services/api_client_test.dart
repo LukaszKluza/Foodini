@@ -34,7 +34,7 @@ void main() {
     );
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: Endpoints.register),
+      requestOptions: RequestOptions(path: Endpoints.users),
       data: {'result': 'ok'},
       statusCode: 200,
     );
