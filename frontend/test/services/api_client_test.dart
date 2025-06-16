@@ -32,14 +32,14 @@ void main() {
     );
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: Endpoints.register),
+      requestOptions: RequestOptions(path: Endpoints.users),
       data: {"result": "ok"},
       statusCode: 200,
     );
 
     when(
       mockDio.post(
-        Endpoints.register,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -52,7 +52,7 @@ void main() {
 
     verify(
       mockDio.post(
-        Endpoints.register,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -138,7 +138,7 @@ void main() {
       mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.refreshTokens();
+    final response = await apiClient.refreshTokens(1);
 
     expect(response.statusCode, 200);
     expect(response.data['access_token'], 'new-access-token');
@@ -159,14 +159,14 @@ void main() {
 
   test('should call getUser with requiresAuth set to true', () async {
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: Endpoints.getUser),
+      requestOptions: RequestOptions(path: Endpoints.users),
       data: {'id': 1, 'name': 'Jane', 'email': 'jane@example.com'},
       statusCode: 200,
     );
 
     when(
       mockDio.get(
-        Endpoints.getUser,
+        Endpoints.users,
         queryParameters: {'user_id': 1},
         options: anyNamed('options'),
       ),
@@ -179,7 +179,7 @@ void main() {
 
     verify(
       mockDio.get(
-        Endpoints.getUser,
+        Endpoints.users,
         queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>((opt) => opt.extra?['requiresAuth'] == true),
@@ -255,13 +255,13 @@ void main() {
     const userId = 42;
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: '${Endpoints.delete}/$userId'),
+      requestOptions: RequestOptions(path: Endpoints.users),
       statusCode: 204,
     );
 
     when(
       mockDio.delete(
-        Endpoints.delete,
+        Endpoints.users,
         queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
@@ -273,7 +273,7 @@ void main() {
 
     verify(
       mockDio.delete(
-        Endpoints.delete,
+        Endpoints.users,
         queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),

@@ -81,7 +81,7 @@ void main() {
           'language': 'pl',
         },
         statusCode: 200,
-        requestOptions: RequestOptions(path: Endpoints.register),
+        requestOptions: RequestOptions(path: Endpoints.users),
       ),
     );
 

@@ -121,7 +121,11 @@ void main() {
     ).called(1);
 
     verify(
-      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).called(1);
 
     verify(
