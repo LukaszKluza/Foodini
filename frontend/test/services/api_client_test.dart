@@ -1,7 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 
 import 'package:dio/dio.dart';
@@ -121,6 +124,10 @@ void main() {
   test('should call refreshTokens with Authorization header', () async {
     const testRefreshToken = 'test-refresh-token';
 
+    UserStorage().setUser(
+      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+    );
+
     when(
       mockTokenStorage.getRefreshToken(),
     ).thenAnswer((_) async => testRefreshToken);
@@ -135,7 +142,11 @@ void main() {
     );
 
     when(
-      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer((_) async => expectedResponse);
 
     final response = await apiClient.refreshTokens(1);
@@ -146,6 +157,7 @@ void main() {
     verify(
       mockDio.post(
         Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>(
             (opt) =>
