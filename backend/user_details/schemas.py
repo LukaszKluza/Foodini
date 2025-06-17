@@ -69,3 +69,10 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
             water_percentage=data.water_percentage,
             fat_percentage=data.fat_percentage,
         )
+
+class PredictedCalories(BaseModel):
+    predicted_calories: int
+    # protein: float
+    # fat: float
+    # carbons: float
+

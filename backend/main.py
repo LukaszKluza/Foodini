@@ -10,11 +10,13 @@ from starlette.templating import Jinja2Templates
 
 from backend.settings import config
 from backend.user_details.user_details_router import user_details_router
+from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.users.user_router import user_router
 
 app = FastAPI()
 app.include_router(user_router)
 app.include_router(user_details_router)
+app.include_router(calories_prediction_router)
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.ERROR)
 
