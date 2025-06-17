@@ -1,11 +1,9 @@
 import datetime
 
-from fastapi.params import Depends
 from pydantic import EmailStr
 from sqlalchemy.future import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.core.database import get_db
 from backend.models import User
 
 from ..models.user_model import Language
@@ -79,7 +77,3 @@ class UserRepository:
             await self.db.refresh(user)
             return user
         return None
-
-
-async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:
-    return UserRepository(db)

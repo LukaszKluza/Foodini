@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 from fastapi.security import HTTPAuthorizationCredentials
@@ -22,9 +22,9 @@ def mock_credentials():
 @pytest.fixture
 def mock_user_validators(mock_user):
     mock = AsyncMock()
-    mock.check_user_permission = AsyncMock()
+    mock.check_user_permission = Mock()
     mock.ensure_user_exists_by_id = AsyncMock(return_value=mock_user)
-    mock.ensure_verified_user = AsyncMock()
+    mock.ensure_verified_user = Mock()
     return mock
 
 

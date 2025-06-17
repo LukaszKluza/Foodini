@@ -1,25 +1,20 @@
 from fastapi import HTTPException
-from fastapi.params import Depends
 
 from backend.models import User
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
-    get_user_details_validators,
 )
-from backend.user_details.user_details_repository import (
-    UserDetailsRepository,
-    get_user_details_repository,
-)
-from backend.users.user_gateway import UserGateway, get_user_gateway
+from backend.user_details.user_details_repository import UserDetailsRepository
+from backend.users.user_gateway import UserGateway
 
 
 class UserDetailsService:
     def __init__(
         self,
-        user_details_repository: UserDetailsRepository = Depends(get_user_details_repository),
-        user_gateway: UserGateway = Depends(get_user_gateway),
-        user_details_validators: UserDetailsValidationService = Depends(get_user_details_validators),
+        user_details_repository: UserDetailsRepository,
+        user_gateway: UserGateway,
+        user_details_validators: UserDetailsValidationService,
     ):
         self.user_details_repository = user_details_repository
         self.user_gateway = user_gateway
