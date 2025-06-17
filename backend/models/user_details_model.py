@@ -47,7 +47,11 @@ class UserDetails(SQLModel, table=True):
     water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
 
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
     updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+        sa_column=Column(
+            DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+        )
     )

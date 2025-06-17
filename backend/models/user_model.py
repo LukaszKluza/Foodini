@@ -25,13 +25,17 @@ class User(SQLModel, table=True):
     password: str
     last_password_update: datetime = Field(
         default_factory=lambda: datetime.now(config.TIMEZONE),
-        sa_column=Column(DateTime(timezone=True))
+        sa_column=Column(DateTime(timezone=True)),
     )
 
     details: Optional["UserDetails"] = Relationship(
         back_populates="user", cascade_delete=True
     )
-    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
     updated_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+        sa_column=Column(
+            DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+        )
     )

@@ -11,7 +11,11 @@ from backend.users.service.email_verification_sevice import (
 )
 from backend.users.service.user_service import UserService
 from .auth_dependencies import AuthDependency
-from .dependencies import get_user_service, get_email_verification_service, get_auth_dependency
+from .dependencies import (
+    get_user_service,
+    get_email_verification_service,
+    get_auth_dependency,
+)
 from .schemas import (
     UserCreate,
     DefaultResponse,
