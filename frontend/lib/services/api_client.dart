@@ -38,7 +38,7 @@ class ApiClient {
 
   Future<Response> getUser(int userId) {
     return _client.get(
-      Endpoints.getUser,
+      Endpoints.users,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -46,7 +46,7 @@ class ApiClient {
 
   Future<Response> register(RegisterRequest request) {
     return _client.post(
-      Endpoints.register,
+      Endpoints.users,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -85,10 +85,11 @@ class ApiClient {
     );
   }
 
-  Future<Response> refreshTokens() async {
+  Future<Response> refreshTokens(int userId) async {
     final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
       Endpoints.refreshTokens,
+      queryParameters: {'user_id': userId},
       options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
     );
   }
@@ -111,7 +112,7 @@ class ApiClient {
 
   Future<Response> delete(int userId) {
     return _client.delete(
-      Endpoints.delete,
+      Endpoints.users,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -121,6 +122,7 @@ class ApiClient {
     return _client.request(
       requestOptions.path,
       queryParameters: requestOptions.queryParameters,
+      data: requestOptions.data,
       options: Options(
         method: requestOptions.method,
         headers: requestOptions.headers,
