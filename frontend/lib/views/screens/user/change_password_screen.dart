@@ -92,10 +92,10 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             _token = token;
           });
         } else {
-          router.go('/provide_email');
+          router.go('/provide-email');
         }
       } else {
-        router.go('/provide_email');
+        router.go('/provide-email');
       }
     });
   }

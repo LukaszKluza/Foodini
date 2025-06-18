@@ -2,54 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
-
+import '../../wrapper/test_wrapper_builder.dart';
 
 MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  late DietFormBloc bloc;
+  late DietFormBloc dietFormBloc;
+
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/profile-details',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .setInitialLocation(initialLocation)
+        .build();
+  }
 
   setUp(() {
-    bloc = DietFormBloc(mockUserDetailsRepository);
+    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
   });
 
   tearDown(() {
-    bloc.close();
+    dietFormBloc.close();
   });
-
-  Widget wrapWithRouter(Widget child, {required DietFormBloc bloc}) {
-    return MaterialApp.router(
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder:
-                (_, __) =>
-                    BlocProvider<DietFormBloc>.value(value: bloc, child: child),
-          ),
-        ],
-      ),
-    );
-  }
 
   testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -64,9 +53,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -85,9 +72,7 @@ void main() {
 
   testWidgets('Height slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -102,9 +87,7 @@ void main() {
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -119,9 +102,7 @@ void main() {
 
   testWidgets('Height pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -144,9 +125,7 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -169,9 +148,7 @@ void main() {
 
   testWidgets('Date picker appears on tap', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithRouter(const ProfileDetailsScreen(), bloc: bloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When

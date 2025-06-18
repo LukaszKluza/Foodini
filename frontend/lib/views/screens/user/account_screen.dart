@@ -82,7 +82,7 @@ class _AccountScreenState extends State<_AccountBody> {
                           Icons.settings,
                           screenWidth,
                           screenHeight,
-                          () => context.push('/provide_email'),
+                          () => context.push('/provide-email'),
                         ),
                         const SizedBox(height: 16),
                         Builder(

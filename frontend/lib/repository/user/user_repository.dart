@@ -101,7 +101,10 @@ class UserRepository {
     }
   }
 
-  Future<DefaultResponse> changeLanguage(ChangeLanguageRequest request, int userId) async {
+  Future<DefaultResponse> changeLanguage(
+    ChangeLanguageRequest request,
+    int userId,
+  ) async {
     try {
       final response = await apiClient.changeLanguage(request, userId);
       return DefaultResponse.fromJson(response.data);

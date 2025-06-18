@@ -4,11 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -16,11 +16,11 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late AccountBloc accountBloc;
@@ -30,33 +30,21 @@ late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
 late MockLanguageCubit mockLanguageCubit;
 
-Widget wrapWithProviders(
-  Widget child, {
-  List<Provider<dynamic>> additionalProviders = const [],
-  String initialLocation = '/',
-}) {
-  final goRouter = GoRouter(
-    initialLocation: initialLocation,
-    routes: [GoRoute(path: '/', builder: (_, __) => child)],
-  );
-
-  return MultiProvider(
-    providers: [
-      Provider<UserRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
-      ...additionalProviders,
-    ],
-    child: MaterialApp.router(
-      routerConfig: goRouter,
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
-  );
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  Widget buildTestWidget(
+    Widget child, {
+    List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/account',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
+        .addRoutes(additionalRoutes)
+        .setInitialLocation(initialLocation)
+        .build();
+  }
 
   setUp(() {
     mockDio = MockDio();
@@ -70,12 +58,8 @@ void main() {
   });
 
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {
-    // Given
-    await tester.pumpWidget(
-      wrapWithProviders(AccountScreen(bloc: accountBloc)),
-    );
-
-    // When
+    // Given, When
+    await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
     await tester.pumpAndSettle();
 
     // Then
@@ -88,33 +72,17 @@ void main() {
   });
 
   testWidgets('Tap on Change password navigates to form', (tester) async {
-    // Given
-    final goRouter = GoRouter(
-      routes: [
-        GoRoute(path: '/', builder: (context, state) => AccountScreen()),
-        GoRoute(
-          path: '/provide_email',
-          builder:
-              (context, state) => const Scaffold(key: Key('change_password')),
-        ),
-      ],
-    );
-
-    // When
+    // Given, When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<UserRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
+      buildTestWidget(
+        AccountScreen(bloc: accountBloc),
+        additionalRoutes: [
+          GoRoute(
+            path: '/provide-email',
+            builder:
+                (context, state) => const Scaffold(key: Key('change_password')),
           ),
         ],
-        child: MaterialApp.router(
-          routerConfig: goRouter,
-          locale: Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
       ),
     );
 
@@ -138,37 +106,16 @@ void main() {
       UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/account',
-      routes: [
-        GoRoute(
-          path: '/account',
-          builder: (context, state) => AccountScreen(bloc: accountBloc),
-        ),
-        GoRoute(
-          path: '/',
-          builder: (context, state) => Scaffold(body: Text('Home page')),
-        ),
-      ],
-    );
-
     // When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<UserRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
-          ),
+      buildTestWidget(
+        AccountScreen(bloc: accountBloc),
+        additionalRoutes: [
+          GoRoute(path: '/', builder: (context, state) => HomeScreen()),
         ],
-        child: MaterialApp.router(
-          routerConfig: goRouter,
-          locale: Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
       ),
     );
+
     await tester.pumpAndSettle();
 
     expect(accountBloc.state, isA<AccountInitial>());
@@ -181,9 +128,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
-    // Then
     expect(find.text('Account logged out successfully'), findsOneWidget);
-    expect(find.text('Home page'), findsOneWidget);
+    expect(find.text('Foodini Home Page'), findsOneWidget);
   });
 
   testWidgets('User can successfully delete account', (
@@ -201,37 +147,16 @@ void main() {
       UserResponse(id: 1, language: Language.pl, email: 'jan4@example.com'),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/account',
-      routes: [
-        GoRoute(
-          path: '/account',
-          builder: (context, state) => AccountScreen(bloc: accountBloc),
-        ),
-        GoRoute(
-          path: '/',
-          builder: (context, state) => Scaffold(body: Text('Home page')),
-        ),
-      ],
-    );
-
     // When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<UserRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
-          ),
+      buildTestWidget(
+        AccountScreen(bloc: accountBloc),
+        additionalRoutes: [
+          GoRoute(path: '/', builder: (context, state) => HomeScreen()),
         ],
-        child: MaterialApp.router(
-          routerConfig: goRouter,
-          locale: Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
       ),
     );
+
     await tester.pumpAndSettle();
 
     expect(accountBloc.state, isA<AccountInitial>());
@@ -249,14 +174,12 @@ void main() {
 
     // Then
     expect(find.text('Account deleted successfully'), findsOneWidget);
-    expect(find.text('Home page'), findsOneWidget);
+    expect(find.text('Foodini Home Page'), findsOneWidget);
   });
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProviders(AccountScreen(bloc: accountBloc)),
-    );
+    await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
 
     // When
     await tester.pumpAndSettle();
@@ -314,14 +237,7 @@ void main() {
     );
 
     // When
-    await tester.pumpWidget(
-      wrapWithProviders(
-        AccountScreen(bloc: accountBloc),
-        additionalProviders: [
-          Provider<LanguageCubit>.value(value: mockLanguageCubit),
-        ],
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
 
     await tester.pumpAndSettle();
 
