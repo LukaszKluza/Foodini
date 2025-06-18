@@ -34,11 +34,13 @@ void main() {
   Widget buildTestWidget(
     Widget child, {
     List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/login',
   }) {
     return TestWrapperBuilder(child)
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
         .addRoutes(additionalRoutes)
+        .setInitialLocation(initialLocation)
         .build();
   }
 
@@ -108,11 +110,7 @@ void main() {
         LoginScreen(bloc: loginBloc),
         additionalRoutes: [
           GoRoute(
-            path: '/login',
-            builder: (context, state) => LoginScreen(bloc: loginBloc),
-          ),
-          GoRoute(
-            path: '/main_page',
+            path: '/main-page',
             builder: (context, state) => Scaffold(body: Text('Foodini')),
           ),
         ],
@@ -183,17 +181,7 @@ void main() {
     );
 
     // When
-    await tester.pumpWidget(
-      buildTestWidget(
-        LoginScreen(bloc: loginBloc),
-        additionalRoutes: [
-          GoRoute(
-            path: '/login',
-            builder: (context, state) => LoginScreen(bloc: loginBloc),
-          ),
-        ],
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(LoginScreen(bloc: loginBloc)));
     await tester.pumpAndSettle();
 
     // Then

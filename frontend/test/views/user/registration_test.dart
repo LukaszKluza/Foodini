@@ -31,15 +31,19 @@ void main() {
   Widget buildTestWidget(
     Widget child, {
     List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/register',
   }) {
-    return TestWrapperBuilder(
-      child,
-    ).withRouter().addRoutes(additionalRoutes).addProviders([
-      Provider<LanguageCubit>.value(value: mockLanguageCubit),
-      Provider<AccountBloc>.value(
-        value: AccountBloc(authRepository, mockTokenStorageRepository),
-      ),
-    ]).build();
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addRoutes(additionalRoutes)
+        .addProviders([
+          Provider<LanguageCubit>.value(value: mockLanguageCubit),
+          Provider<AccountBloc>.value(
+            value: AccountBloc(authRepository, mockTokenStorageRepository),
+          ),
+        ])
+        .setInitialLocation(initialLocation)
+        .build();
   }
 
   setUp(() {
@@ -87,10 +91,6 @@ void main() {
       buildTestWidget(
         RegisterScreen(bloc: registerBloc),
         additionalRoutes: [
-          GoRoute(
-            path: '/register',
-            builder: (context, state) => RegisterScreen(bloc: registerBloc),
-          ),
           GoRoute(
             path: '/login',
             builder: (context, state) => Scaffold(body: Text('Login')),
@@ -148,7 +148,9 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(buildTestWidget(RegisterScreen()));
+    await tester.pumpWidget(
+      buildTestWidget(RegisterScreen(bloc: registerBloc)),
+    );
 
     // Then
     await tester.enterText(find.byKey(Key('password')), 'password123');

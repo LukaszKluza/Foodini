@@ -39,21 +39,14 @@ void main() {
       await tester.pumpWidget(
         // When
         buildTestWidget(
-          BottomNavBar(currentRoute: '/profile'),
+          Scaffold(
+            body: const Text('Profile'),
+            bottomNavigationBar: const BottomNavBar(currentRoute: '/profile'),
+          ),
           additionalRoutes: [
             GoRoute(
-              path: '/main_page',
+              path: '/main-page',
               builder: (_, __) => const Scaffold(body: Text('Main Page')),
-            ),
-            GoRoute(
-              path: '/profile',
-              builder:
-                  (_, __) => Scaffold(
-                    body: const Text('Profile'),
-                    bottomNavigationBar: const BottomNavBar(
-                      currentRoute: '/profile',
-                    ),
-                  ),
             ),
           ],
           initialLocation: '/profile',
@@ -127,24 +120,19 @@ void main() {
       // When
       await tester.pumpWidget(
         buildTestWidget(
-          BottomNavBar(currentRoute: '/wizard1'),
-          additionalRoutes: [
-            GoRoute(
-              path: '/wizard1',
-              builder:
-                  (_, __) => Scaffold(
-                    body: Column(
-                      children: const [
-                        Text('Wizard Step 1'),
-                        BottomNavBar(
-                          currentRoute: '/wizard1',
-                          mode: NavBarMode.wizard,
-                          nextRoute: '/wizard2',
-                        ),
-                      ],
-                    ),
-                  ),
+          Scaffold(
+            body: Column(
+              children: const [
+                Text('Wizard Step 1'),
+                BottomNavBar(
+                  currentRoute: '/wizard1',
+                  mode: NavBarMode.wizard,
+                  nextRoute: '/wizard2',
+                ),
+              ],
             ),
+          ),
+          additionalRoutes: [
             GoRoute(
               path: '/wizard2',
               builder: (_, __) => const Scaffold(body: Text('Wizard Step 2')),
@@ -170,27 +158,22 @@ void main() {
       // When
       await tester.pumpWidget(
         buildTestWidget(
-          BottomNavBar(currentRoute: '/wizard2'),
+          Scaffold(
+            body: Column(
+              children: const [
+                Text('Wizard Step 2'),
+                BottomNavBar(
+                  currentRoute: '/wizard2',
+                  mode: NavBarMode.wizard,
+                  prevRoute: '/wizard1',
+                ),
+              ],
+            ),
+          ),
           additionalRoutes: [
             GoRoute(
               path: '/wizard1',
               builder: (_, __) => const Scaffold(body: Text('Wizard Step 1')),
-            ),
-            GoRoute(
-              path: '/wizard2',
-              builder:
-                  (_, __) => Scaffold(
-                    body: Column(
-                      children: const [
-                        Text('Wizard Step 2'),
-                        BottomNavBar(
-                          currentRoute: '/wizard2',
-                          mode: NavBarMode.wizard,
-                          prevRoute: '/wizard1',
-                        ),
-                      ],
-                    ),
-                  ),
             ),
           ],
           initialLocation: '/wizard2',

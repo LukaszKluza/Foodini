@@ -51,7 +51,7 @@ class TestWrapperBuilder {
       final router = GoRouter(
         initialLocation: _config.initialRoute,
         routes: [
-          GoRoute(path: '/', builder: (_, __) => child),
+          GoRoute(path: _config.initialRoute, builder: (_, __) => child),
           ..._config.routes,
         ],
         errorBuilder: (context, state) => child,

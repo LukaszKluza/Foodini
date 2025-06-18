@@ -8,6 +8,7 @@ import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -35,7 +36,7 @@ void main() {
   Widget buildTestWidget(
     Widget child, {
     List<GoRoute> additionalRoutes = const [],
-    String initialLocation = '/',
+    String initialLocation = '/account',
   }) {
     return TestWrapperBuilder(child)
         .withRouter()
@@ -76,9 +77,8 @@ void main() {
       buildTestWidget(
         AccountScreen(bloc: accountBloc),
         additionalRoutes: [
-          GoRoute(path: '/', builder: (context, state) => AccountScreen()),
           GoRoute(
-            path: '/provide_email',
+            path: '/provide-email',
             builder:
                 (context, state) => const Scaffold(key: Key('change_password')),
           ),
@@ -111,18 +111,8 @@ void main() {
       buildTestWidget(
         AccountScreen(bloc: accountBloc),
         additionalRoutes: [
-          GoRoute(
-            path: '/account',
-            builder: (context, state) => AccountScreen(bloc: accountBloc),
-          ),
-          GoRoute(
-            path: '/',
-            builder:
-                (context, state) =>
-                    Scaffold(body: Center(child: Text('Foodini'))),
-          ),
+          GoRoute(path: '/', builder: (context, state) => HomeScreen()),
         ],
-        initialLocation: '/account',
       ),
     );
 
@@ -138,9 +128,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: Constants.redirectionDelay));
     await tester.pumpAndSettle();
 
-    // Then
     expect(find.text('Account logged out successfully'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
+    expect(find.text('Foodini Home Page'), findsOneWidget);
   });
 
   testWidgets('User can successfully delete account', (
@@ -163,18 +152,8 @@ void main() {
       buildTestWidget(
         AccountScreen(bloc: accountBloc),
         additionalRoutes: [
-          GoRoute(
-            path: '/account',
-            builder: (context, state) => AccountScreen(bloc: accountBloc),
-          ),
-          GoRoute(
-            path: '/',
-            builder:
-                (context, state) =>
-                    Scaffold(body: Center(child: Text('Foodini'))),
-          ),
+          GoRoute(path: '/', builder: (context, state) => HomeScreen()),
         ],
-        initialLocation: '/account',
       ),
     );
 
@@ -195,7 +174,7 @@ void main() {
 
     // Then
     expect(find.text('Account deleted successfully'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
+    expect(find.text('Foodini Home Page'), findsOneWidget);
   });
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {

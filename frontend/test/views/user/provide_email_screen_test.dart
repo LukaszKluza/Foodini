@@ -27,10 +27,13 @@ void main() {
   Widget buildTestWidget(
     Widget child, {
     List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/provide-email',
   }) {
-    return TestWrapperBuilder(
-      child,
-    ).withRouter().addRoutes(additionalRoutes).build();
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addRoutes(additionalRoutes)
+        .setInitialLocation(initialLocation)
+        .build();
   }
 
   setUp(() {
@@ -109,11 +112,6 @@ void main() {
       buildTestWidget(
         ProvideEmailScreen(bloc: provideEmailBloc),
         additionalRoutes: [
-          GoRoute(
-            path: '/provide-email',
-            builder:
-                (context, state) => ProvideEmailScreen(bloc: provideEmailBloc),
-          ),
           GoRoute(
             path: '/account',
             builder: (context, state) => const Scaffold(body: Text("Account")),

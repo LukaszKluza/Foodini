@@ -12,12 +12,14 @@ MockUserDetailsRepository mockUserDetailsRepository =
 void main() {
   late DietFormBloc dietFormBloc;
 
-  Widget buildTestWidget(Widget child, {DietFormBloc? customBloc}) {
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/diet-preferences',
+  }) {
     return TestWrapperBuilder(child)
         .withRouter()
-        .addProvider(
-          BlocProvider<DietFormBloc>.value(value: customBloc ?? dietFormBloc),
-        )
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .setInitialLocation(initialLocation)
         .build();
   }
 
@@ -33,9 +35,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -51,9 +51,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -78,9 +76,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -118,9 +114,7 @@ void main() {
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -135,9 +129,7 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -162,9 +154,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -181,9 +171,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -205,9 +193,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const DietPreferencesScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
     // When

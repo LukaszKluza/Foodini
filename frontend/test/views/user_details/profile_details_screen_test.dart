@@ -16,12 +16,14 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   late DietFormBloc dietFormBloc;
 
-  Widget buildTestWidget(Widget child, {DietFormBloc? customBloc}) {
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/profile-details',
+  }) {
     return TestWrapperBuilder(child)
         .withRouter()
-        .addProvider(
-          BlocProvider<DietFormBloc>.value(value: customBloc ?? dietFormBloc),
-        )
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .setInitialLocation(initialLocation)
         .build();
   }
 
@@ -36,9 +38,7 @@ void main() {
   testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -53,9 +53,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -74,9 +72,7 @@ void main() {
 
   testWidgets('Height slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -91,9 +87,7 @@ void main() {
 
   testWidgets('Weight slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -108,9 +102,7 @@ void main() {
 
   testWidgets('Height pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -133,9 +125,7 @@ void main() {
 
   testWidgets('Weight pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // // When
@@ -158,9 +148,7 @@ void main() {
 
   testWidgets('Date picker appears on tap', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(const ProfileDetailsScreen(), customBloc: dietFormBloc),
-    );
+    await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 
     // When

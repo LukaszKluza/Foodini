@@ -13,10 +13,13 @@ void main() {
   Widget buildTestWidget(
     Widget child, {
     List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/main-page',
   }) {
-    return TestWrapperBuilder(
-      child,
-    ).withRouter().addRoutes(additionalRoutes).build();
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addRoutes(additionalRoutes)
+        .setInitialLocation(initialLocation)
+        .build();
   }
 
   testWidgets('Main page shows all buttons', (tester) async {
@@ -35,7 +38,6 @@ void main() {
       buildTestWidget(
         MainPageScreen(),
         additionalRoutes: [
-          GoRoute(path: '/', builder: (context, state) => MainPageScreen()),
           GoRoute(
             path: '/account',
             builder: (context, state) => const Scaffold(key: Key('my_account')),

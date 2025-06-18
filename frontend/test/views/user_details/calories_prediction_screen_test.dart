@@ -13,12 +13,14 @@ MockUserDetailsRepository mockUserDetailsRepository =
 void main() {
   final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
 
-  Widget buildTestWidget(Widget child, {DietFormBloc? customBloc}) {
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/calories-prediction',
+  }) {
     return TestWrapperBuilder(child)
         .withRouter()
-        .addProvider(
-          BlocProvider<DietFormBloc>.value(value: customBloc ?? dietFormBloc),
-        )
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .setInitialLocation(initialLocation)
         .build();
   }
 
@@ -26,12 +28,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -45,12 +42,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -74,12 +66,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -102,12 +89,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -130,12 +112,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
     // When
     final checkboxFinder = find.widgetWithText(
@@ -158,12 +135,7 @@ void main() {
 
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -184,12 +156,7 @@ void main() {
 
   testWidgets('Water slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -214,12 +181,7 @@ void main() {
     tester.view.devicePixelRatio = 1.5;
     await tester.pumpAndSettle();
 
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -240,12 +202,7 @@ void main() {
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -275,12 +232,7 @@ void main() {
 
   testWidgets('Water pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -313,12 +265,7 @@ void main() {
     tester.view.physicalSize = Size(1170, 2532);
     tester.view.devicePixelRatio = 1.5;
 
-    await tester.pumpWidget(
-      buildTestWidget(
-        const CaloriesPredictionScreen(),
-        customBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
