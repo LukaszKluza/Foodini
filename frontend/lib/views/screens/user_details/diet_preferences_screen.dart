@@ -37,8 +37,8 @@ class DietPreferencesScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/profile_details',
-        nextRoute: '/calories_prediction',
+        prevRoute: '/profile-details',
+        nextRoute: '/calories-prediction',
       ),
     );
   }
@@ -55,7 +55,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final TextEditingController _allergiesController = TextEditingController();
   final TextEditingController _dietGoalController = TextEditingController();
   final TextEditingController _mealsPerDeyController = TextEditingController();
-  final TextEditingController _dietIntensityController = TextEditingController();
+  final TextEditingController _dietIntensityController =
+      TextEditingController();
 
   DietType? _selectedDietType;
   List<Allergy>? _selectedAllergies;
@@ -96,15 +97,16 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietType,
         ),
-        items: DietType.values.map((diet) {
-          return DropdownMenuItem<DietType>(
-            value: diet,
-            child: Text(
-              AppConfig.dietTypeLabels(context)[diet]!,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList(),
+        items:
+            DietType.values.map((diet) {
+              return DropdownMenuItem<DietType>(
+                value: diet,
+                child: Text(
+                  AppConfig.dietTypeLabels(context)[diet]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedDietType = value!;
@@ -121,12 +123,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         validator: (value) => validateDietType(value, context),
       ),
       MultiSelectDialogField<Allergy>(
-        items: Allergy.values.map((allergy) {
-          return MultiSelectItem<Allergy>(
-            allergy,
-            AppConfig.allergyLabels(context)[allergy]!,
-          );
-        }).toList(),
+        items:
+            Allergy.values.map((allergy) {
+              return MultiSelectItem<Allergy>(
+                allergy,
+                AppConfig.allergyLabels(context)[allergy]!,
+              );
+            }).toList(),
         title: Text(AppLocalizations.of(context)!.allergies),
         selectedColor: Colors.purpleAccent,
         chipDisplay: MultiSelectChipDisplay(
@@ -183,15 +186,16 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietIntensity,
         ),
-        items: DietIntensity.values.map((intensity) {
-          return DropdownMenuItem<DietIntensity>(
-            value: intensity,
-            child: Text(
-              AppConfig.dietIntensityLabels(context)[intensity]!,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList(),
+        items:
+            DietIntensity.values.map((intensity) {
+              return DropdownMenuItem<DietIntensity>(
+                value: intensity,
+                child: Text(
+                  AppConfig.dietIntensityLabels(context)[intensity]!,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedDietIntensity = value!;
@@ -221,4 +225,3 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 }
-

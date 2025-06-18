@@ -26,7 +26,7 @@ class ChangePasswordListenerHelper {
         () {
           if (mounted) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/main_page');
+              context.go('/main-page');
             });
           }
         },

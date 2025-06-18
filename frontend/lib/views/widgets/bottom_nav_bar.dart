@@ -54,11 +54,11 @@ class BottomNavBar extends StatelessWidget {
   }
 
   Widget _buildHomeButton(BuildContext context) {
-    final isActive = currentRoute != '/main_page';
+    final isActive = currentRoute != '/main-page';
     return _buildNavButton(
       icon: Icons.home,
       isActive: isActive,
-      onPressed: isActive ? () => context.go('/main_page') : null,
+      onPressed: isActive ? () => context.go('/main-page') : null,
     );
   }
 

@@ -34,7 +34,7 @@ class CaloriesPredictionScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/diet_preferences',
+        prevRoute: '/diet-preferences',
       ),
     );
   }
