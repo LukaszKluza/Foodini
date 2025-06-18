@@ -6,14 +6,14 @@ import 'package:provider/single_child_widget.dart';
 
 import '../mocks/mocks.mocks.dart';
 
-@GenerateMocks([AuthRepository, TokenStorageRepository])
+@GenerateMocks([UserRepository, TokenStorageRepository])
 List<SingleChildWidget> getDefaultTestProviders({
-  AuthRepository? authRepository,
+  UserRepository? authRepository,
   TokenStorageRepository? tokenStorage,
 }) {
   return [
-    Provider<AuthRepository>.value(
-      value: authRepository ?? MockAuthRepository(),
+    Provider<UserRepository>.value(
+      value: authRepository ?? MockUserRepository(),
     ),
     Provider<TokenStorageRepository>.value(
       value: tokenStorage ?? MockTokenStorageRepository(),
