@@ -18,7 +18,7 @@ import '../../mocks/mocks.mocks.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
@@ -30,7 +30,7 @@ Widget wrapWithProviders(Widget child, {List<GoRoute> routes = const []}) {
   );
 
   return MultiProvider(
-    providers: [Provider<AuthRepository>.value(value: authRepository)],
+    providers: [Provider<UserRepository>.value(value: authRepository)],
     child: MaterialApp.router(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -46,7 +46,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     mockTokenStorageRepository = MockTokenStorageRepository();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     provideEmailBloc = ProvideEmailBloc(
       authRepository,
       tokenStorageRepository: mockTokenStorageRepository,
@@ -126,7 +126,7 @@ void main() {
 
     await tester.pumpWidget(
       MultiProvider(
-        providers: [Provider<AuthRepository>.value(value: authRepository)],
+        providers: [Provider<UserRepository>.value(value: authRepository)],
         child: MaterialApp.router(
           routerConfig: goRouter,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

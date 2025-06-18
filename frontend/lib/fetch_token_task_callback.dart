@@ -16,23 +16,27 @@ Future<void> fetchTokenTaskCallback([
 
   if (refreshToken != null) {
     final apiClient = ApiClient();
-    final authRepository = AuthRepository(apiClient);
+    final authRepository = UserRepository(apiClient);
     RefreshedTokensResponse refreshedTokens;
     UserResponse userResponse;
 
     try {
-      refreshedTokens = await authRepository.refreshTokens();
-      await TokenStorageRepository().saveAccessToken(
-        refreshedTokens.accessToken,
-      );
-      await TokenStorageRepository().saveRefreshToken(
-        refreshedTokens.refreshToken,
-      );
+      final userId = UserStorage().getUserId;
 
-      userResponse = await authRepository.getUser();
-      userStorage.setUser(userResponse);
+      if(userId!= null){
+        refreshedTokens = await authRepository.refreshTokens(userId);
+        await TokenStorageRepository().saveAccessToken(
+          refreshedTokens.accessToken,
+        );
+        await TokenStorageRepository().saveRefreshToken(
+          refreshedTokens.refreshToken,
+        );
 
-      router.go('/account');
+        userResponse = await authRepository.getUser(userId);
+        userStorage.setUser(userResponse);
+
+        router.go('/account');
+      }
     } catch (e) {
       userStorage.removeUser();
       await TokenStorageRepository().deleteAccessToken();

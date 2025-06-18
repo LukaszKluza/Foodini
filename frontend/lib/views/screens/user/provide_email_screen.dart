@@ -29,7 +29,7 @@ class ProvideEmailScreen extends StatelessWidget {
         : BlocProvider<ProvideEmailBloc>(
           create:
               (_) => ProvideEmailBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );

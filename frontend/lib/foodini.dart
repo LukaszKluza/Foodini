@@ -28,8 +28,8 @@ class Foodini extends StatelessWidget {
         Provider<TokenStorageRepository>(
           create: (_) => TokenStorageRepository(),
         ),
-        ProxyProvider<ApiClient, AuthRepository>(
-          update: (_, apiClient, __) => AuthRepository(apiClient),
+        ProxyProvider<ApiClient, UserRepository>(
+          update: (_, apiClient, __) => UserRepository(apiClient),
         ),
         ProxyProvider<ApiClient, UserDetailsRepository>(
           update: (_, apiClient, __) => UserDetailsRepository(apiClient),

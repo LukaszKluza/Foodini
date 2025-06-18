@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user/language.dart';
+import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
@@ -17,14 +19,13 @@ import '../mocks/mocks.mocks.dart';
 late MockDio mockDio;
 late AccountBloc accountBloc;
 late ApiClient apiClient;
-late AuthRepository authRepository;
-late UserStorage userStorage;
+late UserRepository authRepository;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
-      Provider<AuthRepository>.value(value: authRepository),
+      Provider<UserRepository>.value(value: authRepository),
       Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
     ],
     child: MaterialApp(home: child),
@@ -39,14 +40,17 @@ void main() {
     mockTokenStorageRepository = MockTokenStorageRepository();
     apiClient = ApiClient(mockDio, mockTokenStorageRepository);
 
-    userStorage = UserStorage();
-    authRepository = AuthRepository(apiClient);
+    authRepository = UserRepository(apiClient);
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
   });
 
   testWidgets('Should retry when access token revoke', (
     WidgetTester tester,
   ) async {
+    UserStorage().setUser(
+      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+    );
+
     when(
       mockDio.get(
         Endpoints.logout,
@@ -73,7 +77,11 @@ void main() {
     ).thenAnswer((_) async => 'refresh_token');
 
     when(
-      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer(
       (_) async => Response(
         requestOptions: RequestOptions(path: Endpoints.refreshTokens),
@@ -89,6 +97,7 @@ void main() {
       mockDio.request(
         Endpoints.logout,
         queryParameters: {'user_id': 1},
+        data: null,
         options: anyNamed('options'),
       ),
     ).thenAnswer(
@@ -121,7 +130,11 @@ void main() {
     ).called(1);
 
     verify(
-      mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).called(1);
 
     verify(

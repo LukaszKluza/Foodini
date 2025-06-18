@@ -9,7 +9,7 @@ import 'package:frontend/services/api_client.dart';
 import 'package:mockito/annotations.dart';
 
 @GenerateMocks([
-  AuthRepository,
+  UserRepository,
   RegisterBloc,
   TokenStorageRepository,
   UserDetailsRepository,

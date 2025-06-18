@@ -1,51 +1,50 @@
-from pydantic import EmailStr
 from fastapi import HTTPException, status
-from fastapi.params import Depends
+from fastapi_mail import MessageType
+from pydantic import EmailStr
+from starlette.templating import Jinja2Templates
 
-from backend.mail import MailService
-from backend.settings import config
 from backend.core.user_authorisation_service import AuthorizationService
-from backend.users.user_repository import UserRepository, get_user_repository
+from backend.settings import config
+from backend.users.mail import MailService
 from backend.users.service.user_validation_service import (
     UserValidationService,
-    get_user_validators,
 )
+from backend.users.user_repository import UserRepository
 
 
 class EmailVerificationService:
     def __init__(
         self,
-        user_repository: UserRepository = Depends(get_user_repository),
-        user_validators: UserValidationService = Depends(get_user_validators),
+        user_repository: UserRepository,
+        user_validators: UserValidationService,
+        mail_service: MailService,
+        authorization_service: AuthorizationService,
     ):
         self.user_repository = user_repository
         self.user_validators = user_validators
+        self.mail_service = mail_service
+        self.authorization_service = authorization_service
+        self.templates = Jinja2Templates(directory="backend/users/templates")
 
-    @staticmethod
-    async def send_new_account_verification(email: EmailStr, token: str):
-        message_link = (
-            f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
-        )
-        message_subject = "FoodiniApp email verification"
-        message_body = f"Please click this link: {message_link} to verify your email."
-
-        message = await MailService.create_message(
-            recipients=[email], subject=message_subject, body=message_body
-        )
-        await MailService.send_message(message)
-
-    @staticmethod
     async def send_password_reset_verification(
-        email: EmailStr, form_url: str, token: str
+        self, email: EmailStr, form_url: str, token: str
     ):
         message_link = f"{form_url}/?token={token}"
         message_subject = "FoodiniApp new password request"
-        message_body = f"To change the password please click this link: {message_link}."
-
-        message = await MailService.create_message(
-            recipients=[email], subject=message_subject, body=message_body
+        message_body = self.templates.get_template("confirmation_template.html").render(
+            header="Welcome to FoodiniApp!",
+            message="To change the password please click this link:",
+            message_link=message_link,
         )
-        await MailService.send_message(message)
+
+        message = await self.mail_service.build_message(
+            recipients=[email],
+            subject=message_subject,
+            body=message_body,
+            subtype=MessageType.html,
+        )
+
+        await self.mail_service.send_message(message)
 
     async def process_new_account_verification(self, email: EmailStr, token: str):
         user = await self.user_repository.get_user_by_email(email)
@@ -54,7 +53,7 @@ class EmailVerificationService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User is already verified",
             )
-        await self.send_new_account_verification(email, token)
+        await self._send_new_account_verification(email, token)
 
     async def process_password_reset_verification(
         self, email: EmailStr, form_url: str, token: str
@@ -69,12 +68,24 @@ class EmailVerificationService:
                 detail="Email is required",
             )
         await self.user_validators.ensure_user_exists_by_email(email)
-        token = await AuthorizationService.create_url_safe_token({"email": email})
+        token = await self.authorization_service.create_url_safe_token({"email": email})
         await self.process_new_account_verification(email, token)
 
+    async def _send_new_account_verification(self, email: EmailStr, token: str):
+        message_link = (
+            f"{config.API_URL}/v1/users/confirm/new-account?url_token={token}"
+        )
+        message_subject = "FoodiniApp email verification"
+        message_body = self.templates.get_template("confirmation_template.html").render(
+            header="Welcome to FoodiniApp!",
+            message="Please click the button below to verify your email address:",
+            message_link=message_link,
+        )
 
-def get_email_verification_service(
-    user_repository: UserRepository = Depends(get_user_repository),
-    user_validators: UserValidationService = Depends(get_user_validators),
-) -> EmailVerificationService:
-    return EmailVerificationService(user_repository, user_validators)
+        message = await self.mail_service.build_message(
+            recipients=[email],
+            subject=message_subject,
+            body=message_body,
+            subtype=MessageType.html,
+        )
+        await self.mail_service.send_message(message)

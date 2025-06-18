@@ -1,18 +1,13 @@
 from fastapi import Depends, HTTPException, status
 
-from backend.user_details.user_details_repository import (
-    UserDetailsRepository,
-    get_user_details_repository,
-)
+from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.models import UserDetails
 
 
 class UserDetailsValidationService:
     def __init__(
         self,
-        user_details_repository: UserDetailsRepository = Depends(
-            get_user_details_repository
-        ),
+        user_details_repository: UserDetailsRepository,
     ):
         self.user_details_repository = user_details_repository
 
@@ -26,11 +21,3 @@ class UserDetailsValidationService:
                 detail="User details not found",
             )
         return user_details
-
-
-def get_user_details_validators(
-    user_details_repository: UserDetailsRepository = Depends(
-        get_user_details_repository
-    ),
-) -> UserDetailsValidationService:
-    return UserDetailsValidationService(user_details_repository)

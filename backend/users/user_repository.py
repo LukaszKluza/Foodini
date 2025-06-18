@@ -81,7 +81,3 @@ class UserRepository:
             await self.db.refresh(user)
             return user
         return None
-
-
-async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:
-    return UserRepository(db)
