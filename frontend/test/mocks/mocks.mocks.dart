@@ -73,9 +73,9 @@ class _FakeRefreshedTokensResponse_4 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeAuthRepository_5 extends _i1.SmartFake
-    implements _i7.AuthRepository {
-  _FakeAuthRepository_5(Object parent, Invocation parentInvocation)
+class _FakeUserRepository_5 extends _i1.SmartFake
+    implements _i7.UserRepository {
+  _FakeUserRepository_5(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -158,11 +158,11 @@ class _FakeDio_20 extends _i1.SmartFake implements _i10.Dio {
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [AuthRepository].
+/// A class which mocks [UserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i7.AuthRepository {
-  MockAuthRepository() {
+class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
+  MockUserRepository() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -175,11 +175,11 @@ class MockAuthRepository extends _i1.Mock implements _i7.AuthRepository {
           as _i2.ApiClient);
 
   @override
-  _i13.Future<_i3.UserResponse> getUser() =>
+  _i13.Future<_i3.UserResponse> getUser(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#getUser, []),
+            Invocation.method(#getUser, [userId]),
             returnValue: _i13.Future<_i3.UserResponse>.value(
-              _FakeUserResponse_1(this, Invocation.method(#getUser, [])),
+              _FakeUserResponse_1(this, Invocation.method(#getUser, [userId])),
             ),
           )
           as _i13.Future<_i3.UserResponse>);
@@ -276,13 +276,13 @@ class MockAuthRepository extends _i1.Mock implements _i7.AuthRepository {
           as _i13.Future<_i5.DefaultResponse>);
 
   @override
-  _i13.Future<_i6.RefreshedTokensResponse> refreshTokens() =>
+  _i13.Future<_i6.RefreshedTokensResponse> refreshTokens(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#refreshTokens, []),
+            Invocation.method(#refreshTokens, [userId]),
             returnValue: _i13.Future<_i6.RefreshedTokensResponse>.value(
               _FakeRefreshedTokensResponse_4(
                 this,
-                Invocation.method(#refreshTokens, []),
+                Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )
@@ -298,15 +298,15 @@ class MockRegisterBloc extends _i1.Mock implements _i19.RegisterBloc {
   }
 
   @override
-  _i7.AuthRepository get authRepository =>
+  _i7.UserRepository get authRepository =>
       (super.noSuchMethod(
             Invocation.getter(#authRepository),
-            returnValue: _FakeAuthRepository_5(
+            returnValue: _FakeUserRepository_5(
               this,
               Invocation.getter(#authRepository),
             ),
           )
-          as _i7.AuthRepository);
+          as _i7.UserRepository);
 
   @override
   _i8.RegisterState get state =>
@@ -752,11 +752,14 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   }
 
   @override
-  _i13.Future<_i10.Response<dynamic>> getUser() =>
+  _i13.Future<_i10.Response<dynamic>> getUser(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#getUser, []),
+            Invocation.method(#getUser, [userId]),
             returnValue: _i13.Future<_i10.Response<dynamic>>.value(
-              _FakeResponse_13<dynamic>(this, Invocation.method(#getUser, [])),
+              _FakeResponse_13<dynamic>(
+                this,
+                Invocation.method(#getUser, [userId]),
+              ),
             ),
           )
           as _i13.Future<_i10.Response<dynamic>>);
@@ -834,13 +837,13 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i13.Future<_i10.Response<dynamic>>);
 
   @override
-  _i13.Future<_i10.Response<dynamic>> refreshTokens() =>
+  _i13.Future<_i10.Response<dynamic>> refreshTokens(int? userId) =>
       (super.noSuchMethod(
-            Invocation.method(#refreshTokens, []),
+            Invocation.method(#refreshTokens, [userId]),
             returnValue: _i13.Future<_i10.Response<dynamic>>.value(
               _FakeResponse_13<dynamic>(
                 this,
-                Invocation.method(#refreshTokens, []),
+                Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )

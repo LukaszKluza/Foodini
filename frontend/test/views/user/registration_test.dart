@@ -21,7 +21,7 @@ import '../../wrapper/test_wrapper_builder.dart';
 late MockDio mockDio;
 late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
@@ -50,7 +50,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
     mockTokenStorageRepository = MockTokenStorageRepository();
     when(mockDio.interceptors).thenReturn(Interceptors());
@@ -82,7 +82,7 @@ void main() {
           'language': 'pl',
         },
         statusCode: 200,
-        requestOptions: RequestOptions(path: Endpoints.register),
+        requestOptions: RequestOptions(path: Endpoints.users),
       ),
     );
 

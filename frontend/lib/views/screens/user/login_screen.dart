@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
         : BlocProvider<LoginBloc>(
           create:
               (_) => LoginBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
           child: _buildScaffold(context),

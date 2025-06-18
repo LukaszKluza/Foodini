@@ -3,7 +3,7 @@ from datetime import date
 from unittest.mock import patch, MagicMock, AsyncMock
 
 import pytest
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from backend.models import UserDetails, User
 from backend.user_details import enums
@@ -128,7 +128,6 @@ async def test_get_user_details_when_user_exist(
     mock_user_details_validators,
 ):
     # Given
-    token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
     mock_user_gateway.check_user_permission.return_value = None
     mock_user_details_repository.get_user_details_by_user_id.return_value = (
@@ -136,34 +135,10 @@ async def test_get_user_details_when_user_exist(
     )
 
     # When
-    response = await user_details_service.get_user_details_by_user_id(token_payload, 1)
+    response = await user_details_service.get_user_details_by_user(basic_user)
 
     # Then
     assert response == basic_user_details
-
-
-@pytest.mark.asyncio
-async def test_get_user_details_when_not_exist(
-    user_details_service,
-    mock_user_details_repository,
-    mock_user_gateway,
-):
-    # Given
-    token_payload = {"id": "1"}
-    mock_user_gateway.ensure_user_exists_by_id.side_effect = HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
-    )
-    mock_user_details_repository.get_user_details_by_id.return_value = (
-        basic_user_details
-    )
-
-    # When
-    with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.get_user_details_by_user_id(token_payload, 1)
-
-    # Then
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "User does not exist"
 
 
 @pytest.mark.asyncio
@@ -174,7 +149,6 @@ async def test_add_user_details_when_details_not_exist(
     mock_user_details_validators,
 ):
     # Given
-    token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
     mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
         None
@@ -182,13 +156,13 @@ async def test_add_user_details_when_details_not_exist(
     mock_user_details_repository.add_user_details = AsyncMock(
         return_value=basic_user_details
     )
-    user_details_service.get_user_details_by_user_id = AsyncMock(
+    user_details_service.get_user_details_by_user = AsyncMock(
         side_effect=HTTPException(status_code=404, detail="Not found")
     )
 
     # When
     response = await user_details_service.add_user_details(
-        token_payload, user_details_create, 1
+        user_details_create, basic_user
     )
 
     # Then
@@ -204,7 +178,6 @@ async def test_add_user_details_when_details_exist(
     mock_user_gateway,
 ):
     # Given
-    token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
     mock_user_details_repository.update_user_details_by_user_id.return_value = (
         basic_user_details
@@ -215,7 +188,7 @@ async def test_add_user_details_when_details_exist(
 
     # When
     response = await user_details_service.add_user_details(
-        token_payload, user_details_create, 1
+        user_details_create, basic_user
     )
 
     # Then
@@ -232,7 +205,6 @@ async def test_update_user_details_when_details_exist(
     mock_user_details_validators,
 ):
     # Given
-    token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
     mock_user_details_validators.ensure_user_details_exist_by_user_id.return_value = (
         basic_user_details
@@ -243,13 +215,13 @@ async def test_update_user_details_when_details_exist(
 
     # When
     result = await user_details_service.update_user_details(
-        token_payload, user_details_update, 1
+        user_details_update, basic_user
     )
 
     # Then
     assert result == updated_user_details
     mock_user_details_repository.update_user_details_by_user_id.assert_called_once_with(
-        "1", user_details_update
+        1, user_details_update
     )
 
 
@@ -261,18 +233,16 @@ async def test_update_user_details_when_details_not_exist(
     mock_user_details_validators,
 ):
     # Given
-    token_payload = {"id": "1"}
     mock_user_gateway.ensure_user_exists_by_id.return_value = basic_user
 
     mock_user_details_validators.ensure_user_details_exist_by_user_id.side_effect = (
         HTTPException(status_code=404, detail="User details not found")
     )
 
-    # When / Then
+    # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_details_service.update_user_details(
-            token_payload, user_details_update, 1
-        )
+        await user_details_service.update_user_details(user_details_update, basic_user)
 
+    # Then
     assert exc_info.value.status_code == 404
     assert exc_info.value.detail == "User details not found"

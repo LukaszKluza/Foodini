@@ -3,7 +3,6 @@ from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.models import UserDetails
 from .schemas import UserDetailsCreate, UserDetailsUpdate
-from backend.core.database import get_db
 
 
 class UserDetailsRepository:
@@ -40,9 +39,3 @@ class UserDetailsRepository:
             await self.db.refresh(updated_user_details)
             return updated_user_details
         return None
-
-
-async def get_user_details_repository(
-    db: AsyncSession = Depends(get_db),
-) -> UserDetailsRepository:
-    return UserDetailsRepository(db)

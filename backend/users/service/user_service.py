@@ -2,11 +2,10 @@ from datetime import datetime
 
 from fastapi import HTTPException, status
 from fastapi import Response
-from fastapi.params import Depends
 from starlette.responses import RedirectResponse
 
 from backend.core.user_authorisation_service import AuthorizationService
-from backend.models.user_model import Language
+from backend.models import User
 from backend.settings import config
 from backend.users.schemas import (
     UserCreate,
@@ -18,36 +17,26 @@ from backend.users.schemas import (
     DefaultResponse,
     ChangeLanguageRequest,
 )
-from backend.users.service.email_verification_sevice import (
-    EmailVerificationService,
-    get_email_verification_service,
-)
+from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.users.service.password_service import PasswordService
 from backend.users.service.user_validation_service import (
     UserValidationService,
-    get_user_validators,
 )
-from backend.users.user_repository import UserRepository, get_user_repository
+from backend.users.user_repository import UserRepository
 
 
 class UserService:
     def __init__(
         self,
-        user_repository: UserRepository = Depends(get_user_repository),
-        email_verification_service: EmailVerificationService = Depends(
-            get_email_verification_service
-        ),
-        user_validators: UserValidationService = Depends(get_user_validators),
+        user_repository: UserRepository,
+        email_verification_service: EmailVerificationService,
+        user_validators: UserValidationService,
+        authorization_service: AuthorizationService,
     ):
         self.user_repository = user_repository
         self.email_verification_service = email_verification_service
         self.user_validators = user_validators
-
-    async def get_user(self, token_payload: dict):
-        user_id_from_token = token_payload["id"]
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
-
-        return await self.user_repository.get_user_by_id(user_id_from_token)
+        self.authorization_service = authorization_service
 
     async def register(self, user: UserCreate):
         existing_user = await self.user_repository.get_user_by_email(user.email)
@@ -58,7 +47,9 @@ class UserService:
             )
         user.password = await PasswordService.hash_password(user.password)
 
-        token = await AuthorizationService.create_url_safe_token({"email": user.email})
+        token = await self.authorization_service.create_url_safe_token(
+            {"email": user.email}
+        )
 
         await self.email_verification_service.process_new_account_verification(
             user.email, token
@@ -77,7 +68,7 @@ class UserService:
                 detail="Incorrect password",
             )
 
-        access_token, refresh_token = await AuthorizationService.create_tokens(
+        access_token, refresh_token = await self.authorization_service.create_tokens(
             {"sub": user_.email, "id": user_.id}
         )
 
@@ -88,14 +79,8 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, token_payload: dict, user_id_from_request: int):
-        user_id_from_token = token_payload["id"]
-        self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
-        )
-
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
-        await AuthorizationService.revoke_tokens(
+    async def logout(self, token_payload: dict):
+        await self.authorization_service.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
         return Response(status_code=204)
@@ -109,7 +94,7 @@ class UserService:
         self.user_validators.ensure_verified_user(user_)
 
         self.user_validators.check_last_password_change_data_time(user_)
-        token = await AuthorizationService.create_url_safe_token(
+        token = await self.authorization_service.create_url_safe_token(
             {"email": password_reset_request.email}
         )
 
@@ -121,48 +106,26 @@ class UserService:
             email=user_.email,
         )
 
-    async def update(
-        self, token_payload: dict, user_id_from_request: int, user: UserUpdate
-    ):
-        user_id_from_token = token_payload["id"]
-        self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
-        )
-        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
-
-        return await self.user_repository.update_user(user_.id, user)
+    async def update(self, user: User, new_user_data: UserUpdate):
+        return await self.user_repository.update_user(user.id, new_user_data)
 
     async def change_language(
         self,
-        token_payload: dict,
-        user_id_from_request: int,
+        user: User,
         change_language_request: ChangeLanguageRequest,
     ):
-        user_id_from_token = token_payload["id"]
-        self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
-        )
-        user_ = await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
-
-        temp = await self.user_repository.change_language(
-            user_.id, change_language_request.language
-        )
-        return temp
-
-    async def delete(self, token_payload: dict, user_id_from_request: int):
-        user_id_from_token = token_payload["id"]
-        self.user_validators.check_user_permission(
-            user_id_from_token, user_id_from_request
+        return await self.user_repository.change_language(
+            user.id, change_language_request.language
         )
 
-        await self.user_validators.ensure_user_exists_by_id(user_id_from_token)
-        await AuthorizationService.revoke_tokens(
+    async def delete(self, user: User, token_payload: dict):
+        await self.authorization_service.revoke_tokens(
             token_payload["jti"], token_payload["linked_jti"]
         )
-        return await self.user_repository.delete_user(user_id_from_token)
+        return await self.user_repository.delete_user(user.id)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):
-        token_data = await AuthorizationService.decode_url_safe_token(token, salt)
+        token_data = await self.authorization_service.decode_url_safe_token(token, salt)
         user_email = token_data.get("email")
         await self.user_validators.ensure_user_exists_by_email(user_email)
 
@@ -194,19 +157,9 @@ class UserService:
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
         except (HTTPException, TypeError):
-            email = await AuthorizationService.extract_email_from_base64(token)
+            email = await self.authorization_service.extract_email_from_base64(token)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
             if email:
                 redirect_url += f"&email={email}"
 
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
-
-
-def get_user_service(
-    user_repository: UserRepository = Depends(get_user_repository),
-    email_verification_service: EmailVerificationService = Depends(
-        get_email_verification_service
-    ),
-    user_validators: UserValidationService = Depends(get_user_validators),
-) -> UserService:
-    return UserService(user_repository, email_verification_service, user_validators)

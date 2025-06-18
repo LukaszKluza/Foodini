@@ -25,7 +25,7 @@ import '../../wrapper/test_wrapper_builder.dart';
 late MockDio mockDio;
 late AccountBloc accountBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
 late MockLanguageCubit mockLanguageCubit;
@@ -50,7 +50,7 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     userStorage = UserStorage();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     mockLanguageCubit = MockLanguageCubit();
     mockTokenStorageRepository = MockTokenStorageRepository();
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);

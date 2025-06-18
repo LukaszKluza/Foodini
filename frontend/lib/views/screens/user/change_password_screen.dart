@@ -31,7 +31,7 @@ class ChangePasswordScreen extends StatelessWidget {
         : BlocProvider<ChangePasswordBloc>(
           create:
               (_) => ChangePasswordBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
           child: _buildScaffold(context),

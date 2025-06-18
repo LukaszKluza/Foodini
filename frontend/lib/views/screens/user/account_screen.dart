@@ -27,7 +27,7 @@ class AccountScreen extends StatelessWidget {
         : BlocProvider<AccountBloc>(
           create:
               (_) => AccountBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
           child: _AccountBody(),

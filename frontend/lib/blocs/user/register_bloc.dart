@@ -5,7 +5,7 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent?, RegisterState> {
-  final AuthRepository authRepository;
+  final UserRepository authRepository;
 
   RegisterBloc(this.authRepository) : super(RegisterInitial()) {
     on<RegisterSubmitted>((event, emit) async {
