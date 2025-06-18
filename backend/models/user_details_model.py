@@ -1,7 +1,7 @@
 from typing import List, Optional, TYPE_CHECKING
-from datetime import date
+from datetime import date, datetime
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import ARRAY, Column, Integer, ForeignKey, Enum
+from sqlalchemy import ARRAY, Column, Integer, ForeignKey, Enum, DateTime, func
 from backend.user_details.enums import (
     ActivityLevel,
     Allergies,
@@ -46,3 +46,12 @@ class UserDetails(SQLModel, table=True):
     muscle_percentage: Optional[float] = Field(default=None, ge=0, le=100)
     water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
+
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+        )
+    )

@@ -9,6 +9,7 @@ import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/account_events.dart';
@@ -31,7 +32,7 @@ class AccountScreen extends StatelessWidget {
         : BlocProvider<AccountBloc>(
           create:
               (_) => AccountBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
           child: _AccountBody(),
@@ -115,7 +116,7 @@ class _AccountScreenState extends State<_AccountBody> {
                             Icons.settings,
                             screenWidth,
                             screenHeight,
-                            () => context.push('/provide_email'),
+                            () => context.push('/provide-email'),
                           ),
                           const SizedBox(height: 16),
                           Builder(

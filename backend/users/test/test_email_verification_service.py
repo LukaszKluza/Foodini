@@ -1,11 +1,27 @@
+from unittest.mock import AsyncMock, MagicMock, Mock
+
 import pytest
 from fastapi import HTTPException, status
-from unittest.mock import AsyncMock, MagicMock, patch
+from fastapi_mail import MessageType, MessageSchema
+from pydantic import EmailStr, TypeAdapter
 
-from backend.users.service.email_verification_sevice import EmailVerificationService
-from backend.mail import MailService
 from backend.settings import config
-from backend.core.user_authorisation_service import AuthorizationService
+from backend.users.service.email_verification_sevice import EmailVerificationService
+
+
+@pytest.fixture
+def email_verification_service(
+    mock_user_repository,
+    mock_user_validators,
+    mock_mail_service,
+    mock_authorization_service,
+):
+    return EmailVerificationService(
+        user_repository=mock_user_repository,
+        user_validators=mock_user_validators,
+        mail_service=mock_mail_service,
+        authorization_service=mock_authorization_service,
+    )
 
 
 @pytest.fixture
@@ -23,131 +39,101 @@ def mock_user_validators():
 
 
 @pytest.fixture
-def email_verification_service(mock_user_repository, mock_user_validators):
-    return EmailVerificationService(
-        user_repository=mock_user_repository, user_validators=mock_user_validators
-    )
+def mock_mail_service():
+    mail_service = MagicMock()
+    mail_service.build_message = AsyncMock()
+    mail_service.send_message = AsyncMock()
+    return mail_service
 
 
 @pytest.fixture
-def patch_mail_create_send():
-    with (
-        patch.object(
-            MailService, "create_message", new_callable=AsyncMock
-        ) as mock_create,
-        patch.object(MailService, "send_message", new_callable=AsyncMock) as mock_send,
-    ):
-        yield mock_create, mock_send
+def mock_authorization_service():
+    mock = MagicMock()
+    mock.create_tokens = AsyncMock()
+    mock.refresh_tokens = Mock()
+    mock.revoke_tokens = AsyncMock()
+    mock.create_url_safe_token = AsyncMock()
+    mock.decode_url_safe_token = AsyncMock()
+    mock.verify_access_token = AsyncMock()
+    mock.verify_refresh_token = AsyncMock()
+    mock.extract_email_from_base64 = AsyncMock()
+    return mock
 
 
-@pytest.fixture
-def patch_send_new_account_verification():
-    with patch.object(
-        EmailVerificationService,
-        "send_new_account_verification",
-        new_callable=AsyncMock,
-    ) as mock_send:
-        yield mock_send
-
-
-@pytest.fixture
-def patch_send_password_reset_verification():
-    with patch.object(
-        EmailVerificationService,
-        "send_password_reset_verification",
-        new_callable=AsyncMock,
-    ) as mock_send:
-        yield mock_send
-
-
-@pytest.fixture
-def patch_authorization_token():
-    with patch.object(
-        AuthorizationService, "create_url_safe_token", new_callable=AsyncMock
-    ) as mock_token:
-        yield mock_token
-
-
-@pytest.fixture
-def patch_process_new_account_verification():
-    with patch.object(
-        EmailVerificationService,
-        "process_new_account_verification",
-        new_callable=AsyncMock,
-    ) as mock_process:
-        yield mock_process
+test_email = TypeAdapter(EmailStr).validate_python("test@example.com")
+test_token = "test_token"
 
 
 @pytest.mark.asyncio
 async def test_send_new_account_verification(
-    email_verification_service, patch_mail_create_send
+    email_verification_service, mock_mail_service
 ):
-    test_email = "test@example.com"
-    test_token = "test_token"
-    mock_create, mock_send = patch_mail_create_send
+    email_verification_service.templates = MagicMock()
+    email_verification_service.templates.get_template.return_value.render.return_value = "Please click this link: http://localhost:8000/v1/users/confirm/new-account?url_token=test_token to verify your email."
 
-    await email_verification_service.send_new_account_verification(
+    await email_verification_service._send_new_account_verification(
         test_email, test_token
     )
 
-    mock_create.assert_called_once_with(
+    mock_mail_service.build_message.assert_called_once_with(
         recipients=[test_email],
         subject="FoodiniApp email verification",
-        body=f"Please click this link: {config.API_URL}/v1/users/confirm/new-account?url_token={test_token} to verify your email.",
+        body=f"Please click this link: http://localhost:8000/v1/users/confirm/new-account?url_token={test_token} to verify your email.",
+        subtype=MessageType.html,
     )
-    mock_send.assert_called_once()
+    mock_mail_service.send_message.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_send_password_reset_verification(
-    email_verification_service, patch_mail_create_send
+    email_verification_service, mock_mail_service
 ):
-    test_email = "test@example.com"
     test_form_url = "https://example.com/reset"
-    test_token = "mocked_token"
-    mock_create, mock_send = patch_mail_create_send
+    expected_link = f"{test_form_url}/?token={test_token}"
+    expected_body = f"To change the password please click this link: {expected_link}."
+    email_verification_service.templates = MagicMock()
+    email_verification_service.templates.get_template.return_value.render.return_value = expected_body
 
     await email_verification_service.send_password_reset_verification(
         test_email, test_form_url, test_token
     )
 
-    expected_link = f"{test_form_url}/?token={test_token}"
-    expected_subject = "FoodiniApp new password request"
-    expected_body = f"To change the password please click this link: {expected_link}."
-
-    mock_create.assert_called_once_with(
+    mock_mail_service.build_message.assert_called_once_with(
         recipients=[test_email],
-        subject=expected_subject,
+        subject="FoodiniApp new password request",
         body=expected_body,
+        subtype=MessageType.html,
     )
-    mock_send.assert_called_once()
+    mock_mail_service.send_message.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_process_new_account_verification_new_user(
-    email_verification_service,
-    mock_user_repository,
-    patch_send_new_account_verification,
+    email_verification_service, mock_user_repository, mock_mail_service
 ):
-    test_email = "test@example.com"
-    test_token = "test_token"
+    expected_body = f"Please click this link: {config.API_URL}/v1/users/confirm/new-account?url_token={test_token} to verify your email."
+    message_to_send = MessageSchema(
+        recipients=[test_email],
+        subject="FoodiniApp email verification",
+        body=expected_body,
+        subtype=MessageType.html,
+    )
     mock_user_repository.get_user_by_email = AsyncMock(return_value=None)
-    mock_send = patch_send_new_account_verification
+    email_verification_service.templates = MagicMock()
+    email_verification_service.templates.get_template.return_value.render.return_value = expected_body
+    mock_mail_service.build_message.return_value = message_to_send
 
     await email_verification_service.process_new_account_verification(
         test_email, test_token
     )
 
-    mock_send.assert_called_once_with(test_email, test_token)
+    mock_mail_service.send_message.assert_called_once_with(message_to_send)
 
 
 @pytest.mark.asyncio
 async def test_process_new_account_verification_already_verified(
-    email_verification_service,
+    email_verification_service, mock_user_validators
 ):
-    test_email = "test@example.com"
-    test_token = "test_token"
-
     mock_user = AsyncMock()
     mock_user.is_verified = True
     mock_user_validators.ensure_user_exists_by_email = AsyncMock()
@@ -163,52 +149,48 @@ async def test_process_new_account_verification_already_verified(
 
 @pytest.mark.asyncio
 async def test_process_password_reset_verification(
-    email_verification_service,
-    mock_user_validators,
-    patch_send_password_reset_verification,
+    email_verification_service, mock_user_validators, mock_mail_service
 ):
-    test_email = "test@example.com"
     test_form_url = "https://example.com/reset"
-    test_token = "test_token"
-    mock_send = patch_send_password_reset_verification
+    expected_link = f"{test_form_url}/?token={test_token}"
+    expected_body = f"To change the password please click this link: {expected_link}."
+    message_to_send = MessageSchema(
+        recipients=[test_email],
+        subject="FoodiniApp email verification",
+        body=expected_body,
+        subtype=MessageType.html,
+    )
+    email_verification_service.templates = MagicMock()
+    email_verification_service.templates.get_template.return_value.render.return_value = expected_body
+    mock_mail_service.build_message.return_value = message_to_send
 
     await email_verification_service.process_password_reset_verification(
         test_email, test_form_url, test_token
     )
 
     mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(test_email)
-    mock_send.assert_called_once_with(test_email, test_form_url, test_token)
+    mock_mail_service.send_message.assert_called_once_with(message_to_send)
 
 
 @pytest.mark.asyncio
 async def test_resend_verification(
-    email_verification_service,
-    mock_user_validators,
-    patch_authorization_token,
-    patch_process_new_account_verification,
+    email_verification_service, mock_user_validators, mock_mail_service
 ):
-    test_email = "test@example.com"
-    test_token = "generated_token"
+    form_url = "1.1.1.1:3000"
+    expected_body = f"Please click this link: {form_url}/v1/users/confirm/new-account?url_token={test_token} to verify your email."
+    message_to_send = MessageSchema(
+        recipients=[test_email],
+        subject="FoodiniApp email verification",
+        body=expected_body,
+        subtype=MessageType.html,
+    )
+    email_verification_service.templates = MagicMock()
+    email_verification_service.templates.get_template.return_value.render.return_value = expected_body
+    mock_mail_service.build_message.return_value = message_to_send
 
-    mock_token = patch_authorization_token
-    mock_token.return_value = test_token
-    mock_process = patch_process_new_account_verification
-
-    await email_verification_service.resend_verification(test_email)
-
-    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(test_email)
-    mock_token.assert_called_once_with({"email": test_email})
-    mock_process.assert_called_once_with(test_email, test_token)
-
-
-@pytest.mark.asyncio
-async def test_get_email_verification_service():
-    mock_repo = MagicMock()
-    mock_validators = MagicMock()
-
-    service = EmailVerificationService(
-        user_repository=mock_repo, user_validators=mock_validators
+    await email_verification_service.process_password_reset_verification(
+        test_email, form_url, test_token
     )
 
-    assert service.user_repository == mock_repo
-    assert service.user_validators == mock_validators
+    mock_user_validators.ensure_user_exists_by_email.assert_called_once_with(test_email)
+    mock_mail_service.send_message.assert_called_once_with(message_to_send)

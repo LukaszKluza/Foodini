@@ -2,51 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
 
-Widget wrapWithProvidersForTest(Widget child, {DietFormBloc? dietFormBloc}) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: MockAuthRepository()),
-      Provider<TokenStorageRepository>.value(
-        value: MockTokenStorageRepository(),
-      ),
-      BlocProvider<DietFormBloc>.value(value: dietFormBloc ?? DietFormBloc(mockUserDetailsRepository)),
-    ],
-    child: MaterialApp.router(
-      routerConfig: GoRouter(
-        routes: [GoRoute(path: '/', builder: (_, __) => child)],
-      ),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
-  );
-}
-
 void main() {
   final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
+
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/calories-prediction',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .setInitialLocation(initialLocation)
+        .build();
+  }
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
     WidgetTester tester,
   ) async {
     // Given, When
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // Then
@@ -60,12 +42,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -89,12 +66,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -117,12 +89,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -145,12 +112,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
     // When
     final checkboxFinder = find.widgetWithText(
@@ -173,12 +135,7 @@ void main() {
 
   testWidgets('Muscle slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -199,12 +156,7 @@ void main() {
 
   testWidgets('Water slider works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -229,12 +181,7 @@ void main() {
     tester.view.devicePixelRatio = 1.5;
     await tester.pumpAndSettle();
 
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -255,12 +202,7 @@ void main() {
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -290,12 +232,7 @@ void main() {
 
   testWidgets('Water pop-up works properly', (WidgetTester tester) async {
     // Given
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When
@@ -328,12 +265,7 @@ void main() {
     tester.view.physicalSize = Size(1170, 2532);
     tester.view.devicePixelRatio = 1.5;
 
-    await tester.pumpWidget(
-      wrapWithProvidersForTest(
-        const CaloriesPredictionScreen(),
-        dietFormBloc: dietFormBloc,
-      ),
-    );
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
     // When

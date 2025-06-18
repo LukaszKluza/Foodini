@@ -37,8 +37,8 @@ class DietPreferencesScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/profile_details',
-        nextRoute: '/calories_prediction',
+        prevRoute: '/profile-details',
+        nextRoute: '/calories-prediction',
       ),
     );
   }
@@ -62,7 +62,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   List<Allergy>? _selectedAllergies;
   DietIntensity? _selectedDietIntensity;
 
-  double _selectedDietGoal = 70;
+  double _selectedDietGoal = 65;
   int _selectedMealsPerDay = 3;
   String? _message;
   final TextStyle _messageStyle = Styles.errorStyle;
@@ -71,9 +71,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   void initState() {
     super.initState();
 
-    DietFormBloc dietFormBloc = context.read<DietFormBloc>();
-
-    final state = dietFormBloc.state;
+    final state = context.read<DietFormBloc>().state;
     if (state is DietFormSubmit && state.weight != null) {
       _selectedDietGoal = state.weight!;
       context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
@@ -112,6 +110,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         onChanged: (value) {
           setState(() {
             _selectedDietType = value!;
+            if (_selectedDietType == DietType.weightMaintenance) {
+              final state = context.read<DietFormBloc>().state;
+              if (state is DietFormSubmit && state.weight != null) {
+                _selectedDietGoal = state.weight!;
+                context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
+              }
+            }
           });
           context.read<DietFormBloc>().add(UpdateDietType(value!));
         },
@@ -139,18 +144,19 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           context.read<DietFormBloc>().add(UpdateAllergies(values));
         },
       ),
-      WeightSlider(
-        initialValue: _selectedDietGoal,
-        validator: (value) => validateDietGoal(value, context),
-        onChanged: (value) {
-          setState(() {
-            _selectedDietGoal = value;
-          });
-          context.read<DietFormBloc>().add(UpdateDietGoal(value));
-        },
-        label: AppLocalizations.of(context)!.dietGoal,
-        dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
-      ),
+      if (_selectedDietType != DietType.weightMaintenance)
+        WeightSlider(
+          initialValue: _selectedDietGoal,
+          validator: (value) => validateDietGoal(value, context),
+          onChanged: (value) {
+            setState(() {
+              _selectedDietGoal = value;
+            });
+            context.read<DietFormBloc>().add(UpdateDietGoal(value));
+          },
+          label: AppLocalizations.of(context)!.dietGoal,
+          dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
+        ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -181,11 +187,11 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           labelText: AppLocalizations.of(context)!.dietIntensity,
         ),
         items:
-            DietIntensity.values.map((diet) {
+            DietIntensity.values.map((intensity) {
               return DropdownMenuItem<DietIntensity>(
-                value: diet,
+                value: intensity,
                 child: Text(
-                  AppConfig.dietIntensityLabels(context)[diet]!,
+                  AppConfig.dietIntensityLabels(context)[intensity]!,
                   style: TextStyle(color: Colors.black),
                 ),
               );

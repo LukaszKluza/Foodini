@@ -88,7 +88,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.food_bank_rounded,
                             screenWidth,
                             screenHeight,
-                            () => context.push('/profile_details'),
+                            () => context.push('/profile-details'),
                           ),
                         ],
                       ),

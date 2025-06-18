@@ -5,7 +5,6 @@ import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -13,46 +12,45 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
-late AuthRepository authRepository;
+late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(
-  Widget child, {
-  List<Provider<dynamic>> additionalProviders = const [],
-}) {
-  return MultiProvider(
-    providers: [
-      Provider<AuthRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
-      ...additionalProviders,
-    ],
-    child: MaterialApp(
-      home: child,
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
-  );
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  Widget buildTestWidget(
+    Widget child, {
+    List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/register',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addRoutes(additionalRoutes)
+        .addProviders([
+          Provider<LanguageCubit>.value(value: mockLanguageCubit),
+          Provider<AccountBloc>.value(
+            value: AccountBloc(authRepository, mockTokenStorageRepository),
+          ),
+        ])
+        .setInitialLocation(initialLocation)
+        .build();
+  }
 
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
     mockTokenStorageRepository = MockTokenStorageRepository();
     when(mockDio.interceptors).thenReturn(Interceptors());
@@ -61,8 +59,10 @@ void main() {
   testWidgets('Register screen elements are displayed', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
+    // Given, When
+    await tester.pumpWidget(buildTestWidget(RegisterScreen()));
 
+    // Then
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(ElevatedButton), findsOneWidget);
@@ -72,6 +72,7 @@ void main() {
   testWidgets('Register form submits with valid data', (
     WidgetTester tester,
   ) async {
+    // When
     when(mockApiClient.register(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
@@ -81,41 +82,25 @@ void main() {
           'language': 'pl',
         },
         statusCode: 200,
-        requestOptions: RequestOptions(path: Endpoints.register),
+        requestOptions: RequestOptions(path: Endpoints.users),
       ),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/register',
-      routes: [
-        GoRoute(
-          path: '/register',
-          builder: (context, state) => RegisterScreen(bloc: registerBloc),
-        ),
-        GoRoute(
-          path: '/login',
-          builder: (context, state) => Scaffold(body: Text('Login')),
-        ),
-      ],
-    );
-
+    // Given, When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          Provider<AuthRepository>.value(value: authRepository),
-          Provider<TokenStorageRepository>.value(
-            value: mockTokenStorageRepository,
+      buildTestWidget(
+        RegisterScreen(bloc: registerBloc),
+        additionalRoutes: [
+          GoRoute(
+            path: '/login',
+            builder: (context, state) => Scaffold(body: Text('Login')),
           ),
         ],
-        child: MaterialApp.router(
-          routerConfig: goRouter,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
       ),
     );
     await tester.pumpAndSettle();
 
+    // Then
     await tester.enterText(find.byKey(Key("first_name")), 'John');
     await tester.enterText(find.byKey(Key("last_name")), 'Doe');
     await tester.pumpAndSettle();
@@ -145,8 +130,10 @@ void main() {
   });
 
   testWidgets('Registration without filled form', (WidgetTester tester) async {
-    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
+    // Given, When
+    await tester.pumpWidget(buildTestWidget(RegisterScreen()));
 
+    // Then
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
 
@@ -160,8 +147,12 @@ void main() {
   testWidgets('Registration with different passwords', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(wrapWithProviders(RegisterScreen()));
+    // Given, When
+    await tester.pumpWidget(
+      buildTestWidget(RegisterScreen(bloc: registerBloc)),
+    );
 
+    // Then
     await tester.enterText(find.byKey(Key('password')), 'password123');
     await tester.enterText(find.byKey(Key('confirm_password')), '321drowddap');
 
@@ -180,17 +171,11 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      wrapWithProviders(
-        RegisterScreen(bloc: registerBloc),
-        additionalProviders: [
-          Provider<LanguageCubit>.value(value: mockLanguageCubit),
-          Provider<AccountBloc>.value(value: AccountBloc(authRepository, mockTokenStorageRepository)),
-        ],
-      ),
+      buildTestWidget(RegisterScreen(bloc: registerBloc)),
     );
-
     await tester.pumpAndSettle();
 
+    // Then
     await tester.tap(find.byIcon(Icons.translate_rounded));
 
     await tester.pump();

@@ -67,5 +67,10 @@ class LoginUserResponse(DefaultResponse):
     refresh_token: str
 
 
+class RefreshTokensResponse(DefaultResponse):
+    access_token: str
+    refresh_token: str
+
+
 class EmailSchema(BaseModel):
     addresses: List[EmailStr]

@@ -31,8 +31,8 @@ class ProfileDetailsScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/main_page',
-        nextRoute: '/diet_preferences',
+        prevRoute: '/main-page',
+        nextRoute: '/diet-preferences',
       ),
     );
   }

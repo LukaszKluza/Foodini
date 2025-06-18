@@ -7,7 +7,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
-  final AuthRepository authRepository;
+  final UserRepository authRepository;
   final TokenStorageRepository tokenStorageRepository;
 
   AccountBloc(this.authRepository, this.tokenStorageRepository)
@@ -15,9 +15,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountLogoutRequested>((event, emit) async {
       emit(AccountActionInProgress());
       try {
-        var userId = UserStorage().getUserId!;
-        await authRepository.logout(userId);
-        UserStorage().removeUser();
+        if(UserStorage().getUserId != null){
+          await authRepository.logout(UserStorage().getUserId!);
+          UserStorage().removeUser();
+        }
         await tokenStorageRepository.deleteAccessToken();
         await tokenStorageRepository.deleteRefreshToken();
 
@@ -45,8 +46,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountDeleteRequested>((event, emit) async {
       emit(AccountActionInProgress());
       try {
-        var userId = UserStorage().getUserId!;
-        await authRepository.delete(userId);
+        final userId = UserStorage().getUserId;
+        if(userId == null){
+          emit(AccountFailure(ApiException("Unknown error")));
+        }
+        await authRepository.delete(UserStorage().getUserId!);
         UserStorage().removeUser();
         await tokenStorageRepository.deleteAccessToken();
         await tokenStorageRepository.deleteRefreshToken();

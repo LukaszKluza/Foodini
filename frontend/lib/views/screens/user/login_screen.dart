@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
         : BlocProvider<LoginBloc>(
           create:
               (_) => LoginBloc(
-                Provider.of<AuthRepository>(context, listen: false),
+                Provider.of<UserRepository>(context, listen: false),
                 Provider.of<TokenStorageRepository>(context, listen: false),
               ),
           child: _buildScaffold(context),
@@ -195,7 +195,7 @@ class _LoginFormState extends State<_LoginForm> {
                 ),
               TextButton(
                 key: Key('forgot_password'),
-                onPressed: () => context.go('/provide_email'),
+                onPressed: () => context.go('/provide-email'),
                 child: Text(AppLocalizations.of(context)!.forgotPassword),
               ),
               TextButton(

@@ -1,5 +1,4 @@
-enum
-Language {
+enum Language {
   pl('PL', 'Polski', '🇵🇱'),
   en('EN', 'English', '🇬🇧');
 

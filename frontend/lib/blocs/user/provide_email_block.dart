@@ -7,7 +7,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/provide_email_states.dart';
 
 class ProvideEmailBloc extends Bloc<ProvideEmailEvent?, ProvideEmailState> {
-  final AuthRepository authRepository;
+  final UserRepository authRepository;
 
   ProvideEmailBloc(
     this.authRepository, {
