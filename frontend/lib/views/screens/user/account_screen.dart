@@ -9,7 +9,6 @@ import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/account_events.dart';
@@ -48,12 +47,24 @@ class _AccountBody extends StatefulWidget {
 class _AccountScreenState extends State<_AccountBody> {
   @override
   Widget build(BuildContext context) {
+    final user = UserStorage().getUser;
+
+    if (user == null) {
+      return const SizedBox.shrink();
+    }
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
-    final nameFontSize = ResponsiveUtils.scaledFontSize(context, Constants.nameFontRatio);
-    final labelFontSize = ResponsiveUtils.scaledFontSize(context, Constants.labelFontRatio);
+    final nameFontSize = ResponsiveUtils.scaledFontSize(
+      context,
+      Constants.nameFontRatio,
+    );
+    final labelFontSize = ResponsiveUtils.scaledFontSize(
+      context,
+      Constants.labelFontRatio,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -86,7 +97,7 @@ class _AccountScreenState extends State<_AccountBody> {
                     bottom: 4.0,
                   ),
                   child: Text(
-                    '${UserStorage().getName!}\'s',
+                    '${UserStorage().getName!}\'${AppLocalizations.of(context)!.nameSupplement}',
                     style: Styles.kaushanScriptStyle(nameFontSize),
                   ),
                 ),

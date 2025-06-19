@@ -21,12 +21,24 @@ class MainPageScreen extends StatefulWidget {
 class _LoginScreenState extends State<MainPageScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = UserStorage().getUser;
+
+    if (user == null) {
+      return const SizedBox.shrink();
+    }
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
-    final nameFontSize = ResponsiveUtils.scaledFontSize(context, Constants.nameFontRatio);
-    final labelFontSize = ResponsiveUtils.scaledFontSize(context, Constants.labelFontRatio);
+    final nameFontSize = ResponsiveUtils.scaledFontSize(
+      context,
+      Constants.nameFontRatio,
+    );
+    final labelFontSize = ResponsiveUtils.scaledFontSize(
+      context,
+      Constants.labelFontRatio,
+    );
 
     return Scaffold(
       appBar: AppBar(

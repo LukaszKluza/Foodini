@@ -22,6 +22,7 @@
   "registration": "Rejestracja",
   "register": "Zarejestruj",
   "account": "Konto",
+  "nameSupplement": "",
   "alreadyHaveAnAccount": "Masz już konto? Zaloguj się",
   "firstName": "Imię",
   "lastName": "Nazwisko",

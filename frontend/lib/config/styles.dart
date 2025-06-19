@@ -11,9 +11,6 @@ class Styles {
   static const TextStyle successStyle = TextStyle(color: Colors.green);
 
   static TextStyle kaushanScriptStyle([double fontSize = 32]) {
-    return TextStyle(
-      fontSize: fontSize,
-      fontFamily: 'KaushanScript',
-    );
+    return TextStyle(fontSize: fontSize, fontFamily: 'KaushanScript');
   }
 }

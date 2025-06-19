@@ -60,7 +60,12 @@ void main() {
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {
     // Given, When
     UserStorage().setUser(
-      UserResponse(id: 1, name: 'Jan', language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
     await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
     await tester.pumpAndSettle();
@@ -77,7 +82,12 @@ void main() {
   testWidgets('Tap on Change password navigates to form', (tester) async {
     // Given, When
     UserStorage().setUser(
-      UserResponse(id: 1, name: 'Jan', language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
     await tester.pumpWidget(
       buildTestWidget(
@@ -174,14 +184,18 @@ void main() {
     );
 
     await tester.pumpAndSettle();
+    print(userStorage.getName);
 
     expect(accountBloc.state, isA<AccountInitial>());
 
     await tester.tap(find.text('Delete account'));
     await tester.pump();
+    print(userStorage.getName);
 
     await tester.tap(find.text('Delete'));
+
     await tester.pump();
+    print(userStorage.getName);
 
     expect(accountBloc.state, isA<AccountDeleteSuccess>());
 
@@ -196,7 +210,12 @@ void main() {
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
     UserStorage().setUser(
-      UserResponse(id: 1, name: 'Jan', language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
     await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
 

@@ -51,7 +51,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredPassword => 'Password is required';
 
   @override
-  String get requiredPasswordConfirmation => 'Password confirmation is required';
+  String get requiredPasswordConfirmation =>
+      'Password confirmation is required';
 
   @override
   String get samePasswords => 'Passwords must be the same';
@@ -60,7 +61,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordLengthMustBeBetween => 'Password length must be between';
 
   @override
-  String get passwordComplexityError => 'Password must contain letters (capital and lowercase) and numbers';
+  String get passwordComplexityError =>
+      'Password must contain letters (capital and lowercase) and numbers';
 
   @override
   String get invalidEmail => 'Enter valid e-mail';
@@ -73,6 +75,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get nameSupplement => 's';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account? Login';
@@ -117,19 +122,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get successfullyDeletedAccount => 'Account deleted successfully';
 
   @override
-  String get accountActivatedSuccessfully => 'Account has been activated successfully';
+  String get accountActivatedSuccessfully =>
+      'Account has been activated successfully';
 
   @override
-  String get accountHasNotBeenConfirmed => 'Your account has not been confirmed.';
+  String get accountHasNotBeenConfirmed =>
+      'Your account has not been confirmed.';
 
   @override
-  String get successfullyResendEmailVerification => 'Email account verification send successfully';
+  String get successfullyResendEmailVerification =>
+      'Email account verification send successfully';
 
   @override
   String get sendVerificationEmailAgain => 'Send verification email again';
 
   @override
-  String get accountDeletionInformation => 'Are you sure you want to delete your account? This action cannot be undone.';
+  String get accountDeletionInformation =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
 
   @override
   String get confirmAccountDeletion => 'Confirm Account Deletion';
@@ -156,10 +165,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownError => 'Unknown error';
 
   @override
-  String get checkAndConfirmEmailAddress => 'Check and confirm your email address';
+  String get checkAndConfirmEmailAddress =>
+      'Check and confirm your email address';
 
   @override
-  String get checkEmailAddressToSetNewPassword => 'Check your email address to set new password';
+  String get checkEmailAddressToSetNewPassword =>
+      'Check your email address to set new password';
 
   @override
   String get passwordSuccessfullyChanged => 'Password successfully changed';

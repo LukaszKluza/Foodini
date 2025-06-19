@@ -10,21 +10,14 @@ class CaloriesPredictionListenerHelper {
     final messenger = ScaffoldMessenger.of(context);
 
     if (state.isSuccess == true) {
-      final message = successMessageBuilder != null
-          ? successMessageBuilder(context)
-          : successMessage ?? 'Operation completed successfully';
+      final message =
+          successMessageBuilder != null
+              ? successMessageBuilder(context)
+              : successMessage ?? 'Operation completed successfully';
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(message)));
     } else if (state.errorMessage != null) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(state.errorMessage!),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(state.errorMessage!)));
     }
   }
 }

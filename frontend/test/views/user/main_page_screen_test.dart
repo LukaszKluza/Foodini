@@ -28,7 +28,12 @@ void main() {
   testWidgets('Main page shows all buttons', (tester) async {
     // Given, When
     UserStorage().setUser(
-      UserResponse(id: 1, name: 'Jan', language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
     await tester.pumpWidget(buildTestWidget(MainPageScreen()));
 
@@ -41,7 +46,12 @@ void main() {
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
     // Given, When
     UserStorage().setUser(
-      UserResponse(id: 1, name: 'Jan', language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
     await tester.pumpWidget(
       buildTestWidget(
