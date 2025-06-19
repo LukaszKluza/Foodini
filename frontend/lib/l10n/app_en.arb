@@ -22,7 +22,7 @@
   "registration": "Registration",
   "register": "Register",
   "account": "Account",
-  "nameSupplement": "s",
+  "nameSupplement": "'s",
   "alreadyHaveAnAccount": "Already have an account? Login",
   "firstName": "First name",
   "lastName": "Last name",

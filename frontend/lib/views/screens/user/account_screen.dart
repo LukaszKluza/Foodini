@@ -97,7 +97,7 @@ class _AccountScreenState extends State<_AccountBody> {
                     bottom: 4.0,
                   ),
                   child: Text(
-                    '${UserStorage().getName!}\'${AppLocalizations.of(context)!.nameSupplement}',
+                    '${UserStorage().getName!}${AppLocalizations.of(context)!.nameSupplement}',
                     style: Styles.kaushanScriptStyle(nameFontSize),
                   ),
                 ),

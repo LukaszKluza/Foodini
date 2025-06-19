@@ -77,7 +77,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get nameSupplement => 's';
+  String get nameSupplement => '\'s';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account? Login';

@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @nameSupplement.
   ///
   /// In en, this message translates to:
-  /// **'s'**
+  /// **'\'s'**
   String get nameSupplement;
 
   /// No description provided for @alreadyHaveAnAccount.
