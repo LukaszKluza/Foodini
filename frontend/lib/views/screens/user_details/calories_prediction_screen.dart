@@ -66,6 +66,37 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   TextStyle _messageStyle = Styles.errorStyle;
 
   @override
+  void initState() {
+    super.initState();
+
+    final blocState = context.read<DietFormBloc>().state;
+    if (blocState is DietFormSubmit && blocState.activityLevel != null) {
+      _selectedActivityLevel = blocState.activityLevel!;
+    }
+    if (blocState is DietFormSubmit && blocState.stressLevel != null) {
+      _selectedStressLevel = blocState.stressLevel!;
+    }
+    if (blocState is DietFormSubmit && blocState.sleepQuality != null) {
+      _selectedSleepQuality = blocState.sleepQuality!;
+    }
+    if (blocState is DietFormSubmit && blocState.musclePercentage != null) {
+      _selectedMusclePercentage = blocState.musclePercentage!;
+    }
+    if (blocState is DietFormSubmit && blocState.waterPercentage != null) {
+      _selectedWaterPercentage = blocState.waterPercentage!;
+    }
+    if (blocState is DietFormSubmit && blocState.fatPercentage != null) {
+      _selectedFatPercentage = blocState.fatPercentage!;
+    }
+    if (blocState is DietFormSubmit &&
+        (blocState.musclePercentage != null ||
+            blocState.waterPercentage != null ||
+            blocState.fatPercentage != null)) {
+      _isChecked = true;
+    }
+  }
+
+  @override
   void dispose() {
     _activityLevelController.dispose();
     _stressLevelController.dispose();
@@ -157,6 +188,17 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           onChanged: (value) {
             setState(() {
               _isChecked = value!;
+              if (_isChecked) {
+                context.read<DietFormBloc>().add(
+                  UpdateMusclePercentage(_selectedMusclePercentage),
+                );
+                context.read<DietFormBloc>().add(
+                  UpdateWaterPercentage(_selectedWaterPercentage),
+                );
+                context.read<DietFormBloc>().add(
+                  UpdateFatPercentage(_selectedFatPercentage),
+                );
+              }
             });
           },
           controlAffinity: ListTileControlAffinity.leading,

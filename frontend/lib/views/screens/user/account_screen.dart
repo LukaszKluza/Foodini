@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -137,9 +139,14 @@ class _AccountScreenState extends State<_AccountBody> {
                                   Icons.logout,
                                   screenWidth,
                                   screenHeight,
-                                  () => context.read<AccountBloc>().add(
-                                    AccountLogoutRequested(),
-                                  ),
+                                  () {
+                                    context.read<AccountBloc>().add(
+                                      AccountLogoutRequested(),
+                                    );
+                                    context.read<DietFormBloc>().add(
+                                      DietFormResetRequested(),
+                                    );
+                                  },
                                 ),
                           ),
                         ],
@@ -221,6 +228,9 @@ void _showDeleteAccountDialog(BuildContext mainContext) {
                       Navigator.of(dialogContext).pop();
                       mainContext.read<AccountBloc>().add(
                         AccountDeleteRequested(),
+                      );
+                      mainContext.read<DietFormBloc>().add(
+                        DietFormResetRequested(),
                       );
                     },
                     child: Text(AppLocalizations.of(mainContext)!.delete),

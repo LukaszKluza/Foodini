@@ -40,7 +40,7 @@ class DietFormSubmit extends DietFormState {
     this.dateOfBirth,
     this.dietType,
     this.allergies = const [],
-    this.dietGoal = 65.0,
+    this.dietGoal,
     this.mealsPerDay = 3,
     this.dietIntensity,
     this.activityLevel,
@@ -95,6 +95,29 @@ class DietFormSubmit extends DietFormState {
       errorMessage: errorMessage,
     );
   }
+
+  factory DietFormSubmit.initial() {
+    return DietFormSubmit(
+      gender: null,
+      height: 175.0,
+      weight: 65.0,
+      dateOfBirth: null,
+      dietType: null,
+      allergies: const [],
+      dietGoal: null,
+      mealsPerDay: 3,
+      dietIntensity: null,
+      activityLevel: null,
+      stressLevel: null,
+      sleepQuality: null,
+      musclePercentage: null,
+      fatPercentage: null,
+      waterPercentage: null,
+      isSubmitting: false,
+      isSuccess: false,
+      errorMessage: null,
+    );
+  }
 }
 
 class DietFormSubmitSuccess extends DietFormState {}
@@ -105,3 +128,5 @@ class DietFormSubmitFailure extends DietFormState {
 
   DietFormSubmitFailure({this.getMessage, this.error});
 }
+
+

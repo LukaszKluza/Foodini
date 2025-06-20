@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
@@ -59,6 +60,20 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   @override
   void initState() {
     super.initState();
+    final blocState = context.read<DietFormBloc>().state;
+
+    if (blocState is DietFormSubmit && blocState.gender != null) {
+      _selectedGender = blocState.gender!;
+    }
+    if (blocState is DietFormSubmit && blocState.height != null) {
+      _selectedHeight = blocState.height!;
+    }
+    if (blocState is DietFormSubmit && blocState.weight != null) {
+      _selectedWeight = blocState.weight!;
+    }
+    if (blocState is DietFormSubmit && blocState.dateOfBirth != null) {
+      _dateOfBirthController.text = DateFormat('dd/MM/yyyy').format(blocState.dateOfBirth!);
+    }
   }
 
   @override

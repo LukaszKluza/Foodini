@@ -59,10 +59,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       TextEditingController();
 
   DietType? _selectedDietType;
-  List<Allergy>? _selectedAllergies;
-  DietIntensity? _selectedDietIntensity;
-
+  List<Allergy> _selectedAllergies = [];
   double _selectedDietGoal = 65;
+  DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = 3;
   String? _message;
   final TextStyle _messageStyle = Styles.errorStyle;
@@ -71,10 +70,25 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   void initState() {
     super.initState();
 
-    final state = context.read<DietFormBloc>().state;
-    if (state is DietFormSubmit && state.weight != null) {
-      _selectedDietGoal = state.weight!;
-      context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
+    final blocState = context.read<DietFormBloc>().state;
+    if (blocState is DietFormSubmit && blocState.dietGoal != null) {
+      _selectedDietGoal = blocState.dietGoal!;
+    }
+    else if (blocState is DietFormSubmit && blocState.weight != null) {
+      _selectedDietGoal = blocState.weight!;
+      context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
+    }
+    if (blocState is DietFormSubmit && blocState.dietType != null) {
+      _selectedDietType = blocState.dietType!;
+    }
+    if (blocState is DietFormSubmit && blocState.allergies != null) {
+      _selectedAllergies = blocState.allergies!;
+    }
+    if (blocState is DietFormSubmit && blocState.dietIntensity != null) {
+      _selectedDietIntensity = blocState.dietIntensity!;
+    }
+    if (blocState is DietFormSubmit && blocState.mealsPerDay != null) {
+      _selectedMealsPerDay = blocState.mealsPerDay!;
     }
   }
 
@@ -123,6 +137,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         validator: (value) => validateDietType(value, context),
       ),
       MultiSelectDialogField<Allergy>(
+        initialValue: _selectedAllergies,
         items:
             Allergy.values.map((allergy) {
               return MultiSelectItem<Allergy>(
