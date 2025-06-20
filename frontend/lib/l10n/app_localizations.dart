@@ -869,6 +869,12 @@ abstract class AppLocalizations {
   /// **'Date of birth'**
   String get dateOfBirth;
 
+  /// No description provided for @enterDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your date of birth'**
+  String get enterDateOfBirth;
+
   /// No description provided for @formSuccessfullySubmitted.
   ///
   /// In en, this message translates to:

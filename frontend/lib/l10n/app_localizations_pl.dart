@@ -396,6 +396,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dateOfBirth => 'Data urodzenia';
 
   @override
+  String get enterDateOfBirth => 'Wprowadź swoją datę urodzenia';
+
+  @override
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
 
   @override

@@ -14,8 +14,23 @@ import 'package:intl/intl.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/gender.dart';
 
-class ProfileDetailsScreen extends StatelessWidget {
+class ProfileDetailsScreen extends StatefulWidget {
   const ProfileDetailsScreen({super.key});
+
+  @override
+  State<ProfileDetailsScreen> createState() => _ProfileDetailsScreenState();
+}
+
+class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
+  bool _isFormValid = false;
+
+  void _onFormValidityChanged(bool isValid) {
+    if (isValid != _isFormValid) {
+      setState(() {
+        _isFormValid = isValid;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,162 +43,178 @@ class ProfileDetailsScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: _ProfileDetailsForm(),
+      body: _ProfileDetailsForm(onFormValidityChanged: _onFormValidityChanged),
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
         prevRoute: '/main-page',
         nextRoute: '/diet-preferences',
+        isNextRouteEnabled: _isFormValid,
       ),
     );
   }
 }
 
 class _ProfileDetailsForm extends StatefulWidget {
+  final ValueChanged<bool>? onFormValidityChanged;
+
+  const _ProfileDetailsForm({this.onFormValidityChanged});
+
   @override
   State<_ProfileDetailsForm> createState() => _ProfileDetailsFormState();
 }
 
 class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _genderController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _dateOfBirthController = TextEditingController();
 
   Gender? _selectedGender;
   double _selectedHeight = 175;
   double _selectedWeight = 65;
-  String? _message;
-  final TextStyle _messageStyle = Styles.errorStyle;
+  DateTime? _selectedDateOfBirth;
 
   @override
   void initState() {
     super.initState();
-    final blocState = context.read<DietFormBloc>().state;
 
-    if (blocState is DietFormSubmit && blocState.gender != null) {
-      _selectedGender = blocState.gender!;
+    final blocState = context.read<DietFormBloc>().state;
+    if (blocState is DietFormSubmit) {
+      _selectedGender = blocState.gender;
+      if (blocState.height != null) _selectedHeight = blocState.height!;
+      if (blocState.weight != null) _selectedWeight = blocState.weight!;
+      _selectedDateOfBirth = blocState.dateOfBirth;
     }
-    if (blocState is DietFormSubmit && blocState.height != null) {
-      _selectedHeight = blocState.height!;
-    }
-    if (blocState is DietFormSubmit && blocState.weight != null) {
-      _selectedWeight = blocState.weight!;
-    }
-    if (blocState is DietFormSubmit && blocState.dateOfBirth != null) {
-      _dateOfBirthController.text = DateFormat('dd/MM/yyyy').format(blocState.dateOfBirth!);
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
   }
 
-  @override
-  void dispose() {
-    _genderController.dispose();
-    _heightController.dispose();
-    _weightController.dispose();
-    _dateOfBirthController.dispose();
-    super.dispose();
+  void _validateForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+    final allFieldsFilled = _selectedGender != null && _selectedDateOfBirth != null;
+    final formIsValid = isValid && allFieldsFilled;
+
+    widget.onFormValidityChanged?.call(formIsValid);
+  }
+
+  void _onGenderChanged(Gender? value) {
+    setState(() {
+      _selectedGender = value;
+    });
+    context.read<DietFormBloc>().add(UpdateGender(value!));
+    _validateForm();
+  }
+
+  void _onHeightChanged(double value) {
+    setState(() {
+      _selectedHeight = value;
+    });
+    context.read<DietFormBloc>().add(UpdateHeight(value));
+    _validateForm();
+  }
+
+  void _onWeightChanged(double value) {
+    setState(() {
+      _selectedWeight = value;
+    });
+    context.read<DietFormBloc>().add(UpdateWeight(value));
+    _validateForm();
+  }
+
+  void _onDateOfBirthPicked(DateTime? pickedDate) {
+    if (pickedDate == null) return;
+    setState(() {
+      _selectedDateOfBirth = pickedDate;
+    });
+    context.read<DietFormBloc>().add(UpdateDateOfBirth(pickedDate));
+    _validateForm();
   }
 
   @override
   Widget build(BuildContext context) {
-    final fields = [
-      DropdownButtonFormField<Gender>(
-        key: Key('gender'),
-        value: _selectedGender,
-        decoration: InputDecoration(
-          labelText: AppLocalizations.of(context)!.gender,
-        ),
-        items:
-            Gender.values.map((gender) {
-              return DropdownMenuItem<Gender>(
-                value: gender,
-                child: Text(
-                  AppConfig.genderLabels(context)[gender]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
-        onChanged: (value) {
-          setState(() {
-            _selectedGender = value!;
-          });
-          context.read<DietFormBloc>().add(UpdateGender(value!));
-        },
-        validator: (value) => validateGender(value, context),
-      ),
-      HeightSlider(
-        key: Key('height'),
-        initialValue: _selectedHeight,
-        onChanged: (value) {
-          setState(() {
-            _selectedHeight = value;
-          });
-          context.read<DietFormBloc>().add(UpdateHeight(value));
-        },
-      ),
-      WeightSlider(
-        key: Key('weight'),
-        initialValue: _selectedWeight,
-        label: AppLocalizations.of(context)!.weight,
-        dialogTitle: AppLocalizations.of(context)!.enterYourWeight,
-        onChanged: (value) {
-          setState(() {
-            _selectedWeight = value;
-          });
-          context.read<DietFormBloc>().add(UpdateWeight(value));
-        },
-      ),
-      TextFormField(
-        key: Key('date_of_birth'),
-        controller: _dateOfBirthController,
-        readOnly: true,
-        decoration: InputDecoration(
-          labelText: AppLocalizations.of(context)!.dateOfBirth,
-          suffixIcon: Icon(Icons.calendar_today),
-        ),
-        onTap: () async {
-          FocusScope.of(context).requestFocus(FocusNode());
-
-          final now = DateTime.now();
-          final earliestDate = DateTime(now.year - 120, now.month, now.day);
-          final latestDate = DateTime(now.year - 12, now.month, now.day);
-
-          final DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime(now.year - 30),
-            firstDate: earliestDate,
-            lastDate: latestDate,
-            initialEntryMode: DatePickerEntryMode.calendar,
-            initialDatePickerMode: DatePickerMode.year,
-          );
-
-          if (pickedDate != null) {
-            setState(() {
-              final formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
-              _dateOfBirthController.text = formattedDate;
-            });
-
-            context.read<DietFormBloc>().add(UpdateDateOfBirth(pickedDate));
-          }
-        },
-      ),
-      if (_message != null)
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(_message!, style: _messageStyle),
-        ),
-    ];
+    final dateOfBirthController = TextEditingController(
+      text: _selectedDateOfBirth != null
+          ? DateFormat('dd/MM/yyyy').format(_selectedDateOfBirth!)
+          : '',
+    );
 
     return Padding(
-      padding: EdgeInsets.all(35.0),
+      padding: const EdgeInsets.all(35.0),
       child: Form(
         key: _formKey,
-        child: ListView.separated(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: ListView(
           shrinkWrap: true,
-          itemCount: fields.length,
-          separatorBuilder: (_, _) => SizedBox(height: 20),
-          itemBuilder: (_, index) => fields[index],
+          children: [
+            DropdownButtonFormField<Gender>(
+              key: const Key('gender'),
+              value: _selectedGender,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.gender,
+              ),
+              items: Gender.values
+                  .map(
+                    (gender) => DropdownMenuItem<Gender>(
+                      value: gender,
+                      child: Text(
+                        AppConfig.genderLabels(context)[gender]!,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: _onGenderChanged,
+              validator: (value) => validateGender(value, context),
+            ),
+            const SizedBox(height: 20),
+            HeightSlider(
+              key: const Key('height'),
+              initialValue: _selectedHeight,
+              onChanged: _onHeightChanged,
+            ),
+            const SizedBox(height: 20),
+            WeightSlider(
+              key: const Key('weight'),
+              initialValue: _selectedWeight,
+              label: AppLocalizations.of(context)!.weight,
+              dialogTitle: AppLocalizations.of(context)!.enterYourWeight,
+              onChanged: _onWeightChanged,
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              key: const Key('date_of_birth'),
+              controller: dateOfBirthController,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.dateOfBirth,
+                suffixIcon: const Icon(Icons.calendar_today),
+              ),
+              validator: (value) {
+                if (_selectedDateOfBirth == null) {
+                  return AppLocalizations.of(context)!.enterDateOfBirth;
+                }
+                return null;
+              },
+              onTap: () async {
+                FocusScope.of(context).requestFocus(FocusNode());
+
+                final now = DateTime.now();
+                final earliestDate = DateTime(now.year - 120, now.month, now.day);
+                final latestDate = DateTime(now.year - 12, now.month, now.day);
+
+                final pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDateOfBirth ?? DateTime(now.year - 30),
+                  firstDate: earliestDate,
+                  lastDate: latestDate,
+                  initialEntryMode: DatePickerEntryMode.calendar,
+                  initialDatePickerMode: DatePickerMode.year,
+                );
+
+                if (pickedDate != null) {
+                  _onDateOfBirthPicked(pickedDate);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

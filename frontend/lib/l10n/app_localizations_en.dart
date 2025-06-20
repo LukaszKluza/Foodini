@@ -396,6 +396,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dateOfBirth => 'Date of birth';
 
   @override
+  String get enterDateOfBirth => 'Enter your date of birth';
+
+  @override
   String get formSuccessfullySubmitted => 'Form successfully submitted';
 
   @override

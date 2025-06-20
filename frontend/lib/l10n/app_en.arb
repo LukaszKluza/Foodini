@@ -140,6 +140,7 @@
   "weightShouldBeBetween": "Weight should be between",
 
   "dateOfBirth": "Date of birth",
+  "enterDateOfBirth": "Enter your date of birth",
   "formSuccessfullySubmitted": "Form successfully submitted",
   "fillAllNecessaryFields": "Fill all necessary fields"
 }
