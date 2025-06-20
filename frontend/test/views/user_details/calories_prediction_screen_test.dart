@@ -11,7 +11,7 @@ MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
 
 void main() {
-  final dietFormBloc = DietFormBloc(mockUserDetailsRepository);
+  late DietFormBloc dietFormBloc;
 
   Widget buildTestWidget(
     Widget child, {
@@ -23,6 +23,14 @@ void main() {
         .setInitialLocation(initialLocation)
         .build();
   }
+
+  setUp(() {
+    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
+  });
+
+  tearDown(() {
+    dietFormBloc.close();
+  });
 
   testWidgets('Basic Calories prediction screen elements are displayed', (
     WidgetTester tester,

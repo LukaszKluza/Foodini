@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
@@ -24,10 +26,12 @@ import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late AccountBloc accountBloc;
+late DietFormBloc dietFormBloc;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
+late MockUserDetailsRepository mockUserDetailsRepository;
 late MockLanguageCubit mockLanguageCubit;
 
 void main() {
@@ -41,6 +45,7 @@ void main() {
     return TestWrapperBuilder(child)
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
         .addRoutes(additionalRoutes)
         .setInitialLocation(initialLocation)
         .build();
@@ -53,7 +58,9 @@ void main() {
     authRepository = UserRepository(mockApiClient);
     mockLanguageCubit = MockLanguageCubit();
     mockTokenStorageRepository = MockTokenStorageRepository();
+    mockUserDetailsRepository = MockUserDetailsRepository();
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
@@ -184,18 +191,15 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    print(userStorage.getName);
 
     expect(accountBloc.state, isA<AccountInitial>());
 
     await tester.tap(find.text('Delete account'));
     await tester.pump();
-    print(userStorage.getName);
 
     await tester.tap(find.text('Delete'));
 
     await tester.pump();
-    print(userStorage.getName);
 
     expect(accountBloc.state, isA<AccountDeleteSuccess>());
 
