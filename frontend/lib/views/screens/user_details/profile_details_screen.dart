@@ -78,10 +78,10 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
 
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
-      _selectedGender = blocState.gender;
-      if (blocState.height != null) _selectedHeight = blocState.height!;
-      if (blocState.weight != null) _selectedWeight = blocState.weight!;
-      _selectedDateOfBirth = blocState.dateOfBirth;
+      _selectedGender = blocState.gender ?? _selectedGender;
+      _selectedHeight = blocState.height ?? _selectedHeight;
+      _selectedWeight = blocState.weight ?? _selectedWeight;
+      _selectedDateOfBirth = blocState.dateOfBirth ?? _selectedDateOfBirth;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
@@ -89,51 +89,58 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
 
   void _validateForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
-    final allFieldsFilled = _selectedGender != null && _selectedDateOfBirth != null;
+    final allFieldsFilled =
+        _selectedGender != null && _selectedDateOfBirth != null;
     final formIsValid = isValid && allFieldsFilled;
 
     widget.onFormValidityChanged?.call(formIsValid);
   }
 
-  void _onGenderChanged(Gender? value) {
-    setState(() {
-      _selectedGender = value;
-    });
-    context.read<DietFormBloc>().add(UpdateGender(value!));
+  void _updateStateAndBloc<T>({
+    required void Function() updateState,
+    required DietFormEvent blocEvent,
+  }) {
+    setState(updateState);
+    context.read<DietFormBloc>().add(blocEvent);
     _validateForm();
+  }
+
+  void _onGenderChanged(Gender? value) {
+    _updateStateAndBloc(
+      updateState: () => _selectedGender = value,
+      blocEvent: UpdateGender(value!),
+    );
   }
 
   void _onHeightChanged(double value) {
-    setState(() {
-      _selectedHeight = value;
-    });
-    context.read<DietFormBloc>().add(UpdateHeight(value));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedHeight = value,
+      blocEvent: UpdateHeight(value),
+    );
   }
 
   void _onWeightChanged(double value) {
-    setState(() {
-      _selectedWeight = value;
-    });
-    context.read<DietFormBloc>().add(UpdateWeight(value));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedWeight = value,
+      blocEvent: UpdateWeight(value),
+    );
   }
 
   void _onDateOfBirthPicked(DateTime? pickedDate) {
     if (pickedDate == null) return;
-    setState(() {
-      _selectedDateOfBirth = pickedDate;
-    });
-    context.read<DietFormBloc>().add(UpdateDateOfBirth(pickedDate));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedDateOfBirth = pickedDate,
+      blocEvent: UpdateDateOfBirth(pickedDate),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final dateOfBirthController = TextEditingController(
-      text: _selectedDateOfBirth != null
-          ? DateFormat('dd/MM/yyyy').format(_selectedDateOfBirth!)
-          : '',
+      text:
+          _selectedDateOfBirth != null
+              ? DateFormat('dd/MM/yyyy').format(_selectedDateOfBirth!)
+              : '',
     );
 
     return Padding(
@@ -150,17 +157,18 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.gender,
               ),
-              items: Gender.values
-                  .map(
-                    (gender) => DropdownMenuItem<Gender>(
-                      value: gender,
-                      child: Text(
-                        AppConfig.genderLabels(context)[gender]!,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  )
-                  .toList(),
+              items:
+                  Gender.values
+                      .map(
+                        (gender) => DropdownMenuItem<Gender>(
+                          value: gender,
+                          child: Text(
+                            AppConfig.genderLabels(context)[gender]!,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      )
+                      .toList(),
               onChanged: _onGenderChanged,
               validator: (value) => validateGender(value, context),
             ),
@@ -197,7 +205,11 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
                 FocusScope.of(context).requestFocus(FocusNode());
 
                 final now = DateTime.now();
-                final earliestDate = DateTime(now.year - 120, now.month, now.day);
+                final earliestDate = DateTime(
+                  now.year - 120,
+                  now.month,
+                  now.day,
+                );
                 final latestDate = DateTime(now.year - 12, now.month, now.day);
 
                 final pickedDate = await showDatePicker(

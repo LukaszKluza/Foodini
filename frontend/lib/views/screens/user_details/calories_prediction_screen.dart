@@ -70,29 +70,18 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
     super.initState();
 
     final blocState = context.read<DietFormBloc>().state;
-    if (blocState is DietFormSubmit && blocState.activityLevel != null) {
-      _selectedActivityLevel = blocState.activityLevel!;
-    }
-    if (blocState is DietFormSubmit && blocState.stressLevel != null) {
-      _selectedStressLevel = blocState.stressLevel!;
-    }
-    if (blocState is DietFormSubmit && blocState.sleepQuality != null) {
-      _selectedSleepQuality = blocState.sleepQuality!;
-    }
-    if (blocState is DietFormSubmit && blocState.musclePercentage != null) {
-      _selectedMusclePercentage = blocState.musclePercentage!;
-    }
-    if (blocState is DietFormSubmit && blocState.waterPercentage != null) {
-      _selectedWaterPercentage = blocState.waterPercentage!;
-    }
-    if (blocState is DietFormSubmit && blocState.fatPercentage != null) {
-      _selectedFatPercentage = blocState.fatPercentage!;
-    }
-    if (blocState is DietFormSubmit &&
-        (blocState.musclePercentage != null ||
-            blocState.waterPercentage != null ||
-            blocState.fatPercentage != null)) {
-      _isChecked = true;
+    if (blocState is DietFormSubmit) {
+      _selectedActivityLevel = blocState.activityLevel ?? _selectedActivityLevel;
+      _selectedStressLevel = blocState.stressLevel ?? _selectedStressLevel;
+      _selectedSleepQuality = blocState.sleepQuality ?? _selectedSleepQuality;
+      _selectedMusclePercentage = blocState.musclePercentage ?? _selectedMusclePercentage;
+      _selectedWaterPercentage = blocState.waterPercentage ?? _selectedWaterPercentage;
+      _selectedFatPercentage = blocState.fatPercentage ?? _selectedFatPercentage;
+      if (blocState.musclePercentage != null ||
+          blocState.waterPercentage != null ||
+          blocState.fatPercentage != null) {
+        _isChecked = true;
+      }
     }
   }
 

@@ -84,8 +84,10 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
 
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
-      if (blocState.dietType != null) _selectedDietType = blocState.dietType;
-      if (blocState.allergies != null) _selectedAllergies = blocState.allergies!;
+      _selectedDietType = blocState.dietType ?? _selectedDietType;
+      _selectedAllergies = blocState.allergies ?? _selectedAllergies;
+      _selectedDietIntensity = blocState.dietIntensity ?? _selectedDietIntensity;
+      _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
       if (blocState.dietGoal != null) {
         _selectedDietGoal = blocState.dietGoal!;
       }
@@ -93,8 +95,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         _selectedDietGoal = blocState.weight!;
         context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
       }
-      if (blocState.dietIntensity != null) _selectedDietIntensity = blocState.dietIntensity;
-      if (blocState.mealsPerDay != null) _selectedMealsPerDay = blocState.mealsPerDay!;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
@@ -111,8 +111,18 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     widget.onFormValidityChanged?.call(formIsValid);
   }
 
+    void _updateStateAndBloc<T>({
+    required void Function() updateState,
+    required DietFormEvent blocEvent,
+  }) {
+    setState(updateState);
+    context.read<DietFormBloc>().add(blocEvent);
+    _validateForm();
+  }
+
   void _onDietTypeChanged(DietType? value) {
-    setState(() {
+    _updateStateAndBloc(
+      updateState: () {
       _selectedDietType = value;
       if (_selectedDietType == DietType.weightMaintenance) {
         final state = context.read<DietFormBloc>().state;
@@ -121,41 +131,37 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
         }
       }
-    });
-    context.read<DietFormBloc>().add(UpdateDietType(value!));
-    _validateForm();
+    },
+      blocEvent: UpdateDietType(value!),
+    );
   }
 
   void _onAllergiesChanged(List<Allergy> values) {
-    setState(() {
-      _selectedAllergies = values;
-    });
-    context.read<DietFormBloc>().add(UpdateAllergies(values));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedAllergies = values,
+      blocEvent: UpdateAllergies(values),
+    );
   }
 
   void _onDietGoalChanged(double value) {
-    setState(() {
-      _selectedDietGoal = value;
-    });
-    context.read<DietFormBloc>().add(UpdateDietGoal(value));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedDietGoal = value,
+      blocEvent: UpdateDietGoal(value),
+    );
   }
 
   void _onMealsPerDayChanged(int value) {
-    setState(() {
-      _selectedMealsPerDay = value;
-    });
-    context.read<DietFormBloc>().add(UpdateMealsPerDay(value));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedMealsPerDay = value,
+      blocEvent: UpdateMealsPerDay(value),
+    );
   }
 
   void _onDietIntensityChanged(DietIntensity? value) {
-    setState(() {
-      _selectedDietIntensity = value;
-    });
-    context.read<DietFormBloc>().add(UpdateDietIntensity(value!));
-    _validateForm();
+    _updateStateAndBloc(
+      updateState: () => _selectedDietIntensity = value,
+      blocEvent: UpdateDietIntensity(value!),
+    );
   }
 
   @override
