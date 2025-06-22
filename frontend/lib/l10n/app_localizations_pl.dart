@@ -72,10 +72,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get register => 'Zarejestruj';
 
   @override
-  String get account => 'Konto';
+  String get your => 'Twoje';
 
   @override
-  String get nameSupplement => '';
+  String get account => 'Konto';
 
   @override
   String get alreadyHaveAnAccount => 'Masz już konto? Zaloguj się';

@@ -221,17 +221,17 @@ abstract class AppLocalizations {
   /// **'Register'**
   String get register;
 
+  /// No description provided for @your.
+  ///
+  /// In en, this message translates to:
+  /// **'Your'**
+  String get your;
+
   /// No description provided for @account.
   ///
   /// In en, this message translates to:
   /// **'Account'**
   String get account;
-
-  /// No description provided for @nameSupplement.
-  ///
-  /// In en, this message translates to:
-  /// **'\'s'**
-  String get nameSupplement;
 
   /// No description provided for @alreadyHaveAnAccount.
   ///

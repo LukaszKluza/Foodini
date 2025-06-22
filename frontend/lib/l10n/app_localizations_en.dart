@@ -72,10 +72,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get register => 'Register';
 
   @override
-  String get account => 'Account';
+  String get your => 'Your';
 
   @override
-  String get nameSupplement => '\'s';
+  String get account => 'Account';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account? Login';
