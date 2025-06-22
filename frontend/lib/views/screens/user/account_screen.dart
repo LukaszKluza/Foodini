@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
-import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
