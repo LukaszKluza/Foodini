@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/config/constants.dart';
-import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
@@ -47,12 +46,6 @@ class _AccountBody extends StatefulWidget {
 class _AccountScreenState extends State<_AccountBody> {
   @override
   Widget build(BuildContext context) {
-    final user = UserStorage().getUser;
-
-    if (user == null) {
-      return const SizedBox.shrink();
-    }
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -97,7 +90,7 @@ class _AccountScreenState extends State<_AccountBody> {
                     bottom: 4.0,
                   ),
                   child: Text(
-                    '${UserStorage().getName!}${AppLocalizations.of(context)!.nameSupplement}',
+                    AppLocalizations.of(context)!.your,
                     style: Styles.kaushanScriptStyle(nameFontSize),
                   ),
                 ),
