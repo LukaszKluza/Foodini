@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
@@ -18,7 +19,14 @@ void main() {
     List<GoRoute> additionalRoutes = const [],
     String initialLocation = '/main-page',
   }) {
-    return TestWrapperBuilder(child)
+    return TestWrapperBuilder(
+          ScreenUtilInit(
+            designSize: const Size(375, 812),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (_, __) => child,
+          ),
+        )
         .withRouter()
         .addRoutes(additionalRoutes)
         .setInitialLocation(initialLocation)

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
@@ -42,7 +43,14 @@ void main() {
     List<GoRoute> additionalRoutes = const [],
     String initialLocation = '/account',
   }) {
-    return TestWrapperBuilder(child)
+    return TestWrapperBuilder(
+          ScreenUtilInit(
+            designSize: const Size(375, 812),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (_, __) => child,
+          ),
+        )
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
         .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
@@ -118,6 +126,10 @@ void main() {
 
   testWidgets('User can log out successfully', (WidgetTester tester) async {
     // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
+    await tester.pumpAndSettle();
+
     when(mockApiClient.logout(1)).thenAnswer(
       (_) async => Response<dynamic>(
         statusCode: 204,
@@ -164,6 +176,10 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
+    await tester.pumpAndSettle();
+
     when(mockApiClient.delete(1)).thenAnswer(
       (_) async => Response<dynamic>(
         statusCode: 204,
@@ -213,6 +229,10 @@ void main() {
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
+    tester.view.physicalSize = Size(1170, 2532);
+    tester.view.devicePixelRatio = 1.5;
+    await tester.pumpAndSettle();
+    
     UserStorage().setUser(
       UserResponse(
         id: 1,

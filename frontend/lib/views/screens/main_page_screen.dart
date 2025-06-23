@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:frontend/views/widgets/rectangular_button.dart';
@@ -31,14 +31,6 @@ class _LoginScreenState extends State<MainPageScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
-    final nameFontSize = ResponsiveUtils.scaledFontSize(
-      context,
-      Constants.nameFontRatio,
-    );
-    final labelFontSize = ResponsiveUtils.scaledFontSize(
-      context,
-      Constants.labelFontRatio,
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +56,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.hey,
-                  style: Styles.kaushanScriptStyle(labelFontSize),
+                  style: Styles.kaushanScriptStyle(40.sp.clamp(28.0, 83.0)),
                 ),
               ),
               Padding(
@@ -74,7 +66,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   UserStorage().getName!,
-                  style: Styles.kaushanScriptStyle(nameFontSize),
+                  style: Styles.kaushanScriptStyle(48.sp.clamp(36.0, 93.0)),
                 ),
               ),
               const SizedBox(height: 24),

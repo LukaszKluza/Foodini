@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
-import 'package:frontend/utils/responsive_font_size.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 
@@ -52,14 +52,6 @@ class _AccountScreenState extends State<_AccountBody> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
-    final nameFontSize = ResponsiveUtils.scaledFontSize(
-      context,
-      Constants.nameFontRatio,
-    );
-    final labelFontSize = ResponsiveUtils.scaledFontSize(
-      context,
-      Constants.labelFontRatio,
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -93,7 +85,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.your,
-                    style: Styles.kaushanScriptStyle(nameFontSize),
+                    style: Styles.kaushanScriptStyle(36.sp.clamp(28.0, 76.0)),
                   ),
                 ),
                 Padding(
@@ -103,7 +95,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.account,
-                    style: Styles.kaushanScriptStyle(labelFontSize),
+                    style: Styles.kaushanScriptStyle(40.sp.clamp(30.0, 85.0)),
                   ),
                 ),
                 const SizedBox(height: 24),
