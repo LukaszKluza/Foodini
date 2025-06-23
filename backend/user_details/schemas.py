@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from .enums import (
+from backend.user_details.enums import (
     ActivityLevel,
     Allergies,
     DietIntensity,
@@ -12,10 +12,10 @@ from .enums import (
     SleepQuality,
     StressLevel,
 )
-from .mixins import DateOfBirthValidationMixin
+from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
 
 
-class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
+class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
@@ -33,7 +33,7 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
 
 
-class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
+class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
@@ -70,9 +70,12 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
             fat_percentage=data.fat_percentage,
         )
 
+
 class PredictedCalories(BaseModel):
-    predicted_calories: int
+    bmr: int
+    tdee: int
+    target_calories: int
+    diet_duration_days: Optional[int] = None
     # protein: float
     # fat: float
     # carbons: float
-

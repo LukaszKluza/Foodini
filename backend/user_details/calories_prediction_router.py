@@ -1,13 +1,9 @@
-from fastapi import APIRouter, Depends, status
-from fastapi.params import Query
+from fastapi import APIRouter, Depends
 
-from backend.core.user_authorisation_service import AuthorizationService
-from backend.user_details.service.user_details_service import UserDetailsService
 from backend.user_details.dependencies import get_calories_prediction_service
 from backend.user_details.schemas import PredictedCalories
-from backend.users.user_gateway import UserGateway, get_user_gateway
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
-
+from backend.users.user_gateway import UserGateway, get_user_gateway
 
 calories_prediction_router = APIRouter(prefix="/v1/calories_prediction")
 
@@ -19,4 +15,3 @@ async def calories_prediction(
 ):
     user, _ = await user_gateway.get_current_user()
     return await calories_prediction_service.add_calories_prediction(user)
-

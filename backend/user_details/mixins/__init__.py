@@ -1,3 +1,4 @@
 from .date_of_birth_mixin import DateOfBirthValidationMixin
+from .user_details_root_mixin import DietGoalValidationMixin
 
-__all__ = ["DateOfBirthValidationMixin"]
+__all__ = ["DateOfBirthValidationMixin", "DietGoalValidationMixin"]

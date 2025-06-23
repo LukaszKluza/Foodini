@@ -13,12 +13,13 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
+from backend.user_details.mixins import DietGoalValidationMixin
 
 if TYPE_CHECKING:
     from .user_model import User
 
 
-class UserDetails(SQLModel, table=True):
+class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     __tablename__ = "user_details"
 
     id: int = Field(default=None, primary_key=True)
@@ -51,3 +52,10 @@ class UserDetails(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    @property
+    def age(self) -> int:
+        today = date.today()
+        dob = self.date_of_birth
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        return age

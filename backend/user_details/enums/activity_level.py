@@ -8,7 +8,7 @@ class ActivityLevel(str, Enum):
     ACTIVE = "active"
     VERY_ACTIVE = "very_active"
 
-    def get_pal(self):
+    def get_activity_factor(self):
         return {
             ActivityLevel.VERY_LOW: 1.2,
             ActivityLevel.LIGHT: 1.4,
