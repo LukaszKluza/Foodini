@@ -184,11 +184,7 @@ void main() {
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {
-    // Given TODO Adjust it
-    tester.view.physicalSize = Size(1170, 2532);
-    tester.view.devicePixelRatio = 1.5;
-    await tester.pumpAndSettle();
-
+    // Given
     await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 
@@ -201,11 +197,13 @@ void main() {
     await tester.pumpAndSettle();
 
     final sliderFinder = find.byKey(Key('fat_percentage'));
+    await tester.ensureVisible(sliderFinder);
+    await tester.pumpAndSettle();
     await tester.drag(sliderFinder, const Offset(-250, 0));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Fat percentage: 12.0%'), findsOneWidget);
+    expect(find.text('Fat percentage: 13.0%'), findsOneWidget);
   });
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
@@ -270,9 +268,6 @@ void main() {
 
   testWidgets('Fat pop-up works properly', (WidgetTester tester) async {
     // Given
-    tester.view.physicalSize = Size(1170, 2532);
-    tester.view.devicePixelRatio = 1.5;
-
     await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
     await tester.pumpAndSettle();
 

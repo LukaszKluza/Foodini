@@ -9,6 +9,6 @@ class Constants {
   static const int maxMealsPerDay = 6;
 
   static const double horizontalPaddingRatio = 0.07;
-  static const double nameFontRatio = 52;
-  static const double labelFontRatio = 44;
+  static const double screenWidth= 1170;
+  static const double screenHeight= 2532;
 }

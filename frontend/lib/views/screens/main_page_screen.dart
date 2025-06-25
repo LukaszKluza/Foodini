@@ -8,9 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 
-const double horizontalPaddingRatio = 0.05;
-const double fontSizeRatio = 0.12;
-
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({super.key});
 
@@ -56,7 +53,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.hey,
-                  style: Styles.kaushanScriptStyle(40.sp.clamp(28.0, 83.0)),
+                  style: Styles.kaushanScriptStyle(60.sp.clamp(48.0, 103.0)),
                 ),
               ),
               Padding(
@@ -66,7 +63,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                 ),
                 child: Text(
                   UserStorage().getName!,
-                  style: Styles.kaushanScriptStyle(48.sp.clamp(36.0, 93.0)),
+                  style: Styles.kaushanScriptStyle(68.sp.clamp(56.0, 113.0)),
                 ),
               ),
               const SizedBox(height: 24),

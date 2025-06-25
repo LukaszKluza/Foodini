@@ -85,7 +85,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.your,
-                    style: Styles.kaushanScriptStyle(36.sp.clamp(28.0, 76.0)),
+                    style: Styles.kaushanScriptStyle(48.sp.clamp(42.0, 86.0)),
                   ),
                 ),
                 Padding(
@@ -95,7 +95,7 @@ class _AccountScreenState extends State<_AccountBody> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.account,
-                    style: Styles.kaushanScriptStyle(40.sp.clamp(30.0, 85.0)),
+                    style: Styles.kaushanScriptStyle(52.sp.clamp(44.0, 92.0)),
                   ),
                 ),
                 const SizedBox(height: 24),
