@@ -1,3 +1,5 @@
+from user_details.service.macro_factory import MacroFactory
+
 from backend.models import UserDetails
 from backend.user_details.enums import Gender
 from backend.user_details.schemas import PredictedCalories
@@ -10,6 +12,7 @@ class CaloriesPredictionAlgorithm:
         self.tdee = 0
         self.target_calories = 0
         self.diet_duration_days = 0
+        self.predicted_macros = None
 
     async def count_calories_prediction(self) -> PredictedCalories:
         (
@@ -19,18 +22,26 @@ class CaloriesPredictionAlgorithm:
             .apply_sleep_quality_level()
             .apply_intensity()
             .add_diet_duration_to_goal()
+            .add_predicted_macros()
         )
+
         return PredictedCalories(
             bmr=int(self.bmr),
             tdee=int(self.tdee),
             target_calories=int(self.target_calories),
             diet_duration_days=self.diet_duration_days,
+            predicted_macros=self.predicted_macros,
         )
 
     def calculate_bmr(self):
         factor = 5 if self.user_details.gender == Gender.MALE else -161
         basic_bmr = 10 * self.user_details.weight_kg + 6.25 * self.user_details.height_cm - 5 * self.user_details.age
         self.bmr = basic_bmr + factor
+        return self
+
+    def calculate_advance_bmr(self):
+        lbm = self.user_details.weight_kg * (1 - self.user_details.body_fat_percentage / 100)
+        self.bmr = 370 + (21.6 * lbm)
         return self
 
     def apply_activity(self):
@@ -55,4 +66,10 @@ class CaloriesPredictionAlgorithm:
         calories_to_goal = abs(self.user_details.diet_goal_kg - self.user_details.weight_kg) * 7700
         day_calories_diff = abs(self.target_calories - self.tdee)
         self.diet_duration_days = round(calories_to_goal / day_calories_diff) if day_calories_diff != 0 else 0
+        return self
+
+    def add_predicted_macros(self):
+        self.predicted_macros = MacroFactory.get_calculator(
+            self.user_details.diet_type, self.user_details.weight_kg, self.target_calories
+        )
         return self

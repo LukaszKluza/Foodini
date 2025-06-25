@@ -1,0 +1,17 @@
+from user_details.enums import DietType
+from user_details.service.fat_loss_calculator import FatLossCalculator
+from user_details.service.maintenance_calculator import MaintenanceCalculator
+from user_details.service.muscle_gain_calculator import MuscleGainCalculator
+
+
+class MacroFactory:
+    @staticmethod
+    def get_calculator(diet_type, weight_kg, calories):
+        if diet_type == DietType.WEIGHT_MAINTENANCE:
+            return MaintenanceCalculator(weight_kg, calories)
+        elif diet_type == DietType.MUSCLE_GAIN:
+            return MuscleGainCalculator(weight_kg, calories)
+        elif diet_type == DietType.FAT_LOSS:
+            return FatLossCalculator(weight_kg, calories)
+        else:
+            raise ValueError("Invalid diet_type")
