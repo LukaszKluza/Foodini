@@ -75,7 +75,12 @@ void main() {
   testWidgets('User can log in successfully', (WidgetTester tester) async {
     // Given
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     when(mockApiClient.login(any)).thenAnswer(

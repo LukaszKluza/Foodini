@@ -171,6 +171,8 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
+    tester.view.devicePixelRatio = 1.5;
+    
     await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 

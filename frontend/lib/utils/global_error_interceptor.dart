@@ -64,7 +64,7 @@ class GlobalErrorInterceptor extends Interceptor {
     final refreshToken = await _tokenStorage.getRefreshToken();
     final userId = UserStorage().getUserId;
 
-    if (refreshToken != null && userId!= null) {
+    if (refreshToken != null && userId != null) {
       try {
         final response = await _apiClient.refreshTokens(userId);
 

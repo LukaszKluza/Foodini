@@ -40,10 +40,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         UserStorage().setUser(user);
 
         emit(
-            LoginSuccess(
-              userResponse: user,
-              getMessage: (context) => AppLocalizations.of(context)!.successfullyLoggedIn,
-            )
+          LoginSuccess(
+            userResponse: user,
+            getMessage:
+                (context) => AppLocalizations.of(context)!.successfullyLoggedIn,
+          ),
         );
       } on ApiException catch (error) {
         if (error.data?['detail'] == 'EMAIL_NOT_VERIFIED') {

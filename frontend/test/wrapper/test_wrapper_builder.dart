@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -47,14 +48,24 @@ class TestWrapperBuilder {
   Widget build() {
     final providers = [...getDefaultTestProviders(), ..._config.providers];
 
+    final screenUtilWrapper = ScreenUtilInit(
+      designSize: const Size(1170, 2532),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, __) => child,
+    );
+
     if (_config.useRouter) {
       final router = GoRouter(
         initialLocation: _config.initialRoute,
         routes: [
-          GoRoute(path: _config.initialRoute, builder: (_, __) => child),
+          GoRoute(
+            path: _config.initialRoute,
+            builder: (_, __) => screenUtilWrapper,
+          ),
           ..._config.routes,
         ],
-        errorBuilder: (context, state) => child,
+        errorBuilder: (context, state) => screenUtilWrapper,
       );
 
       return MultiProvider(
@@ -70,7 +81,7 @@ class TestWrapperBuilder {
       return MultiProvider(
         providers: providers,
         child: MaterialApp(
-          home: child,
+          home: screenUtilWrapper,
           locale: _config.locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

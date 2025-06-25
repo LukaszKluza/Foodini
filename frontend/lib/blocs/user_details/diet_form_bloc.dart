@@ -87,7 +87,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     });
 
     on<DietFormResetRequested>((event, emit) {
-      emit(DietFormSubmit());
+      emit(DietFormSubmit.initial());
     });
 
     on<SubmitForm>(_onSubmitForm);

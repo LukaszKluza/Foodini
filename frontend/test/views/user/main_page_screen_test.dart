@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/models/user/language.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -24,6 +27,14 @@ void main() {
 
   testWidgets('Main page shows all buttons', (tester) async {
     // Given, When
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
     await tester.pumpWidget(buildTestWidget(MainPageScreen()));
 
     // Then
@@ -34,6 +45,14 @@ void main() {
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
     // Given, When
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
     await tester.pumpWidget(
       buildTestWidget(
         MainPageScreen(),

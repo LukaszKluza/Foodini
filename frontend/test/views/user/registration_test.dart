@@ -165,11 +165,7 @@ void main() {
   testWidgets('User can successfully change the language', (
     WidgetTester tester,
   ) async {
-    // Given
-    tester.view.physicalSize = Size(1170, 2532);
-    tester.view.devicePixelRatio = 1.5;
-
-    // When
+    // Given, When
     await tester.pumpWidget(
       buildTestWidget(RegisterScreen(bloc: registerBloc)),
     );

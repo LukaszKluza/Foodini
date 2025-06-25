@@ -17,5 +17,6 @@ import 'package:mockito/annotations.dart';
   ApiClient,
   ErrorInterceptorHandler,
   LanguageCubit,
-  Dio])
+  Dio,
+])
 void main() {}

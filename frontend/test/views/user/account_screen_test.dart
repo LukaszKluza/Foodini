@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
@@ -24,10 +26,12 @@ import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late AccountBloc accountBloc;
+late DietFormBloc dietFormBloc;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late UserStorage userStorage;
 late MockTokenStorageRepository mockTokenStorageRepository;
+late MockUserDetailsRepository mockUserDetailsRepository;
 late MockLanguageCubit mockLanguageCubit;
 
 void main() {
@@ -41,6 +45,7 @@ void main() {
     return TestWrapperBuilder(child)
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
+        .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
         .addRoutes(additionalRoutes)
         .setInitialLocation(initialLocation)
         .build();
@@ -53,12 +58,22 @@ void main() {
     authRepository = UserRepository(mockApiClient);
     mockLanguageCubit = MockLanguageCubit();
     mockTokenStorageRepository = MockTokenStorageRepository();
+    mockUserDetailsRepository = MockUserDetailsRepository();
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
     when(mockDio.interceptors).thenReturn(Interceptors());
   });
 
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {
     // Given, When
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
     await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
     await tester.pumpAndSettle();
 
@@ -73,6 +88,14 @@ void main() {
 
   testWidgets('Tap on Change password navigates to form', (tester) async {
     // Given, When
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
     await tester.pumpWidget(
       buildTestWidget(
         AccountScreen(bloc: accountBloc),
@@ -103,7 +126,12 @@ void main() {
     );
 
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     // When
@@ -144,7 +172,12 @@ void main() {
     );
 
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.pl, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.pl,
+        email: 'jan4@example.com',
+      ),
     );
 
     // When
@@ -165,6 +198,7 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.text('Delete'));
+
     await tester.pump();
 
     expect(accountBloc.state, isA<AccountDeleteSuccess>());
@@ -179,6 +213,14 @@ void main() {
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
     // Given
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
     await tester.pumpWidget(buildTestWidget(AccountScreen(bloc: accountBloc)));
 
     // When
@@ -205,9 +247,6 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    tester.view.physicalSize = Size(1170, 2532);
-    tester.view.devicePixelRatio = 1.5;
-
     when(
       mockApiClient.changeLanguage(
         argThat(
@@ -233,7 +272,12 @@ void main() {
     );
 
     UserStorage().setUser(
-      UserResponse(id: 1, language: Language.en, email: 'jan4@example.com'),
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
     );
 
     // When

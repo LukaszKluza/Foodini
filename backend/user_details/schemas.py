@@ -31,6 +31,10 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
 
 
+class UserDetailsResponse(UserDetailsCreate):
+    id: int
+
+
 class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)

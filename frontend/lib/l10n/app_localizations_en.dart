@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get foodini => 'Foodini';
 
   @override
+  String get hey => 'Hey';
+
+  @override
   String get myAccount => 'My Account';
 
   @override
@@ -67,6 +70,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get register => 'Register';
+
+  @override
+  String get your => 'Your';
 
   @override
   String get account => 'Account';
@@ -388,6 +394,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dateOfBirth => 'Date of birth';
+
+  @override
+  String get enterDateOfBirth => 'Enter your date of birth';
 
   @override
   String get formSuccessfullySubmitted => 'Form successfully submitted';
