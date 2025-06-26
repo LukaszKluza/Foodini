@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from user_details.schemas import PredictedMacros
+from backend.user_details.schemas import PredictedMacros
 
 
 class MacroCalculator(ABC):

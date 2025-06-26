@@ -1,8 +1,7 @@
-from user_details.service.macro_factory import MacroFactory
-
 from backend.models import UserDetails
 from backend.user_details.enums import Gender
 from backend.user_details.schemas import PredictedCalories
+from backend.user_details.service.macro_factory import MacroFactory
 
 
 class CaloriesPredictionAlgorithm:
@@ -15,9 +14,9 @@ class CaloriesPredictionAlgorithm:
         self.predicted_macros = None
 
     async def count_calories_prediction(self) -> PredictedCalories:
+        self.calculate_advance_bmr() if self.user_details.fat_percentage is not None else self.calculate_bmr()
         (
-            self.calculate_bmr()
-            .apply_activity()
+            self.apply_activity()
             .apply_stress_level()
             .apply_sleep_quality_level()
             .apply_intensity()
@@ -40,7 +39,7 @@ class CaloriesPredictionAlgorithm:
         return self
 
     def calculate_advance_bmr(self):
-        lbm = self.user_details.weight_kg * (1 - self.user_details.body_fat_percentage / 100)
+        lbm = self.user_details.weight_kg * (1 - self.user_details.fat_percentage / 100)
         self.bmr = 370 + (21.6 * lbm)
         return self
 
@@ -71,5 +70,5 @@ class CaloriesPredictionAlgorithm:
     def add_predicted_macros(self):
         self.predicted_macros = MacroFactory.get_calculator(
             self.user_details.diet_type, self.user_details.weight_kg, self.target_calories
-        )
+        ).calculate()
         return self

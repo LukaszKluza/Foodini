@@ -5,7 +5,7 @@ from backend.user_details.schemas import PredictedCalories
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-calories_prediction_router = APIRouter(prefix="/v1/calories_prediction")
+calories_prediction_router = APIRouter(prefix="/v1/calories-prediction")
 
 
 @calories_prediction_router.post("/", response_model=PredictedCalories)

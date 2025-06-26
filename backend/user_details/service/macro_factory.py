@@ -1,7 +1,7 @@
-from user_details.enums import DietType
-from user_details.service.fat_loss_calculator import FatLossCalculator
-from user_details.service.maintenance_calculator import MaintenanceCalculator
-from user_details.service.muscle_gain_calculator import MuscleGainCalculator
+from backend.user_details.enums import DietType
+from backend.user_details.service.fat_loss_calculator import FatLossCalculator
+from backend.user_details.service.maintenance_calculator import MaintenanceCalculator
+from backend.user_details.service.muscle_gain_calculator import MuscleGainCalculator
 
 
 class MacroFactory:
