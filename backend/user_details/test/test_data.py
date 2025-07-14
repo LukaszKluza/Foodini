@@ -1,9 +1,15 @@
 from datetime import date
 
-from user_details.enums import DietIntensity
-
 from backend.models import UserDetails
-from backend.user_details.enums import ActivityLevel, Allergies, DietType, Gender, SleepQuality, StressLevel
+from backend.user_details.enums import (
+    ActivityLevel,
+    Allergies,
+    DietIntensity,
+    DietType,
+    Gender,
+    SleepQuality,
+    StressLevel,
+)
 
 user_1 = UserDetails(
     id=1,
