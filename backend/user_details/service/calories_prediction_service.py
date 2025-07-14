@@ -1,6 +1,6 @@
 from backend.models import User
 from backend.user_details.schemas import PredictedCalories
-from backend.user_details.service.calories_prediction_alghoritm import CaloriesPredictionAlgorithm
+from backend.user_details.service.calories_prediction_algorithm import CaloriesPredictionAlgorithm
 from backend.user_details.service.user_details_service import UserDetailsService
 
 
