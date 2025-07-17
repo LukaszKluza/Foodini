@@ -21,4 +21,13 @@ class UserResponse {
       email: json['email'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'language': language.toJson(),
+      'email': email,
+    };
+  }
 }

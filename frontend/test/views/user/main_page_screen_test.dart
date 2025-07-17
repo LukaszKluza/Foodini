@@ -5,6 +5,7 @@ import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:frontend/views/screens/main_page_screen.dart';
 
@@ -24,6 +25,10 @@ void main() {
         .setInitialLocation(initialLocation)
         .build();
   }
+
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
 
   testWidgets('Main page shows all buttons', (tester) async {
     // Given, When

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'fetch_token_task_callback.dart';
@@ -28,6 +29,8 @@ void main() async {
 
     await fetchTokenTaskCallback();
 
+    await UserStorage().loadUser();
+
     await Workmanager().registerPeriodicTask(
       'refreshAccessTokenTask',
       fetchTokenTask,
@@ -37,6 +40,8 @@ void main() async {
     );
   } else {
     await fetchTokenTaskCallback();
+
+    await UserStorage().loadUser();
 
     Timer.periodic(const Duration(minutes: 25), (timer) async {
       await fetchTokenTaskCallback();
