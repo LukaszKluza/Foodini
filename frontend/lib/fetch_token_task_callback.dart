@@ -22,7 +22,7 @@ Future<void> fetchTokenTaskCallback([
     try {
       final userId = UserStorage().getUserId;
 
-      if(userId!= null){
+      if (userId != null) {
         refreshedTokens = await authRepository.refreshTokens(userId);
         await TokenStorageRepository().saveAccessToken(
           refreshedTokens.accessToken,

@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/fetch_token_task_callback.dart';
-import 'package:frontend/foodini.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'fetch_token_task_callback.dart';
 const fetchTokenTask = 'fetchTokenTask';
 
 @pragma('vm:entry-point')
@@ -41,5 +42,12 @@ void main() async {
     });
   }
 
-  runApp(const Foodini());
+  runApp(
+    ScreenUtilInit(
+      designSize: Size(Constants.screenWidth, Constants.screenHeight),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) => const Foodini(),
+    ),
+  );
 }

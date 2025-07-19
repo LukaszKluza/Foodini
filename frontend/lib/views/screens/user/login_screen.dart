@@ -193,7 +193,7 @@ class _LoginFormState extends State<_LoginForm> {
                 ),
               TextButton(
                 key: Key('forgot_password'),
-                onPressed: () => context.go('/provide_email'),
+                onPressed: () => context.go('/provide-email'),
                 child: Text(AppLocalizations.of(context)!.forgotPassword),
               ),
               TextButton(

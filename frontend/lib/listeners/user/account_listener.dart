@@ -44,12 +44,14 @@ class AccountListenerHelper {
   }
 
   static void goHome(bool mounted, BuildContext context) {
+    final router = GoRouter.of(context);
+
     Future.delayed(
       const Duration(milliseconds: Constants.redirectionDelay),
       () {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/');
+            router.go('/');
           });
         }
       },

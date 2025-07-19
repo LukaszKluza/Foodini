@@ -15,7 +15,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountLogoutRequested>((event, emit) async {
       emit(AccountActionInProgress());
       try {
-        if(UserStorage().getUserId != null){
+        if (UserStorage().getUserId != null) {
           await authRepository.logout(UserStorage().getUserId!);
           UserStorage().removeUser();
         }
@@ -47,7 +47,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       emit(AccountActionInProgress());
       try {
         final userId = UserStorage().getUserId;
-        if(userId == null){
+        if (userId == null) {
           emit(AccountFailure(ApiException('Unknown error')));
         }
         await authRepository.delete(UserStorage().getUserId!);

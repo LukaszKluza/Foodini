@@ -1,19 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/blocs/user/provide_email_block.dart';
 import 'package:frontend/config/endpoints.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/states/provide_email_states.dart';
-import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+
+import 'package:frontend/blocs/user/provide_email_block.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/states/provide_email_states.dart';
+import 'package:frontend/views/screens/user/provide_email_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
@@ -21,25 +21,20 @@ late UserRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
 late MockTokenStorageRepository mockTokenStorageRepository;
 
-Widget wrapWithProviders(Widget child, {List<GoRoute> routes = const []}) {
-  final goRouter = GoRouter(
-    initialLocation: '/',
-    routes: [GoRoute(path: '/', builder: (context, state) => child), ...routes],
-    errorBuilder: (context, state) => child,
-  );
-
-  return MultiProvider(
-    providers: [Provider<UserRepository>.value(value: authRepository)],
-    child: MaterialApp.router(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: goRouter,
-    ),
-  );
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  Widget buildTestWidget(
+    Widget child, {
+    List<GoRoute> additionalRoutes = const [],
+    String initialLocation = '/provide-email',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addRoutes(additionalRoutes)
+        .setInitialLocation(initialLocation)
+        .build();
+  }
 
   setUp(() {
     mockDio = MockDio();
@@ -64,12 +59,13 @@ void main() {
   testWidgets('Provide email elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
+    // Given, When
     await tester.pumpWidget(
-      wrapWithProviders(ProvideEmailScreen(bloc: provideEmailBloc)),
+      buildTestWidget(ProvideEmailScreen(bloc: provideEmailBloc)),
     );
-
     await tester.pumpAndSettle();
 
+    // Then
     expect(find.byKey(Key('e-mail')), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     expect(find.byType(BottomNavBar), findsOneWidget);
@@ -81,10 +77,12 @@ void main() {
   testWidgets('Submit without filling form shows validation errors', (
     WidgetTester tester,
   ) async {
+    // Given, When
     await tester.pumpWidget(
-      wrapWithProviders(ProvideEmailScreen(bloc: provideEmailBloc)),
+      buildTestWidget(ProvideEmailScreen(bloc: provideEmailBloc)),
     );
 
+    // Then
     await tester.tap(find.byKey(Key('change_password')));
     await tester.pumpAndSettle();
 
@@ -95,6 +93,7 @@ void main() {
   testWidgets('ProvideEmail form submits with valid data and redirects', (
     WidgetTester tester,
   ) async {
+    // Given
     when(mockApiClient.provideEmail(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
@@ -108,33 +107,21 @@ void main() {
       ),
     );
 
-    final goRouter = GoRouter(
-      initialLocation: '/provide-email',
-      routes: [
-        GoRoute(
-          path: '/provide-email',
-          builder:
-              (context, state) => ProvideEmailScreen(bloc: provideEmailBloc),
-        ),
-        GoRoute(
-          path: '/account',
-          builder: (context, state) => const Scaffold(body: Text('Account')),
-        ),
-      ],
-    );
-
+    // When
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [Provider<UserRepository>.value(value: authRepository)],
-        child: MaterialApp.router(
-          routerConfig: goRouter,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-        ),
+      buildTestWidget(
+        ProvideEmailScreen(bloc: provideEmailBloc),
+        additionalRoutes: [
+          GoRoute(
+            path: '/account',
+            builder: (context, state) => const Scaffold(body: Text("Account")),
+          ),
+        ],
       ),
     );
     await tester.pumpAndSettle();
 
+    // Then
     await tester.enterText(find.byKey(Key('e-mail')), 'john@example.com');
     await tester.tap(find.byKey(Key('change_password')));
     await tester.pumpAndSettle();

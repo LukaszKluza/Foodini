@@ -8,6 +8,7 @@ class BottomNavBar extends StatelessWidget {
   final NavBarMode mode;
   final String? nextRoute;
   final String? prevRoute;
+  final bool isNextRouteEnabled;
 
   const BottomNavBar({
     super.key,
@@ -15,6 +16,7 @@ class BottomNavBar extends StatelessWidget {
     this.mode = NavBarMode.normal,
     this.nextRoute,
     this.prevRoute,
+    this.isNextRouteEnabled = true,
   });
 
   @override
@@ -54,16 +56,16 @@ class BottomNavBar extends StatelessWidget {
   }
 
   Widget _buildHomeButton(BuildContext context) {
-    final isActive = currentRoute != '/main_page';
+    final isActive = currentRoute != '/main-page';
     return _buildNavButton(
       icon: Icons.home,
       isActive: isActive,
-      onPressed: isActive ? () => context.go('/main_page') : null,
+      onPressed: isActive ? () => context.go('/main-page') : null,
     );
   }
 
   Widget _buildNextButton(BuildContext context) {
-    final isActive = mode == NavBarMode.wizard && nextRoute != null;
+    final isActive = mode == NavBarMode.wizard && nextRoute != null && isNextRouteEnabled;
     return _buildNavButton(
       icon: Icons.arrow_forward,
       isActive: isActive,

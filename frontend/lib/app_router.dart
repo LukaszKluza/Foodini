@@ -27,7 +27,7 @@ final GoRouter router = GoRouter(
           ),
     ),
     GoRoute(
-      path: '/main_page',
+      path: '/main-page',
       builder: (context, state) => MainPageScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
@@ -37,22 +37,22 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/profile_details',
+      path: '/profile-details',
       builder: (context, state) => ProfileDetailsScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/diet_preferences',
+      path: '/diet-preferences',
       builder: (context, state) => DietPreferencesScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/calories_prediction',
+      path: '/calories-prediction',
       builder: (context, state) => CaloriesPredictionScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/change_password',
+      path: '/change-password',
       pageBuilder:
           (context, state) => MaterialPage(
             key: ValueKey(state.uri.toString()),
@@ -60,7 +60,7 @@ final GoRouter router = GoRouter(
           ),
     ),
     GoRoute(
-      path: '/provide_email',
+      path: '/provide-email',
       builder: (context, state) => ProvideEmailScreen(),
     ),
   ],

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
+
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/account_events.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/listeners/user/account_listener.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/listeners/user/account_listener.dart';
 
 class AccountScreen extends StatelessWidget {
   final AccountBloc? bloc;
@@ -45,6 +51,8 @@ class _AccountScreenState extends State<_AccountBody> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -64,81 +72,112 @@ class _AccountScreenState extends State<_AccountBody> {
           );
         },
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(35.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        rectangularButton(
-                          AppLocalizations.of(context)!.changePassword,
-                          Icons.settings,
-                          screenWidth,
-                          screenHeight,
-                          () => context.push('/provide_email'),
-                        ),
-                        const SizedBox(height: 16),
-                        Builder(
-                          builder:
-                              (context) => rectangularButton(
-                                AppLocalizations.of(context)!.logout,
-                                Icons.logout,
-                                screenWidth,
-                                screenHeight,
-                                () => context.read<AccountBloc>().add(
-                                  AccountLogoutRequested(),
-                                ),
-                              ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Builder(
-                          builder:
-                              (context) => rectangularButton(
-                                AppLocalizations.of(context)!.changeLanguage,
-                                Icons.translate_rounded,
-                                screenWidth,
-                                screenHeight,
-                                () => LanguagePicker.show(
-                                  context,
-                                  isAccountScreen: true,
-                                ),
-                              ),
-                        ),
-                        const SizedBox(height: 16),
-                        Builder(
-                          builder:
-                              (context) => rectangularButton(
-                                AppLocalizations.of(context)!.deleteAccount,
-                                Icons.auto_delete,
-                                screenWidth,
-                                screenHeight,
-                                () => _showDeleteAccountDialog(context),
-                              ),
-                        ),
-                      ],
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                    bottom: 4.0,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.your,
+                    style: Styles.kaushanScriptStyle(48.sp.clamp(42.0, 86.0)),
+                  ),
                 ),
-              ),
-              BlocBuilder<AccountBloc, AccountState>(
-                builder: (context, state) {
-                  if (state is AccountActionInProgress) {
-                    return const CircularProgressIndicator();
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.account,
+                    style: Styles.kaushanScriptStyle(52.sp.clamp(44.0, 92.0)),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          rectangularButton(
+                            AppLocalizations.of(context)!.changePassword,
+                            Icons.settings,
+                            screenWidth,
+                            screenHeight,
+                            () => context.push('/provide-email'),
+                          ),
+                          const SizedBox(height: 16),
+                          Builder(
+                            builder:
+                                (context) => rectangularButton(
+                                  AppLocalizations.of(context)!.logout,
+                                  Icons.logout,
+                                  screenWidth,
+                                  screenHeight,
+                                  () {
+                                    context.read<AccountBloc>().add(
+                                      AccountLogoutRequested(),
+                                    );
+                                    context.read<DietFormBloc>().add(
+                                      DietFormResetRequested(),
+                                    );
+                                  },
+                                ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Builder(
+                            builder:
+                                (context) => rectangularButton(
+                                  AppLocalizations.of(context)!.changeLanguage,
+                                  Icons.translate_rounded,
+                                  screenWidth,
+                                  screenHeight,
+                                  () => LanguagePicker.show(
+                                    context,
+                                    isAccountScreen: true,
+                                  ),
+                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          Builder(
+                            builder:
+                                (context) => rectangularButton(
+                                  AppLocalizations.of(context)!.deleteAccount,
+                                  Icons.auto_delete,
+                                  screenWidth,
+                                  screenHeight,
+                                  () => _showDeleteAccountDialog(context),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                BlocBuilder<AccountBloc, AccountState>(
+                  builder: (context, state) {
+                    if (state is AccountActionInProgress) {
+                      return const CircularProgressIndicator();
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -174,6 +213,9 @@ void _showDeleteAccountDialog(BuildContext mainContext) {
                       Navigator.of(dialogContext).pop();
                       mainContext.read<AccountBloc>().add(
                         AccountDeleteRequested(),
+                      );
+                      mainContext.read<DietFormBloc>().add(
+                        DietFormResetRequested(),
                       );
                     },
                     child: Text(AppLocalizations.of(mainContext)!.delete),

@@ -23,6 +23,7 @@ class GlobalErrorInterceptor extends Interceptor {
       switch (statusCode) {
         case 400:
           message = 'Error $statusCode: Bad request';
+          break;
         case 401:
           return await _handleUnauthorizedError(err, handler);
         case 403:
@@ -34,14 +35,19 @@ class GlobalErrorInterceptor extends Interceptor {
           break;
         case 422:
           message = 'Error $statusCode: Unprocessable entity';
+          break;
         case 500:
           message = 'Error $statusCode: Server error';
+          break;
         case 502:
           message = 'Error $statusCode: Bad gateway';
+          break;
         case 503:
           message = 'Error $statusCode: Service unavailable';
+          break;
         case 504:
           message = 'Error $statusCode: Gateway timeout';
+          break;
         default:
           message = 'Error $statusCode';
       }
@@ -58,7 +64,7 @@ class GlobalErrorInterceptor extends Interceptor {
     final refreshToken = await _tokenStorage.getRefreshToken();
     final userId = UserStorage().getUserId;
 
-    if (refreshToken != null && userId!= null) {
+    if (refreshToken != null && userId != null) {
       try {
         final response = await _apiClient.refreshTokens(userId);
 

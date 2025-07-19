@@ -33,7 +33,7 @@ class CaloriesPredictionScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/diet_preferences',
+        prevRoute: '/diet-preferences',
       ),
     );
   }
@@ -63,6 +63,26 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   double _selectedFatPercentage = 15.0;
   String? _message;
   TextStyle _messageStyle = Styles.errorStyle;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final blocState = context.read<DietFormBloc>().state;
+    if (blocState is DietFormSubmit) {
+      _selectedActivityLevel = blocState.activityLevel ?? _selectedActivityLevel;
+      _selectedStressLevel = blocState.stressLevel ?? _selectedStressLevel;
+      _selectedSleepQuality = blocState.sleepQuality ?? _selectedSleepQuality;
+      _selectedMusclePercentage = blocState.musclePercentage ?? _selectedMusclePercentage;
+      _selectedWaterPercentage = blocState.waterPercentage ?? _selectedWaterPercentage;
+      _selectedFatPercentage = blocState.fatPercentage ?? _selectedFatPercentage;
+      if (blocState.musclePercentage != null ||
+          blocState.waterPercentage != null ||
+          blocState.fatPercentage != null) {
+        _isChecked = true;
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -156,6 +176,17 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           onChanged: (value) {
             setState(() {
               _isChecked = value!;
+              if (_isChecked) {
+                context.read<DietFormBloc>().add(
+                  UpdateMusclePercentage(_selectedMusclePercentage),
+                );
+                context.read<DietFormBloc>().add(
+                  UpdateWaterPercentage(_selectedWaterPercentage),
+                );
+                context.read<DietFormBloc>().add(
+                  UpdateFatPercentage(_selectedFatPercentage),
+                );
+              }
             });
           },
           controlAffinity: ListTileControlAffinity.leading,

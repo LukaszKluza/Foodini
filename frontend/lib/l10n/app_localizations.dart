@@ -101,6 +101,12 @@ abstract class AppLocalizations {
   /// **'Foodini'**
   String get foodini;
 
+  /// No description provided for @hey.
+  ///
+  /// In en, this message translates to:
+  /// **'Hey'**
+  String get hey;
+
   /// No description provided for @myAccount.
   ///
   /// In en, this message translates to:
@@ -214,6 +220,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register'**
   String get register;
+
+  /// No description provided for @your.
+  ///
+  /// In en, this message translates to:
+  /// **'Your'**
+  String get your;
 
   /// No description provided for @account.
   ///
@@ -856,6 +868,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date of birth'**
   String get dateOfBirth;
+
+  /// No description provided for @enterDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your date of birth'**
+  String get enterDateOfBirth;
 
   /// No description provided for @formSuccessfullySubmitted.
   ///

@@ -32,7 +32,7 @@ class DietFormListenerHelper {
           if (mounted) {
             bloc.add(DietFormResetRequested());
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/main_page');
+              context.go('/main-page');
             });
           }
         },

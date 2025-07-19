@@ -1,6 +1,7 @@
 {
   "@@locale": "pl",
   "foodini": "Foodini",
+  "hey": "Hej",
   "myAccount": "Moje konto",
   "changePassword": "Zmień hasło",
   "changeLanguage": "Zmień język",
@@ -20,6 +21,7 @@
   "invalidEmail": "Podaj poprawny adres e-mail",
   "registration": "Rejestracja",
   "register": "Zarejestruj",
+  "your": "Twoje",
   "account": "Konto",
   "alreadyHaveAnAccount": "Masz już konto? Zaloguj się",
   "firstName": "Imię",
@@ -138,6 +140,7 @@
   "weightShouldBeBetween": "Waga powinna być pomiędzy",
 
   "dateOfBirth": "Data urodzenia",
+  "enterDateOfBirth": "Wprowadź swoją datę urodzenia",
   "formSuccessfullySubmitted": "Formularz został pomyślnie wysłany",
   "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola"
 }

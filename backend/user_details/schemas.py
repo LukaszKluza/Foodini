@@ -33,7 +33,7 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Bas
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
 
 
-class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
+class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
