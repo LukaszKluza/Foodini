@@ -13,7 +13,7 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
-from backend.user_details.mixins import DietGoalValidationMixin
+from backend.user_details.mixins import DietGoalValidationMixin, PredictedDietMixin
 
 if TYPE_CHECKING:
     from .user_model import User
@@ -59,3 +59,29 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
         dob = self.date_of_birth
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
         return age
+
+class UserDietPredictions(SQLModel, table=True):
+    __tablename__ = "user_diet_predictions"
+    
+    id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(
+        sa_column=Column(
+            Integer,
+            ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+            unique=True,
+        )
+    )
+    user: Optional["User"] = Relationship(back_populates="diet_predictions")
+    protein: int = Field(ge=0)
+    fat: int = Field(ge=0)
+    carbs: int = Field(ge=0)
+    bmr: int = Field(ge=0)
+    tdee: int = Field(ge=0)
+    target_calories: int = Field(ge=0)
+    diet_duration_days: Optional[int] = None
+    
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    )

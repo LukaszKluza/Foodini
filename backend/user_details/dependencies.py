@@ -29,5 +29,8 @@ def get_user_details_service(
     return UserDetailsService(user_details_repository, user_gateway, user_details_validators)
 
 
-def get_calories_prediction_service(user_details_service: UserDetailsService = Depends(get_user_details_service)):
-    return CaloriesPredictionService(user_details_service)
+def get_calories_prediction_service(
+    user_details_service: UserDetailsService = Depends(get_user_details_service),
+    user_details_repository: UserDetailsRepository = Depends(get_user_details_repository)
+):
+    return CaloriesPredictionService(user_details_service, user_details_repository)

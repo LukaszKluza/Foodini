@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:frontend/foodini.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'fetch_token_task_callback.dart';
+
 const fetchTokenTask = 'fetchTokenTask';
 
 @pragma('vm:entry-point')

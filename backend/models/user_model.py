@@ -9,7 +9,7 @@ from backend.settings import config
 from backend.users.enums.language import Language
 
 if TYPE_CHECKING:
-    from .user_details_model import UserDetails
+    from .user_details_model import UserDetails, UserDietPredictions
 
 
 class User(SQLModel, table=True):
@@ -29,6 +29,8 @@ class User(SQLModel, table=True):
     )
 
     details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
+    diet_predictions: Optional["UserDietPredictions"] = Relationship(back_populates="user", cascade_delete=True)
+    
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

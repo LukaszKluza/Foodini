@@ -1,23 +1,33 @@
+from fastapi import HTTPException, status
 from backend.models import User
-from backend.user_details.schemas import PredictedCalories
 from backend.user_details.service.calories_prediction_algorithm import CaloriesPredictionAlgorithm
 from backend.user_details.service.user_details_service import UserDetailsService
+from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
 
 
 class CaloriesPredictionService:
-    def __init__(self, user_details_service: UserDetailsService):
+    def __init__(self, user_details_service: UserDetailsService, calories_prediction_repository: CaloriesPredictionRepository):
         self.user_details_service = user_details_service
-
+        self.calories_prediction_repository = calories_prediction_repository
+        
     async def get_calories_prediction_by_user_id(self, token_payload: dict, user_id_from_request: int):
-        raise NotImplementedError("To be implemented in the future")
+        if token_payload["user_id"] != user_id_from_request:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to access this resource.",
+            )
+        return await self.calories_prediction_repository.get_user_calories_prediction_by_user_id(user_id_from_request)
 
     async def add_calories_prediction(
         self,
         user: User,
-    ) -> PredictedCalories:
+    ):
         user_details = await self.user_details_service.get_user_details_by_user(user)
         calories_prediction = CaloriesPredictionAlgorithm(user_details)
-        return await calories_prediction.count_calories_prediction()
+        return self.calories_prediction_repository.add_user_calories_prediction(
+            user.id, calories_prediction.count_calories_prediction()
+        )
+        
 
     async def update_calories_prediction(
         self,
