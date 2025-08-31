@@ -84,6 +84,11 @@
   "enterFatPercentage": "Wprowadź procent tłuszczu",
   "fatPercentageShouldBeBetween": "Procent tłuszczu powinien być pomiędzy",
   "generateWeeklyDiet": "Wygeneruj tygodniową dietę",
+  "predictedCalories": "Przewidywana liczba kalorii",
+  "bmr": "Podstawowa przemiana materii (BMR)",
+  "tdee": "Całkowite dzienne zapotrzebowanie (TDEE)",
+  "predictedMacros": "Przewidywane makroskładniki",
+  "dietDuration": "Czas trwania diety",
 
   "dietType_FatLoss": "Utrata tłuszczu",
   "dietType_MuscleGain": "Przyrost masy mięśniowej",

@@ -5,6 +5,7 @@ import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
@@ -129,4 +130,17 @@ class DietFormSubmitFailure extends DietFormState {
   DietFormSubmitFailure({this.getMessage, this.error});
 }
 
+class CaloriesPredictionSuccess extends DietFormState {
+  final PredictedCalories predictedCalories;
 
+  CaloriesPredictionSuccess(this.predictedCalories);
+
+  get targetCalories => null;
+}
+
+class CaloriesPredictionFailure extends DietFormState {
+  final String Function(BuildContext)? getMessage;
+  final ApiException? error;
+
+  CaloriesPredictionFailure({this.getMessage, this.error});
+}

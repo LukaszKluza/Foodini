@@ -602,6 +602,36 @@ abstract class AppLocalizations {
   /// **'Generate weekly diet'**
   String get generateWeeklyDiet;
 
+  /// No description provided for @predictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted calories'**
+  String get predictedCalories;
+
+  /// No description provided for @bmr.
+  ///
+  /// In en, this message translates to:
+  /// **'Basal Metabolic Rate (BMR)'**
+  String get bmr;
+
+  /// No description provided for @tdee.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Daily Energy Expenditure (TDEE)'**
+  String get tdee;
+
+  /// No description provided for @predictedMacros.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted macronutrients'**
+  String get predictedMacros;
+
+  /// No description provided for @dietDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet duration'**
+  String get dietDuration;
+
   /// No description provided for @dietType_FatLoss.
   ///
   /// In en, this message translates to:

@@ -70,12 +70,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
 
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
-      _selectedActivityLevel = blocState.activityLevel ?? _selectedActivityLevel;
+      _selectedActivityLevel =
+          blocState.activityLevel ?? _selectedActivityLevel;
       _selectedStressLevel = blocState.stressLevel ?? _selectedStressLevel;
       _selectedSleepQuality = blocState.sleepQuality ?? _selectedSleepQuality;
-      _selectedMusclePercentage = blocState.musclePercentage ?? _selectedMusclePercentage;
-      _selectedWaterPercentage = blocState.waterPercentage ?? _selectedWaterPercentage;
-      _selectedFatPercentage = blocState.fatPercentage ?? _selectedFatPercentage;
+      _selectedMusclePercentage =
+          blocState.musclePercentage ?? _selectedMusclePercentage;
+      _selectedWaterPercentage =
+          blocState.waterPercentage ?? _selectedWaterPercentage;
+      _selectedFatPercentage =
+          blocState.fatPercentage ?? _selectedFatPercentage;
       if (blocState.musclePercentage != null ||
           blocState.waterPercentage != null ||
           blocState.fatPercentage != null) {
@@ -243,6 +247,10 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       padding: EdgeInsets.all(35.0),
       child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
+          if (state is CaloriesPredictionSuccess) {
+            context.go('/calories-result', extra: state.predictedCalories);
+          }
+
           DietFormListenerHelper.onDietFormSubmitListener(
             context: context,
             state: state,

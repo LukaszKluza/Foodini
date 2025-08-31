@@ -139,4 +139,20 @@ class ApiClient {
       options: Options(extra: {'requiresAuth': true}),
     );
   }
+
+  Future<Response> addCaloriesPrediction(int userId) {
+    return _client.post(
+      Endpoints.userCaloriesPrediction,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getCaloriesPrediction(int userId) {
+    return _client.get(
+      Endpoints.userCaloriesPrediction,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
 }

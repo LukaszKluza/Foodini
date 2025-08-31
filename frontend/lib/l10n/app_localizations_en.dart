@@ -269,6 +269,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateWeeklyDiet => 'Generate weekly diet';
 
   @override
+  String get predictedCalories => 'Predicted calories';
+
+  @override
+  String get bmr => 'Basal Metabolic Rate (BMR)';
+
+  @override
+  String get tdee => 'Total Daily Energy Expenditure (TDEE)';
+
+  @override
+  String get predictedMacros => 'Predicted macronutrients';
+
+  @override
+  String get dietDuration => 'Diet duration';
+
+  @override
   String get dietType_FatLoss => 'Fat Loss';
 
   @override

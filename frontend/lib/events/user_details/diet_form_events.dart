@@ -86,3 +86,5 @@ class UpdateFatPercentage extends DietFormEvent {
 class SubmitForm extends DietFormEvent {}
 
 class DietFormResetRequested extends DietFormEvent {}
+
+class CalculateCalories extends DietFormEvent {}

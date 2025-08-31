@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -9,6 +10,7 @@ import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
+import 'package:frontend/views/screens/user_details/prediction_results_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,6 +64,13 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/provide-email',
       builder: (context, state) => ProvideEmailScreen(),
+    ),
+    GoRoute(
+      path: '/calories-result',
+      builder: (context, state) {
+        final predictedCalories = state.extra as PredictedCalories;
+        return PredictionResultsScreen(predictedCalories: predictedCalories);
+      },
     ),
   ],
 );

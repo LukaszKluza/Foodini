@@ -84,6 +84,11 @@
   "enterFatPercentage": "Enter your fat percentage",
   "fatPercentageShouldBeBetween": "Fat % should be %",
   "generateWeeklyDiet": "Generate weekly diet",
+  "predictedCalories": "Predicted calories",
+  "bmr": "Basal Metabolic Rate (BMR)",
+  "tdee": "Total Daily Energy Expenditure (TDEE)",
+  "predictedMacros": "Predicted macronutrients",
+  "dietDuration": "Diet duration",
 
   "dietType_FatLoss": "Fat Loss",
   "dietType_MuscleGain": "Muscle Gain",

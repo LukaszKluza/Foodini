@@ -272,6 +272,21 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
 
   @override
+  String get predictedCalories => 'Przewidywana liczba kalorii';
+
+  @override
+  String get bmr => 'Podstawowa przemiana materii (BMR)';
+
+  @override
+  String get tdee => 'Całkowite dzienne zapotrzebowanie (TDEE)';
+
+  @override
+  String get predictedMacros => 'Przewidywane makroskładniki';
+
+  @override
+  String get dietDuration => 'Czas trwania diety';
+
+  @override
   String get dietType_FatLoss => 'Utrata tłuszczu';
 
   @override
