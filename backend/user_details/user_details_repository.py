@@ -1,7 +1,9 @@
-from fastapi.params import Depends
+from typing import Type
+
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.models import UserDetails
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from .schemas import UserDetailsCreate, UserDetailsUpdate
 
 
@@ -18,13 +20,23 @@ class UserDetailsRepository:
         await self.db.refresh(user_details)
         return user_details
 
-    async def get_user_details_by_id(self, user_details_id: int) -> UserDetails | None:
-        return await self.db.get(UserDetails, user_details_id)
+    async def get_user_details_by_id(self, user_details_id: int) -> Type[UserDetails]:
+        user_details = await self.db.get(UserDetails, user_details_id)
+
+        if user_details is None:
+            raise NotFoundInDatabaseException("Details not found")
+
+        return user_details
 
     async def get_user_details_by_user_id(self, user_id: int) -> UserDetails:
         query = select(UserDetails).where(UserDetails.user_id == user_id)
         result = await self.db.execute(query)
-        return result.scalar_one_or_none()
+        user_details = result.scalar_one_or_none()
+
+        if user_details is None:
+            raise NotFoundInDatabaseException("Details not found")
+
+        return user_details
 
     async def update_user_details_by_user_id(
         self, user_id: int, user_details_data: UserDetailsUpdate

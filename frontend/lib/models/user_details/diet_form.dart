@@ -58,4 +58,27 @@ class DietForm {
     'fat_percentage': fatPercentage,
     'water_percentage': waterPercentage,
   };
+
+  factory DietForm.fromJson(Map<String, dynamic> json) {
+    return DietForm(
+      gender: Gender.fromJson(json['gender']),
+      height: (json['height_cm'] as num).toDouble(),
+      weight: (json['weight_kg'] as num).toDouble(),
+      dateOfBirth: DateTime.parse(json['date_of_birth']),
+      dietType: DietType.fromJson(json['diet_type']),
+      allergies:
+          (json['allergies'] as List<dynamic>)
+              .map((e) => Allergy.fromJson(e))
+              .toList(),
+      dietGoal: (json['diet_goal_kg'] as num).toDouble(),
+      mealsPerDay: json['meals_per_day'] as int,
+      dietIntensity: DietIntensity.fromJson(json['diet_intensity']),
+      activityLevel: ActivityLevel.fromJson(json['activity_level']),
+      stressLevel: StressLevel.fromJson(json['stress_level']),
+      sleepQuality: SleepQuality.fromJson(json['sleep_quality']),
+      musclePercentage: (json['muscle_percentage'] as num?)?.toDouble(),
+      fatPercentage: (json['fat_percentage'] as num?)?.toDouble(),
+      waterPercentage: (json['water_percentage'] as num?)?.toDouble(),
+    );
+  }
 }

@@ -1,16 +1,25 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user/language.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
-MockUserDetailsRepository mockUserDetailsRepository =
-    MockUserDetailsRepository();
+late UserDetailsRepository userDetailsRepository;
+late MockApiClient mockApiClient;
+
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +37,25 @@ void main() {
   }
 
   setUp(() {
-    dietFormBloc = DietFormBloc(mockUserDetailsRepository);
+    mockApiClient = MockApiClient();
+    userDetailsRepository = UserDetailsRepository(mockApiClient);
+
+    dietFormBloc = DietFormBloc(userDetailsRepository);
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: "Jan",
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+
+    when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
+      throw DioException(
+        requestOptions: RequestOptions(path: Endpoints.dietPreferences),
+        response: Response(statusCode: 404, requestOptions: RequestOptions(path: '')),
+      );
+    });
   });
 
   tearDown(() {
@@ -38,6 +65,7 @@ void main() {
   testWidgets('Profile details screen elements and navbar are displayed', (
     WidgetTester tester,
   ) async {
+    // When
     await tester.pumpWidget(buildTestWidget(const ProfileDetailsScreen()));
     await tester.pumpAndSettle();
 

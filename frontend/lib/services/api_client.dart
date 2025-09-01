@@ -131,9 +131,17 @@ class ApiClient {
     );
   }
 
+  Future<Response> getDietPreferences(int userId) {
+    return _client.get(
+      Endpoints.dietPreferences,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
   Future<Response> submitDietForm(DietForm request, int userId) {
     return _client.post(
-      Endpoints.submitDietForm,
+      Endpoints.dietPreferences,
       data: request.toJson(),
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
