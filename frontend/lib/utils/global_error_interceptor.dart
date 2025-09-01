@@ -31,7 +31,9 @@ class GlobalErrorInterceptor extends Interceptor {
             await _handleForbiddenError(err, handler);
           }
           message = 'Error $statusCode: Forbidden';
-          _showErrorDialog(message);
+          break;
+        case 404:
+          message = 'Error $statusCode: Not found';
           break;
         case 422:
           message = 'Error $statusCode: Unprocessable entity';

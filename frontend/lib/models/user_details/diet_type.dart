@@ -15,7 +15,7 @@ enum DietType {
 
   static DietType fromJson(String value) {
     return DietType.values.firstWhere(
-      (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown diet type: $value'),
     );
   }

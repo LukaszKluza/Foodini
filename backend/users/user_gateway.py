@@ -1,3 +1,5 @@
+from typing import Type
+
 from fastapi import Depends
 from pydantic import EmailStr
 
@@ -18,13 +20,13 @@ class UserGateway:
         self.auth_dependency = auth_dependency
         self.user_validation_service = user_validation_service
 
-    async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
+    async def ensure_user_exists_by_email(self, email: EmailStr) -> Type[User]:
         return await self.user_validation_service.ensure_user_exists_by_email(email)
 
-    async def ensure_user_exists_by_id(self, user_id: int) -> User:
+    async def ensure_user_exists_by_id(self, user_id: int) -> Type[User]:
         return await self.user_validation_service.ensure_user_exists_by_id(user_id)
 
-    async def get_current_user(self) -> tuple[User, dict]:
+    async def get_current_user(self) -> tuple[Type[User], dict]:
         return await self.auth_dependency.get_current_user()
 
     def check_user_permission(

@@ -18,7 +18,7 @@ enum Allergy {
 
   static Allergy fromJson(String value) {
     return Allergy.values.firstWhere(
-      (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown allergy: $value'),
     );
   }

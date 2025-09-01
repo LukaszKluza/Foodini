@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from fastapi import HTTPException, status
 from pydantic import EmailStr
@@ -39,20 +40,8 @@ class UserValidationService:
                 f" last changed at {user.last_password_update}",
             )
 
-    async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
-        user = await self.user_repository.get_user_by_email(email)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
-        return user
+    async def ensure_user_exists_by_email(self, email: EmailStr) -> Type[User]:
+        return await self.user_repository.get_user_by_email(email)
 
-    async def ensure_user_exists_by_id(self, user_id: int) -> User:
-        user = await self.user_repository.get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
-        return user
+    async def ensure_user_exists_by_id(self, user_id: int) -> Type[User]:
+        return await self.user_repository.get_user_by_id(user_id)
