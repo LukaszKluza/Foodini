@@ -70,12 +70,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
 
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
-      _selectedActivityLevel = blocState.activityLevel ?? _selectedActivityLevel;
+      _selectedActivityLevel =
+          blocState.activityLevel ?? _selectedActivityLevel;
       _selectedStressLevel = blocState.stressLevel ?? _selectedStressLevel;
       _selectedSleepQuality = blocState.sleepQuality ?? _selectedSleepQuality;
-      _selectedMusclePercentage = blocState.musclePercentage ?? _selectedMusclePercentage;
-      _selectedWaterPercentage = blocState.waterPercentage ?? _selectedWaterPercentage;
-      _selectedFatPercentage = blocState.fatPercentage ?? _selectedFatPercentage;
+      _selectedMusclePercentage =
+          blocState.musclePercentage ?? _selectedMusclePercentage;
+      _selectedWaterPercentage =
+          blocState.waterPercentage ?? _selectedWaterPercentage;
+      _selectedFatPercentage =
+          blocState.fatPercentage ?? _selectedFatPercentage;
       if (blocState.musclePercentage != null ||
           blocState.waterPercentage != null ||
           blocState.fatPercentage != null) {

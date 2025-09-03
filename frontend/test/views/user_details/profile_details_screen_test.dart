@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:integration_test/integration_test.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';

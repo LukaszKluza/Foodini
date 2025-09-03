@@ -128,5 +128,3 @@ class DietFormSubmitFailure extends DietFormState {
 
   DietFormSubmitFailure({this.getMessage, this.error});
 }
-
-

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
@@ -11,16 +12,13 @@ import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/states/account_states.dart';
+import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/account_bloc.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/states/account_states.dart';
-import 'package:frontend/views/screens/user/account_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
