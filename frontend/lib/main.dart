@@ -6,7 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:workmanager/workmanager.dart';
 
-import 'fetch_token_task_callback.dart';
+import 'package:frontend/fetch_token_task_callback.dart';
+import 'package:frontend/foodini.dart';
+
 const fetchTokenTask = 'fetchTokenTask';
 
 @pragma('vm:entry-point')
