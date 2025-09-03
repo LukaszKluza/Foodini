@@ -2,6 +2,7 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db
+from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
 from backend.user_details.service.user_details_service import UserDetailsService
 from backend.user_details.service.user_details_validation_service import UserDetailsValidationService
@@ -13,6 +14,12 @@ async def get_user_details_repository(
     db: AsyncSession = Depends(get_db),
 ) -> UserDetailsRepository:
     return UserDetailsRepository(db)
+
+
+def get_calories_prediction_repository(
+    db: AsyncSession = Depends(get_db),
+) -> CaloriesPredictionRepository:
+    return CaloriesPredictionRepository(db)
 
 
 def get_user_details_validators(
@@ -31,6 +38,6 @@ def get_user_details_service(
 
 def get_calories_prediction_service(
     user_details_service: UserDetailsService = Depends(get_user_details_service),
-    user_details_repository: UserDetailsRepository = Depends(get_user_details_repository)
+    calories_prediciton_repository: CaloriesPredictionRepository = Depends(get_calories_prediction_repository),
 ):
-    return CaloriesPredictionService(user_details_service, user_details_repository)
+    return CaloriesPredictionService(user_details_service, calories_prediciton_repository)
