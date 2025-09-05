@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 from backend.models import User
 from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
-from backend.user_details.schemas import PredictedCalories
+from backend.user_details.schemas import PredictedCalories, PredictedMacros
 from backend.user_details.service.calories_prediction_algorithm import CaloriesPredictionAlgorithm
 from backend.user_details.service.user_details_service import UserDetailsService
 
@@ -32,8 +32,11 @@ class CaloriesPredictionService:
         ).count_calories_prediction()
         return await self.calories_prediction_repository.add_user_calories_prediction(user.id, calories_prediction)
 
-    async def update_calories_prediction(
+    async def update_macros_prediction(
         self,
-        token_payload: dict,
+        changed_macros: PredictedMacros,
+        user_id: int,
     ):
-        raise NotImplementedError("To be implemented in the future")
+        return await self.calories_prediction_repository.update_macros_prediction(changed_macros, user_id)
+        
+

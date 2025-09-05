@@ -16,4 +16,10 @@ class PredictedMacros {
       carbs: json['carbs'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'protein': protein,
+    'fat': fat,
+    'carbs': carbs,
+  };
 }

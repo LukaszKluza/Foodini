@@ -6,6 +6,7 @@ import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
+import 'package:frontend/models/user_details/predicted_macros.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 
@@ -134,6 +135,15 @@ class ApiClient {
   Future<Response> submitDietForm(DietForm request, int userId) {
     return _client.post(
       Endpoints.submitDietForm,
+      data: request.toJson(),
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> submitMacrosChange(PredictedMacros request, int userId) {
+    return _client.patch(
+      Endpoints.userCaloriesPrediction,
       data: request.toJson(),
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),

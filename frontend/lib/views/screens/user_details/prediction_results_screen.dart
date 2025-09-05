@@ -1,27 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/listeners/user_details/macros_change_listener.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
+import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 
-class PredictionResultsScreen extends StatefulWidget {
+class PredictionResultsScreen extends StatelessWidget {
   final PredictedCalories predictedCalories;
 
   const PredictionResultsScreen({super.key, required this.predictedCalories});
 
   @override
-  State<PredictionResultsScreen> createState() =>
-      _PredictionResultsScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.caloriesPrediction,
+            style: Styles.titleStyle,
+          ),
+        ),
+      ),
+      body: _PredictionResultsForm(predictedCalories: predictedCalories),
+      bottomNavigationBar: BottomNavBar(
+        currentRoute: GoRouterState.of(context).uri.path,
+        mode: NavBarMode.wizard,
+        prevRoute: '/calories-prediction',
+      ),
+    );
+  }
 }
 
-class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
+class _PredictionResultsForm extends StatefulWidget {
+  final PredictedCalories predictedCalories;
+
+  const _PredictionResultsForm({required this.predictedCalories});
+
+  @override
+  State<_PredictionResultsForm> createState() => _PredictionResultsFormState();
+}
+
+class _PredictionResultsFormState extends State<_PredictionResultsForm> {
+  final _formKey = GlobalKey<FormState>();
+
   late TextEditingController _proteinController;
   late TextEditingController _fatController;
   late TextEditingController _carbsController;
   late TextEditingController _dietDurationController;
 
-  final _formKey = GlobalKey<FormState>();
+  String? _message;
+  TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
@@ -38,6 +71,11 @@ class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
     _dietDurationController = TextEditingController(
       text: widget.predictedCalories.dietDurationDays?.toString() ?? '',
     );
+
+    final bloc = context.read<MacrosChangeBloc>();
+    bloc.add(UpdateProtein(widget.predictedCalories.predictedMacros.protein));
+    bloc.add(UpdateFat(widget.predictedCalories.predictedMacros.fat));
+    bloc.add(UpdateCarbs(widget.predictedCalories.predictedMacros.carbs));
   }
 
   @override
@@ -56,10 +94,9 @@ class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
     return (protein * 4) + (fat * 9) + (carbs * 4);
   }
 
-  String? _macrosValidator(String? _) {
+  String? _macrosValidator(String? value) {
     final total = _calculateCalories();
     final target = widget.predictedCalories.targetCalories;
-
     const tolerance = 30;
 
     if ((total - target).abs() > tolerance) {
@@ -68,11 +105,15 @@ class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
     return null;
   }
 
-  Widget _buildMacroField(String label, TextEditingController controller) {
+  Widget _buildMacroField(
+    String label,
+    TextEditingController controller,
+    void Function(String) onChanged,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: SizedBox(
-        width: 400,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
         child: TextFormField(
           controller: controller,
           keyboardType: TextInputType.number,
@@ -82,6 +123,7 @@ class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
           ),
           validator: _macrosValidator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: onChanged,
         ),
       ),
     );
@@ -93,84 +135,123 @@ class _PredictionResultsScreenState extends State<PredictionResultsScreen> {
     final bmr = widget.predictedCalories.bmr;
     final tdee = widget.predictedCalories.tdee;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.caloriesPrediction,
-            style: Styles.titleStyle,
+    final fields = [
+      Center(
+        child: Text(
+          '${AppLocalizations.of(context)!.predictedCalories}: $targetCalories kcal',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: Text(
+          '${AppLocalizations.of(context)!.bmr}: $bmr kcal',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: Text(
+          '${AppLocalizations.of(context)!.tdee}: $tdee kcal',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: Text(
+          AppLocalizations.of(context)!.predictedMacros,
+          style: Styles.titleStyle,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Center(
+        child: _buildMacroField(
+          'Protein (g)',
+          _proteinController,
+          (value) => context.read<MacrosChangeBloc>().add(
+            UpdateProtein(int.tryParse(value) ?? 0),
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              Center(
-                child: Text(
-                  '${AppLocalizations.of(context)!.predictedCalories}: $targetCalories kcal',
-                  style: Styles.titleStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 16),
+      Center(
+        child: _buildMacroField(
+          'Fat (g)',
+          _fatController,
+          (value) => context.read<MacrosChangeBloc>().add(
+            UpdateFat(int.tryParse(value) ?? 0),
+          ),
+        ),
+      ),
+      Center(
+        child: _buildMacroField(
+          'Carbs (g)',
+          _carbsController,
+          (value) => context.read<MacrosChangeBloc>().add(
+            UpdateCarbs(int.tryParse(value) ?? 0),
+          ),
+        ),
+      ),
+    ];
 
-              Center(
-                child: Text(
-                  '${AppLocalizations.of(context)!.bmr}: $bmr kcal',
-                  style: Styles.titleStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Center(
-                child: Text(
-                  '${AppLocalizations.of(context)!.tdee}: $tdee kcal',
-                  style: Styles.titleStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              Center(
-                child: Text(
-                  AppLocalizations.of(context)!.predictedMacros,
-                  style: Styles.titleStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              Center(
-                child: _buildMacroField('Protein (g)', _proteinController),
-              ),
-              Center(child: _buildMacroField('Fat (g)', _fatController)),
-              Center(child: _buildMacroField('Carbs (g)', _carbsController)),
-
-              if (widget.predictedCalories.dietDurationDays != null)
-                Center(
-                  child: SizedBox(
-                    width: 400,
-                    child: TextFormField(
-                      controller: _dietDurationController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.dietDuration,
-                        border: const OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.all(35.0),
+      child: BlocConsumer<MacrosChangeBloc, MacrosChangeState>(
+        listener: (context, state) {
+          MacrosChangeListenerHelper.onMacrosChangeSubmitListener(
+            context: context,
+            state: state,
+            mounted: mounted,
+            setState: setState,
+            setMessage: (msg) => setState(() => _message = msg),
+            setMessageStyle: (style) => setState(() => _messageStyle = style),
+          );
+        },
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                ...fields,
+                if (state is MacrosChangeSubmit && state.isSubmitting)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      child: ElevatedButton(
+                        key: const ValueKey('generateWeeklyDietButton'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<MacrosChangeBloc>().add(
+                              SubmitMacrosChange(),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFB2F2BB),
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.generateWeeklyDiet,
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentRoute: GoRouterState.of(context).uri.path,
-        mode: NavBarMode.wizard,
-        prevRoute: '/calories-prediction',
+                if (_message != null)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _message!,
+                      style: _messageStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
