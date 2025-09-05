@@ -67,6 +67,7 @@ class _ProfileDetailsForm extends StatefulWidget {
 
 class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   final _formKey = GlobalKey<FormState>();
+  bool _didEnter = false;
 
   Gender? _selectedGender;
   double? _selectedHeight;
@@ -75,8 +76,23 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
 
   @override
   void initState() {
+    print("KOKO");
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("KOKsdsO");
+
     final blocState = context.read<DietFormBloc>().state;
+    final state = GoRouterState.of(context);
+    final from = (state.extra as Map?)?['from'];
+    print(from);
+    if (from == 'main-page' && !_didEnter) {
+      _didEnter = true;
+      context.read<DietFormBloc>().add(InitForm());
+    }
 
     if (blocState is DietFormSubmit) {
       _selectedGender = blocState.gender ?? _selectedGender;
@@ -84,8 +100,6 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
       _selectedWeight = blocState.weight ?? _selectedWeight;
       _selectedDateOfBirth = blocState.dateOfBirth ?? _selectedDateOfBirth;
       WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
-    } else {
-      context.read<DietFormBloc>().add(InitForm());
     }
   }
 

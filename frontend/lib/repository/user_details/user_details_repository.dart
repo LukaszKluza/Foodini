@@ -11,7 +11,6 @@ class UserDetailsRepository {
   Future<DietForm> getDietPreferences(int userId) async {
     try {
       final response = await apiClient.getDietPreferences(userId);
-      print(response);
       return DietForm.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);

@@ -40,6 +40,12 @@ void main() {
     // Then
     expect(find.text('My Account'), findsOneWidget);
     expect(find.byIcon(Icons.person), findsOneWidget);
+    expect(find.text('Diet preferences'), findsOneWidget);
+    expect(find.byIcon(Icons.food_bank_rounded), findsOneWidget);
+    expect(find.text('Button 3'), findsOneWidget);
+    expect(find.text('Button 4'), findsOneWidget);
+    expect(find.byIcon(Icons.do_not_disturb), findsNWidgets(2));
+
     expect(find.text('Foodini'), findsOneWidget);
   });
 
@@ -71,5 +77,35 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(Key('my_account')), findsOneWidget);
+  });
+
+  testWidgets('Tap on Diet preferences navigates to account screen', (tester) async {
+    // Given, When
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+    await tester.pumpWidget(
+      buildTestWidget(
+        MainPageScreen(),
+        additionalRoutes: [
+          GoRoute(
+            path: '/profile-details',
+            builder: (context, state) => const Scaffold(key: Key('profile_details')),
+          ),
+        ],
+      ),
+    );
+
+    // Then
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Diet preferences'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(Key('profile_details')), findsOneWidget);
   });
 }
