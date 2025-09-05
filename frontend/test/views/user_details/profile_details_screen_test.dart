@@ -200,7 +200,7 @@ void main() {
     expect(find.descendant(of: find.byKey(Key('gender')), matching: find.text('Female')), findsOneWidget);
     expect(tester.widget<WeightSlider>(find.byKey(Key('weight')),).value, 48);
     expect(tester.widget<HeightSlider>(find.byKey(Key('height')),).value, 165);
-    expect(find.descendant(of: find.byKey(Key('date_of_birth')), matching: find.text('2003-01-01')), findsOneWidget);
+    expect(tester.widget<TextFormField>(find.byKey(Key('date_of_birth'))).controller!.text, '01/01/2003');
   });
 
   testWidgets('Gender enums are displayed after tap', (
