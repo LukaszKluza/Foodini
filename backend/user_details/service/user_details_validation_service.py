@@ -1,5 +1,6 @@
 from backend.models import UserDetails
 from backend.user_details.user_details_repository import UserDetailsRepository
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 class UserDetailsValidationService:
@@ -10,4 +11,9 @@ class UserDetailsValidationService:
         self.user_details_repository = user_details_repository
 
     async def ensure_user_details_exist_by_user_id(self, user_id: int) -> UserDetails:
-        return await self.user_details_repository.get_user_details_by_user_id(user_id)
+        user_details = await self.user_details_repository.get_user_details_by_user_id(
+            user_id
+        )
+        if not user_details:
+            raise NotFoundInDatabaseException("User details not found")
+        return user_details

@@ -33,8 +33,7 @@ class GlobalErrorInterceptor extends Interceptor {
           message = 'Error $statusCode: Forbidden';
           break;
         case 404:
-          message = 'Error $statusCode: Not found';
-          break;
+          return handler.reject(err);
         case 422:
           message = 'Error $statusCode: Unprocessable entity';
           break;

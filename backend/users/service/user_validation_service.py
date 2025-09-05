@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Type
 
 from fastapi import HTTPException, status
 from pydantic import EmailStr
@@ -7,6 +6,7 @@ from pydantic import EmailStr
 from backend.models import User
 from backend.settings import config
 from backend.users.user_repository import UserRepository
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 class UserValidationService:
@@ -40,8 +40,16 @@ class UserValidationService:
                 f" last changed at {user.last_password_update}",
             )
 
-    async def ensure_user_exists_by_email(self, email: EmailStr) -> Type[User]:
-        return await self.user_repository.get_user_by_email(email)
+    async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
+        user = await self.user_repository.get_user_by_email(email)
+        if not user:
+            raise NotFoundInDatabaseException("User not found")
 
-    async def ensure_user_exists_by_id(self, user_id: int) -> Type[User]:
-        return await self.user_repository.get_user_by_id(user_id)
+        return user
+
+    async def ensure_user_exists_by_id(self, user_id: int) -> User:
+        user = await self.user_repository.get_user_by_id(user_id)
+        if not user:
+            raise NotFoundInDatabaseException("User not found")
+
+        return user

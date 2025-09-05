@@ -1,11 +1,9 @@
 import datetime
-from typing import Type
 
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import User
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.users.schemas import UserCreate, UserUpdate
 from sqlalchemy.future import select
 
@@ -23,27 +21,15 @@ class UserRepository:
         await self.db.refresh(user)
         return user
 
-    async def get_user_by_id(self, user_id: int) -> Type[User]:
-        user = await self.db.get(User, user_id)
+    async def get_user_by_id(self, user_id: int) -> User | None:
+        return await self.db.get(User, user_id)
 
-        if user is None:
-            raise NotFoundInDatabaseException("User not found")
-
-        return user
-
-    async def get_user_by_email(self, email: EmailStr) -> Type[User]:
+    async def get_user_by_email(self, email: EmailStr) -> User:
         query = select(User).where(User.email == email)
         result = await self.db.execute(query)
-        user = result.scalar_one_or_none()
+        return result.scalar_one_or_none()
 
-        if user is None:
-            raise NotFoundInDatabaseException("User not found")
-
-        return user
-
-    async def update_user(
-        self, user_id: int, user_data: UserUpdate
-    ) -> Type[User] | None:
+    async def update_user(self, user_id: int, user_data: UserUpdate) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             update_fields = user_data.model_dump(exclude_unset=True)
@@ -54,9 +40,7 @@ class UserRepository:
             return user
         return None
 
-    async def change_language(
-        self, user_id: int, language: Language
-    ) -> Type[User] | None:
+    async def change_language(self, user_id: int, language: Language) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.language = language.value
@@ -68,7 +52,7 @@ class UserRepository:
 
     async def update_password(
         self, user_id: int, new_password: str, current_datetime: datetime
-    ) -> Type[User] | None:
+    ) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.password = new_password
@@ -78,7 +62,7 @@ class UserRepository:
             return user
         return None
 
-    async def delete_user(self, user_id: int) -> Type[User] | None:
+    async def delete_user(self, user_id: int) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             await self.db.delete(user)
