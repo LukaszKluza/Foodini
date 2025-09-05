@@ -76,19 +76,16 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
 
   @override
   void initState() {
-    print("KOKO");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print("KOKsdsO");
 
     final blocState = context.read<DietFormBloc>().state;
     final state = GoRouterState.of(context);
     final from = (state.extra as Map?)?['from'];
-    print(from);
     if (from == 'main-page' && !_didEnter) {
       _didEnter = true;
       context.read<DietFormBloc>().add(InitForm());
