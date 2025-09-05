@@ -91,8 +91,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     });
 
     on<SubmitForm>(_onSubmitForm);
-
-    on<CalculateCalories>(_onCalculateCalories);
   }
 
   Future<void> _onSubmitForm(
@@ -153,23 +151,9 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         userId,
       );
 
-      emit(CaloriesPredictionSuccess(predicted));
+      emit(DietFormSubmitSuccess(predicted));
     } on ApiException catch (e) {
       emit(DietFormSubmitFailure(error: e));
-    }
-  }
-
-  Future<void> _onCalculateCalories(
-    CalculateCalories event,
-    Emitter<DietFormState> emit,
-  ) async {
-    try {
-      final predicted = await userDetailsRepository.getCaloriesPrediction(
-        UserStorage().getUserId!,
-      );
-      emit(CaloriesPredictionSuccess(predicted));
-    } on ApiException catch (e) {
-      emit(CaloriesPredictionFailure(error: e));
     }
   }
 }

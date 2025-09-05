@@ -121,26 +121,17 @@ class DietFormSubmit extends DietFormState {
   }
 }
 
-class DietFormSubmitSuccess extends DietFormState {}
+class DietFormSubmitSuccess extends DietFormState {
+  final PredictedCalories predictedCalories;
+
+  DietFormSubmitSuccess(this.predictedCalories);
+
+  get targetCalories => null;
+}
 
 class DietFormSubmitFailure extends DietFormState {
   final String Function(BuildContext)? getMessage;
   final ApiException? error;
 
   DietFormSubmitFailure({this.getMessage, this.error});
-}
-
-class CaloriesPredictionSuccess extends DietFormState {
-  final PredictedCalories predictedCalories;
-
-  CaloriesPredictionSuccess(this.predictedCalories);
-
-  get targetCalories => null;
-}
-
-class CaloriesPredictionFailure extends DietFormState {
-  final String Function(BuildContext)? getMessage;
-  final ApiException? error;
-
-  CaloriesPredictionFailure({this.getMessage, this.error});
 }

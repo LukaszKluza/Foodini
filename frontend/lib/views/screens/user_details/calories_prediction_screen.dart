@@ -247,10 +247,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       padding: EdgeInsets.all(35.0),
       child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
-          if (state is CaloriesPredictionSuccess) {
-            context.go('/calories-result', extra: state.predictedCalories);
-          }
-
           DietFormListenerHelper.onDietFormSubmitListener(
             context: context,
             state: state,

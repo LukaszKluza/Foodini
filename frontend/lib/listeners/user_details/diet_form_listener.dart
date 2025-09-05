@@ -32,7 +32,7 @@ class DietFormListenerHelper {
           if (mounted) {
             bloc.add(DietFormResetRequested());
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/main-page');
+              context.go('/calories-result', extra: state.predictedCalories);
             });
           }
         },
