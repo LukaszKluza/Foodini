@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -61,6 +62,7 @@ void main() {
     accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
     dietFormBloc = DietFormBloc(mockUserDetailsRepository);
     when(mockDio.interceptors).thenReturn(Interceptors());
+    SharedPreferences.setMockInitialValues({});
   });
 
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {

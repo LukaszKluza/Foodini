@@ -8,14 +8,10 @@ enum Gender {
   const Gender(this.value, this.nameStr);
 
   static Gender fromJson(String value) {
-    switch (value.toUpperCase()) {
-      case 'male':
-        return Gender.male;
-      case 'female':
-        return Gender.female;
-      default:
-        throw ArgumentError('Unknown gender: $value');
-    }
+    return Gender.values.firstWhere(
+          (e) => e.nameStr == value,
+      orElse: () => throw ArgumentError('Unknown gender: $value'),
+    );
   }
 
   String toJson() => nameStr;

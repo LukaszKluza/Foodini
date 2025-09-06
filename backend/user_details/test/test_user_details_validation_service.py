@@ -1,8 +1,8 @@
 from unittest.mock import AsyncMock
 
 import pytest
-from fastapi import HTTPException, status
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import UserDetails
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
@@ -37,14 +37,13 @@ async def test_ensure_user_details_exist_by_user_id():
 async def test_ensure_user_details_exist_by_user_id_failure():
     # Given
     mock_repo = AsyncMock()
-    mock_repo.get_user_details_by_user_id.return_value = None
+    mock_repo.get_user_details_by_user_id = AsyncMock(side_effect=NotFoundInDatabaseException("Details not found"))
     validator = UserDetailsValidationService(user_details_repository=mock_repo)
 
     # When
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
         await validator.ensure_user_details_exist_by_user_id(1)
 
     # Then
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert exc_info.value.detail == "User details not found"
+    assert exc_info.value.detail == "Details not found"
     mock_repo.get_user_details_by_user_id.assert_awaited_once_with(1)

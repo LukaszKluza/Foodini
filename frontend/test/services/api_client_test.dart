@@ -8,6 +8,7 @@ import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -22,6 +23,7 @@ void main() {
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     apiClient = ApiClient(mockDio, mockTokenStorage);
+    SharedPreferences.setMockInitialValues({});
   });
 
   test('should send a POST request with correct headers and body', () async {

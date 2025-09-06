@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
+from backend.user_details.enums import DietType
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
@@ -21,21 +23,23 @@ class UserDetailsService:
         self.user_details_validators = user_details_validators
 
     async def get_user_details_by_user(self, user: User):
-        await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)
-        return await self.user_details_repository.get_user_details_by_user_id(user.id)
+        return await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)
 
     async def add_user_details(
         self,
         user_details_data: UserDetailsCreate,
         user: User,
     ):
+        if user_details_data.diet_type == DietType.WEIGHT_MAINTENANCE:
+            user_details_data.diet_goal_kg = user_details_data.weight_kg
+
         try:
             await self.get_user_details_by_user(user)
             return await self.update_user_details(
                 UserDetailsUpdate.map(user_details_data),
                 user,
             )
-        except HTTPException:
+        except (HTTPException, NotFoundInDatabaseException):
             return await self.user_details_repository.add_user_details(user_details_data, user.id)
 
     async def update_user_details(

@@ -8,6 +8,17 @@ class UserDetailsRepository {
 
   UserDetailsRepository(this.apiClient);
 
+  Future<DietForm> getDietPreferences(int userId) async {
+    try {
+      final response = await apiClient.getDietPreferences(userId);
+      return DietForm.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while getting diet form preferences: $e');
+    }
+  }
+
   Future<void> submitDietForm(DietForm request, int userId) async {
     try {
       await apiClient.submitDietForm(request, userId);

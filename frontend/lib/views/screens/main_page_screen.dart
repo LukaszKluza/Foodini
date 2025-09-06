@@ -17,12 +17,6 @@ class MainPageScreen extends StatefulWidget {
 class _LoginScreenState extends State<MainPageScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = UserStorage().getUser;
-
-    if (user == null) {
-      return const SizedBox.shrink();
-    }
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -88,7 +82,10 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.food_bank_rounded,
                             screenWidth,
                             screenHeight,
-                            () => context.push('/profile-details'),
+                            () => context.push(
+                              '/profile-details',
+                              extra: {'from': 'main-page'},
+                            ),
                           ),
                         ],
                       ),

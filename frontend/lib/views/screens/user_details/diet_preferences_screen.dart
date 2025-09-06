@@ -73,9 +73,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
 
   DietType? _selectedDietType;
   List<Allergy> _selectedAllergies = [];
-  double _selectedDietGoal = 65;
+  double _selectedDietGoal = Constants.defaultWeight;
   DietIntensity? _selectedDietIntensity;
-  int _selectedMealsPerDay = 3;
+  int _selectedMealsPerDay = Constants.defaultMealsPerDay;
 
   @override
   void initState() {
@@ -96,23 +96,14 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       }
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
   }
 
-  void _validateForm() {
-    final isValid = _formKey.currentState?.validate() ?? false;
-    final allRequiredFilled =
-        _selectedDietType != null &&
-        _selectedDietIntensity != null &&
-        _selectedMealsPerDay > 0;
+  void _softFormValidation() {
+    final allRequiredFilled = _selectedDietType != null && _selectedDietIntensity != null && _selectedMealsPerDay > 0;
+    final dietGoalValid = (_selectedDietType == DietType.weightMaintenance) || (_selectedDietGoal > 0);
 
-    final dietGoalValid =
-        (_selectedDietType == DietType.weightMaintenance) ||
-        (_selectedDietGoal > 0);
-
-    final formIsValid = isValid && allRequiredFilled && dietGoalValid;
-
-    widget.onFormValidityChanged?.call(formIsValid);
+    widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
   }
 
   void _updateStateAndBloc<T>({
@@ -121,7 +112,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   }) {
     setState(updateState);
     context.read<DietFormBloc>().add(blocEvent);
-    _validateForm();
+    _softFormValidation();
   }
 
   void _onDietTypeChanged(DietType? value) {
@@ -212,7 +203,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       ),
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(
-          initialValue: _selectedDietGoal,
+          value: _selectedDietGoal,
           validator: (value) => validateDietGoal(value, context),
           onChanged: _onDietGoalChanged,
           label: AppLocalizations.of(context)!.dietGoal,
@@ -264,7 +255,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       padding: const EdgeInsets.all(35.0),
       child: Form(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: ListView.separated(
           shrinkWrap: true,
           itemCount: fields.length,

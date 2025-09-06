@@ -2,8 +2,7 @@ from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import UserDetails
-
-from .schemas import UserDetailsCreate, UserDetailsUpdate
+from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 
 
 class UserDetailsRepository:

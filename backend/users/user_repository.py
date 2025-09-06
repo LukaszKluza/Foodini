@@ -5,9 +5,8 @@ from sqlalchemy.future import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import User
-
-from ..models.user_model import Language
-from .schemas import UserCreate, UserUpdate
+from backend.models.user_model import Language
+from backend.users.schemas import UserCreate, UserUpdate
 
 
 class UserRepository:

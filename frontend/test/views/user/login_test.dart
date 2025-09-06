@@ -16,6 +16,7 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -50,6 +51,7 @@ void main() {
     authRepository = UserRepository(mockApiClient);
     mockTokenStorageRepository = MockTokenStorageRepository();
     loginBloc = LoginBloc(authRepository, mockTokenStorageRepository);
+    SharedPreferences.setMockInitialValues({});
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     when(mockLanguageCubit.state).thenReturn(Locale(Language.en.code));

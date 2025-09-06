@@ -22,8 +22,8 @@ class LoginListenerHelper {
         setMessageStyle(Styles.successStyle);
       });
 
-      var newLanguage = state.userResponse.language.code;
-      context.read<LanguageCubit>().change(Locale(newLanguage.toLowerCase()));
+      var newLanguage = state.userResponse.language;
+      context.read<LanguageCubit>().change(newLanguage);
 
       Future.delayed(
         const Duration(milliseconds: Constants.redirectionDelay),

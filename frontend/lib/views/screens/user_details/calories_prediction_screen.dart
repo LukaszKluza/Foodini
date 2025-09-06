@@ -15,6 +15,8 @@ import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../config/constants.dart';
+
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
 
@@ -58,9 +60,9 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   ActivityLevel? _selectedActivityLevel;
   StressLevel? _selectedStressLevel;
   SleepQuality? _selectedSleepQuality;
-  double _selectedMusclePercentage = 45.0;
-  double _selectedWaterPercentage = 60.0;
-  double _selectedFatPercentage = 15.0;
+  double _selectedMusclePercentage = Constants.defaultMusclePercentage;
+  double _selectedWaterPercentage = Constants.defaultWaterPercentage;
+  double _selectedFatPercentage = Constants.defaultFatPercentage;
   String? _message;
   TextStyle _messageStyle = Styles.errorStyle;
 

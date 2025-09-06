@@ -35,9 +35,7 @@ class LanguagePicker {
                           AccountChangeLanguageRequested(request),
                         );
                       } else {
-                        context.read<LanguageCubit>().change(
-                          Locale(lang.code.toLowerCase()),
-                        );
+                        context.read<LanguageCubit>().change(lang);
                       }
                       Navigator.of(dialogContext).pop();
                     },
