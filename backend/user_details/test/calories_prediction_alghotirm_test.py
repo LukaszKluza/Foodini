@@ -1,11 +1,12 @@
 import logging
 
 import pytest
-import test_data
 
 from backend.models import UserDetails
 from backend.user_details.schemas import PredictedCalories, PredictedMacros
 from backend.user_details.service.calories_prediction_algorithm import CaloriesPredictionAlgorithm
+
+from . import test_data
 
 logging.basicConfig(level=logging.DEBUG)
 
