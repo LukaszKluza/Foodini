@@ -18,12 +18,6 @@ class MainPageScreen extends StatefulWidget {
 class _LoginScreenState extends State<MainPageScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = UserStorage().getUser;
-
-    if (user == null) {
-      return const SizedBox.shrink();
-    }
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 

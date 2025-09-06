@@ -21,4 +21,27 @@ class UserResponse {
       email: json['email'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'language': language.toJson(),
+      'email': email,
+    };
+  }
+
+  UserResponse copyWith({
+    int? id,
+    String? name,
+    Language? language,
+    String? email,
+  }) {
+    return UserResponse(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      language: language ?? this.language,
+      email: email ?? this.email,
+    );
+  }
 }
