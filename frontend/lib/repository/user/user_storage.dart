@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/user/language.dart';
+
 class UserStorage {
   static final UserStorage _instance = UserStorage._internal();
 
@@ -12,8 +14,6 @@ class UserStorage {
   UserStorage._internal();
 
   UserResponse? _user;
-
-  UserResponse? get user => _user;
 
   bool get isLoggedIn => _user != null;
 
@@ -40,6 +40,15 @@ class UserStorage {
     final userJson = prefs.getString('user');
     if (userJson != null) {
       _user = UserResponse.fromJson(jsonDecode(userJson));
+    }
+  }
+
+  Future<void> updateLanguage(Language newLanguage) async {
+    if (_user != null) {
+      _user = _user!.copyWith(
+        language: newLanguage,
+      );
+      setUser(_user!);
     }
   }
 }

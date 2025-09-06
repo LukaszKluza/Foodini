@@ -27,10 +27,6 @@ void main() async {
   if (!kIsWeb) {
     await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
-    await fetchTokenTaskCallback();
-
-    await UserStorage().loadUser();
-
     await Workmanager().registerPeriodicTask(
       'refreshAccessTokenTask',
       fetchTokenTask,
@@ -39,14 +35,13 @@ void main() async {
       constraints: Constraints(networkType: NetworkType.connected),
     );
   } else {
-    await fetchTokenTaskCallback();
-
-    await UserStorage().loadUser();
-
     Timer.periodic(const Duration(minutes: 25), (timer) async {
       await fetchTokenTaskCallback();
     });
   }
+
+  await fetchTokenTaskCallback();
+  await UserStorage().loadUser();
 
   runApp(
     ScreenUtilInit(

@@ -30,4 +30,18 @@ class UserResponse {
       'email': email,
     };
   }
+
+  UserResponse copyWith({
+    int? id,
+    String? name,
+    Language? language,
+    String? email,
+  }) {
+    return UserResponse(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      language: language ?? this.language,
+      email: email ?? this.email,
+    );
+  }
 }

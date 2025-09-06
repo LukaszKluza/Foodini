@@ -31,8 +31,8 @@ class AccountListenerHelper {
       );
       goHome(mounted, context);
     } else if (state is AccountChangeLanguageSuccess) {
-      var newLanguage = state.language.code;
-      context.read<LanguageCubit>().change(Locale(newLanguage.toLowerCase()));
+      var newLanguage = state.language;
+      context.read<LanguageCubit>().change(newLanguage);
     } else if (state is AccountFailure) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
