@@ -18,6 +18,7 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -45,6 +46,8 @@ void main() {
   }
 
   setUp(() {
+    SharedPreferences.setMockInitialValues({});
+    
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
     userDetailsRepository = UserDetailsRepository(mockApiClient);

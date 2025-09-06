@@ -17,6 +17,7 @@ import 'package:frontend/foodini.dart' as _i26;
 import 'package:frontend/models/user/change_language_request.dart' as _i19;
 import 'package:frontend/models/user/change_password_request.dart' as _i18;
 import 'package:frontend/models/user/default_response.dart' as _i5;
+import 'package:frontend/models/user/language.dart' as _i27;
 import 'package:frontend/models/user/logged_user.dart' as _i4;
 import 'package:frontend/models/user/login_request.dart' as _i15;
 import 'package:frontend/models/user/provide_email_request.dart' as _i17;
@@ -1027,10 +1028,13 @@ class MockLanguageCubit extends _i1.Mock implements _i26.LanguageCubit {
           as bool);
 
   @override
-  void change(_i13.Locale? locale) => super.noSuchMethod(
-    Invocation.method(#change, [locale]),
-    returnValueForMissingStub: null,
-  );
+  _i14.Future<void> change(_i27.Language? language) =>
+      (super.noSuchMethod(
+            Invocation.method(#change, [language]),
+            returnValue: _i14.Future<void>.value(),
+            returnValueForMissingStub: _i14.Future<void>.value(),
+          )
+          as _i14.Future<void>);
 
   @override
   void emit(_i13.Locale? state) => super.noSuchMethod(
