@@ -4,13 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
-import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/fetch_token_task_callback.dart';
 import 'package:frontend/foodini.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:workmanager/workmanager.dart';
-
-import 'fetch_token_task_callback.dart';
-import 'foodini.dart';
 
 const fetchTokenTask = 'fetchTokenTask';
 

@@ -139,7 +139,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         emit(DietFormSubmit.initial());
         return;
       }
-      logger.w("Unable to fetch user diet preferences");
+      logger.w('Unable to fetch user diet preferences');
       emit(DietFormSubmitFailure(error: e));
     }
   }

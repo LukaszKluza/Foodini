@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/models/user/language.dart';
@@ -9,13 +10,12 @@ import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,7 +56,7 @@ void main() {
     UserStorage().setUser(
       UserResponse(
         id: 1,
-        name: "Jan",
+        name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
       ),
@@ -145,25 +145,25 @@ void main() {
     when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
       return Response(
         data: {
-          "weight_kg": 48.0,
-          "stress_level": "medium",
-          "date_of_birth": "2003-01-01",
-          "sleep_quality": "fair",
-          "diet_type": "muscle_gain",
-          "muscle_percentage": null,
-          "allergies": [],
-          "water_percentage": null,
-          "user_id": 1,
-          "diet_goal_kg": 53.0,
-          "fat_percentage": null,
-          "id": 1,
-          "meals_per_day": 4,
-          "created_at": "2025-09-01T18:26:45.241412Z",
-          "gender": "female",
-          "diet_intensity": "normal",
-          "updated_at": "2025-09-01T18:26:45.241412Z",
-          "height_cm": 165.0,
-          "activity_level": "moderate"
+          'weight_kg': 48.0,
+          'stress_level': 'medium',
+          'date_of_birth': '2003-01-01',
+          'sleep_quality': 'fair',
+          'diet_type': 'muscle_gain',
+          'muscle_percentage': null,
+          'allergies': [],
+          'water_percentage': null,
+          'user_id': 1,
+          'diet_goal_kg': 53.0,
+          'fat_percentage': null,
+          'id': 1,
+          'meals_per_day': 4,
+          'created_at': '2025-09-01T18:26:45.241412Z',
+          'gender': 'female',
+          'diet_intensity': 'normal',
+          'updated_at': '2025-09-01T18:26:45.241412Z',
+          'height_cm': 165.0,
+          'activity_level': 'moderate'
         },
         statusCode: 200,
         requestOptions: RequestOptions(path: Endpoints.dietPreferences),
