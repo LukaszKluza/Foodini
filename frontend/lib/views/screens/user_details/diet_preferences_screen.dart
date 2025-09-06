@@ -102,8 +102,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
 
   void _softFormValidation() {
     final allRequiredFilled = _selectedDietType != null && _selectedDietIntensity != null && _selectedMealsPerDay > 0;
+    final dietGoalValid = (_selectedDietType == DietType.weightMaintenance) || (_selectedDietGoal > 0);
 
-    widget.onFormValidityChanged?.call(allRequiredFilled);
+    widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
   }
 
     void _updateStateAndBloc<T>({
