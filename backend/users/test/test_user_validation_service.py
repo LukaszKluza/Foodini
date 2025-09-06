@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from backend.settings import config
 from backend.users.service.user_validation_service import UserValidationService
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 @pytest.fixture
@@ -115,15 +116,15 @@ async def test_ensure_user_exists_by_email_success(
 async def test_ensure_user_exists_by_email_failure(
     user_validators, mock_user_repository
 ):
-    # Given
-    mock_user_repository.get_user_by_email = AsyncMock(return_value=None)
+    mock_user_repository.get_user_by_email = AsyncMock(
+        side_effect=NotFoundInDatabaseException("User not found")
+    )
 
     # When/Then
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
         await user_validators.ensure_user_exists_by_email("test@example.com")
 
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert "User does not exist" in exc_info.value.detail
+    assert "User not found" in exc_info.value.detail
     mock_user_repository.get_user_by_email.assert_called_once_with("test@example.com")
 
 
@@ -144,12 +145,13 @@ async def test_ensure_user_exists_by_id_success(user_validators, mock_user_repos
 @pytest.mark.asyncio
 async def test_ensure_user_exists_by_id_failure(user_validators, mock_user_repository):
     # Given
-    mock_user_repository.get_user_by_id = AsyncMock(return_value=None)
+    mock_user_repository.get_user_by_id = AsyncMock(
+        side_effect=NotFoundInDatabaseException("User not found")
+    )
 
     # When/Then
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
         await user_validators.ensure_user_exists_by_id(1)
 
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-    assert "User does not exist" in exc_info.value.detail
+    assert "User not found" in exc_info.value.detail
     mock_user_repository.get_user_by_id.assert_called_once_with(1)

@@ -1,7 +1,6 @@
-from fastapi import Depends, HTTPException, status
-
-from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.models import UserDetails
+from backend.user_details.user_details_repository import UserDetailsRepository
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 class UserDetailsValidationService:
@@ -16,8 +15,5 @@ class UserDetailsValidationService:
             user_id
         )
         if not user_details:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User details not found",
-            )
+            raise NotFoundInDatabaseException("User details not found")
         return user_details

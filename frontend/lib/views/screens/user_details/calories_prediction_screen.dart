@@ -16,6 +16,8 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/states/diet_form_states.dart';
 
+import '../../../config/constants.dart';
+
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
 
@@ -59,9 +61,9 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   ActivityLevel? _selectedActivityLevel;
   StressLevel? _selectedStressLevel;
   SleepQuality? _selectedSleepQuality;
-  double _selectedMusclePercentage = 45.0;
-  double _selectedWaterPercentage = 60.0;
-  double _selectedFatPercentage = 15.0;
+  double _selectedMusclePercentage = Constants.defaultMusclePercentage;
+  double _selectedWaterPercentage = Constants.defaultWaterPercentage;
+  double _selectedFatPercentage = Constants.defaultFatPercentage;
   String? _message;
   TextStyle _messageStyle = Styles.errorStyle;
 

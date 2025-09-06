@@ -1,15 +1,13 @@
 import datetime
 
-from fastapi.params import Depends
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import User
-from .schemas import UserCreate, UserUpdate
+from backend.users.schemas import UserCreate, UserUpdate
 from sqlalchemy.future import select
 
-from backend.core.database import get_db
-from ..models.user_model import Language
+from backend.models.user_model import Language
 
 
 class UserRepository:

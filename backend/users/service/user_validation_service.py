@@ -6,6 +6,7 @@ from pydantic import EmailStr
 from backend.models import User
 from backend.settings import config
 from backend.users.user_repository import UserRepository
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 class UserValidationService:
@@ -42,17 +43,13 @@ class UserValidationService:
     async def ensure_user_exists_by_email(self, email: EmailStr) -> User:
         user = await self.user_repository.get_user_by_email(email)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
+            raise NotFoundInDatabaseException("User not found")
+
         return user
 
     async def ensure_user_exists_by_id(self, user_id: int) -> User:
         user = await self.user_repository.get_user_by_id(user_id)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User does not exist",
-            )
+            raise NotFoundInDatabaseException("User not found")
+
         return user

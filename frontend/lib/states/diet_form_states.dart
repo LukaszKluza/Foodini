@@ -3,12 +3,17 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
+import 'package:frontend/config/constants.dart';
+
 abstract class DietFormState {}
+
+class DietFormInit extends DietFormState {}
 
 class DietFormSubmit extends DietFormState {
   final Gender? gender;
@@ -96,11 +101,34 @@ class DietFormSubmit extends DietFormState {
     );
   }
 
+  static DietFormSubmit fromDietForm(DietForm form) {
+    return DietFormSubmit(
+      gender: form.gender,
+      height: form.height,
+      weight: form.weight,
+      dateOfBirth: form.dateOfBirth,
+      dietType: form.dietType,
+      allergies: form.allergies,
+      dietGoal: form.dietGoal,
+      mealsPerDay: form.mealsPerDay,
+      dietIntensity: form.dietIntensity,
+      activityLevel: form.activityLevel,
+      stressLevel: form.stressLevel,
+      sleepQuality: form.sleepQuality,
+      musclePercentage: form.musclePercentage,
+      fatPercentage: form.fatPercentage,
+      waterPercentage: form.waterPercentage,
+      isSubmitting: false,
+      isSuccess: false,
+      errorMessage: null,
+    );
+  }
+
   factory DietFormSubmit.initial() {
     return DietFormSubmit(
       gender: null,
-      height: 175.0,
-      weight: 65.0,
+      height: Constants.defaultHeight,
+      weight: Constants.defaultWeight,
       dateOfBirth: null,
       dietType: null,
       allergies: const [],
@@ -128,5 +156,3 @@ class DietFormSubmitFailure extends DietFormState {
 
   DietFormSubmitFailure({this.getMessage, this.error});
 }
-
-
