@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -58,9 +59,9 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
   ActivityLevel? _selectedActivityLevel;
   StressLevel? _selectedStressLevel;
   SleepQuality? _selectedSleepQuality;
-  double _selectedMusclePercentage = 45.0;
-  double _selectedWaterPercentage = 60.0;
-  double _selectedFatPercentage = 15.0;
+  double _selectedMusclePercentage = Constants.defaultMusclePercentage;
+  double _selectedWaterPercentage = Constants.defaultWaterPercentage;
+  double _selectedFatPercentage = Constants.defaultFatPercentage;
   String? _message;
   TextStyle _messageStyle = Styles.errorStyle;
 

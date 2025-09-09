@@ -65,7 +65,8 @@ class BottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNextButton(BuildContext context) {
-    final isActive = mode == NavBarMode.wizard && nextRoute != null && isNextRouteEnabled;
+    final isActive =
+        mode == NavBarMode.wizard && nextRoute != null && isNextRouteEnabled;
     return _buildNavButton(
       icon: Icons.arrow_forward,
       isActive: isActive,

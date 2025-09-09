@@ -5,16 +5,30 @@ import 'package:frontend/app_router.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:provider/provider.dart';
 
 class LanguageCubit extends Cubit<Locale> {
-  LanguageCubit() : super(const Locale('en'));
+  LanguageCubit() : super(const Locale('en')) {
+    _loadUserLang();
+  }
 
-  void change(Locale locale) => emit(locale);
+  Future<void> _loadUserLang() async {
+    final user = UserStorage().getUser;
+    if (user?.language.code != null) {
+      change(user!.language);
+    }
+  }
+
+  Future<void> change(Language language) async {
+    emit(Locale(language.code.toLowerCase()));
+    await UserStorage().updateLanguage(language);
+  }
 }
 
 class Foodini extends StatelessWidget {

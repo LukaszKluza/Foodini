@@ -2,18 +2,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
+import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
+import 'package:frontend/repository/user/user_repository.dart';
+import 'package:frontend/states/register_states.dart';
+import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/register_bloc.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/states/register_states.dart';
-import 'package:frontend/views/screens/user/register_screen.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -66,7 +65,7 @@ void main() {
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(6));
     expect(find.byType(ElevatedButton), findsOneWidget);
-    expect(find.text("Registration"), findsOneWidget);
+    expect(find.text('Registration'), findsOneWidget);
   });
 
   testWidgets('Register form submits with valid data', (
@@ -101,11 +100,11 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    await tester.enterText(find.byKey(Key("first_name")), 'John');
-    await tester.enterText(find.byKey(Key("last_name")), 'Doe');
+    await tester.enterText(find.byKey(Key('first_name')), 'John');
+    await tester.enterText(find.byKey(Key('last_name')), 'Doe');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(Key("country")));
+    await tester.tap(find.byKey(Key('country')));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Argentina'));
@@ -176,10 +175,10 @@ void main() {
 
     await tester.pump();
 
-    await tester.ensureVisible(find.text("Polski"));
+    await tester.ensureVisible(find.text('Polski'));
     await tester.pumpAndSettle();
 
     expect(find.text('Polski'), findsOneWidget);
-    await tester.tap(find.text("Polski"));
+    await tester.tap(find.text('Polski'));
   });
 }

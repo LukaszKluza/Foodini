@@ -3,36 +3,23 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
 
-class HeightSlider extends StatefulWidget {
+class HeightSlider extends StatelessWidget {
   final double min;
   final double max;
-  final double initialValue;
+  final double value;
   final ValueChanged<double> onChanged;
 
   const HeightSlider({
     super.key,
     this.min = Constants.minHeight,
     this.max = Constants.maxHeight,
-    required this.initialValue,
+    required this.value,
     required this.onChanged,
   });
 
-  @override
-  HeightSliderState createState() => HeightSliderState();
-}
-
-class HeightSliderState extends State<HeightSlider> {
-  final _formKey = GlobalKey<FormState>();
-  late double _height;
-
-  @override
-  void initState() {
-    super.initState();
-    _height = widget.initialValue;
-  }
-
-  void _showHeightDialog() {
-    final controller = TextEditingController(text: _height.toStringAsFixed(1));
+  void _showHeightDialog(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+    final controller = TextEditingController(text: value.toStringAsFixed(1));
 
     showDialog(
       context: context,
@@ -40,7 +27,7 @@ class HeightSliderState extends State<HeightSlider> {
           (context) => AlertDialog(
             title: Text(AppLocalizations.of(context)!.enterYourHeight),
             content: Form(
-              key: _formKey,
+              key: formKey,
               child: TextFormField(
                 key: Key('height-cm'),
                 controller: controller,
@@ -59,13 +46,10 @@ class HeightSliderState extends State<HeightSlider> {
               ElevatedButton(
                 child: Text(AppLocalizations.of(context)!.ok),
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     final value = double.tryParse(controller.text);
                     if (value != null) {
-                      setState(() {
-                        _height = value;
-                      });
-                      widget.onChanged(value);
+                      onChanged(value);
                       Navigator.pop(context);
                     }
                   }
@@ -82,26 +66,19 @@ class HeightSliderState extends State<HeightSlider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: _showHeightDialog,
+          onTap: () => _showHeightDialog(context),
           child: Text(
-            '${AppLocalizations.of(context)!.height}: ${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
+            '${AppLocalizations.of(context)!.height}: ${value.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
           ),
         ),
-        GestureDetector(
-          child: Slider(
-            value: _height,
-            min: widget.min,
-            max: widget.max,
-            divisions: (widget.max - widget.min).toInt() * 10,
-            label:
-                '${_height.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
-            onChanged: (value) {
-              setState(() {
-                _height = value;
-              });
-              widget.onChanged(value);
-            },
-          ),
+        Slider(
+          value: value,
+          min: min,
+          max: max,
+          divisions: (max - min).toInt() * 10,
+          label:
+              '${value.toStringAsFixed(1)} ${AppLocalizations.of(context)!.cm}',
+          onChanged: onChanged,
         ),
       ],
     );

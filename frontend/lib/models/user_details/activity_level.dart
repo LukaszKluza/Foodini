@@ -14,7 +14,7 @@ enum ActivityLevel {
 
   static ActivityLevel fromJson(String value) {
     return ActivityLevel.values.firstWhere(
-      (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown activity level: $value'),
     );
   }

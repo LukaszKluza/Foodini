@@ -12,7 +12,7 @@ enum DietIntensity {
 
   static DietIntensity fromJson(String value) {
     return DietIntensity.values.firstWhere(
-      (e) => e.nameStr == value.toUpperCase(),
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown diet intensity: $value'),
     );
   }

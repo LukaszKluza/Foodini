@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
-import 'package:frontend/events/user_details/diet_form_events.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:frontend/views/widgets/language_picker.dart';
-
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/account_events.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/listeners/user/account_listener.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/rectangular_button.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/listeners/user/account_listener.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AccountScreen extends StatelessWidget {
   final AccountBloc? bloc;

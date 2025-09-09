@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/repository/user/user_storage.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:go_router/go_router.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({super.key});
@@ -18,12 +17,6 @@ class MainPageScreen extends StatefulWidget {
 class _LoginScreenState extends State<MainPageScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = UserStorage().getUser;
-
-    if (user == null) {
-      return const SizedBox.shrink();
-    }
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -89,14 +82,17 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.food_bank_rounded,
                             screenWidth,
                             screenHeight,
-                            () => context.push('/profile-details'),
+                            () => context.push(
+                              '/profile-details',
+                              extra: {'from': 'main-page'},
+                            ),
                           ),
                         ],
                       ),
                       Column(
                         children: [
                           rectangularButton(
-                            "Button 3",
+                            'Button 3',
                             Icons.do_not_disturb,
                             screenWidth,
                             screenHeight,
@@ -104,7 +100,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
-                            "Button 4",
+                            'Button 4',
                             Icons.do_not_disturb,
                             screenWidth,
                             screenHeight,

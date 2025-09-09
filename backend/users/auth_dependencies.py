@@ -1,3 +1,5 @@
+from typing import Type
+
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from backend.core.user_authorisation_service import AuthorizationService
@@ -24,7 +26,7 @@ class AuthDependency:
     async def get_token_payload(self, credentials: HTTPAuthorizationCredentials) -> dict:
         return await self.authorization_service.verify_access_token(credentials)
 
-    async def get_current_user(self) -> tuple[User, dict]:
+    async def get_current_user(self) -> tuple[Type[User], dict]:
         token_payload = await self.authorization_service.verify_access_token(self.credentials)
         user_id_from_token = token_payload["id"]
 

@@ -6,6 +6,7 @@ import pytest
 from fastapi import HTTPException, status
 from pydantic import EmailStr, TypeAdapter
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.settings import config
 from backend.users.schemas import (
@@ -144,14 +145,13 @@ async def test_login_user_not_found(user_service, mock_user_validators):
         email=TypeAdapter(EmailStr).validate_python("test@example.com"),
         password="Password123",
     )
-    mock_user_validators.ensure_user_exists_by_email.side_effect = HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
-    )
+    mock_user_validators.ensure_user_exists_by_email.side_effect = NotFoundInDatabaseException("User not found")
 
     # When/Then
-    with pytest.raises(HTTPException) as exc_info:
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
         await user_service.login(user_login)
-    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert exc_info.value.detail == "User not found"
 
 
 @pytest.mark.asyncio
