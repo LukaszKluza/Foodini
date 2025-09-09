@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
+import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
-import 'package:frontend/views/screens/main_page_screen.dart';
+import 'package:frontend/views/screens/user/provide_email_screen.dart';
+import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
-import 'package:frontend/views/screens/user/provide_email_screen.dart';
-import 'package:frontend/views/screens/user/register_screen.dart';
-import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final TokenStorageRepository _storage = TokenStorageRepository();

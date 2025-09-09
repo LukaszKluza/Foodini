@@ -1,10 +1,10 @@
 import redis.asyncio as aioredis
-from fastapi import Depends, Security, Query
+from fastapi import Depends, Query, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_mail import ConnectionConfig, FastMail
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.core.database import get_redis
+from backend.core.database import get_db, get_redis
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
 from backend.users.auth_dependencies import AuthDependency
@@ -13,7 +13,6 @@ from backend.users.service.email_verification_sevice import EmailVerificationSer
 from backend.users.service.user_service import UserService
 from backend.users.service.user_validation_service import UserValidationService
 from backend.users.user_repository import UserRepository
-from backend.core.database import get_db
 
 security = HTTPBearer()
 
@@ -50,16 +49,12 @@ async def get_email_verification_service(
     mail_service: MailService = Depends(get_mail_service),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> EmailVerificationService:
-    return EmailVerificationService(
-        user_repository, user_validators, mail_service, authorization_service
-    )
+    return EmailVerificationService(user_repository, user_validators, mail_service, authorization_service)
 
 
 async def get_user_service(
     user_repository: UserRepository = Depends(get_user_repository),
-    email_verification_service: EmailVerificationService = Depends(
-        get_email_verification_service
-    ),
+    email_verification_service: EmailVerificationService = Depends(get_email_verification_service),
     user_validators: UserValidationService = Depends(get_user_validators),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> UserService:

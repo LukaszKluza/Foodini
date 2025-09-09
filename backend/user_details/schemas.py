@@ -1,19 +1,21 @@
 from datetime import date
-from pydantic import BaseModel, Field
 from typing import List, Optional
-from .enums import (
-    Gender,
-    DietType,
-    DietIntensity,
+
+from pydantic import BaseModel, Field
+
+from backend.user_details.enums import (
     ActivityLevel,
+    Allergies,
+    DietIntensity,
+    DietType,
+    Gender,
     SleepQuality,
     StressLevel,
-    Allergies,
 )
-from .mixins import DateOfBirthValidationMixin
+from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
 
 
-class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
+class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
@@ -29,10 +31,6 @@ class UserDetailsCreate(DateOfBirthValidationMixin, BaseModel):
     muscle_percentage: Optional[float] = Field(default=None, ge=0, le=100)
     water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
-
-
-class UserDetailsResponse(UserDetailsCreate):
-    id: int
 
 
 class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
@@ -71,3 +69,17 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
             water_percentage=data.water_percentage,
             fat_percentage=data.fat_percentage,
         )
+
+
+class PredictedMacros(BaseModel):
+    protein: int
+    fat: int
+    carbs: int
+
+
+class PredictedCalories(BaseModel):
+    bmr: int
+    tdee: int
+    target_calories: int
+    diet_duration_days: Optional[int] = None
+    predicted_macros: PredictedMacros

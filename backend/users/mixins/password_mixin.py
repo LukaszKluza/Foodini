@@ -1,5 +1,6 @@
-from pydantic import field_validator
 import re
+
+from pydantic import field_validator
 
 
 class PasswordValidationMixin:

@@ -1,9 +1,9 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
-from .mixins import PasswordValidationMixin, CountryValidationMixin
 from ..models.user_model import Language
+from .mixins import CountryValidationMixin, PasswordValidationMixin
 
 
 class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
@@ -29,12 +29,8 @@ class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
 
 
 class UserUpdate(CountryValidationMixin, BaseModel):
-    name: Optional[str] = Field(
-        None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$"
-    )
-    last_name: Optional[str] = Field(
-        None, min_length=2, max_length=50, pattern="^[a-zA-Z-]+$"
-    )
+    name: Optional[str] = Field(None, min_length=2, max_length=50, pattern="^[a-zA-Z]+$")
+    last_name: Optional[str] = Field(None, min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
     country: Optional[str] = Field(None, min_length=2, max_length=50)
 
 

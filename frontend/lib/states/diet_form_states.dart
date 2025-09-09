@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/allergy.dart';
-import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
-
-import 'package:frontend/config/constants.dart';
 
 abstract class DietFormState {}
 

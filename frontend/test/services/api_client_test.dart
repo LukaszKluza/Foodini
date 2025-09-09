@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/language.dart';
@@ -6,8 +7,6 @@ import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
-
-import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,7 +37,7 @@ void main() {
 
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: Endpoints.users),
-      data: {"result": "ok"},
+      data: {'result': 'ok'},
       statusCode: 200,
     );
 

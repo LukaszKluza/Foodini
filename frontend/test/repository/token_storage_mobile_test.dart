@@ -15,7 +15,7 @@ void main() {
 
   test('saveAccessToken stores token', () async {
     when(
-      mockStorage.write(key: "abc123", value: "access_token"),
+      mockStorage.write(key: 'abc123', value: 'access_token'),
     ).thenAnswer((_) async {});
 
     await tokenStorageMobile.saveAccessToken('abc123');

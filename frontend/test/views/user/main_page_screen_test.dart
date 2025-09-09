@@ -3,11 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:frontend/views/screens/main_page_screen.dart';
 
 import '../../wrapper/test_wrapper_builder.dart';
 

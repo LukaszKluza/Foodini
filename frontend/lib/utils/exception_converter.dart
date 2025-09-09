@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:frontend/states/register_states.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/states/register_states.dart';
 
 class ExceptionConverter extends RegisterState {
   static String formatErrorMessage(dynamic error, BuildContext context) {

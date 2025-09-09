@@ -3,10 +3,10 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from pydantic import EmailStr
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.settings import config
 from backend.users.user_repository import UserRepository
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 class UserValidationService:
@@ -30,9 +30,7 @@ class UserValidationService:
             )
 
     def check_last_password_change_data_time(self, user):
-        time_diff = (
-            datetime.now(config.TIMEZONE) - user.last_password_update
-        ).total_seconds()
+        time_diff = (datetime.now(config.TIMEZONE) - user.last_password_update).total_seconds()
         if time_diff < config.RESET_PASSWORD_OFFSET_SECONDS:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

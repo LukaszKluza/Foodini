@@ -1,10 +1,10 @@
-from .gender import Gender
-from .diet_type import DietType
 from .activity_level import ActivityLevel
+from .allergies import Allergies
 from .diet_intensity import DietIntensity
+from .diet_type import DietType
+from .gender import Gender
 from .sleep_quality import SleepQuality
 from .stress_level import StressLevel
-from .allergies import Allergies
 
 __all__ = [
     "Gender",

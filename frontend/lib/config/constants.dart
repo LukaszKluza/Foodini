@@ -16,6 +16,6 @@ class Constants {
   static const double defaultFatPercentage = 15;
 
   static const double horizontalPaddingRatio = 0.07;
-  static const double screenWidth= 1170;
-  static const double screenHeight= 2532;
+  static const double screenWidth = 1170;
+  static const double screenHeight = 2532;
 }

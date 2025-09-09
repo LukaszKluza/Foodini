@@ -1,11 +1,12 @@
-import pytest
-from fastapi import HTTPException, status
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+from fastapi import HTTPException, status
+
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.settings import config
 from backend.users.service.user_validation_service import UserValidationService
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 @pytest.fixture
@@ -97,9 +98,7 @@ async def test_check_last_password_change_data_time_failure(user_validators):
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_exists_by_email_success(
-    user_validators, mock_user_repository
-):
+async def test_ensure_user_exists_by_email_success(user_validators, mock_user_repository):
     # Given
     mock_user = MagicMock()
     mock_user_repository.get_user_by_email = AsyncMock(return_value=mock_user)
@@ -113,12 +112,9 @@ async def test_ensure_user_exists_by_email_success(
 
 
 @pytest.mark.asyncio
-async def test_ensure_user_exists_by_email_failure(
-    user_validators, mock_user_repository
-):
-    mock_user_repository.get_user_by_email = AsyncMock(
-        side_effect=NotFoundInDatabaseException("User not found")
-    )
+async def test_ensure_user_exists_by_email_failure(user_validators, mock_user_repository):
+    # Given
+    mock_user_repository.get_user_by_email = AsyncMock(side_effect=NotFoundInDatabaseException("User not found"))
 
     # When/Then
     with pytest.raises(NotFoundInDatabaseException) as exc_info:
@@ -145,9 +141,7 @@ async def test_ensure_user_exists_by_id_success(user_validators, mock_user_repos
 @pytest.mark.asyncio
 async def test_ensure_user_exists_by_id_failure(user_validators, mock_user_repository):
     # Given
-    mock_user_repository.get_user_by_id = AsyncMock(
-        side_effect=NotFoundInDatabaseException("User not found")
-    )
+    mock_user_repository.get_user_by_id = AsyncMock(side_effect=NotFoundInDatabaseException("User not found"))
 
     # When/Then
     with pytest.raises(NotFoundInDatabaseException) as exc_info:

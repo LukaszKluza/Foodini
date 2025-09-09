@@ -1,18 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
+import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/blocs/user/account_bloc.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/services/token_storage_service.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -102,7 +101,6 @@ void main() {
       mockDio.request(
         Endpoints.logout,
         queryParameters: {'user_id': 1},
-        data: null,
         options: anyNamed('options'),
       ),
     ).thenAnswer(

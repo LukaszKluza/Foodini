@@ -25,52 +25,98 @@ env:
 
 
 on:
-  pull_request:
-    branches: [ "*" ]
+  push:
+    branches:
+      - '*'
+#  pull_request:
+#    branches:
+#      - '*'
+
 permissions:
   contents: read
 jobs:
-  build:
+  pre-commit:
     runs-on: ubuntu-latest
+
     steps:
-       # Python Setup Steps
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      # Python Setup Steps
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
-      - name: Lint with flake8
+
+      - name: Check critical errors with flake8
         run: |
-          # stop the build if there are Python syntax errors or undefined names
+          cd backend
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Full lint with flake8
+        run: |
+          cd backend
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
       - name: Test with pytest
         run: |
           coverage run -m pytest
+
       - name: Backend test coverage
         run: |
           cd scripts 
           chmod +x ./backendTestCoverage.sh
           ./backendTestCoverage.sh ${{ env.BACKEND_TEST_COVERAGE_THRESHOLD }}
-      # Frontend Setup Steps
+
+  frontend:
+    runs-on: ubuntu-latest
+    # Flutter Setup Steps
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.29.1"
-      - name: Install Frontend dependencies
+
+      - name: Build frontend
         run: |
           cd frontend
           flutter pub get
-      - name: Run Frontend tests
+          flutter build web
+
+      - name: Checkstyle frontend
+        run: |
+          cd frontend
+          flutter analyze
+
+      - name: Test frontend
         run: |
           cd frontend
           flutter test --coverage 
+
       - name: Frontend test coverage
         run: |
           cd scripts 

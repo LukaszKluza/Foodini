@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import EmailStr
-from sqlalchemy import DateTime, Column, func
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Column, DateTime, func
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.settings import config
 from backend.users.enums.language import Language
@@ -28,14 +28,8 @@ class User(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True)),
     )
 
-    details: Optional["UserDetails"] = Relationship(
-        back_populates="user", cascade_delete=True
-    )
-    created_at: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), server_default=func.now())
-    )
+    details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
-        sa_column=Column(
-            DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
-        )
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )

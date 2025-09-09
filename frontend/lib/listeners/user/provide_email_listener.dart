@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 
 class ProvideEmailListenerHelper {
   static void onProvideEmailListener({

@@ -4,16 +4,16 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/states/diet_form_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetailsScreen extends StatefulWidget {
   const ProfileDetailsScreen({super.key});

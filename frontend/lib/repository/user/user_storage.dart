@@ -1,8 +1,8 @@
 import 'dart:convert';
+
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../models/user/language.dart';
 
 class UserStorage {
   static final UserStorage _instance = UserStorage._internal();

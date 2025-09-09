@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:frontend/repository/user/token_storage_repository.dart';
 import 'package:frontend/repository/user/token_storage_mobile_repository.dart';
+import 'package:frontend/repository/user/token_storage_repository.dart';
 import 'package:frontend/repository/user/token_storage_web_repository.dart';
 
 class TokenStorageRepository {

@@ -10,22 +10,23 @@ from backend.users.service.email_verification_sevice import (
     EmailVerificationService,
 )
 from backend.users.service.user_service import UserService
+
 from .auth_dependencies import AuthDependency
 from .dependencies import (
-    get_user_service,
-    get_email_verification_service,
     get_auth_dependency,
+    get_email_verification_service,
+    get_user_service,
 )
 from .schemas import (
-    UserCreate,
-    DefaultResponse,
-    UserUpdate,
-    UserLogin,
-    LoginUserResponse,
-    PasswordResetRequest,
-    NewPasswordConfirm,
-    UserResponse,
     ChangeLanguageRequest,
+    DefaultResponse,
+    LoginUserResponse,
+    NewPasswordConfirm,
+    PasswordResetRequest,
+    UserCreate,
+    UserLogin,
+    UserResponse,
+    UserUpdate,
 )
 
 user_router = APIRouter(prefix="/v1/users")
@@ -42,9 +43,7 @@ async def get_user(
 
 
 @user_router.post("/", response_model=DefaultResponse)
-async def register_user(
-    user: UserCreate, user_service: UserService = Depends(get_user_service)
-):
+async def register_user(user: UserCreate, user_service: UserService = Depends(get_user_service)):
     return await user_service.register(user)
 
 
@@ -68,9 +67,7 @@ async def delete_user(
 
 
 @user_router.post("/login", response_model=LoginUserResponse)
-async def login_user(
-    user: UserLogin, user_service: UserService = Depends(get_user_service)
-):
+async def login_user(user: UserLogin, user_service: UserService = Depends(get_user_service)):
     return await user_service.login(user)
 
 
@@ -118,19 +115,13 @@ async def verify_new_password(
 
 
 @user_router.get("/confirm/new-account", response_model=DefaultResponse)
-async def verify_new_account(
-    url_token: str = Query(None), user_service: UserService = Depends(get_user_service)
-):
+async def verify_new_account(url_token: str = Query(None), user_service: UserService = Depends(get_user_service)):
     return await user_service.confirm_new_account(url_token)
 
 
-@user_router.get(
-    "/confirm/resend-verification-new-account", status_code=status.HTTP_204_NO_CONTENT
-)
+@user_router.get("/confirm/resend-verification-new-account", status_code=status.HTTP_204_NO_CONTENT)
 async def resend_verification(
     email: Optional[EmailStr] = None,
-    email_verification_service: EmailVerificationService = Depends(
-        get_email_verification_service
-    ),
+    email_verification_service: EmailVerificationService = Depends(get_email_verification_service),
 ):
     return await email_verification_service.resend_verification(email)

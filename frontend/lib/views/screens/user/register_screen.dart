@@ -1,19 +1,18 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/listeners/user/register_listener.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/register_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/listeners/user/register_listener.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   final RegisterBloc? bloc;

@@ -1,7 +1,7 @@
+import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/advanced_body_parameters.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
-import 'activity_level.dart';
-import 'advanced_body_parameters.dart';
 
 class CaloriesPrediction {
   final ActivityLevel activityLevel;
