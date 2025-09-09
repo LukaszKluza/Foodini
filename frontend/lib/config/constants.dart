@@ -18,4 +18,8 @@ class Constants {
   static const double horizontalPaddingRatio = 0.07;
   static const double screenWidth = 1170;
   static const double screenHeight = 2532;
+
+  static const int proteinEstimator = 4;
+  static const int fatEstimator = 9;
+  static const int carbsEstimator = 4;
 }

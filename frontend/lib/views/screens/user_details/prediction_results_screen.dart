@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -91,7 +92,9 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     final protein = int.tryParse(_proteinController.text) ?? 0;
     final fat = int.tryParse(_fatController.text) ?? 0;
     final carbs = int.tryParse(_carbsController.text) ?? 0;
-    return (protein * 4) + (fat * 9) + (carbs * 4);
+    return (protein * Constants.proteinEstimator) +
+        (fat * Constants.fatEstimator) +
+        (carbs * Constants.carbsEstimator);
   }
 
   String? _macrosValidator(String? value) {
@@ -100,7 +103,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     const tolerance = 30;
 
     if ((total - target).abs() > tolerance) {
-      return 'Macros = $total kcal, expected ~ $target kcal';
+      return '${AppLocalizations.of(context)!.macros} = $total ${AppLocalizations.of(context)!.kcal}, ${AppLocalizations.of(context)!.expected} ~ $target ${AppLocalizations.of(context)!.kcal}';
     }
     return null;
   }
@@ -138,21 +141,21 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     final fields = [
       Center(
         child: Text(
-          '${AppLocalizations.of(context)!.predictedCalories}: $targetCalories kcal',
+          '${AppLocalizations.of(context)!.predictedCalories}: $targetCalories ${AppLocalizations.of(context)!.kcal}',
           textAlign: TextAlign.center,
         ),
       ),
       const SizedBox(height: 16),
       Center(
         child: Text(
-          '${AppLocalizations.of(context)!.bmr}: $bmr kcal',
+          '${AppLocalizations.of(context)!.bmr}: $bmr ${AppLocalizations.of(context)!.kcal}',
           textAlign: TextAlign.center,
         ),
       ),
       const SizedBox(height: 16),
       Center(
         child: Text(
-          '${AppLocalizations.of(context)!.tdee}: $tdee kcal',
+          '${AppLocalizations.of(context)!.tdee}: $tdee ${AppLocalizations.of(context)!.kcal}',
           textAlign: TextAlign.center,
         ),
       ),
@@ -167,7 +170,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       const SizedBox(height: 8),
       Center(
         child: _buildMacroField(
-          'Protein (g)',
+          AppLocalizations.of(context)!.proteinG,
           _proteinController,
           (value) => context.read<MacrosChangeBloc>().add(
             UpdateProtein(int.tryParse(value) ?? 0),
@@ -176,7 +179,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       ),
       Center(
         child: _buildMacroField(
-          'Fat (g)',
+          AppLocalizations.of(context)!.fatG,
           _fatController,
           (value) => context.read<MacrosChangeBloc>().add(
             UpdateFat(int.tryParse(value) ?? 0),
@@ -185,7 +188,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       ),
       Center(
         child: _buildMacroField(
-          'Carbs (g)',
+          AppLocalizations.of(context)!.carbsG,
           _carbsController,
           (value) => context.read<MacrosChangeBloc>().add(
             UpdateCarbs(int.tryParse(value) ?? 0),
@@ -221,7 +224,9 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 400),
                       child: ElevatedButton(
-                        key: const ValueKey('generateWeeklyDietButton'),
+                        key: Key(
+                          AppLocalizations.of(context)!.savePredictedCalories,
+                        ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<MacrosChangeBloc>().add(
@@ -234,7 +239,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                           minimumSize: const Size.fromHeight(48),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)!.generateWeeklyDiet,
+                          AppLocalizations.of(context)!.savePredictedCalories,
                         ),
                       ),
                     ),

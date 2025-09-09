@@ -919,6 +919,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fill all necessary fields'**
   String get fillAllNecessaryFields;
+
+  /// No description provided for @macros.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros'**
+  String get macros;
+
+  /// No description provided for @kcal.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get kcal;
+
+  /// No description provided for @expected.
+  ///
+  /// In en, this message translates to:
+  /// **'expected'**
+  String get expected;
+
+  /// No description provided for @proteinG.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein (g)'**
+  String get proteinG;
+
+  /// No description provided for @fatG.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat (g)'**
+  String get fatG;
+
+  /// No description provided for @carbsG.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs (g)'**
+  String get carbsG;
+
+  /// No description provided for @savePredictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Save predicted calories'**
+  String get savePredictedCalories;
 }
 
 class _AppLocalizationsDelegate

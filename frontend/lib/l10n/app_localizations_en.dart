@@ -426,4 +426,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Fill all necessary fields';
+
+  @override
+  String get macros => 'Macros';
+
+  @override
+  String get kcal => 'kcal';
+
+  @override
+  String get expected => 'expected';
+
+  @override
+  String get proteinG => 'Protein (g)';
+
+  @override
+  String get fatG => 'Fat (g)';
+
+  @override
+  String get carbsG => 'Carbs (g)';
+
+  @override
+  String get savePredictedCalories => 'Save predicted calories';
 }

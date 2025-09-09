@@ -99,17 +99,14 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
   }
 
-  void _validateForm() {
-    final isValid = _formKey.currentState?.validate() ?? false;
+  void _softFormValidation() {
     final allRequiredFilled =
         _selectedDietType != null &&
         _selectedDietIntensity != null &&
         _selectedMealsPerDay > 0;
-
     final dietGoalValid =
         (_selectedDietType == DietType.weightMaintenance) ||
         (_selectedDietGoal > 0);
-
     widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
   }
 

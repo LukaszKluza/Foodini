@@ -430,4 +430,25 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+
+  @override
+  String get macros => 'Makro';
+
+  @override
+  String get kcal => 'kcal';
+
+  @override
+  String get expected => 'oczekiwane';
+
+  @override
+  String get proteinG => 'Białko (g)';
+
+  @override
+  String get fatG => 'Tłuszcz (g)';
+
+  @override
+  String get carbsG => 'Węgle (g)';
+
+  @override
+  String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
 }
