@@ -151,6 +151,7 @@
 
   "macros": "Macros",
   "kcal": "kcal",
+  "days": "days",
   "expected": "expected",
   "proteinG": "Protein (g)",
   "fatG": "Fat (g)",

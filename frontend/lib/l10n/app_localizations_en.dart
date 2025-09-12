@@ -434,6 +434,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kcal => 'kcal';
 
   @override
+  String get days => 'days';
+
+  @override
   String get expected => 'expected';
 
   @override

@@ -438,6 +438,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get kcal => 'kcal';
 
   @override
+  String get days => 'dni';
+
+  @override
   String get expected => 'oczekiwane';
 
   @override

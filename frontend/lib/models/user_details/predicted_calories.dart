@@ -24,4 +24,12 @@ class PredictedCalories {
       predictedMacros: PredictedMacros.fromJson(json['predicted_macros']),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'bmr': bmr,
+    'tdee': tdee,
+    'target_calories': targetCalories,
+    'diet_duration_days': dietDurationDays,
+    'predicted_macros': predictedMacros.toJson(),
+  };
 }

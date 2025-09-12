@@ -932,6 +932,12 @@ abstract class AppLocalizations {
   /// **'kcal'**
   String get kcal;
 
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
   /// No description provided for @expected.
   ///
   /// In en, this message translates to:

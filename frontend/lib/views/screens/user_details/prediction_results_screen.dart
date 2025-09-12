@@ -137,6 +137,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     final targetCalories = widget.predictedCalories.targetCalories;
     final bmr = widget.predictedCalories.bmr;
     final tdee = widget.predictedCalories.tdee;
+    final dietDurationDays = widget.predictedCalories.dietDurationDays;
 
     final fields = [
       Center(
@@ -159,6 +160,15 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           textAlign: TextAlign.center,
         ),
       ),
+      if (dietDurationDays != null) ...[
+        const SizedBox(height: 16),
+        Center(
+          child: Text(
+            '${AppLocalizations.of(context)!.dietDuration}: $dietDurationDays ${AppLocalizations.of(context)!.days}',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
       const SizedBox(height: 16),
       Center(
         child: Text(
@@ -224,9 +234,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 400),
                       child: ElevatedButton(
-                        key: Key(
-                          AppLocalizations.of(context)!.savePredictedCalories,
-                        ),
+                        key: Key('save_predicted_calories_button'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             context.read<MacrosChangeBloc>().add(

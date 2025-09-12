@@ -41,7 +41,7 @@ class CaloriesPredictionRepository:
                 protein=user_diet_predictions.protein, fat=user_diet_predictions.fat, carbs=user_diet_predictions.carbs
             ),
         )
-        
+
     async def update_macros_prediction(self, changed_macros: PredictedMacros, user_id: int) -> PredictedCalories:
         result = await self.db.execute(select(UserDietPredictions).where(UserDietPredictions.user_id == user_id))
         user_diet_predictions = result.scalars().first()

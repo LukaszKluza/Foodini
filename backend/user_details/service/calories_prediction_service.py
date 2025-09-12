@@ -1,5 +1,3 @@
-from fastapi import HTTPException, status
-
 from backend.models import User
 from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
 from backend.user_details.schemas import PredictedCalories, PredictedMacros
@@ -14,12 +12,7 @@ class CaloriesPredictionService:
         self.user_details_service = user_details_service
         self.calories_prediction_repository = calories_prediction_repository
 
-    async def get_calories_prediction_by_user_id(self, token_payload: dict, user_id_from_request: int):
-        if token_payload["user_id"] != user_id_from_request:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="You do not have permission to access this resource.",
-            )
+    async def get_calories_prediction_by_user_id(self, user_id_from_request: int):
         return await self.calories_prediction_repository.get_user_calories_prediction_by_user_id(user_id_from_request)
 
     async def add_calories_prediction(
@@ -38,5 +31,3 @@ class CaloriesPredictionService:
         user_id: int,
     ):
         return await self.calories_prediction_repository.update_macros_prediction(changed_macros, user_id)
-        
-
