@@ -43,7 +43,7 @@ async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseExceptio
 
 
 @app.exception_handler(ValueErrorException)
-async def db_not_found_handler(request: Request, exc: ValueErrorException):
+async def value_error_exception_handler_handler(request: Request, exc: ValueErrorException):
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         detail=exc.detail,
