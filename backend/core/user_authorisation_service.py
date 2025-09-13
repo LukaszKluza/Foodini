@@ -16,6 +16,7 @@ from itsdangerous import (
     URLSafeTimedSerializer,
 )
 
+from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
 from backend.users.schemas import RefreshTokensResponse
@@ -190,7 +191,7 @@ class AuthorizationService:
 
     async def verify_salt(self, salt):
         if salt not in config.SALTS:
-            raise ValueError(f"Invalid salt value. Use either {config.SALTS}.")
+            raise ValueErrorException(f"Invalid salt value. Use either {config.SALTS}.")
 
     async def create_url_safe_token(self, data: Dict[str, Any], salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)

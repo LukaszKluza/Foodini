@@ -470,13 +470,13 @@ abstract class AppLocalizations {
   /// No description provided for @muscleGainGoalCantBeLower.
   ///
   /// In en, this message translates to:
-  /// **'Diet goal for Muscle Gain can\'t be lower than current weight'**
+  /// **'Diet goal for \'Muscle Gain\' can\'t be lower than current weight'**
   String get muscleGainGoalCantBeLower;
 
   /// No description provided for @fatLossGoalCantBeHigher.
   ///
   /// In en, this message translates to:
-  /// **'Diet goal for Fat Loss cant\'t be higher than current weight'**
+  /// **'Diet goal for \'Fat Loss\' cant\'t be higher than current weight'**
   String get fatLossGoalCantBeHigher;
 
   /// No description provided for @kg.

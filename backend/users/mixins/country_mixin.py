@@ -2,6 +2,7 @@ from typing import List
 
 import pycountry
 from pydantic import field_validator
+from backend.core.value_error_exception import ValueErrorException
 
 
 class CountryValidationMixin:
@@ -14,7 +15,7 @@ class CountryValidationMixin:
         try:
             country = pycountry.countries.get(name=value)
             if not country:
-                raise ValueError(f"Invalid country name: '{value}'. ")
+                raise ValueErrorException(f"Invalid country name: '{value}'.")
             return country.name
         except LookupError:
-            raise ValueError("Invalid country format") from None
+            raise ValueErrorException("Invalid country format") from None

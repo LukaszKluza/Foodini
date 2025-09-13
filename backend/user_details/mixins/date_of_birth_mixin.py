@@ -3,6 +3,7 @@ from datetime import date, datetime
 from pydantic import field_validator
 
 from backend.settings import config
+from backend.core.value_error_exception import ValueErrorException
 
 
 class DateOfBirthValidationMixin:
@@ -11,5 +12,5 @@ class DateOfBirthValidationMixin:
         today = datetime.now(config.TIMEZONE).date()
         if dob:
             if dob > today:
-                raise ValueError("Date of birth cannot be in the future.")
+                raise ValueErrorException("Date of birth cannot be in the future.")
         return dob
