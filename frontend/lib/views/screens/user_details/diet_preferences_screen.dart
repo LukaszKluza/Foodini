@@ -76,6 +76,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   double _selectedDietGoal = Constants.defaultWeight;
   DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = Constants.defaultMealsPerDay;
+  double _selectedWeight = Constants.defaultWeight;
+
+  String? _dietGoalError;
 
   @override
   void initState() {
@@ -92,6 +95,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         _selectedDietGoal = blocState.dietGoal!;
       } else if (blocState.weight != null) {
         _selectedDietGoal = blocState.weight!;
+        _selectedWeight = blocState.weight!;
         context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
       }
     }
@@ -101,7 +105,19 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
 
   void _softFormValidation() {
     final allRequiredFilled = _selectedDietType != null && _selectedDietIntensity != null && _selectedMealsPerDay > 0;
-    final dietGoalValid = (_selectedDietType == DietType.weightMaintenance) || (_selectedDietGoal > 0);
+    
+    final error = validateDietGoal(
+      _selectedDietGoal.toString(),
+      context,
+      dietType: _selectedDietType,
+      weight: _selectedWeight,
+    );
+
+    setState(() {
+      _dietGoalError = error;
+    });
+    
+    final dietGoalValid = error == null;
 
     widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
   }
@@ -204,11 +220,24 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(
           value: _selectedDietGoal,
-          validator: (value) => validateDietGoal(value, context),
+          validator: (value) => validateDietGoal(
+            value,
+            context,
+            dietType: _selectedDietType,
+            weight: _selectedWeight
+          ), // maybe not needed here
           onChanged: _onDietGoalChanged,
           label: AppLocalizations.of(context)!.dietGoal,
           dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
         ),
+        if (_dietGoalError != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _dietGoalError!,
+              style: Styles.errorStyle,
+            ),
+          ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
