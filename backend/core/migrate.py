@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel
-from .database import engine
-from users.models import User
+from backend.core.database import engine
+from backend.users.models import User
 import asyncio
 
 
