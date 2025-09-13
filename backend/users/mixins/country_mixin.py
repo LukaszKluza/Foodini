@@ -2,6 +2,7 @@ from typing import List
 
 import pycountry
 from pydantic import field_validator
+
 from backend.core.value_error_exception import ValueErrorException
 
 
