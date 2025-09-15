@@ -98,6 +98,19 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         _selectedWeight = blocState.weight!;
         context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
       }
+    } else if (blocState is DietFormSubmitFailure) {
+       _selectedDietType = blocState.previousData.dietType ?? _selectedDietType;
+      _selectedAllergies = blocState.previousData.allergies ?? _selectedAllergies;
+      _selectedDietIntensity =
+          blocState.previousData.dietIntensity ?? _selectedDietIntensity;
+      _selectedMealsPerDay = blocState.previousData.mealsPerDay ?? _selectedMealsPerDay;
+      if (blocState.previousData.dietGoal != null) {
+        _selectedDietGoal = blocState.previousData.dietGoal!;
+      } else if (blocState.previousData.weight != null) {
+        _selectedDietGoal = blocState.previousData.weight!;
+        _selectedWeight = blocState.previousData.weight!;
+        context.read<DietFormBloc>().add(UpdateDietGoal(blocState.previousData.weight!));
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());

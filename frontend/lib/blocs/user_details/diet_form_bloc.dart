@@ -127,7 +127,9 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
   }
 
   Future<void> _onInitForm(InitForm event, Emitter<DietFormState> emit) async {
-    try {
+      final previousState = state is DietFormSubmit ? state as DietFormSubmit : DietFormSubmit.initial();
+      
+      try {
       final userId = UserStorage().getUserId!;
       final dietPreferences = await userDetailsRepository.getDietPreferences(
         userId,
@@ -140,7 +142,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         return;
       }
       logger.w('Unable to fetch user diet preferences');
-      emit(DietFormSubmitFailure(error: e));
+      emit(DietFormSubmitFailure(previousData: previousState, error: e));
     }
   }
 
@@ -148,7 +150,14 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     SubmitForm event,
     Emitter<DietFormState> emit,
   ) async {
-    final currentState = state as DietFormSubmit;
+    DietFormSubmit currentState;
+    if (state is DietFormSubmit) {
+      currentState = state as DietFormSubmit;
+    } else if (state is DietFormSubmitFailure) {
+      currentState = (state as DietFormSubmitFailure).previousData;
+    } else {
+      currentState = DietFormSubmit.initial();
+    }
     emit(currentState.copyWith(isSubmitting: true, errorMessage: null));
 
     final requiredFields = [
@@ -169,6 +178,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     if (requiredFields.any((field) => field == null)) {
       emit(
         DietFormSubmitFailure(
+          previousData: currentState,
           getMessage:
               (context) => AppLocalizations.of(context)!.fillAllNecessaryFields,
         ),
@@ -200,7 +210,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
 
       emit(DietFormSubmitSuccess());
     } on ApiException catch (e) {
-      emit(DietFormSubmitFailure(error: e));
+      emit(DietFormSubmitFailure(previousData: currentState, error: e));
     }
   }
 }

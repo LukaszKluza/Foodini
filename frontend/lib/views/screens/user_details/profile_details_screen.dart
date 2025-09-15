@@ -97,6 +97,11 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
       _selectedWeight = blocState.weight ?? _selectedWeight;
       _selectedDateOfBirth = blocState.dateOfBirth ?? _selectedDateOfBirth;
       WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+    } else if (blocState is DietFormSubmitFailure) {
+        _selectedGender = blocState.previousData.gender ?? _selectedGender;
+      _selectedHeight = blocState.previousData.height ?? _selectedHeight;
+      _selectedWeight = blocState.previousData.weight ?? _selectedWeight;
+      _selectedDateOfBirth = blocState.previousData.dateOfBirth ?? _selectedDateOfBirth;
     }
   }
 
