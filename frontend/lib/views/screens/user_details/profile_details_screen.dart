@@ -169,6 +169,14 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             _selectedDateOfBirth = state.dateOfBirth ?? _selectedDateOfBirth;
           });
           WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+        } else if (state is DietFormSubmitFailure) {
+          setState(() {
+            _selectedGender = state.previousData.gender ?? _selectedGender;
+            _selectedHeight = state.previousData.height ?? _selectedHeight;
+            _selectedWeight = state.previousData.weight ?? _selectedWeight;
+            _selectedDateOfBirth = state.previousData.dateOfBirth ?? _selectedDateOfBirth;
+          });
+          WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
         }
       },
       child: Padding(

@@ -87,29 +87,35 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
+      _selectedDietGoal = blocState.dietGoal!;
       _selectedAllergies = blocState.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
-      if (blocState.dietGoal != null) {
-        _selectedDietGoal = blocState.dietGoal!;
-      } else if (blocState.weight != null) {
-        _selectedDietGoal = blocState.weight!;
-        _selectedWeight = blocState.weight!;
-        context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
+      _selectedWeight = blocState.weight!;
+
+      if (_selectedDietType == DietType.weightMaintenance ||
+         (_selectedDietType == DietType.muscleGain && _selectedDietGoal < _selectedWeight) ||
+         (_selectedDietType == DietType.fatLoss && _selectedDietGoal > _selectedWeight)
+      ) {
+        _selectedDietGoal = _selectedWeight;
+        context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
     } else if (blocState is DietFormSubmitFailure) {
        _selectedDietType = blocState.previousData.dietType ?? _selectedDietType;
+       _selectedDietGoal = blocState.previousData.dietGoal!;
       _selectedAllergies = blocState.previousData.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.previousData.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.previousData.mealsPerDay ?? _selectedMealsPerDay;
-      if (blocState.previousData.dietGoal != null) {
-        _selectedDietGoal = blocState.previousData.dietGoal!;
-      } else if (blocState.previousData.weight != null) {
-        _selectedDietGoal = blocState.previousData.weight!;
-        _selectedWeight = blocState.previousData.weight!;
-        context.read<DietFormBloc>().add(UpdateDietGoal(blocState.previousData.weight!));
+      _selectedWeight = blocState.previousData.weight!;
+      
+      if (_selectedDietType == DietType.weightMaintenance ||
+         (_selectedDietType == DietType.muscleGain && _selectedDietGoal < _selectedWeight)
+         || (_selectedDietType == DietType.fatLoss && _selectedDietGoal > _selectedWeight)
+      ) {
+        _selectedDietGoal = _selectedWeight;
+        context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
     }
 
@@ -153,6 +159,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           if (state is DietFormSubmit && state.weight != null) {
             _selectedDietGoal = state.weight!;
             context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
+          } else if (state is DietFormSubmitFailure && state.previousData.weight != null) {
+            _selectedDietGoal = state.previousData.weight!;
+            context.read<DietFormBloc>().add(UpdateDietGoal(state.previousData.weight!));
           }
         }
       },
@@ -233,12 +242,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(
           value: _selectedDietGoal,
-          validator: (value) => validateDietGoal(
-            value,
-            context,
-            dietType: _selectedDietType,
-            weight: _selectedWeight
-          ), // maybe not needed here
           onChanged: _onDietGoalChanged,
           label: AppLocalizations.of(context)!.dietGoal,
           dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
