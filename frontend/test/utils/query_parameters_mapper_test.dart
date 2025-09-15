@@ -4,12 +4,10 @@ import 'package:test/test.dart';
 void main() {
   group('QueryParametersMapper', () {
     test('Test with multiple query parameters', () {
-      final result = QueryParametersMapper.parseQueryParams('status=success&user=admin&role=admin');
-      expect(result, {
-        'status': 'success',
-        'user': 'admin',
-        'role': 'admin',
-      });
+      final result = QueryParametersMapper.parseQueryParams(
+        'status=success&user=admin&role=admin',
+      );
+      expect(result, {'status': 'success', 'user': 'admin', 'role': 'admin'});
     });
 
     test('Test with a single query parameter', () {
@@ -23,12 +21,16 @@ void main() {
     });
 
     test('Test with malformed parameter without an equals sign', () {
-      final result = QueryParametersMapper.parseQueryParams('status&user=admin');
+      final result = QueryParametersMapper.parseQueryParams(
+        'status&user=admin',
+      );
       expect(result, {'user': 'admin'});
     });
 
     test('Test with multiple equals signs in one parameter', () {
-      final result = QueryParametersMapper.parseQueryParams('status=success&user=admin=admin');
+      final result = QueryParametersMapper.parseQueryParams(
+        'status=success&user=admin=admin',
+      );
       expect(result, {'status': 'success', 'user': 'admin'});
     });
   });

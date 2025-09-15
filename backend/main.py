@@ -1,18 +1,22 @@
 import logging
 
 import psycopg2
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
-from starlette.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import JSONResponse
+from starlette.templating import Jinja2Templates
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.settings import config
+from backend.user_details.user_details_router import user_details_router
 from backend.users.user_router import user_router
 
 app = FastAPI()
 app.include_router(user_router)
+app.include_router(user_details_router)
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.ERROR)
 
@@ -20,20 +24,28 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins="*",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Error-Code"],
 )
 
 templates = Jinja2Templates(directory="backend/templates")
 
 
+@app.exception_handler(NotFoundInDatabaseException)
+async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseException):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"detail": exc.detail},
+    )
+
+
 @app.exception_handler(StarletteHTTPException)
 async def custom_404_handler(request: Request, exc: StarletteHTTPException):
-    if exc.status_code == 404:
+    if exc.status_code == status.HTTP_404_NOT_FOUND:
         return templates.TemplateResponse(
             "404.html",
             {"request": request, "redirect_path": config.FRONTEND_URL},
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
         )
     return await http_exception_handler(request, exc)
 

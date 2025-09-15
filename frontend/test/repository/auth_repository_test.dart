@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/models/login_request.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/models/user/login_request.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart';
 
@@ -8,15 +8,18 @@ import '../mocks/mocks.mocks.dart';
 
 void main() {
   late MockApiClient mockApiClient;
-  late AuthRepository authRepository;
+  late UserRepository authRepository;
 
   setUp(() {
     mockApiClient = MockApiClient();
-    authRepository = AuthRepository(mockApiClient);
+    authRepository = UserRepository(mockApiClient);
   });
 
   test('login returns LoggedUser on success', () async {
-    final loginRequest = LoginRequest(email: 'test@example.com', password: 'pass123');
+    final loginRequest = LoginRequest(
+      email: 'test@example.com',
+      password: 'pass123',
+    );
 
     final responsePayload = {
       'id': 1,
@@ -26,7 +29,7 @@ void main() {
     };
 
     when(mockApiClient.login(loginRequest)).thenAnswer(
-          (_) async => Response(
+      (_) async => Response(
         requestOptions: RequestOptions(path: ''),
         data: responsePayload,
         statusCode: 200,
@@ -46,18 +49,18 @@ void main() {
       'refresh_token': 'newRefreshToken',
     };
 
-    when(mockApiClient.refreshTokens()).thenAnswer(
-          (_) async => Response(
+    when(mockApiClient.refreshTokens(1)).thenAnswer(
+      (_) async => Response(
         requestOptions: RequestOptions(path: ''),
         data: responsePayload,
         statusCode: 200,
       ),
     );
 
-    final result = await authRepository.refreshTokens();
+    final result = await authRepository.refreshTokens(1);
 
     expect(result.accessToken, 'newAccessToken');
     expect(result.refreshToken, 'newRefreshToken');
-    verify(mockApiClient.refreshTokens()).called(1);
+    verify(mockApiClient.refreshTokens(1)).called(1);
   });
 }

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
-import 'package:frontend/views/screens/account_screen.dart';
-import 'package:frontend/views/screens/change_password_screen.dart';
-import 'package:frontend/views/screens/login_screen.dart';
+import 'package:frontend/views/screens/user/account_screen.dart';
+import 'package:frontend/views/screens/user/change_password_screen.dart';
+import 'package:frontend/views/screens/user/login_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
-import 'package:frontend/views/screens/provide_email_screen.dart';
-import 'package:frontend/views/screens/register_screen.dart';
-import 'package:frontend/views/screens/home_screen.dart';
+import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
+import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
+import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
+import 'package:frontend/views/screens/user/provide_email_screen.dart';
+import 'package:frontend/views/screens/user/register_screen.dart';
+import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final TokenStorageRepository _storage = TokenStorageRepository();
@@ -17,13 +20,14 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
     GoRoute(
       path: '/login',
-      pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey(state.uri.toString()),
-        child: LoginScreen(),
-      ),
+      pageBuilder:
+          (context, state) => MaterialPage(
+            key: ValueKey(state.uri.toString()),
+            child: LoginScreen(),
+          ),
     ),
     GoRoute(
-      path: '/main_page',
+      path: '/main-page',
       builder: (context, state) => MainPageScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
@@ -33,14 +37,30 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/change_password',
-      pageBuilder: (context, state) => MaterialPage(
-        key: ValueKey(state.uri.toString()),
-        child: ChangePasswordScreen(),
-      ),
+      path: '/profile-details',
+      builder: (context, state) => ProfileDetailsScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/provide_email',
+      path: '/diet-preferences',
+      builder: (context, state) => DietPreferencesScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/calories-prediction',
+      builder: (context, state) => CaloriesPredictionScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/change-password',
+      pageBuilder:
+          (context, state) => MaterialPage(
+            key: ValueKey(state.uri.toString()),
+            child: ChangePasswordScreen(),
+          ),
+    ),
+    GoRoute(
+      path: '/provide-email',
       builder: (context, state) => ProvideEmailScreen(),
     ),
   ],

@@ -1,96 +1,217 @@
-import 'package:test/test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/utils/user_validators.dart';
+import 'package:frontend/utils/user/user_validators.dart';
+
+Future<BuildContext> pumpAppWithLocalization(WidgetTester tester) async {
+  late BuildContext testContext;
+
+  await tester.pumpWidget(
+    MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(
+        builder: (context) {
+          testContext = context;
+          return Container();
+        },
+      ),
+    ),
+  );
+
+  return testContext;
+}
 
 void main() {
   group('Validation Tests', () {
-    
-    // Test validateAge
-    test('validateAge returns error message when value is null', () {
-      expect(validateAge(null), equals(AppConfig.requiredAge));
-    });
-
-    test('validateAge returns null when value is not null', () {
-      expect(validateAge(25), isNull);
-    });
-    
     // Test validateCountry
-    test('validateCountry returns error message when selectedCountry is null or empty', () {
-      expect(validateCountry('Country', null), equals(AppConfig.requiredCountry));
-      expect(validateCountry('Country', ''), equals(AppConfig.requiredCountry));
-    });
+    testWidgets(
+      'validateCountry returns error message when selectedCountry is null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
 
-    test('validateCountry returns null when selectedCountry is not null or empty', () {
-      expect(validateCountry('Country', 'USA'), isNull);
-    });
+        expect(validateCountry(null, context), equals('Select your country'));
+        expect(validateCountry('', context), equals('Select your country'));
+      },
+    );
+
+    testWidgets(
+      'validateCountry returns null when selectedCountry is not null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
+
+        expect(validateCountry('USA', context), isNull);
+      },
+    );
 
     // Test validateName
-    test('validateName returns error message when value is null or empty', () {
-      expect(validateName(null), equals(AppConfig.requiredName));
-      expect(validateName(''), equals(AppConfig.requiredName));
-    });
+    testWidgets(
+      'validateName returns error message when value is null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
 
-    test('validateName returns error message for name length or invalid characters', () {
-      expect(validateName('A'), equals(AppConfig.provideCorrectName)); // Too short
-      expect(validateName('A very long name that exceeds the limit'), equals(AppConfig.provideCorrectName)); // Too long
-      expect(validateName('John123'), equals(AppConfig.provideCorrectName)); // Invalid characters
-    });
+        expect(validateName(null, context), equals('Name is required'));
+        expect(validateName('', context), equals('Name is required'));
+      },
+    );
 
-    test('validateName returns null when value is valid', () {
-      expect(validateName('John'), isNull);
+    testWidgets(
+      'validateName returns error message for name length or invalid characters',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
+
+        expect(
+          validateName('A', context),
+          equals('Provide correct name'),
+        ); // Too short
+        expect(
+          validateName('A very long name that exceeds the limit', context),
+          equals('Provide correct name'),
+        ); // Too long
+        expect(
+          validateName('John123', context),
+          equals('Provide correct name'),
+        ); // Invalid characters
+      },
+    );
+
+    testWidgets('validateName returns null when value is valid', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(validateName('John', context), isNull);
     });
 
     // Test validateEmail
-    test('validateEmail returns error message when value is null or empty', () {
-      expect(validateEmail(null), equals(AppConfig.requiredEmail));
-      expect(validateEmail(''), equals(AppConfig.requiredEmail));
-    });
+    testWidgets(
+      'validateEmail returns error message when value is null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
 
-    test('validateEmail returns error message for invalid email format', () {
-      expect(validateEmail('invalidEmail'), equals(AppConfig.invalidEmail));
-      expect(validateEmail('invalid@com'), equals(AppConfig.invalidEmail));
-    });
+        expect(validateEmail(null, context), equals('E-mail is required'));
+        expect(validateEmail('', context), equals('E-mail is required'));
+      },
+    );
 
-    test('validateEmail returns null when email is valid', () {
-      expect(validateEmail('test@example.com'), isNull);
+    testWidgets(
+      'validateEmail returns error message for invalid email format',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
+
+        expect(
+          validateEmail('invalidEmail', context),
+          equals("Enter valid e-mail"),
+        );
+        expect(
+          validateEmail('invalid@com', context),
+          equals("Enter valid e-mail"),
+        );
+      },
+    );
+
+    testWidgets('validateEmail returns null when email is valid', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(validateEmail('test@example.com', context), isNull);
     });
 
     // Test validatePassword
-    test('validatePassword returns error message when value is null or empty', () {
-      expect(validatePassword(null), equals(AppConfig.requiredPassword));
-      expect(validatePassword(''), equals(AppConfig.requiredPassword));
+    testWidgets(
+      'validatePassword returns error message when value is null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
+
+        expect(validatePassword(null, context), equals('Password is required'));
+        expect(validatePassword('', context), equals('Password is required'));
+      },
+    );
+
+    testWidgets('validatePassword returns error message for short password', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(
+        validatePassword('12345', context),
+        equals('Password length must be between'),
+      );
     });
 
-    test('validatePassword returns error message for short password', () {
-      expect(validatePassword('12345'), equals(AppConfig.minimalPasswordLength));
+    testWidgets('validatePassword returns error message for long password', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(
+        validatePassword('a' * 70, context),
+        equals('Password length must be between'),
+      );
     });
 
-    test('validatePassword returns error message for long password', () {
-      expect(validatePassword('a' * 70), equals(AppConfig.maximalPasswordLength));
-    });
+    testWidgets(
+      'validatePassword returns error message for invalid complexity',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
 
-    test('validatePassword returns error message for invalid complexity', () {
-      expect(validatePassword('password'), equals(AppConfig.passwordComplexityError));
-    });
+        expect(
+          validatePassword('password', context),
+          equals(
+            'Password must contain letters (capital and lowercase) and numbers',
+          ),
+        );
+      },
+    );
 
-    test('validatePassword returns null when password is valid', () {
-      expect(validatePassword('Password123'), isNull);
+    testWidgets('validatePassword returns null when password is valid', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(validatePassword('Password123', context), isNull);
     });
 
     // Test validateConfirmPassword
-    test('validateConfirmPassword returns error message when value is null or empty', () {
-      expect(validateConfirmPassword(null, 'Password123'), equals(AppConfig.requiredPasswordConfirmation));
-      expect(validateConfirmPassword('', 'Password123'), equals(AppConfig.requiredPasswordConfirmation));
-    });
+    testWidgets(
+      'validateConfirmPassword returns error message when value is null or empty',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
 
-    test('validateConfirmPassword returns error message when passwords do not match', () {
-      expect(validateConfirmPassword('DifferentPassword', 'Password123'), equals(AppConfig.samePasswords));
-    });
+        expect(
+          validateConfirmPassword(null, 'Password123', context),
+          equals('Password confirmation is required'),
+        );
+        expect(
+          validateConfirmPassword('', 'Password123', context),
+          equals('Password confirmation is required'),
+        );
+      },
+    );
 
-    test('validateConfirmPassword returns null when passwords match', () {
-      expect(validateConfirmPassword('Password123', 'Password123'), isNull);
+    testWidgets(
+      'validateConfirmPassword returns error message when passwords do not match',
+      (tester) async {
+        final context = await pumpAppWithLocalization(tester);
+
+        expect(
+          validateConfirmPassword('DifferentPassword', 'Password123', context),
+          equals('Passwords must be the same'),
+        );
+      },
+    );
+
+    testWidgets('validateConfirmPassword returns null when passwords match', (
+      tester,
+    ) async {
+      final context = await pumpAppWithLocalization(tester);
+
+      expect(
+        validateConfirmPassword('Password123', 'Password123', context),
+        isNull,
+      );
     });
-    
   });
 }

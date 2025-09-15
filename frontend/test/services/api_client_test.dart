@@ -1,11 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/models/provide_email_request.dart';
-import 'package:frontend/models/register_request.dart';
+import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user/language.dart';
+import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/models/user/register_request.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/services/api_client.dart';
 
 import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -20,27 +24,27 @@ void main() {
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     apiClient = ApiClient(mockDio, mockTokenStorage);
+    SharedPreferences.setMockInitialValues({});
   });
 
   test('should send a POST request with correct headers and body', () async {
     final request = RegisterRequest(
       name: 'John',
       lastName: 'Doe',
-      age: 30,
       country: 'Poland',
       email: 'john.doe@example.com',
       password: 'securepassword123',
     );
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: AppConfig.registerUrl),
+      requestOptions: RequestOptions(path: Endpoints.users),
       data: {"result": "ok"},
       statusCode: 200,
     );
 
     when(
       mockDio.post(
-        AppConfig.registerUrl,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -53,7 +57,7 @@ void main() {
 
     verify(
       mockDio.post(
-        AppConfig.registerUrl,
+        Endpoints.users,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -62,7 +66,7 @@ void main() {
 
   test('should call logout endpoint with correct user id', () async {
     const userId = 2;
-    final url = AppConfig.logoutUrl;
+    final url = Endpoints.logout;
 
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: url),
@@ -93,7 +97,7 @@ void main() {
 
   test('should throw if logout returns error status code', () async {
     const userId = 2;
-    final url = AppConfig.logoutUrl;
+    final url = Endpoints.logout;
 
     when(
       mockDio.get(
@@ -122,12 +126,21 @@ void main() {
   test('should call refreshTokens with Authorization header', () async {
     const testRefreshToken = 'test-refresh-token';
 
+    UserStorage().setUser(
+      UserResponse(
+        id: 1,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+
     when(
       mockTokenStorage.getRefreshToken(),
     ).thenAnswer((_) async => testRefreshToken);
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: AppConfig.refreshTokensUrl),
+      requestOptions: RequestOptions(path: Endpoints.refreshTokens),
       statusCode: 200,
       data: {
         'access_token': 'new-access-token',
@@ -136,17 +149,22 @@ void main() {
     );
 
     when(
-      mockDio.post(AppConfig.refreshTokensUrl, options: anyNamed('options')),
+      mockDio.post(
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.refreshTokens();
+    final response = await apiClient.refreshTokens(1);
 
     expect(response.statusCode, 200);
     expect(response.data['access_token'], 'new-access-token');
 
     verify(
       mockDio.post(
-        AppConfig.refreshTokensUrl,
+        Endpoints.refreshTokens,
+        queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>(
             (opt) =>
@@ -160,23 +178,28 @@ void main() {
 
   test('should call getUser with requiresAuth set to true', () async {
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: AppConfig.getUserUrl),
-      data: {'name': 'Jane', 'email': 'jane@example.com'},
+      requestOptions: RequestOptions(path: Endpoints.users),
+      data: {'id': 1, 'name': 'Jane', 'email': 'jane@example.com'},
       statusCode: 200,
     );
 
     when(
-      mockDio.get(AppConfig.getUserUrl, options: anyNamed('options')),
+      mockDio.get(
+        Endpoints.users,
+        queryParameters: {'user_id': 1},
+        options: anyNamed('options'),
+      ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.getUser();
+    final response = await apiClient.getUser(1);
 
     expect(response.statusCode, 200);
     expect(response.data['email'], 'jane@example.com');
 
     verify(
       mockDio.get(
-        AppConfig.getUserUrl,
+        Endpoints.users,
+        queryParameters: {'user_id': 1},
         options: argThat(
           predicate<Options>((opt) => opt.extra?['requiresAuth'] == true),
           named: 'options',
@@ -189,14 +212,14 @@ void main() {
     final request = ProvideEmailRequest(email: 'test@example.com');
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: AppConfig.changePasswordUrl),
+      requestOptions: RequestOptions(path: Endpoints.changePassword),
       data: {'status': 'email sent'},
       statusCode: 200,
     );
 
     when(
       mockDio.post(
-        AppConfig.changePasswordUrl,
+        Endpoints.changePassword,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -209,7 +232,7 @@ void main() {
 
     verify(
       mockDio.post(
-        AppConfig.changePasswordUrl,
+        Endpoints.changePassword,
         data: request.toJson(),
         options: anyNamed('options'),
       ),
@@ -220,16 +243,14 @@ void main() {
     const email = 'test@example.com';
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(
-        path: AppConfig.resendVerificationEmailUrl,
-      ),
+      requestOptions: RequestOptions(path: Endpoints.resendVerificationEmail),
       data: {'status': 'resent'},
       statusCode: 200,
     );
 
     when(
       mockDio.get(
-        AppConfig.resendVerificationEmailUrl,
+        Endpoints.resendVerificationEmail,
         queryParameters: {'email': email},
         options: anyNamed('options'),
       ),
@@ -242,7 +263,7 @@ void main() {
 
     verify(
       mockDio.get(
-        AppConfig.resendVerificationEmailUrl,
+        Endpoints.resendVerificationEmail,
         queryParameters: {'email': email},
         options: anyNamed('options'),
       ),
@@ -253,13 +274,14 @@ void main() {
     const userId = 42;
 
     final expectedResponse = Response(
-      requestOptions: RequestOptions(path: '${AppConfig.deleteUrl}/$userId'),
+      requestOptions: RequestOptions(path: Endpoints.users),
       statusCode: 204,
     );
 
     when(
       mockDio.delete(
-        '${AppConfig.deleteUrl}/$userId',
+        Endpoints.users,
+        queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
@@ -270,7 +292,8 @@ void main() {
 
     verify(
       mockDio.delete(
-        '${AppConfig.deleteUrl}/$userId',
+        Endpoints.users,
+        queryParameters: {'user_id': userId},
         options: anyNamed('options'),
       ),
     ).called(1);

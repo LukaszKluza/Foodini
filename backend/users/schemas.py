@@ -1,13 +1,14 @@
-from fastapi.security import HTTPAuthorizationCredentials
-from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
+
+from pydantic import BaseModel, EmailStr, Field
+
 from .mixins import PasswordValidationMixin, CountryValidationMixin
+from ..models.user_model import Language
 
 
 class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z]+$")
     last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
-    age: int = Field(..., gt=12, lt=120)
     country: str = Field(..., min_length=2, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=64)
@@ -15,6 +16,10 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+
+
+class ChangeLanguageRequest(BaseModel):
+    language: Language
 
 
 class NewPasswordConfirm(PasswordValidationMixin, BaseModel):
@@ -30,7 +35,6 @@ class UserUpdate(CountryValidationMixin, BaseModel):
     last_name: Optional[str] = Field(
         None, min_length=2, max_length=50, pattern="^[a-zA-Z-]+$"
     )
-    age: Optional[int] = Field(None, gt=12, lt=120)
     country: Optional[str] = Field(None, min_length=2, max_length=50)
 
 
@@ -44,14 +48,26 @@ class UserLogout(BaseModel):
     email: EmailStr
 
 
-class UserResponse(BaseModel):
+class DefaultResponse(BaseModel):
     id: int = Field(..., gt=0)
     email: EmailStr
 
 
-class LoginUserResponse(UserResponse):
+class UserResponse(DefaultResponse):
+    id: int = Field(..., gt=0)
+    name: str
+    email: EmailStr
+    language: Language
+
+
+class LoginUserResponse(DefaultResponse):
     id: int
     email: EmailStr
+    access_token: str
+    refresh_token: str
+
+
+class RefreshTokensResponse(DefaultResponse):
     access_token: str
     refresh_token: str
 

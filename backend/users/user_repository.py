@@ -1,14 +1,13 @@
 import datetime
 
-from fastapi.params import Depends
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from .models import User
-from .schemas import UserCreate, UserUpdate
+from backend.models import User
+from backend.users.schemas import UserCreate, UserUpdate
 from sqlalchemy.future import select
 
-from backend.core.database import get_db
+from backend.models.user_model import Language
 
 
 class UserRepository:
@@ -33,8 +32,19 @@ class UserRepository:
     async def update_user(self, user_id: int, user_data: UserUpdate) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
-            user_request = User(id=user_id, **user_data.model_dump(exclude_unset=True))
-            updated_user = await self.db.merge(user_request)
+            update_fields = user_data.model_dump(exclude_unset=True)
+            for key, value in update_fields.items():
+                setattr(user, key, value)
+            await self.db.commit()
+            await self.db.refresh(user)
+            return user
+        return None
+
+    async def change_language(self, user_id: int, language: Language) -> User | None:
+        user = await self.get_user_by_id(user_id)
+        if user:
+            user.language = language.value
+            updated_user = await self.db.merge(user)
             await self.db.commit()
             await self.db.refresh(updated_user)
             return updated_user
@@ -69,7 +79,3 @@ class UserRepository:
             await self.db.refresh(user)
             return user
         return None
-
-
-async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:
-    return UserRepository(db)

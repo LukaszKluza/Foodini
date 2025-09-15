@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:frontend/config/app_config.dart';
-import 'package:frontend/models/change_password_request.dart';
-import 'package:frontend/models/login_request.dart';
-import 'package:frontend/models/provide_email_request.dart';
-import 'package:frontend/models/register_request.dart';
+import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/user_details/diet_form.dart';
+import 'package:frontend/models/user/change_password_request.dart';
+import 'package:frontend/models/user/login_request.dart';
+import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/models/user/change_language_request.dart';
+import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 
@@ -12,8 +14,10 @@ class ApiClient {
   final TokenStorageRepository _tokenStorage;
 
   ApiClient([Dio? client, TokenStorageRepository? tokenStorage])
-      : _client = client ?? Dio(BaseOptions(headers: {'Content-Type': 'application/json'})),
-        _tokenStorage = tokenStorage ?? TokenStorageRepository() {
+    : _client =
+          client ??
+          Dio(BaseOptions(headers: {'Content-Type': 'application/json'})),
+      _tokenStorage = tokenStorage ?? TokenStorageRepository() {
     _client.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -32,16 +36,17 @@ class ApiClient {
 
   get dio => _client;
 
-  Future<Response> getUser() {
+  Future<Response> getUser(int userId) {
     return _client.get(
-      AppConfig.getUserUrl,
+      Endpoints.users,
+      queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> register(RegisterRequest request) {
     return _client.post(
-      AppConfig.registerUrl,
+      Endpoints.users,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -49,7 +54,7 @@ class ApiClient {
 
   Future<Response> login(LoginRequest request) {
     return _client.post(
-      AppConfig.loginUrl,
+      Endpoints.login,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -57,7 +62,7 @@ class ApiClient {
 
   Future<Response> provideEmail(ProvideEmailRequest request) {
     return _client.post(
-      AppConfig.changePasswordUrl,
+      Endpoints.changePassword,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -65,27 +70,33 @@ class ApiClient {
 
   Future<Response> changePassword(ChangePasswordRequest request) {
     return _client.post(
-      AppConfig.confirmNewPasswordUrl,
+      Endpoints.confirmNewPassword,
       data: request.toJson(),
       options: Options(extra: {'requiresAuth': false}),
     );
   }
 
-  Future<Response> refreshTokens() async {
+  Future<Response> changeLanguage(ChangeLanguageRequest request, int userId) {
+    return _client.patch(
+      Endpoints.changeLanguage,
+      data: request.toJson(),
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> refreshTokens(int userId) async {
     final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
-      AppConfig.refreshTokensUrl,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $refreshToken',
-        },
-      ),
+      Endpoints.refreshTokens,
+      queryParameters: {'user_id': userId},
+      options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
     );
   }
 
   Future<Response> logout(int userId) {
     return _client.get(
-      AppConfig.logoutUrl,
+      Endpoints.logout,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -93,7 +104,7 @@ class ApiClient {
 
   Future<Response> resendVerificationMail(String email) {
     return _client.get(
-      AppConfig.resendVerificationEmailUrl,
+      Endpoints.resendVerificationEmail,
       queryParameters: {'email': email},
       options: Options(extra: {'requiresAuth': false}),
     );
@@ -101,7 +112,8 @@ class ApiClient {
 
   Future<Response> delete(int userId) {
     return _client.delete(
-      '${AppConfig.deleteUrl}/$userId',
+      Endpoints.users,
+      queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
@@ -110,11 +122,29 @@ class ApiClient {
     return _client.request(
       requestOptions.path,
       queryParameters: requestOptions.queryParameters,
+      data: requestOptions.data,
       options: Options(
         method: requestOptions.method,
         headers: requestOptions.headers,
         extra: {'requiresAuth': true},
       ),
+    );
+  }
+
+  Future<Response> getDietPreferences(int userId) {
+    return _client.get(
+      Endpoints.dietPreferences,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> submitDietForm(DietForm request, int userId) {
+    return _client.post(
+      Endpoints.dietPreferences,
+      data: request.toJson(),
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
     );
   }
 }
