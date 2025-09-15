@@ -7,9 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
+from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.diet_prediction.diet_prediction_router import diet_prediction_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
@@ -19,6 +21,7 @@ app = FastAPI()
 app.include_router(user_router)
 app.include_router(user_details_router)
 app.include_router(calories_prediction_router)
+app.include_router(diet_prediction_router)
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.ERROR)
 
@@ -29,6 +32,9 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-Error-Code"],
 )
+
+
+app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
 
 templates = Jinja2Templates(directory="backend/templates")
 
