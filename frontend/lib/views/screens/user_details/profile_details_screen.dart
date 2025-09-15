@@ -96,18 +96,24 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
       _selectedHeight = blocState.height ?? _selectedHeight;
       _selectedWeight = blocState.weight ?? _selectedWeight;
       _selectedDateOfBirth = blocState.dateOfBirth ?? _selectedDateOfBirth;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _softFormValidation(),
+      );
     } else if (blocState is DietFormSubmitFailure) {
-        _selectedGender = blocState.previousData.gender ?? _selectedGender;
+      _selectedGender = blocState.previousData.gender ?? _selectedGender;
       _selectedHeight = blocState.previousData.height ?? _selectedHeight;
       _selectedWeight = blocState.previousData.weight ?? _selectedWeight;
-      _selectedDateOfBirth = blocState.previousData.dateOfBirth ?? _selectedDateOfBirth;
+      _selectedDateOfBirth =
+          blocState.previousData.dateOfBirth ?? _selectedDateOfBirth;
     }
   }
 
   void _softFormValidation() {
-    final formIsReady = _selectedGender != null && _selectedHeight != null &&
-        _selectedWeight != null && _selectedDateOfBirth != null;
+    final formIsReady =
+        _selectedGender != null &&
+        _selectedHeight != null &&
+        _selectedWeight != null &&
+        _selectedDateOfBirth != null;
 
     widget.onFormValidityChanged?.call(formIsReady);
   }
@@ -168,15 +174,20 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             _selectedWeight = state.weight ?? _selectedWeight;
             _selectedDateOfBirth = state.dateOfBirth ?? _selectedDateOfBirth;
           });
-          WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => _softFormValidation(),
+          );
         } else if (state is DietFormSubmitFailure) {
           setState(() {
             _selectedGender = state.previousData.gender ?? _selectedGender;
             _selectedHeight = state.previousData.height ?? _selectedHeight;
             _selectedWeight = state.previousData.weight ?? _selectedWeight;
-            _selectedDateOfBirth = state.previousData.dateOfBirth ?? _selectedDateOfBirth;
+            _selectedDateOfBirth =
+                state.previousData.dateOfBirth ?? _selectedDateOfBirth;
           });
-          WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => _softFormValidation(),
+          );
         }
       },
       child: Padding(

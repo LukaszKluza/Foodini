@@ -154,5 +154,9 @@ class DietFormSubmitFailure extends DietFormState {
   final String Function(BuildContext)? getMessage;
   final ApiException? error;
 
-  DietFormSubmitFailure({required this.previousData, this.getMessage, this.error});
+  DietFormSubmitFailure({
+    required this.previousData,
+    this.getMessage,
+    this.error,
+  });
 }

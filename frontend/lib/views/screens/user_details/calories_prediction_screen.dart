@@ -89,8 +89,10 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
     } else if (blocState is DietFormSubmitFailure) {
       _selectedActivityLevel =
           blocState.previousData.activityLevel ?? _selectedActivityLevel;
-      _selectedStressLevel = blocState.previousData.stressLevel ?? _selectedStressLevel;
-      _selectedSleepQuality = blocState.previousData.sleepQuality ?? _selectedSleepQuality;
+      _selectedStressLevel =
+          blocState.previousData.stressLevel ?? _selectedStressLevel;
+      _selectedSleepQuality =
+          blocState.previousData.sleepQuality ?? _selectedSleepQuality;
       _selectedMusclePercentage =
           blocState.previousData.musclePercentage ?? _selectedMusclePercentage;
       _selectedWaterPercentage =

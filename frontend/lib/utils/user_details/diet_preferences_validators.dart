@@ -11,7 +11,12 @@ String? validateDietType(DietType? value, BuildContext context) {
   return null;
 }
 
-String? validateDietGoal(String? value, BuildContext context, {DietType? dietType, double? weight}) {
+String? validateDietGoal(
+  String? value,
+  BuildContext context, {
+  DietType? dietType,
+  double? weight,
+}) {
   final goal = double.tryParse(value ?? '');
   if (goal == null ||
       goal < Constants.minWeight ||

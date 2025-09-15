@@ -95,25 +95,29 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       _selectedWeight = blocState.weight!;
 
       if (_selectedDietType == DietType.weightMaintenance ||
-         (_selectedDietType == DietType.muscleGain && _selectedDietGoal < _selectedWeight) ||
-         (_selectedDietType == DietType.fatLoss && _selectedDietGoal > _selectedWeight)
-      ) {
+          (_selectedDietType == DietType.muscleGain &&
+              _selectedDietGoal < _selectedWeight) ||
+          (_selectedDietType == DietType.fatLoss &&
+              _selectedDietGoal > _selectedWeight)) {
         _selectedDietGoal = _selectedWeight;
         context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
     } else if (blocState is DietFormSubmitFailure) {
-       _selectedDietType = blocState.previousData.dietType ?? _selectedDietType;
-       _selectedDietGoal = blocState.previousData.dietGoal!;
-      _selectedAllergies = blocState.previousData.allergies ?? _selectedAllergies;
+      _selectedDietType = blocState.previousData.dietType ?? _selectedDietType;
+      _selectedDietGoal = blocState.previousData.dietGoal!;
+      _selectedAllergies =
+          blocState.previousData.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.previousData.dietIntensity ?? _selectedDietIntensity;
-      _selectedMealsPerDay = blocState.previousData.mealsPerDay ?? _selectedMealsPerDay;
+      _selectedMealsPerDay =
+          blocState.previousData.mealsPerDay ?? _selectedMealsPerDay;
       _selectedWeight = blocState.previousData.weight!;
-      
+
       if (_selectedDietType == DietType.weightMaintenance ||
-         (_selectedDietType == DietType.muscleGain && _selectedDietGoal < _selectedWeight)
-         || (_selectedDietType == DietType.fatLoss && _selectedDietGoal > _selectedWeight)
-      ) {
+          (_selectedDietType == DietType.muscleGain &&
+              _selectedDietGoal < _selectedWeight) ||
+          (_selectedDietType == DietType.fatLoss &&
+              _selectedDietGoal > _selectedWeight)) {
         _selectedDietGoal = _selectedWeight;
         context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
@@ -123,8 +127,11 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   }
 
   void _softFormValidation() {
-    final allRequiredFilled = _selectedDietType != null && _selectedDietIntensity != null && _selectedMealsPerDay > 0;
-    
+    final allRequiredFilled =
+        _selectedDietType != null &&
+        _selectedDietIntensity != null &&
+        _selectedMealsPerDay > 0;
+
     final error = validateDietGoal(
       _selectedDietGoal.toString(),
       context,
@@ -135,7 +142,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     setState(() {
       _dietGoalError = error;
     });
-    
+
     final dietGoalValid = error == null;
 
     widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
@@ -159,9 +166,12 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           if (state is DietFormSubmit && state.weight != null) {
             _selectedDietGoal = state.weight!;
             context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
-          } else if (state is DietFormSubmitFailure && state.previousData.weight != null) {
+          } else if (state is DietFormSubmitFailure &&
+              state.previousData.weight != null) {
             _selectedDietGoal = state.previousData.weight!;
-            context.read<DietFormBloc>().add(UpdateDietGoal(state.previousData.weight!));
+            context.read<DietFormBloc>().add(
+              UpdateDietGoal(state.previousData.weight!),
+            );
           }
         }
       },
@@ -246,14 +256,11 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           label: AppLocalizations.of(context)!.dietGoal,
           dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
         ),
-        if (_dietGoalError != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              _dietGoalError!,
-              style: Styles.errorStyle,
-            ),
-          ),
+      if (_dietGoalError != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(_dietGoalError!, style: Styles.errorStyle),
+        ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

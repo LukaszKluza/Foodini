@@ -85,7 +85,7 @@ void main() {
 
   testWidgets(
     'Correctly render Profile details screen elements when user have no filled profile details',
-        (tester) async {
+    (tester) async {
       // Given
       when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
         throw DioException(
@@ -138,73 +138,86 @@ void main() {
     },
   );
 
-  testWidgets('Correctly render Profile details screen elements when user have filled profile details', (
-    WidgetTester tester
-  ) async {
-    // Given
-    when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
-      return Response(
-        data: {
-          'weight_kg': 48.0,
-          'stress_level': 'medium',
-          'date_of_birth': '2003-01-01',
-          'sleep_quality': 'fair',
-          'diet_type': 'muscle_gain',
-          'muscle_percentage': null,
-          'allergies': [],
-          'water_percentage': null,
-          'user_id': 1,
-          'diet_goal_kg': 53.0,
-          'fat_percentage': null,
-          'id': 1,
-          'meals_per_day': 4,
-          'created_at': '2025-09-01T18:26:45.241412Z',
-          'gender': 'female',
-          'diet_intensity': 'normal',
-          'updated_at': '2025-09-01T18:26:45.241412Z',
-          'height_cm': 165.0,
-          'activity_level': 'moderate'
-        },
-        statusCode: 200,
-        requestOptions: RequestOptions(path: Endpoints.dietPreferences),
+  testWidgets(
+    'Correctly render Profile details screen elements when user have filled profile details',
+    (WidgetTester tester) async {
+      // Given
+      when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
+        return Response(
+          data: {
+            'weight_kg': 48.0,
+            'stress_level': 'medium',
+            'date_of_birth': '2003-01-01',
+            'sleep_quality': 'fair',
+            'diet_type': 'muscle_gain',
+            'muscle_percentage': null,
+            'allergies': [],
+            'water_percentage': null,
+            'user_id': 1,
+            'diet_goal_kg': 53.0,
+            'fat_percentage': null,
+            'id': 1,
+            'meals_per_day': 4,
+            'created_at': '2025-09-01T18:26:45.241412Z',
+            'gender': 'female',
+            'diet_intensity': 'normal',
+            'updated_at': '2025-09-01T18:26:45.241412Z',
+            'height_cm': 165.0,
+            'activity_level': 'moderate',
+          },
+          statusCode: 200,
+          requestOptions: RequestOptions(path: Endpoints.dietPreferences),
+        );
+      });
+
+      final routes = [
+        GoRoute(
+          path: '/main-page',
+          builder: (context, state) => const MainPageScreen(),
+        ),
+        GoRoute(
+          path: '/profile-details',
+          builder: (context, state) => const ProfileDetailsScreen(),
+        ),
+      ];
+
+      // When
+      await tester.pumpWidget(
+        buildTestWidget(
+          const ProfileDetailsScreen(),
+          additionalRoutes: routes,
+          initialLocation: '/main-page',
+        ),
       );
-    });
+      await tester.pumpAndSettle();
 
-    final routes = [
-      GoRoute(
-        path: '/main-page',
-        builder: (context, state) => const MainPageScreen(),
-      ),
-      GoRoute(
-        path: '/profile-details',
-        builder: (context, state) => const ProfileDetailsScreen(),
-      ),
-    ];
+      final context = tester.element(find.byType(ProfileDetailsScreen));
+      final router = GoRouter.of(context);
 
-    // When
-    await tester.pumpWidget(
-      buildTestWidget(
-        const ProfileDetailsScreen(),
-        additionalRoutes: routes,
-        initialLocation: '/main-page',
-      ),
-    );
-    await tester.pumpAndSettle();
+      router.push('/profile-details', extra: {'from': 'main-page'});
+      await tester.pumpAndSettle();
 
-    final context = tester.element(find.byType(ProfileDetailsScreen));
-    final router = GoRouter.of(context);
+      // Then
 
-    router.push('/profile-details', extra: {'from': 'main-page'});
-    await tester.pumpAndSettle();
-
-    // Then
-
-    expect(find.byType(ProfileDetailsScreen), findsOneWidget);
-    expect(find.descendant(of: find.byKey(Key('gender')), matching: find.text('Female')), findsOneWidget);
-    expect(tester.widget<WeightSlider>(find.byKey(Key('weight')),).value, 48);
-    expect(tester.widget<HeightSlider>(find.byKey(Key('height')),).value, 165);
-    expect(tester.widget<TextFormField>(find.byKey(Key('date_of_birth'))).controller!.text, '01/01/2003');
-  });
+      expect(find.byType(ProfileDetailsScreen), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(Key('gender')),
+          matching: find.text('Female'),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.widget<WeightSlider>(find.byKey(Key('weight'))).value, 48);
+      expect(tester.widget<HeightSlider>(find.byKey(Key('height'))).value, 165);
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(Key('date_of_birth')))
+            .controller!
+            .text,
+        '01/01/2003',
+      );
+    },
+  );
 
   testWidgets('Gender enums are displayed after tap', (
     WidgetTester tester,

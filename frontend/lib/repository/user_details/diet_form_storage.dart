@@ -13,7 +13,7 @@ class DietFormStorage {
   DietFormStorage._internal();
 
   DietForm? _form;
-  
+
   DietForm? get getForm => _form;
 
   bool get hasForm => _form != null;

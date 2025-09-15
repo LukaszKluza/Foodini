@@ -83,7 +83,9 @@ void main() {
     expect(find.byKey(Key('my_account')), findsOneWidget);
   });
 
-  testWidgets('Tap on Diet preferences navigates to account screen', (tester) async {
+  testWidgets('Tap on Diet preferences navigates to account screen', (
+    tester,
+  ) async {
     // Given, When
     UserStorage().setUser(
       UserResponse(
@@ -99,7 +101,8 @@ void main() {
         additionalRoutes: [
           GoRoute(
             path: '/profile-details',
-            builder: (context, state) => const Scaffold(key: Key('profile_details')),
+            builder:
+                (context, state) => const Scaffold(key: Key('profile_details')),
           ),
         ],
       ),
