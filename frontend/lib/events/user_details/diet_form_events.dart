@@ -81,19 +81,19 @@ class UpdateSleepQuality extends DietFormEvent {
 }
 
 class UpdateMusclePercentage extends DietFormEvent {
-  final double musclePercentage;
+  final double? musclePercentage;
 
   UpdateMusclePercentage(this.musclePercentage);
 }
 
 class UpdateWaterPercentage extends DietFormEvent {
-  final double waterPercentage;
+  final double? waterPercentage;
 
   UpdateWaterPercentage(this.waterPercentage);
 }
 
 class UpdateFatPercentage extends DietFormEvent {
-  final double fatPercentage;
+  final double? fatPercentage;
 
   UpdateFatPercentage(this.fatPercentage);
 }

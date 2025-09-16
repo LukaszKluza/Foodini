@@ -209,6 +209,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                 context.read<DietFormBloc>().add(
                   UpdateFatPercentage(_selectedFatPercentage),
                 );
+              } else {
+                _selectedMusclePercentage = Constants.defaultMusclePercentage;
+                _selectedWaterPercentage = Constants.defaultWaterPercentage;
+                _selectedFatPercentage = Constants.defaultFatPercentage;
+                context.read<DietFormBloc>().add(UpdateMusclePercentage(null));
+                context.read<DietFormBloc>().add(UpdateWaterPercentage(null));
+                context.read<DietFormBloc>().add(UpdateFatPercentage(null));
               }
             });
           },
