@@ -87,7 +87,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
-      _selectedDietGoal = blocState.dietGoal!;
+      _selectedDietGoal = blocState.dietGoal ?? _selectedDietGoal;
       _selectedAllergies = blocState.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
@@ -98,7 +98,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           (_selectedDietType == DietType.muscleGain &&
               _selectedDietGoal < _selectedWeight) ||
           (_selectedDietType == DietType.fatLoss &&
-              _selectedDietGoal > _selectedWeight)) {
+              _selectedDietGoal > _selectedWeight) ||
+          _selectedDietType == null) {
         _selectedDietGoal = _selectedWeight;
         context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }

@@ -148,43 +148,24 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       }
     });
 
-    on<UpdateMusclePercentage>((event, emit) {
+    on<UpdateAdvancedParameters>((event, emit) {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(musclePercentage: event.musclePercentage));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
         emit(
-          failureState.previousData.copyWith(
+          currentState.copyWith(
             musclePercentage: event.musclePercentage,
-          ),
-        );
-      }
-    });
-
-    on<UpdateWaterPercentage>((event, emit) {
-      if (state is DietFormSubmit) {
-        final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(waterPercentage: event.waterPercentage));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(
+            fatPercentage: event.fatPercentage,
             waterPercentage: event.waterPercentage,
           ),
         );
-      }
-    });
-
-    on<UpdateFatPercentage>((event, emit) {
-      if (state is DietFormSubmit) {
-        final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(fatPercentage: event.fatPercentage));
       } else if (state is DietFormSubmitFailure) {
         final failureState = state as DietFormSubmitFailure;
+        final prev = failureState.previousData;
         emit(
-          failureState.previousData.copyWith(
+          prev.copyWith(
+            musclePercentage: event.musclePercentage,
             fatPercentage: event.fatPercentage,
+            waterPercentage: event.waterPercentage,
           ),
         );
       }
