@@ -1,11 +1,11 @@
-import 'package:frontend/models/user_details/predicted_macros.dart';
+import 'package:frontend/models/user_details/macros.dart';
 
 class PredictedCalories {
   final int bmr;
   final int tdee;
   final int targetCalories;
   final int? dietDurationDays;
-  final PredictedMacros predictedMacros;
+  final Macros predictedMacros;
 
   PredictedCalories({
     required this.bmr,
@@ -21,7 +21,7 @@ class PredictedCalories {
       tdee: json['tdee'],
       targetCalories: json['target_calories'],
       dietDurationDays: json['diet_duration_days'],
-      predictedMacros: PredictedMacros.fromJson(json['predicted_macros']),
+      predictedMacros: Macros.fromJson(json['predicted_macros']),
     );
   }
 

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
+import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
-import 'package:frontend/models/user_details/predicted_macros.dart';
 import 'package:frontend/services/api_client.dart';
 
 class UserDetailsRepository {
@@ -31,9 +31,13 @@ class UserDetailsRepository {
     }
   }
 
-  Future<void> submitMacrosChange(PredictedMacros request, int userId) async {
+  Future<PredictedCalories> submitMacrosChange(
+    Macros request,
+    int userId,
+  ) async {
     try {
-      await apiClient.submitMacrosChange(request, userId);
+      final response = await apiClient.submitMacrosChange(request, userId);
+      return PredictedCalories.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {
@@ -57,7 +61,7 @@ class UserDetailsRepository {
       final response = await apiClient.getCaloriesPrediction(userId);
       return PredictedCalories.fromJson(response.data);
     } on DioException catch (e) {
-      throw ApiException(e.response?.data);
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while fetching calories prediction: $e');
     }

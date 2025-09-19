@@ -6,8 +6,8 @@ import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
-import 'package:frontend/models/user_details/predicted_macros.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
@@ -19,7 +19,7 @@ void main() {
   late UserDetailsRepository repository;
   late MockApiClient mockApiClient;
   late DietForm testDietForm;
-  late PredictedMacros testMacros;
+  late Macros testMacros;
   late PredictedCalories testCalories;
   const testUserId = 1;
 
@@ -45,7 +45,7 @@ void main() {
       fatPercentage: null,
     );
 
-    testMacros = PredictedMacros(protein: 100, fat: 50, carbs: 200);
+    testMacros = Macros(protein: 100, fat: 50, carbs: 200);
 
     testCalories = PredictedCalories(
       bmr: 1600,

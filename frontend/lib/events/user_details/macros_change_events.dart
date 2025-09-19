@@ -1,20 +1,19 @@
+import 'package:frontend/models/user_details/macros.dart';
+import 'package:frontend/models/user_details/predicted_calories.dart';
+
 abstract class MacrosChangeEvent {}
 
-class UpdateProtein extends MacrosChangeEvent {
-  final int protein;
-  UpdateProtein(this.protein);
+class LoadInitialMacros extends MacrosChangeEvent {}
+
+class SetPredictedCalories extends MacrosChangeEvent {
+  final PredictedCalories predictedCalories;
+  SetPredictedCalories(this.predictedCalories);
 }
 
-class UpdateFat extends MacrosChangeEvent {
-  final int fat;
-  UpdateFat(this.fat);
+class SubmitMacrosChange extends MacrosChangeEvent {
+  final Macros macros;
+  SubmitMacrosChange(this.macros);
 }
 
-class UpdateCarbs extends MacrosChangeEvent {
-  final int carbs;
-  UpdateCarbs(this.carbs);
-}
-
-class SubmitMacrosChange extends MacrosChangeEvent {}
-
-class MacrosChangeResetRequested extends MacrosChangeEvent {}
+class RefreshMacrosBloc extends MacrosChangeEvent {}
+class ResetProcessingStatus extends MacrosChangeEvent {}

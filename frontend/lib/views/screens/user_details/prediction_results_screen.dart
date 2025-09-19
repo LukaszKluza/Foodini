@@ -6,15 +6,13 @@ import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user_details/macros_change_listener.dart';
-import 'package:frontend/models/user_details/predicted_calories.dart';
+import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 
 class PredictionResultsScreen extends StatelessWidget {
-  final PredictedCalories predictedCalories;
-
-  const PredictionResultsScreen({super.key, required this.predictedCalories});
+  const PredictionResultsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class PredictionResultsScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: _PredictionResultsForm(predictedCalories: predictedCalories),
+      body: _PredictionResultsForm(),
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
@@ -38,10 +36,6 @@ class PredictionResultsScreen extends StatelessWidget {
 }
 
 class _PredictionResultsForm extends StatefulWidget {
-  final PredictedCalories predictedCalories;
-
-  const _PredictionResultsForm({required this.predictedCalories});
-
   @override
   State<_PredictionResultsForm> createState() => _PredictionResultsFormState();
 }
@@ -49,34 +43,21 @@ class _PredictionResultsForm extends StatefulWidget {
 class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _proteinController;
-  late TextEditingController _fatController;
-  late TextEditingController _carbsController;
-  late TextEditingController _dietDurationController;
+  late final TextEditingController _proteinController = TextEditingController();
+  late final TextEditingController _fatController = TextEditingController();
+  late final TextEditingController _carbsController = TextEditingController();
+  late final TextEditingController _dietDurationController =
+      TextEditingController();
 
   String? _message;
+  int? _errorCode;
   TextStyle _messageStyle = Styles.errorStyle;
 
   @override
   void initState() {
     super.initState();
-    _proteinController = TextEditingController(
-      text: widget.predictedCalories.predictedMacros.protein.toString(),
-    );
-    _fatController = TextEditingController(
-      text: widget.predictedCalories.predictedMacros.fat.toString(),
-    );
-    _carbsController = TextEditingController(
-      text: widget.predictedCalories.predictedMacros.carbs.toString(),
-    );
-    _dietDurationController = TextEditingController(
-      text: widget.predictedCalories.dietDurationDays?.toString() ?? '',
-    );
-
     final bloc = context.read<MacrosChangeBloc>();
-    bloc.add(UpdateProtein(widget.predictedCalories.predictedMacros.protein));
-    bloc.add(UpdateFat(widget.predictedCalories.predictedMacros.fat));
-    bloc.add(UpdateCarbs(widget.predictedCalories.predictedMacros.carbs));
+    bloc.add(RefreshMacrosBloc());
   }
 
   @override
@@ -97,9 +78,8 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         (carbs * Constants.carbsEstimator);
   }
 
-  String? _macrosValidator(String? value) {
+  String? _macrosValidator(String? value, int target) {
     final total = _calculateCalories();
-    final target = widget.predictedCalories.targetCalories;
     const tolerance = 30;
 
     if ((total - target).abs() > tolerance) {
@@ -111,7 +91,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   Widget _buildMacroField(
     String label,
     TextEditingController controller,
-    void Function(String) onChanged,
+    int target,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -124,9 +104,8 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
             labelText: label,
             border: const OutlineInputBorder(),
           ),
-          validator: _macrosValidator,
+          validator: (value) => _macrosValidator(value, target),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          onChanged: onChanged,
         ),
       ),
     );
@@ -134,41 +113,110 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
 
   @override
   Widget build(BuildContext context) {
-    final targetCalories = widget.predictedCalories.targetCalories;
-    final bmr = widget.predictedCalories.bmr;
-    final tdee = widget.predictedCalories.tdee;
-    final dietDurationDays = widget.predictedCalories.dietDurationDays;
+    return Padding(
+      padding: const EdgeInsets.all(35.0),
+      child: BlocConsumer<MacrosChangeBloc, MacrosChangeState>(
+        // listenWhen:
+        //     (prev, curr) => prev.submittingStatus != curr.submittingStatus,
+        listener: (context, state) {
+          MacrosChangeListenerHelper.onMacrosChangeSubmitListener(
+            context: context,
+            state: state,
+            mounted: mounted,
+            setMessage: (msg) => setState(() => _message = msg),
+            setErrorCode: (code) => setState(() => _errorCode = code),
+            setMessageStyle: (style) => setState(() => _messageStyle = style),
+          );
+        },
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                if (state.processingStatus!.isFailure)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.warning_amber,
+                      color: Colors.red,
+                      size: 200.0,
+                    ),
+                  )
+                else if (state.predictedCalories != null)
+                  ...caloriesPredictionProperties(context, state),
+                if (state.processingStatus!.isOngoing)
+                  const Center(child: CircularProgressIndicator()),
+                if (state.predictedCalories != null) submitButton(context),
+                if (_message != null) ...[
+                  if (_errorCode == 404)
+                    redirectToProfileDetailsButton(context)
+                  else if (_errorCode != null)
+                    retryRequestButton(context),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _message!,
+                      style: _messageStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-    final fields = [
-      Center(
-        child: Text(
-          '${AppLocalizations.of(context)!.predictedCalories}: $targetCalories ${AppLocalizations.of(context)!.kcal}',
-          textAlign: TextAlign.center,
-        ),
+  List<Widget> caloriesPredictionProperties(
+    BuildContext context,
+    MacrosChangeState state,
+  ) {
+    final targetCalories = state.predictedCalories!.targetCalories;
+    final bmr = state.predictedCalories!.bmr;
+    final tdee = state.predictedCalories!.tdee;
+    final dietDurationDays = state.predictedCalories!.dietDurationDays;
+    final target = state.predictedCalories!.targetCalories;
+    _proteinController.text =
+        state.predictedCalories!.predictedMacros.protein.toString();
+    _fatController.text =
+        state.predictedCalories!.predictedMacros.fat.toString();
+    _carbsController.text =
+        state.predictedCalories!.predictedMacros.carbs.toString();
+
+    Widget buildField(String label, String value) =>
+        Center(child: Text('$label: $value', textAlign: TextAlign.center));
+
+    List<Widget> fields = [
+      buildField(
+        AppLocalizations.of(context)!.predictedCalories,
+        '$targetCalories ${AppLocalizations.of(context)!.kcal}',
       ),
       const SizedBox(height: 16),
-      Center(
-        child: Text(
-          '${AppLocalizations.of(context)!.bmr}: $bmr ${AppLocalizations.of(context)!.kcal}',
-          textAlign: TextAlign.center,
-        ),
+      buildField(
+        AppLocalizations.of(context)!.bmr,
+        '$bmr ${AppLocalizations.of(context)!.kcal}',
       ),
       const SizedBox(height: 16),
-      Center(
-        child: Text(
-          '${AppLocalizations.of(context)!.tdee}: $tdee ${AppLocalizations.of(context)!.kcal}',
-          textAlign: TextAlign.center,
-        ),
+      buildField(
+        AppLocalizations.of(context)!.tdee,
+        '$tdee ${AppLocalizations.of(context)!.kcal}',
       ),
-      if (dietDurationDays != null) ...[
-        const SizedBox(height: 16),
-        Center(
-          child: Text(
-            '${AppLocalizations.of(context)!.dietDuration}: $dietDurationDays ${AppLocalizations.of(context)!.days}',
-            textAlign: TextAlign.center,
-          ),
+    ];
+
+    if (dietDurationDays != null) {
+      fields.add(const SizedBox(height: 16));
+      fields.add(
+        buildField(
+          AppLocalizations.of(context)!.dietDuration,
+          '$dietDurationDays ${AppLocalizations.of(context)!.days}',
         ),
-      ],
+      );
+    }
+
+    fields.addAll([
       const SizedBox(height: 16),
       Center(
         child: Text(
@@ -182,90 +230,96 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         child: _buildMacroField(
           AppLocalizations.of(context)!.proteinG,
           _proteinController,
-          (value) => context.read<MacrosChangeBloc>().add(
-            UpdateProtein(int.tryParse(value) ?? 0),
-          ),
+          target,
         ),
       ),
       Center(
         child: _buildMacroField(
           AppLocalizations.of(context)!.fatG,
           _fatController,
-          (value) => context.read<MacrosChangeBloc>().add(
-            UpdateFat(int.tryParse(value) ?? 0),
-          ),
+          target,
         ),
       ),
       Center(
         child: _buildMacroField(
           AppLocalizations.of(context)!.carbsG,
           _carbsController,
-          (value) => context.read<MacrosChangeBloc>().add(
-            UpdateCarbs(int.tryParse(value) ?? 0),
-          ),
+          target,
         ),
       ),
-    ];
+    ]);
 
-    return Padding(
-      padding: const EdgeInsets.all(35.0),
-      child: BlocConsumer<MacrosChangeBloc, MacrosChangeState>(
-        listener: (context, state) {
-          MacrosChangeListenerHelper.onMacrosChangeSubmitListener(
-            context: context,
-            state: state,
-            mounted: mounted,
-            setState: setState,
-            setMessage: (msg) => setState(() => _message = msg),
-            setMessageStyle: (style) => setState(() => _messageStyle = style),
-          );
-        },
-        builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                ...fields,
-                if (state is MacrosChangeSubmit && state.isSubmitting)
-                  const Center(child: CircularProgressIndicator())
-                else
-                  Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 400),
-                      child: ElevatedButton(
-                        key: Key('save_predicted_calories_button'),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            context.read<MacrosChangeBloc>().add(
-                              SubmitMacrosChange(),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB2F2BB),
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.savePredictedCalories,
-                        ),
-                      ),
-                    ),
-                  ),
-                if (_message != null)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      _message!,
-                      style: _messageStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-              ],
+    return fields;
+  }
+
+  Center basicButton(
+    BuildContext context,
+    Key buttonKey,
+    VoidCallback? onPressed,
+    ButtonStyle buttonStyle,
+    Widget? buttonChild,
+  ) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: ElevatedButton(
+          key: buttonKey,
+          onPressed: onPressed,
+          style: buttonStyle,
+          child: buttonChild,
+        ),
+      ),
+    );
+  }
+
+  Center submitButton(BuildContext context) {
+    return basicButton(
+      context,
+      Key('save_predicted_calories_button'),
+      () {
+        if (_formKey.currentState!.validate()) {
+          context.read<MacrosChangeBloc>().add(
+            SubmitMacrosChange(
+              Macros(
+                protein: int.tryParse(_proteinController.text)!,
+                fat: int.tryParse(_fatController.text)!,
+                carbs: int.tryParse(_carbsController.text)!,
+              ),
             ),
           );
-        },
+        }
+      },
+      ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFFB2F2BB),
+        minimumSize: const Size.fromHeight(48),
       ),
+      Text(AppLocalizations.of(context)!.savePredictedCalories),
+    );
+  }
+
+  Center retryRequestButton(BuildContext context) {
+    return basicButton(
+      context,
+      Key('refresh_request_button'),
+      () => context.read<MacrosChangeBloc>().add(LoadInitialMacros()),
+      ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFFDD9E74),
+        minimumSize: const Size.fromHeight(48),
+      ),
+      Text('Refresh'),
+    );
+  }
+
+  Center redirectToProfileDetailsButton(BuildContext context) {
+    return basicButton(
+      context,
+      Key('redirect_to_profile_details_button'),
+      () => context.go('/profile-details'),
+      ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFFF2D8B2),
+        minimumSize: const Size.fromHeight(48),
+      ),
+      Text('redirectToProfileDetailsButton'),
     );
   }
 }

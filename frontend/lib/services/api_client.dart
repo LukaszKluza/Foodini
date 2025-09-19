@@ -6,7 +6,7 @@ import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
-import 'package:frontend/models/user_details/predicted_macros.dart';
+import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 
@@ -149,7 +149,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> submitMacrosChange(PredictedMacros request, int userId) {
+  Future<Response> submitMacrosChange(Macros request, int userId) {
     return _client.patch(
       Endpoints.userCaloriesPrediction,
       data: request.toJson(),

@@ -1,61 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/user_details/macros.dart';
+import 'package:frontend/models/user_details/predicted_calories.dart';
+import 'package:uuid/uuid.dart';
 
-abstract class MacrosChangeState {}
+class MacrosChangeState {
+  final String? uuid;
+  final Macros? macros;
+  final PredictedCalories? predictedCalories;
+  final int? errorCode;
+  final String Function(BuildContext)? getMessage;
+  ProcessingStatus? processingStatus;
 
-class MacrosChangeSubmit extends MacrosChangeState {
-  final int? protein;
-  final int? fat;
-  final int? carbs;
-
-  final bool isSubmitting;
-  final bool isSuccess;
-  final String? errorMessage;
-
-  MacrosChangeSubmit({
-    this.protein,
-    this.fat,
-    this.carbs,
-    this.isSubmitting = false,
-    this.isSuccess = false,
-    this.errorMessage,
+  MacrosChangeState({
+    this.uuid,
+    this.macros,
+    this.predictedCalories,
+    this.errorCode,
+    this.getMessage,
+    this.processingStatus = ProcessingStatus.emptyProcessingStatus,
   });
 
   MacrosChangeState copyWith({
-    int? protein,
-    int? fat,
-    int? carbs,
-    bool? isSubmitting,
-    bool? isSuccess,
-    String? errorMessage,
+    String? uuid,
+    Macros? macros,
+    PredictedCalories? predictedCalories,
+    int? errorCode,
+    String Function(BuildContext)? getMessage,
+    ProcessingStatus? processingStatus,
   }) {
-    return MacrosChangeSubmit(
-      protein: protein ?? this.protein,
-      fat: fat ?? this.fat,
-      carbs: carbs ?? this.carbs,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSuccess: isSuccess ?? this.isSuccess,
-      errorMessage: errorMessage,
+    return MacrosChangeState(
+      uuid: uuid ?? Uuid().v4(),
+      macros: macros ?? this.macros,
+      predictedCalories: predictedCalories ?? this.predictedCalories,
+      errorCode: errorCode ?? this.errorCode,
+      getMessage: getMessage ?? this.getMessage,
+      processingStatus: processingStatus ?? this.processingStatus,
     );
   }
-
-  factory MacrosChangeSubmit.initial() {
-    return MacrosChangeSubmit(
-      protein: null,
-      fat: null,
-      carbs: null,
-      isSubmitting: false,
-      isSuccess: false,
-      errorMessage: null,
-    );
-  }
-}
-
-class MacrosChangeSubmitSuccess extends MacrosChangeState {}
-
-class MacrosChangeSubmitFailure extends MacrosChangeState {
-  final String Function(BuildContext)? getMessage;
-  final ApiException? error;
-
-  MacrosChangeSubmitFailure({this.getMessage, this.error});
 }

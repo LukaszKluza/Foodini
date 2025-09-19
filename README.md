@@ -27,5 +27,5 @@ flutter gen-l10n
 #### Generating frontend mocks
 ``` bash
 cd Foodini/frontend
-flutter pub run build_runner build
+dart pub run build_runner build
 ```

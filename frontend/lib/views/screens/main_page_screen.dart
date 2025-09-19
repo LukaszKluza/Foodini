@@ -92,11 +92,11 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
-                            'Button 3',
-                            Icons.do_not_disturb,
+                            'Change calories prediction',
+                            Icons.change_circle_outlined,
                             screenWidth,
                             screenHeight,
-                            null,
+                            () => context.push('/calories-result'),
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(

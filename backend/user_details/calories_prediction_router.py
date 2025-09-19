@@ -32,5 +32,5 @@ async def get_calories_prediction(
     calories_prediction_service: CaloriesPredictionService = Depends(get_calories_prediction_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
-    user, token_payload = await user_gateway.get_current_user()
+    user, _ = await user_gateway.get_current_user()
     return await calories_prediction_service.get_calories_prediction_by_user_id(user.id)

@@ -25,8 +25,8 @@ import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i6;
 import 'package:frontend/models/user/register_request.dart' as _i17;
 import 'package:frontend/models/user/user_response.dart' as _i3;
 import 'package:frontend/models/user_details/diet_form.dart' as _i9;
+import 'package:frontend/models/user_details/macros.dart' as _i26;
 import 'package:frontend/models/user_details/predicted_calories.dart' as _i10;
-import 'package:frontend/models/user_details/predicted_macros.dart' as _i26;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
 import 'package:frontend/repository/user_details/user_details_repository.dart'
     as _i25;
@@ -508,16 +508,20 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i15.Future<void>);
 
   @override
-  _i15.Future<void> submitMacrosChange(
-    _i26.PredictedMacros? request,
+  _i15.Future<_i10.PredictedCalories> submitMacrosChange(
+    _i26.Macros? request,
     int? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitMacrosChange, [request, userId]),
-            returnValue: _i15.Future<void>.value(),
-            returnValueForMissingStub: _i15.Future<void>.value(),
+            returnValue: _i15.Future<_i10.PredictedCalories>.value(
+              _FakePredictedCalories_8(
+                this,
+                Invocation.method(#submitMacrosChange, [request, userId]),
+              ),
+            ),
           )
-          as _i15.Future<void>);
+          as _i15.Future<_i10.PredictedCalories>);
 
   @override
   _i15.Future<_i10.PredictedCalories> addCaloriesPrediction(int? userId) =>
@@ -999,7 +1003,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i15.Future<_i12.Response<dynamic>> submitMacrosChange(
-    _i26.PredictedMacros? request,
+    _i26.Macros? request,
     int? userId,
   ) =>
       (super.noSuchMethod(

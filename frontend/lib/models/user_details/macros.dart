@@ -1,16 +1,16 @@
-class PredictedMacros {
+class Macros {
   final int protein;
   final int fat;
   final int carbs;
 
-  PredictedMacros({
+  Macros({
     required this.protein,
     required this.fat,
     required this.carbs,
   });
 
-  factory PredictedMacros.fromJson(Map<String, dynamic> json) {
-    return PredictedMacros(
+  factory Macros.fromJson(Map<String, dynamic> json) {
+    return Macros(
       protein: json['protein'],
       fat: json['fat'],
       carbs: json['carbs'],

@@ -252,7 +252,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             context: context,
             state: state,
             mounted: mounted,
-            setState: setState,
             setMessage: (msg) => _message = msg,
             setMessageStyle: (style) => _messageStyle = style,
           );

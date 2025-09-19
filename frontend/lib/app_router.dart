@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -67,10 +66,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/calories-result',
-      builder: (context, state) {
-        final predictedCalories = state.extra as PredictedCalories;
-        return PredictionResultsScreen(predictedCalories: predictedCalories);
-      },
+      builder: (context, state) => PredictionResultsScreen(),
     ),
   ],
 );
