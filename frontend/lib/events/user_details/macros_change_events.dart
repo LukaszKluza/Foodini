@@ -15,5 +15,4 @@ class SubmitMacrosChange extends MacrosChangeEvent {
   SubmitMacrosChange(this.macros);
 }
 
-class RefreshMacrosBloc extends MacrosChangeEvent {}
-class ResetProcessingStatus extends MacrosChangeEvent {}
+class ResetMacrosChangeBloc extends MacrosChangeEvent {}

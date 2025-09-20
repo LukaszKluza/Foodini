@@ -441,5 +441,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get carbsG => 'Carbs (g)';
 
   @override
+  String get fillFormToSeePredictions => 'Please fill out the form to see predictions';
+
+  @override
+  String get redirectToProfileDetails => 'Redirect to profile details';
+
+  @override
   String get savePredictedCalories => 'Save predicted calories';
+
+  @override
+  String get refreshRequest => 'Refresh request';
+
+  @override
+  String get changeCaloriesPrediction => 'Change calories prediction';
 }

@@ -92,7 +92,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
-                            'Change calories prediction',
+                            AppLocalizations.of(context)!.changeCaloriesPrediction,
                             Icons.change_circle_outlined,
                             screenWidth,
                             screenHeight,

@@ -441,5 +441,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get carbsG => 'Węgle (g)';
 
   @override
+  String get fillFormToSeePredictions => 'Proszę wypełnić formularz, aby zobaczyć predykcje';
+
+  @override
+  String get redirectToProfileDetails => 'Przejdź do szczegółów profilu';
+
+  @override
   String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
+
+  @override
+  String get refreshRequest => 'Odśwież żądanie';
+
+  @override
+  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
 }

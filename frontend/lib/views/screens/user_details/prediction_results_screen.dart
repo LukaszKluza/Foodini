@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
@@ -57,7 +58,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   void initState() {
     super.initState();
     final bloc = context.read<MacrosChangeBloc>();
-    bloc.add(RefreshMacrosBloc());
+    bloc.add(LoadInitialMacros());
   }
 
   @override
@@ -116,8 +117,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     return Padding(
       padding: const EdgeInsets.all(35.0),
       child: BlocConsumer<MacrosChangeBloc, MacrosChangeState>(
-        // listenWhen:
-        //     (prev, curr) => prev.submittingStatus != curr.submittingStatus,
         listener: (context, state) {
           MacrosChangeListenerHelper.onMacrosChangeSubmitListener(
             context: context,
@@ -134,7 +133,14 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                if (state.processingStatus!.isFailure)
+                if (state.processingStatus!.isOngoing)
+                  const Center(child: CircularProgressIndicator()),
+                if (state.processingStatus!.isSuccess)
+                  ...[
+                    ...caloriesPredictionProperties(context, state),
+                    submitButton(context)
+                  ],
+                if (state.processingStatus!.isFailure) ...[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(
@@ -142,17 +148,24 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                       color: Colors.red,
                       size: 200.0,
                     ),
-                  )
-                else if (state.predictedCalories != null)
-                  ...caloriesPredictionProperties(context, state),
-                if (state.processingStatus!.isOngoing)
-                  const Center(child: CircularProgressIndicator()),
-                if (state.predictedCalories != null) submitButton(context),
-                if (_message != null) ...[
-                  if (_errorCode == 404)
+                  ),
+                  if (_errorCode == 404) ...[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        AppLocalizations.of(context)!.fillFormToSeePredictions,
+                        style: TextStyle(
+                          fontSize: 30.sp.clamp(20.0, 40.0),
+                          color: Colors.orangeAccent
+                        ),
+                      ),
+                    ),
                     redirectToProfileDetailsButton(context)
-                  else if (_errorCode != null)
+                  ]
+                  else
                     retryRequestButton(context),
+                ],
+                if (_message != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -161,7 +174,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ],
               ],
             ),
           );
@@ -264,7 +276,11 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         constraints: const BoxConstraints(maxWidth: 400),
         child: ElevatedButton(
           key: buttonKey,
-          onPressed: onPressed,
+          onPressed: () {
+            _message = null;
+            _errorCode = null;
+            onPressed?.call();
+          },
           style: buttonStyle,
           child: buttonChild,
         ),
@@ -306,7 +322,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         backgroundColor: const Color(0xFFDD9E74),
         minimumSize: const Size.fromHeight(48),
       ),
-      Text('Refresh'),
+      Text(AppLocalizations.of(context)!.refreshRequest),
     );
   }
 
@@ -319,7 +335,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         backgroundColor: const Color(0xFFF2D8B2),
         minimumSize: const Size.fromHeight(48),
       ),
-      Text('redirectToProfileDetailsButton'),
+      Text(AppLocalizations.of(context)!.redirectToProfileDetails),
     );
   }
 }

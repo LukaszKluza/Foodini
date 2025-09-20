@@ -959,11 +959,35 @@ abstract class AppLocalizations {
   /// **'Carbs (g)'**
   String get carbsG;
 
+  /// No description provided for @fillFormToSeePredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to see predictions'**
+  String get fillFormToSeePredictions;
+
+  /// No description provided for @redirectToProfileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect to profile details'**
+  String get redirectToProfileDetails;
+
   /// No description provided for @savePredictedCalories.
   ///
   /// In en, this message translates to:
   /// **'Save predicted calories'**
   String get savePredictedCalories;
+
+  /// No description provided for @refreshRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh request'**
+  String get refreshRequest;
+
+  /// No description provided for @changeCaloriesPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change calories prediction'**
+  String get changeCaloriesPrediction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

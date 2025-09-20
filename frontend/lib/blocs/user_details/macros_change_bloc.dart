@@ -7,7 +7,6 @@ import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
-import 'package:uuid/uuid.dart';
 
 class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
   final UserDetailsRepository userDetailsRepository;
@@ -19,11 +18,8 @@ class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
       emit(state.copyWith(predictedCalories: event.predictedCalories));
     });
     on<SubmitMacrosChange>(_onSubmitMacrosChange);
-    on<RefreshMacrosBloc>((event, emit) {
-      emit(state.copyWith(uuid: Uuid().v4()));
-    });
-    on<ResetProcessingStatus>((event, emit) {
-      emit(state.copyWith(processingStatus: ProcessingStatus.emptyProcessingStatus));
+    on<ResetMacrosChangeBloc>((event, emit) {
+      emit(MacrosChangeState());
     });
   }
 
@@ -31,7 +27,7 @@ class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
     LoadInitialMacros event,
     Emitter<MacrosChangeState> emit,
   ) async {
-    emit(state.copyWith(processingStatus: ProcessingStatus.gettingOnGoing));
+    emit(MacrosChangeState(processingStatus: ProcessingStatus.gettingOnGoing));
     try {
       final userId = UserStorage().getUserId!;
       final initialMacros = await userDetailsRepository.getCaloriesPrediction(
@@ -45,7 +41,8 @@ class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
           getMessage:
               (context) =>
                   ExceptionConverter.formatErrorMessage(error, context),
-          errorCode: error.statusCode
+          errorCode: error.statusCode,
+          processingStatus: ProcessingStatus.gettingFailure
         ),
       );
     }

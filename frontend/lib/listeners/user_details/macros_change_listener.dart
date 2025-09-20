@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/submitting_status.dart';
 import 'package:frontend/states/macros_change_states.dart';
@@ -41,11 +38,6 @@ class MacrosChangeListenerHelper {
       if (state.errorCode != null) {
         setErrorCode(state.errorCode!);
       }
-    }
-    if (state.processingStatus!.isEndOfProcessing){
-      context.read<MacrosChangeBloc>().add(
-        ResetProcessingStatus(),
-      );
     }
   }
 }

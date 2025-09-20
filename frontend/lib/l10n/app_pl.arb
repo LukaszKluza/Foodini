@@ -156,5 +156,9 @@
   "proteinG": "Białko (g)",
   "fatG": "Tłuszcz (g)",
   "carbsG": "Węgle (g)",
-  "savePredictedCalories": "Zapisz wygenerowane kalorie"
+  "fillFormToSeePredictions": "Proszę wypełnić formularz, aby zobaczyć predykcje",
+  "redirectToProfileDetails": "Przejdź do szczegółów profilu",
+  "savePredictedCalories": "Zapisz wygenerowane kalorie",
+  "refreshRequest": "Odśwież żądanie",
+  "changeCaloriesPrediction": "Zmień przewidywane kalorie"
 }

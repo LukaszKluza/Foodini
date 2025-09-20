@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/submitting_status.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
-import 'package:uuid/uuid.dart';
 
 class MacrosChangeState {
-  final String? uuid;
   final Macros? macros;
   final PredictedCalories? predictedCalories;
   final int? errorCode;
@@ -13,7 +11,6 @@ class MacrosChangeState {
   ProcessingStatus? processingStatus;
 
   MacrosChangeState({
-    this.uuid,
     this.macros,
     this.predictedCalories,
     this.errorCode,
@@ -22,7 +19,6 @@ class MacrosChangeState {
   });
 
   MacrosChangeState copyWith({
-    String? uuid,
     Macros? macros,
     PredictedCalories? predictedCalories,
     int? errorCode,
@@ -30,7 +26,6 @@ class MacrosChangeState {
     ProcessingStatus? processingStatus,
   }) {
     return MacrosChangeState(
-      uuid: uuid ?? Uuid().v4(),
       macros: macros ?? this.macros,
       predictedCalories: predictedCalories ?? this.predictedCalories,
       errorCode: errorCode ?? this.errorCode,

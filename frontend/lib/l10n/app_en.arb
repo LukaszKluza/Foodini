@@ -156,5 +156,9 @@
   "proteinG": "Protein (g)",
   "fatG": "Fat (g)",
   "carbsG": "Carbs (g)",
-  "savePredictedCalories": "Save predicted calories"
+  "fillFormToSeePredictions": "Please fill out the form to see predictions",
+  "redirectToProfileDetails": "Redirect to profile details",
+  "savePredictedCalories": "Save predicted calories",
+  "refreshRequest": "Refresh request",
+  "changeCaloriesPrediction": "Change calories prediction"
 }

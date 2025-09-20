@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/app_router.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
-import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/user/user_repository.dart';
@@ -61,8 +60,7 @@ class Foodini extends StatelessWidget {
           BlocProvider(
             create:
                 (context) =>
-                    MacrosChangeBloc(context.read<UserDetailsRepository>())
-                      ..add(LoadInitialMacros()),
+                    MacrosChangeBloc(context.read<UserDetailsRepository>()),
           ),
         ],
         child: BlocBuilder<LanguageCubit, Locale>(
