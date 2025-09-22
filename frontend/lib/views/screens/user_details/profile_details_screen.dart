@@ -70,8 +70,8 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   bool _didEnter = false;
 
   Gender? _selectedGender;
-  double? _selectedHeight;
-  double? _selectedWeight;
+  double _selectedHeight = Constants.defaultHeight;
+  double _selectedWeight = Constants.defaultWeight;
   DateTime? _selectedDateOfBirth;
 
   @override
@@ -109,11 +109,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   }
 
   void _softFormValidation() {
-    final formIsReady =
-        _selectedGender != null &&
-        _selectedHeight != null &&
-        _selectedWeight != null &&
-        _selectedDateOfBirth != null;
+    final formIsReady = _selectedGender != null && _selectedDateOfBirth != null;
 
     widget.onFormValidityChanged?.call(formIsReady);
   }
@@ -221,13 +217,13 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
               const SizedBox(height: 20),
               HeightSlider(
                 key: const Key('height'),
-                value: _selectedHeight ?? Constants.defaultHeight,
+                value: _selectedHeight,
                 onChanged: _onHeightChanged,
               ),
               const SizedBox(height: 20),
               WeightSlider(
                 key: const Key('weight'),
-                value: _selectedWeight ?? Constants.defaultWeight,
+                value: _selectedWeight,
                 label: AppLocalizations.of(context)!.weight,
                 dialogTitle: AppLocalizations.of(context)!.enterYourWeight,
                 onChanged: _onWeightChanged,
