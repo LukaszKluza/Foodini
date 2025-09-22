@@ -67,6 +67,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/calories-result',
       builder: (context, state) => PredictionResultsScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
   ],
 );

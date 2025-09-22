@@ -29,6 +29,7 @@ class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
   ) async {
     emit(MacrosChangeState(processingStatus: ProcessingStatus.gettingOnGoing));
     try {
+
       final userId = UserStorage().getUserId!;
       final initialMacros = await userDetailsRepository.getCaloriesPrediction(
         userId,
@@ -40,7 +41,7 @@ class MacrosChangeBloc extends Bloc<MacrosChangeEvent, MacrosChangeState> {
         state.copyWith(
           getMessage:
               (context) =>
-                  ExceptionConverter.formatErrorMessage(error, context),
+                  ExceptionConverter.formatErrorMessage(error.data, context),
           errorCode: error.statusCode,
           processingStatus: ProcessingStatus.gettingFailure
         ),

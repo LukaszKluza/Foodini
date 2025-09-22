@@ -150,7 +150,7 @@ void main() {
           (_) async => Response(
             requestOptions: RequestOptions(path: ''),
             statusCode: 200,
-            data: '',
+            data: testCalories.toJson(),
           ),
         );
 

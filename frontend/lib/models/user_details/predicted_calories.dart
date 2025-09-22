@@ -32,4 +32,10 @@ class PredictedCalories {
     'diet_duration_days': dietDurationDays,
     'predicted_macros': predictedMacros.toJson(),
   };
+
+  @override
+  String toString() {
+    return 'PredictedCalories(bmr: $bmr, tdee: $tdee, targetCalories: $targetCalories, '
+        'dietDurationDays: $dietDurationDays, predictedMacros: $predictedMacros)';
+  }
 }
