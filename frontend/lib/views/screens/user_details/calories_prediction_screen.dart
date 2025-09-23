@@ -86,24 +86,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           blocState.fatPercentage != null) {
         _isChecked = true;
       }
-    } else if (blocState is DietFormSubmitFailure) {
-      _selectedActivityLevel =
-          blocState.previousData.activityLevel ?? _selectedActivityLevel;
-      _selectedStressLevel =
-          blocState.previousData.stressLevel ?? _selectedStressLevel;
-      _selectedSleepQuality =
-          blocState.previousData.sleepQuality ?? _selectedSleepQuality;
-      _selectedMusclePercentage =
-          blocState.previousData.musclePercentage ?? _selectedMusclePercentage;
-      _selectedWaterPercentage =
-          blocState.previousData.waterPercentage ?? _selectedWaterPercentage;
-      _selectedFatPercentage =
-          blocState.previousData.fatPercentage ?? _selectedFatPercentage;
-      if (blocState.previousData.musclePercentage != null ||
-          blocState.previousData.waterPercentage != null ||
-          blocState.previousData.fatPercentage != null) {
-        _isChecked = true;
-      }
     }
   }
 

@@ -103,25 +103,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         _selectedDietGoal = _selectedWeight;
         context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
-    } else if (blocState is DietFormSubmitFailure) {
-      _selectedDietType = blocState.previousData.dietType ?? _selectedDietType;
-      _selectedDietGoal = blocState.previousData.dietGoal!;
-      _selectedAllergies =
-          blocState.previousData.allergies ?? _selectedAllergies;
-      _selectedDietIntensity =
-          blocState.previousData.dietIntensity ?? _selectedDietIntensity;
-      _selectedMealsPerDay =
-          blocState.previousData.mealsPerDay ?? _selectedMealsPerDay;
-      _selectedWeight = blocState.previousData.weight!;
-
-      if (_selectedDietType == DietType.weightMaintenance ||
-          (_selectedDietType == DietType.muscleGain &&
-              _selectedDietGoal < _selectedWeight) ||
-          (_selectedDietType == DietType.fatLoss &&
-              _selectedDietGoal > _selectedWeight)) {
-        _selectedDietGoal = _selectedWeight;
-        context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
-      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
@@ -167,12 +148,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           if (state is DietFormSubmit && state.weight != null) {
             _selectedDietGoal = state.weight!;
             context.read<DietFormBloc>().add(UpdateDietGoal(state.weight!));
-          } else if (state is DietFormSubmitFailure &&
-              state.previousData.weight != null) {
-            _selectedDietGoal = state.previousData.weight!;
-            context.read<DietFormBloc>().add(
-              UpdateDietGoal(state.previousData.weight!),
-            );
           }
         }
       },

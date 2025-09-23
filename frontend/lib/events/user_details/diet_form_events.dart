@@ -5,6 +5,7 @@ import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
+import 'package:frontend/states/diet_form_states.dart';
 
 abstract class DietFormEvent {}
 
@@ -90,6 +91,12 @@ class UpdateAdvancedParameters extends DietFormEvent {
     this.fatPercentage,
     this.waterPercentage,
   });
+}
+
+class RestoreDietFormStateAfterFailure extends DietFormEvent {
+  final DietFormSubmit previousData;
+
+  RestoreDietFormStateAfterFailure(this.previousData);
 }
 
 class InitForm extends DietFormEvent {}

@@ -16,9 +16,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(gender: event.gender));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(gender: event.gender));
       }
     });
 
@@ -26,9 +23,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(height: event.height));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(height: event.height));
       }
     });
 
@@ -36,9 +30,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(weight: event.weight));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(weight: event.weight));
       }
     });
 
@@ -46,11 +37,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dateOfBirth: event.dateOfBirth));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(dateOfBirth: event.dateOfBirth),
-        );
       }
     });
 
@@ -58,9 +44,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietType: event.dietType));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(dietType: event.dietType));
       }
     });
 
@@ -68,9 +51,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(allergies: event.allergies));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(allergies: event.allergies));
       }
     });
 
@@ -78,9 +58,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietGoal: event.dietGoal));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(failureState.previousData.copyWith(dietGoal: event.dietGoal));
       }
     });
 
@@ -88,11 +65,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(mealsPerDay: event.mealsPerDay));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(mealsPerDay: event.mealsPerDay),
-        );
       }
     });
 
@@ -100,13 +72,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietIntensity: event.dietIntensity));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(
-            dietIntensity: event.dietIntensity,
-          ),
-        );
       }
     });
 
@@ -114,13 +79,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(activityLevel: event.activityLevel));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(
-            activityLevel: event.activityLevel,
-          ),
-        );
       }
     });
 
@@ -128,11 +86,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(stressLevel: event.stressLevel));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(stressLevel: event.stressLevel),
-        );
       }
     });
 
@@ -140,11 +93,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(sleepQuality: event.sleepQuality));
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        emit(
-          failureState.previousData.copyWith(sleepQuality: event.sleepQuality),
-        );
       }
     });
 
@@ -158,17 +106,11 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
             waterPercentage: event.waterPercentage,
           ),
         );
-      } else if (state is DietFormSubmitFailure) {
-        final failureState = state as DietFormSubmitFailure;
-        final prev = failureState.previousData;
-        emit(
-          prev.copyWith(
-            musclePercentage: event.musclePercentage,
-            fatPercentage: event.fatPercentage,
-            waterPercentage: event.waterPercentage,
-          ),
-        );
       }
+    });
+
+    on<RestoreDietFormStateAfterFailure>((event, emit) {
+      emit(event.previousData);
     });
 
     on<DietFormResetRequested>((event, emit) {
@@ -212,8 +154,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     DietFormSubmit currentState;
     if (state is DietFormSubmit) {
       currentState = state as DietFormSubmit;
-    } else if (state is DietFormSubmitFailure) {
-      currentState = (state as DietFormSubmitFailure).previousData;
     } else {
       currentState = DietFormSubmit.initial();
     }
