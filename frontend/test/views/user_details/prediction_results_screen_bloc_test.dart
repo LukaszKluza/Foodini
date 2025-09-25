@@ -141,7 +141,7 @@ void main() {
       MacrosChangeState(errorCode: 404, processingStatus: ProcessingStatus.gettingFailure)
     ]));
 
-    expect(macrosChangeBloc.recorded[1].getMessage!(context), 'Predictions not found');
+    expect(macrosChangeBloc.recorded[1].getMessage!(context), 'Prediction not found');
   });
 
   testWidgets('Prediction results screen, server error.', (tester) async {
