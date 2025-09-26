@@ -147,4 +147,12 @@ class ApiClient {
       options: Options(extra: {'requiresAuth': true}),
     );
   }
+
+  Future<Response> getMealRecipe(int meatId, int userId) {
+    return _client.post(
+      Endpoints.dietPreferences,
+      queryParameters: {'user_id': userId, 'meal_id': meatId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
 }

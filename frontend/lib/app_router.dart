@@ -5,6 +5,7 @@ import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
+import 'package:frontend/views/screens/user/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
@@ -49,6 +50,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/calories-prediction',
       builder: (context, state) => CaloriesPredictionScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/meal-recipe',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return MealRecipeScreen(mealId: id);
+      },
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(

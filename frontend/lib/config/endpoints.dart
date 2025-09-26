@@ -11,4 +11,6 @@ class Endpoints {
       '$baseUrl/users/confirm/new-password';
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
   static const String dietPreferences = '$baseUrl/user_details';
+  static const String dietPrediction = '$baseUrl/diet_prediction';
+  static const String mealRecipe = '$dietPrediction/meal_recipe';
 }
