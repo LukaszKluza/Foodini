@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
@@ -148,10 +149,10 @@ class ApiClient {
     );
   }
 
-  Future<Response> getMealRecipe(int meatId, int userId) {
-    return _client.post(
-      Endpoints.dietPreferences,
-      queryParameters: {'user_id': userId, 'meal_id': meatId},
+  Future<Response> getMealRecipe(int recipeId, Language language, int userId) {
+    return _client.get(
+      '${Endpoints.mealRecipe}/$recipeId',
+      queryParameters: {'user_id': userId, 'language': language.toJson()},
       options: Options(extra: {'requiresAuth': true}),
     );
   }

@@ -1,11 +1,13 @@
 import asyncio
 
-from sqlalchemy import delete
+from sqlalchemy import delete, func, select
 from sqlmodel import SQLModel
 
 from backend.core.database import engine, get_db
+from backend.core.mockData.pre_definied_meal_recipes import MEAL_RECIPES
+from backend.core.mockData.unit_pre_definied_traslations import UNIT_TRANSLATIONS
 from backend.diet_prediction.enums.meal_type import MealType
-from backend.models import MealIcon, User, UserDetails
+from backend.models import MealIcon, MealRecipe, UnitTranslation
 
 MEAL_ICONS = [
     {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "db/pictures_meals/black-coffee-fried-egg-with-toasts.jpg"},
@@ -36,10 +38,35 @@ async def create_tables():
 
 async def init_meal_icons():
     async for db in get_db():
-        await db.execute(delete(MealIcon))
+        count = await db.scalar(select(func.count()).select_from(MealIcon))
+        if count == 0:
+            for meal_icon in MEAL_ICONS:
+                db.add(MealIcon(**meal_icon))
+            await db.commit()
 
-        for meal_icon in MEAL_ICONS:
-            db.add(MealIcon(**meal_icon))
+
+async def init_unit_translations():
+    async for db in get_db():
+        count = await db.scalar(select(func.count()).select_from(UnitTranslation))
+        if count == 0:
+            for unit, translations in UNIT_TRANSLATIONS.items():
+                for lang, value in translations.items():
+                    db.add(
+                        UnitTranslation(
+                            unit=unit,
+                            language=lang,
+                            translation=value,
+                        )
+                    )
+            await db.commit()
+
+
+async def init_meal_recipes():
+    async for db in get_db():
+        await db.execute(delete(MealRecipe))
+
+        for meal_recipe in MEAL_RECIPES:
+            db.add(meal_recipe)
 
         await db.commit()
 
@@ -47,6 +74,8 @@ async def init_meal_icons():
 async def main():
     await create_tables()
     await init_meal_icons()
+    await init_unit_translations()
+    await init_meal_recipes()
 
 
 if __name__ == "__main__":

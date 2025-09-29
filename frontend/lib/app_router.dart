@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -53,10 +54,11 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/meal-recipe',
+      path: '/meal-recipe/:id/:language',
       builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return MealRecipeScreen(mealId: id);
+        final id = int.parse(state.pathParameters['id']!);
+        final language = state.pathParameters['language']!;
+        return MealRecipeScreen(mealId: id, language: Language.fromJson(language));
       },
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
