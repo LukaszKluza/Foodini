@@ -9,6 +9,7 @@ class MealRecipeState {
   final MealRecipe? mealRecipe;
   final int? errorCode;
   final String Function(BuildContext)? getMessage;
+  final String? iconUrl;
   final ProcessingStatus? processingStatus;
 
   const MealRecipeState({
@@ -17,6 +18,7 @@ class MealRecipeState {
     this.mealRecipe,
     this.errorCode,
     this.getMessage,
+    this.iconUrl,
     this.processingStatus = ProcessingStatus.emptyProcessingStatus,
   });
 
@@ -26,6 +28,7 @@ class MealRecipeState {
     MealRecipe? mealRecipe,
     int? errorCode,
     String Function(BuildContext)? getMessage,
+    String? iconUrl,
     ProcessingStatus? processingStatus,
   }) {
     return MealRecipeState(
@@ -34,6 +37,7 @@ class MealRecipeState {
       mealRecipe: mealRecipe ?? this.mealRecipe,
       errorCode: errorCode ?? this.errorCode,
       getMessage: getMessage ?? this.getMessage,
+      iconUrl: iconUrl ?? this.iconUrl,
       processingStatus: processingStatus ?? this.processingStatus,
     );
   }

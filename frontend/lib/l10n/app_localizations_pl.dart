@@ -403,4 +403,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+
+  @override
+  String get mealDescriptions => 'Opis posiłku';
+
+  @override
+  String get groceries => 'Produkty spożywcze';
+
+  @override
+  String get recipe => 'Przepis';
+
+  @override
+  String get optional => 'Opcjonalnie';
 }

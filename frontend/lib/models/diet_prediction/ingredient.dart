@@ -1,8 +1,6 @@
-import 'package:frontend/models/diet_prediction/Unit.dart';
-
 class Ingredient {
   final double volume;
-  final Unit unit;
+  final String unit;
   final String name;
 
   Ingredient({
@@ -13,14 +11,14 @@ class Ingredient {
 
   Map<String, dynamic> toJson() => {
     'volume': volume,
-    'unit': unit.toJson(),
+    'unit': unit,
     'name': name,
   };
 
   factory Ingredient.fromJson(Map<String, dynamic> json) {
     return Ingredient(
       volume: json['volume'] as double,
-      unit: Unit.fromJson(json['unit']),
+      unit: json['unit'],
         name: json['name'],
     );
   }
