@@ -142,5 +142,10 @@
   "dateOfBirth": "Data urodzenia",
   "enterDateOfBirth": "Wprowadź swoją datę urodzenia",
   "formSuccessfullySubmitted": "Formularz został pomyślnie wysłany",
-  "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola"
+  "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola",
+
+  "mealDescriptions": "Opis posiłku",
+  "groceries": "Produkty spożywcze",
+  "recipe": "Przepis",
+  "optional": "Opcjonalnie"
 }

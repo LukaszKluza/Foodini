@@ -1,5 +1,6 @@
 import 'package:frontend/models/diet_prediction/ingredients.dart';
 import 'package:frontend/models/diet_prediction/meal_type.dart';
+import 'package:frontend/models/diet_prediction/step.dart';
 import 'package:frontend/models/user/language.dart';
 
 class MealRecipe {
@@ -11,6 +12,7 @@ class MealRecipe {
   final String mealDescription;
   final int iconId;
   final Ingredients ingredients;
+  final List<MealRecipeStep> steps;
 
   MealRecipe({
     required this.id,
@@ -21,6 +23,7 @@ class MealRecipe {
     required this.mealDescription,
     required this.iconId,
     required this.ingredients,
+    required this.steps,
   });
 
   Map<String, dynamic> toJson() => {
@@ -32,6 +35,7 @@ class MealRecipe {
     'meal_description': mealDescription,
     'icon_id': iconId,
     'ingredients': ingredients.toJson(),
+    'steps': steps.map((step) => step.toJson()).toList(),
   };
 
   factory MealRecipe.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,8 @@ class MealRecipe {
       mealDescription: json['meal_description'],
       iconId: json['icon_id'] as int,
       ingredients: Ingredients.fromJson(json['ingredients']),
-    );
+      steps: (json['steps'] as List)
+          .map((item) => MealRecipeStep.fromJson(item))
+          .toList());
   }
 }

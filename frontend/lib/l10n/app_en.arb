@@ -142,5 +142,10 @@
   "dateOfBirth": "Date of birth",
   "enterDateOfBirth": "Enter your date of birth",
   "formSuccessfullySubmitted": "Form successfully submitted",
-  "fillAllNecessaryFields": "Fill all necessary fields"
+  "fillAllNecessaryFields": "Fill all necessary fields",
+
+  "mealDescriptions": "Meal description",
+  "groceries": "Groceries",
+  "recipe": "Recipe",
+  "optional": "Optional"
 }

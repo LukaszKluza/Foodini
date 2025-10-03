@@ -12,5 +12,7 @@ class Endpoints {
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
   static const String dietPreferences = '$baseUrl/user_details';
   static const String mealRecipe = '$baseUrl/diet-prediction/meal-recipe';
+  static const String mealIconInfo = '$baseUrl/diet-prediction/meal-icon';
+  static const String mealIcon= '$baseUrl/static/meals-icon';
   static const String dietPrediction = '$baseUrl/diet_prediction';
 }

@@ -886,6 +886,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fill all necessary fields'**
   String get fillAllNecessaryFields;
+
+  /// No description provided for @mealDescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal description'**
+  String get mealDescriptions;
+
+  /// No description provided for @groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get groceries;
+
+  /// No description provided for @recipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe'**
+  String get recipe;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

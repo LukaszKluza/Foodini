@@ -4,7 +4,7 @@ enum MealType {
   lunch(2, 'lunch'),
   afternoonSnack(3, 'afternoon_snack'),
   dinner(4, 'dinner'),
-  eveningSnac(5, 'evening_snack');
+  eveningSnack(5, 'evening_snack');
 
   final int value;
   final String nameStr;

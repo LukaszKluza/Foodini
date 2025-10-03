@@ -403,4 +403,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Fill all necessary fields';
+
+  @override
+  String get mealDescriptions => 'Meal description';
+
+  @override
+  String get groceries => 'Groceries';
+
+  @override
+  String get recipe => 'Recipe';
+
+  @override
+  String get optional => 'Optional';
 }
