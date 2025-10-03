@@ -11,6 +11,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.diet_prediction.daily_summary_router import daily_summary_router
 from backend.diet_prediction.diet_prediction_router import diet_prediction_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
@@ -22,6 +23,7 @@ app.include_router(user_router)
 app.include_router(user_details_router)
 app.include_router(calories_prediction_router)
 app.include_router(diet_prediction_router)
+app.include_router(daily_summary_router)
 logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.ERROR)
 

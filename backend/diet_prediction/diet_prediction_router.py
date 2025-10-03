@@ -1,4 +1,4 @@
-from diet_prediction.diet_prediction_service import MealIconsService
+from backend.diet_prediction.diet_prediction_service import MealIconsService
 from fastapi import APIRouter, Depends
 
 from backend.diet_prediction.dependencies import get_meal_icons_service
