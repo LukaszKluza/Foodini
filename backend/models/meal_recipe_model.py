@@ -6,13 +6,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 from backend.diet_prediction.enums.meal_type import MealType
-from backend.diet_prediction.enums.unit import Unit
 from backend.users.enums.language import Language
 
 
 class Ingredient(SQLModel):
     volume: float
-    unit: Unit
+    unit: str
     name: str
     optional_note: Optional[str] = None
 

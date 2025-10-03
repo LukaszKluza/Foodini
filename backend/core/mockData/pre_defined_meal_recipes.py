@@ -16,8 +16,8 @@ MEAL_RECIPES = [
         icon_id=1,
         ingredients=Ingredients(
             ingredients=[
-                Ingredient(volume=1, unit=Unit.CUP, name="cornflakes"),
-                Ingredient(volume=1, unit=Unit.CUP, name="soy milk", optional_note="cold or warm, as preferred"),
+                Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="cornflakes"),
+                Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="soy milk", optional_note="cold or warm, as preferred"),
             ],
             food_additives="sugar, honey, fruits, or nut",
         ).model_dump(),
@@ -43,9 +43,9 @@ MEAL_RECIPES = [
         icon_id=1,
         ingredients=Ingredients(
             ingredients=[
-                Ingredient(volume=1, unit=Unit.CUP, name="płatki kukurydziane"),
+                Ingredient(volume=1, unit=Unit.CUP.translate(Language.PL), name="płatki kukurydziane"),
                 Ingredient(
-                    volume=1, unit=Unit.CUP, name="mleko sojowe", optional_note="zimne lub ciepłe, wedle uznania"
+                    volume=1, unit=Unit.CUP.translate(Language.PL), name="mleko sojowe", optional_note="zimne lub ciepłe, wedle uznania"
                 ),
             ],
         ).model_dump(),

@@ -18,7 +18,6 @@ async def get_meal_recipes_repository(
 ) -> MealRecipesRepository:
     return MealRecipesRepository(db)
 
-
 async def get_diet_prediction_service(
     meal_icons_repository: MealIconsRepository = Depends(get_meal_icons_repository),
     meal_recipes_repository: MealRecipesRepository = Depends(get_meal_recipes_repository),

@@ -43,8 +43,8 @@ class DietPredictionsService:
 
     async def get_meal_recipe_by_meal_recipe_id_and_language(self, meal_id: int, language: Language) -> MealRecipe:
         meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_recipe_id_and_language(meal_id, language)
-        print(meal_recipe)
         if not meal_recipe:
             raise NotFoundInDatabaseException("Meal recipe not found")
 
         return meal_recipe
+

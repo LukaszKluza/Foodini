@@ -4,29 +4,28 @@ from sqlalchemy import delete, func, select
 from sqlmodel import SQLModel
 
 from backend.core.database import engine, get_db
-from backend.core.mockData.pre_definied_meal_recipes import MEAL_RECIPES
-from backend.core.mockData.unit_pre_definied_traslations import UNIT_TRANSLATIONS
+from backend.core.mockData.pre_defined_meal_recipes import MEAL_RECIPES
 from backend.diet_prediction.enums.meal_type import MealType
-from backend.models import MealIcon, MealRecipe, UnitTranslation
+from backend.models import MealIcon, MealRecipe
 
 MEAL_ICONS = [
-    {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "db/pictures_meals/black-coffee-fried-egg-with-toasts.jpg"},
-    {"id": 2, "meal_type": MealType.MORNING_SNACK, "icon_path": "db/pictures_meals/high-angle-tasty-breakfast-bed.jpg"},
-    {"id": 3, "meal_type": MealType.LUNCH, "icon_path": "db/pictures_meals/noodle-soup-winter-meals-seeds.jpg"},
+    {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
+    {"id": 2, "meal_type": MealType.MORNING_SNACK, "icon_path": "/high-angle-tasty-breakfast-bed.jpg"},
+    {"id": 3, "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.jpg"},
     {
         "id": 4,
         "meal_type": MealType.AFTERNOON_SNACK,
-        "icon_path": "db/pictures_meals/top-view-tasty-salad-with-vegetables.jpg",
+        "icon_path": "/top-view-tasty-salad-with-vegetables.jpg",
     },
     {
         "id": 5,
         "meal_type": MealType.DINNER,
-        "icon_path": "db/pictures_meals/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.jpg",
+        "icon_path": "/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.jpg",
     },
     {
         "id": 6,
         "meal_type": MealType.EVENING_SNACK,
-        "icon_path": "db/pictures_meals/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
+        "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
     },
 ]
 
@@ -45,22 +44,6 @@ async def init_meal_icons():
             await db.commit()
 
 
-async def init_unit_translations():
-    async for db in get_db():
-        count = await db.scalar(select(func.count()).select_from(UnitTranslation))
-        if count == 0:
-            for unit, translations in UNIT_TRANSLATIONS.items():
-                for lang, value in translations.items():
-                    db.add(
-                        UnitTranslation(
-                            unit=unit,
-                            language=lang,
-                            translation=value,
-                        )
-                    )
-            await db.commit()
-
-
 async def init_meal_recipes():
     async for db in get_db():
         await db.execute(delete(MealRecipe))
@@ -74,7 +57,6 @@ async def init_meal_recipes():
 async def main():
     await create_tables()
     await init_meal_icons()
-    await init_unit_translations()
     await init_meal_recipes()
 
 
