@@ -1,7 +1,7 @@
-from backend.diet_prediction.diet_prediction_service import MealIconsService
 from fastapi import APIRouter, Depends
 
 from backend.diet_prediction.dependencies import get_meal_icons_service
+from backend.diet_prediction.diet_prediction_service import MealIconsService
 from backend.diet_prediction.enums.meal_type import MealType
 from backend.models.meal_icon_model import MealIcon
 from backend.users.user_gateway import UserGateway, get_user_gateway

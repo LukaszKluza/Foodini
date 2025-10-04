@@ -1,7 +1,8 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
+
 from sqlalchemy import Column, DateTime, func
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_prediction.enums.meal_status import MealStatus
 
@@ -17,7 +18,7 @@ class UserDailySummary(SQLModel, table=True):
     day: date = Field(nullable=False, index=True)
 
     meal_items: List["UserDailyMealItem"] = Relationship(back_populates="daily_meals")
-    next_meal: Optional[int] = Field(nullable=True) # When created set this to first meal id
+    next_meal: Optional[int] = Field(nullable=True)  # When created set this to first meal id
 
     calories_consumed: int = Field(default=0, nullable=False)
     protein_consumed: int = Field(default=0, nullable=False)

@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, status
 from datetime import date
+
+from fastapi import APIRouter, Depends, status
 
 from backend.diet_prediction.daily_summary_service import DailySummaryService
 from backend.diet_prediction.dependencies import get_daily_summary_service
-from backend.users.user_gateway import UserGateway, get_user_gateway
 from backend.diet_prediction.schemas import (
     DailySummaryResponse,
     DailySummaryUpdateRequest,
     MealResponse,
+    UserDailySummaryCreate,
 )
+from backend.users.user_gateway import UserGateway, get_user_gateway
 
 daily_summary_router = APIRouter(prefix="/v1/daily_summary")
 
@@ -21,6 +23,16 @@ async def get_daily_summary(
 ):
     user, _ = await user_gateway.get_current_user()
     return await diet_service.get_summary(user.id, day)
+
+
+@daily_summary_router.post("/", status_code=status.HTTP_201_CREATED, response_model=DailySummaryResponse)
+async def add_daily_summary(
+    daily_summary: UserDailySummaryCreate,
+    daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
+    user_gateway: UserGateway = Depends(get_user_gateway),
+):
+    user, _ = await user_gateway.get_current_user()
+    return await daily_summary_service.add_summary(daily_summary, user)
 
 
 @daily_summary_router.get("/next_meal", response_model=MealResponse | None)
