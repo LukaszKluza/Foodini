@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from backend.users.enums.language import Language
 
+
 class UnitTranslation(BaseModel):
     language: Language
     translation: str

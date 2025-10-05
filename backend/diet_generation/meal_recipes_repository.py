@@ -4,7 +4,7 @@ from sqlalchemy import Row, RowMapping, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import MealRecipe
-from backend.models.meal_recipe_model import Ingredients, Step, Ingredient
+from backend.models.meal_recipe_model import Ingredients, Step
 from backend.users.enums.language import Language
 
 

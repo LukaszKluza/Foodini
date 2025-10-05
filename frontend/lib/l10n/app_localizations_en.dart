@@ -405,6 +405,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fillAllNecessaryFields => 'Fill all necessary fields';
 
   @override
+  String get refreshRequest => 'Refresh request';
+
+  @override
+  String get goToMainPage => 'Go to main page';
+
+  @override
+  String get errorWhileFetchingMealIcon => 'Error while fetching meal icon';
+
+  @override
   String get mealDescriptions => 'Meal description';
 
   @override

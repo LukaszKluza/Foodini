@@ -405,6 +405,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
 
   @override
+  String get refreshRequest => 'Odśwież żądanie';
+
+  @override
+  String get goToMainPage => 'Idź na stronę główną';
+
+  @override
+  String get errorWhileFetchingMealIcon => 'Błąd podczas pobierania ikony posiłku';
+
+  @override
   String get mealDescriptions => 'Opis posiłku';
 
   @override

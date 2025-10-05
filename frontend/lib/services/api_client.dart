@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
-import 'package:frontend/models/diet_prediction/meal_type.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
 import 'package:frontend/models/user/language.dart';

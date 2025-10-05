@@ -887,6 +887,24 @@ abstract class AppLocalizations {
   /// **'Fill all necessary fields'**
   String get fillAllNecessaryFields;
 
+  /// No description provided for @refreshRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh request'**
+  String get refreshRequest;
+
+  /// No description provided for @goToMainPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to main page'**
+  String get goToMainPage;
+
+  /// No description provided for @errorWhileFetchingMealIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while fetching meal icon'**
+  String get errorWhileFetchingMealIcon;
+
   /// No description provided for @mealDescriptions.
   ///
   /// In en, this message translates to:

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:frontend/models/diet_prediction/meal_recipe.dart';
+import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user/language.dart';
 
@@ -8,7 +8,7 @@ class MealRecipeState {
   final Language? language;
   final MealRecipe? mealRecipe;
   final int? errorCode;
-  final String Function(BuildContext)? getMessage;
+  final String Function(BuildContext)? getErrorMessage;
   final String? iconUrl;
   final ProcessingStatus? processingStatus;
 
@@ -17,7 +17,7 @@ class MealRecipeState {
     this.language,
     this.mealRecipe,
     this.errorCode,
-    this.getMessage,
+    this.getErrorMessage,
     this.iconUrl,
     this.processingStatus = ProcessingStatus.emptyProcessingStatus,
   });
@@ -27,7 +27,7 @@ class MealRecipeState {
     Language? language,
     MealRecipe? mealRecipe,
     int? errorCode,
-    String Function(BuildContext)? getMessage,
+    String Function(BuildContext)? getErrorMessage,
     String? iconUrl,
     ProcessingStatus? processingStatus,
   }) {
@@ -36,7 +36,7 @@ class MealRecipeState {
       language: language ?? this.language,
       mealRecipe: mealRecipe ?? this.mealRecipe,
       errorCode: errorCode ?? this.errorCode,
-      getMessage: getMessage ?? this.getMessage,
+      getErrorMessage: getErrorMessage ?? this.getErrorMessage,
       iconUrl: iconUrl ?? this.iconUrl,
       processingStatus: processingStatus ?? this.processingStatus,
     );

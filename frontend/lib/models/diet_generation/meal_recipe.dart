@@ -1,6 +1,6 @@
-import 'package:frontend/models/diet_prediction/ingredients.dart';
-import 'package:frontend/models/diet_prediction/meal_type.dart';
-import 'package:frontend/models/diet_prediction/step.dart';
+import 'package:frontend/models/diet_generation/ingredients.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
 
 class MealRecipe {

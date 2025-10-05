@@ -6,7 +6,7 @@ import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
-import 'package:frontend/views/screens/user/meal_recipe_screen.dart';
+import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
@@ -57,10 +57,19 @@ final GoRouter router = GoRouter(
       path: '/meal-recipe/:id/:language',
       builder: (context, state) {
         final id = int.parse(state.pathParameters['id']!);
-        final language = state.pathParameters['language']!;
-        return MealRecipeScreen(mealId: id, language: Language.fromJson(language));
+        final language = Language.fromJson(state.pathParameters['language']!);
+        return MealRecipeScreen(mealId: id, language: language);
       },
-      redirect: (context, state) => _redirectIfUnauthenticated(context),
+      redirect: (context, state) {
+        try {
+          int.parse(state.pathParameters['id']!);
+          Language.fromJson(state.pathParameters['language']!);
+          return null;
+        } catch (_) {
+          // This path cannot exist; the name doesn't matter.
+          return '/does-not-exist';
+        }
+      },
     ),
     GoRoute(
       path: '/change-password',

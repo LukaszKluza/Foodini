@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/events/diet_prediction/diet_prediction_events.dart';
+import 'package:frontend/events/diet_generation/meal_recipe_events.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/states/diet_prediction/meal_recipe.dart';
+import 'package:frontend/states/diet_generation/meal_recipe.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
@@ -50,7 +50,7 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
     } on ApiException catch (error) {
       emit(
         state.copyWith(
-            getMessage:
+            getErrorMessage:
                 (context) =>
                 ExceptionConverter.formatErrorMessage(error.data, context),
             errorCode: error.statusCode,

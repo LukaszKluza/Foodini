@@ -4,8 +4,8 @@ from sqlalchemy import delete, func, select
 from sqlmodel import SQLModel
 
 from backend.core.database import engine, get_db
-from backend.core.mockData.pre_defined_meal_recipes import MEAL_RECIPES
-from backend.diet_prediction.enums.meal_type import MealType
+from backend.diet_generation.enums.meal_type import MealType
+from backend.diet_generation.test.test_data import MEAL_RECIPES
 from backend.models import MealIcon, MealRecipe
 
 MEAL_ICONS = [

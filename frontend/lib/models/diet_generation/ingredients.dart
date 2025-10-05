@@ -1,4 +1,4 @@
-import 'package:frontend/models/diet_prediction/ingredient.dart';
+import 'package:frontend/models/diet_generation/ingredient.dart';
 
 class Ingredients {
   final List<Ingredient> ingredients;

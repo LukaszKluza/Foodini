@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime, func
 from sqlmodel import Field, SQLModel
 
-from backend.diet_prediction.enums.meal_type import MealType
+from backend.diet_generation.enums.meal_type import MealType
 
 
 class MealIcon(SQLModel, table=True):

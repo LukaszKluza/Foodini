@@ -2,9 +2,9 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
-from backend.diet_prediction.dependencies import get_diet_prediction_service
-from backend.diet_prediction.diet_prediction_service import DietPredictionsService
-from backend.diet_prediction.enums.meal_type import MealType
+from backend.diet_generation.dependencies import get_diet_generation_service
+from backend.diet_generation.diet_generation_service import DietGenerationService
+from backend.diet_generation.enums.meal_type import MealType
 from backend.models import MealRecipe
 from backend.models.meal_icon_model import MealIcon
 from backend.users.enums.language import Language
@@ -16,7 +16,7 @@ diet_prediction_router = APIRouter(prefix="/v1/diet-prediction")
 @diet_prediction_router.get("/meal-icon", response_model=MealIcon)
 async def get_meal_icon_info(
     meal_type: MealType,
-    meal_prediction_service: DietPredictionsService = Depends(get_diet_prediction_service),
+    meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
@@ -27,7 +27,7 @@ async def get_meal_icon_info(
 async def get_meal_recipe_by_meal_id(
     recipe_id: int,
     language: Optional[Language] = Query(None),
-    meal_prediction_service: DietPredictionsService = Depends(get_diet_prediction_service),
+    meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
@@ -39,7 +39,7 @@ async def get_meal_recipe_by_meal_id(
 @diet_prediction_router.get("/meal-recipe", response_model=MealRecipe)
 async def get_meal_recipe_by_id(
     uuid: int,
-    meal_prediction_service: DietPredictionsService = Depends(get_diet_prediction_service),
+    meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
@@ -50,7 +50,7 @@ async def get_meal_recipe_by_id(
 @diet_prediction_router.post("/meal-recipe", response_model=MealRecipe)
 async def add_meal_recipe(
     meal_recipe: MealRecipe,
-    meal_prediction_service: DietPredictionsService = Depends(get_diet_prediction_service),
+    meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()

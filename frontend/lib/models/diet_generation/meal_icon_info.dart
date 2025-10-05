@@ -1,4 +1,4 @@
-import 'package:frontend/models/diet_prediction/meal_type.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 
 class MealIconInfo {
   final int id;
