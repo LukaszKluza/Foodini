@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:frontend/views/screens/user/login_screen.dart';
-import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
