@@ -77,6 +77,10 @@ class CaloriesPredictionRepository:
 
 async def validate_changed_macros(changed_macros: PredictedMacros, user_diet_predictions: UserDietPredictions):
     user_calories = user_diet_predictions.target_calories
+
+    if changed_macros.protein <= 0 or changed_macros.fat <= 0 or changed_macros.carbs <= 0:
+        raise ValidationError("Macros cannot be negative or zero.")
+
     approx_new_calories = (
         changed_macros.protein * config.PROTEIN_CONVERSION_FACTOR
         + changed_macros.fat * config.FAT_CONVERSION_FACTOR

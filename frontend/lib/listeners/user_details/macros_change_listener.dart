@@ -30,8 +30,7 @@ class MacrosChangeListenerHelper {
         },
       );
     } else if (state.getMessage != null) {
-      message = state.getMessage!(context);
-      setMessage(message);
+      setMessage(state.getMessage!(context));
       if (state.errorCode != null) {
         setErrorCode(state.errorCode!);
       }
