@@ -30,11 +30,8 @@ class MacrosChangeListenerHelper {
         },
       );
     } else if (state.getMessage != null) {
-      String message = AppLocalizations.of(context)!.unknownError;
-      if (state.getMessage != null) {
-        message = state.getMessage!(context);
-        setMessage(message);
-      }
+      message = state.getMessage!(context);
+      setMessage(message);
       if (state.errorCode != null) {
         setErrorCode(state.errorCode!);
       }
