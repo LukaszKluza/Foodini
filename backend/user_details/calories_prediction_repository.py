@@ -1,7 +1,7 @@
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from pydantic import ValidationError
 from backend.models import UserDietPredictions
 from backend.settings import config
 
@@ -13,7 +13,7 @@ class CaloriesPredictionRepository:
         self.db = db
 
     async def add_user_calories_prediction(
-            self, user_id: int, predicted_calories: PredictedCalories
+        self, user_id: int, predicted_calories: PredictedCalories
     ) -> PredictedCalories:
         result = await self.db.execute(select(UserDietPredictions).where(UserDietPredictions.user_id == user_id))
         user_diet_predictions = result.scalars().first()
@@ -75,11 +75,13 @@ class CaloriesPredictionRepository:
         return result.scalar_one_or_none()
 
 
-async def validate_changed_macros(
-        changed_macros: PredictedMacros, user_diet_predictions: UserDietPredictions
-):
+async def validate_changed_macros(changed_macros: PredictedMacros, user_diet_predictions: UserDietPredictions):
     user_calories = user_diet_predictions.target_calories
-    approx_new_calories = changed_macros.protein * config.PROTEIN_CONVERSION_FACTOR + changed_macros.fat * config.FAT_CONVERSION_FACTOR + changed_macros.carbs * config.CARBS_CONVERSION_FACTOR
+    approx_new_calories = (
+        changed_macros.protein * config.PROTEIN_CONVERSION_FACTOR
+        + changed_macros.fat * config.FAT_CONVERSION_FACTOR
+        + changed_macros.carbs * config.CARBS_CONVERSION_FACTOR
+    )
 
     if abs(approx_new_calories - user_calories) > config.MACROS_CHANGE_TOLERANCE:
         raise ValidationError("New macros are too far from predicted calories")
