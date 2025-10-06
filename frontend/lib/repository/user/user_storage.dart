@@ -45,9 +45,7 @@ class UserStorage {
 
   Future<void> updateLanguage(Language newLanguage) async {
     if (_user != null) {
-      _user = _user!.copyWith(
-        language: newLanguage,
-      );
+      _user = _user!.copyWith(language: newLanguage);
       setUser(_user!);
     }
   }

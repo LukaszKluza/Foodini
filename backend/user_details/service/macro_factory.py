@@ -1,3 +1,4 @@
+from backend.core.value_error_exception import ValueErrorException
 from backend.user_details.enums import DietType
 from backend.user_details.service.fat_loss_calculator import FatLossCalculator
 from backend.user_details.service.maintenance_calculator import MaintenanceCalculator
@@ -14,4 +15,4 @@ class MacroFactory:
         elif diet_type == DietType.FAT_LOSS:
             return FatLossCalculator(weight_kg, calories)
         else:
-            raise ValueError("Invalid diet_type")
+            raise ValueErrorException("Invalid diet_type")

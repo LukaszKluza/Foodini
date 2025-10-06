@@ -10,6 +10,8 @@ import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
+const _noChange = Object();
+
 abstract class DietFormState {}
 
 class DietFormInit extends DietFormState {}
@@ -59,44 +61,74 @@ class DietFormSubmit extends DietFormState {
   });
 
   DietFormState copyWith({
-    Gender? gender,
-    double? height,
-    double? weight,
-    DateTime? dateOfBirth,
-    DietType? dietType,
-    List<Allergy>? allergies,
-    double? dietGoal,
-    int? mealsPerDay,
-    DietIntensity? dietIntensity,
-    ActivityLevel? activityLevel,
-    StressLevel? stressLevel,
-    SleepQuality? sleepQuality,
-    double? musclePercentage,
-    double? fatPercentage,
-    double? waterPercentage,
-    bool? isSubmitting,
-    bool? isSuccess,
-    String? errorMessage,
+    Object? gender = _noChange,
+    Object? height = _noChange,
+    Object? weight = _noChange,
+    Object? dateOfBirth = _noChange,
+    Object? dietType = _noChange,
+    Object? allergies = _noChange,
+    Object? dietGoal = _noChange,
+    Object? mealsPerDay = _noChange,
+    Object? dietIntensity = _noChange,
+    Object? activityLevel = _noChange,
+    Object? stressLevel = _noChange,
+    Object? sleepQuality = _noChange,
+    Object? musclePercentage = _noChange,
+    Object? fatPercentage = _noChange,
+    Object? waterPercentage = _noChange,
+    Object? isSubmitting = _noChange,
+    Object? isSuccess = _noChange,
+    Object? errorMessage = _noChange,
   }) {
     return DietFormSubmit(
-      gender: gender ?? this.gender,
-      height: height ?? this.height,
-      weight: weight ?? this.weight,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      dietType: dietType ?? this.dietType,
-      allergies: allergies ?? this.allergies,
-      dietGoal: dietGoal ?? this.dietGoal,
-      mealsPerDay: mealsPerDay ?? this.mealsPerDay,
-      dietIntensity: dietIntensity ?? this.dietIntensity,
-      activityLevel: activityLevel ?? this.activityLevel,
-      stressLevel: stressLevel ?? this.stressLevel,
-      sleepQuality: sleepQuality ?? this.sleepQuality,
-      musclePercentage: musclePercentage ?? this.musclePercentage,
-      fatPercentage: fatPercentage ?? this.fatPercentage,
-      waterPercentage: waterPercentage ?? this.waterPercentage,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSuccess: isSuccess ?? this.isSuccess,
-      errorMessage: errorMessage,
+      gender: gender == _noChange ? this.gender : gender as Gender?,
+      height: height == _noChange ? this.height : height as double?,
+      weight: weight == _noChange ? this.weight : weight as double?,
+      dateOfBirth:
+          dateOfBirth == _noChange
+              ? this.dateOfBirth
+              : dateOfBirth as DateTime?,
+      dietType: dietType == _noChange ? this.dietType : dietType as DietType?,
+      allergies:
+          allergies == _noChange ? this.allergies : allergies as List<Allergy>?,
+      dietGoal: dietGoal == _noChange ? this.dietGoal : dietGoal as double?,
+      mealsPerDay:
+          mealsPerDay == _noChange ? this.mealsPerDay : mealsPerDay as int?,
+      dietIntensity:
+          dietIntensity == _noChange
+              ? this.dietIntensity
+              : dietIntensity as DietIntensity?,
+      activityLevel:
+          activityLevel == _noChange
+              ? this.activityLevel
+              : activityLevel as ActivityLevel?,
+      stressLevel:
+          stressLevel == _noChange
+              ? this.stressLevel
+              : stressLevel as StressLevel?,
+      sleepQuality:
+          sleepQuality == _noChange
+              ? this.sleepQuality
+              : sleepQuality as SleepQuality?,
+      musclePercentage:
+          musclePercentage == _noChange
+              ? this.musclePercentage
+              : musclePercentage as double?,
+      fatPercentage:
+          fatPercentage == _noChange
+              ? this.fatPercentage
+              : fatPercentage as double?,
+      waterPercentage:
+          waterPercentage == _noChange
+              ? this.waterPercentage
+              : waterPercentage as double?,
+      isSubmitting:
+          isSubmitting == _noChange ? this.isSubmitting : isSubmitting as bool,
+      isSuccess: isSuccess == _noChange ? this.isSuccess : isSuccess as bool,
+      errorMessage:
+          errorMessage == _noChange
+              ? this.errorMessage
+              : errorMessage as String?,
     );
   }
 
@@ -150,8 +182,13 @@ class DietFormSubmit extends DietFormState {
 class DietFormSubmitSuccess extends DietFormState {}
 
 class DietFormSubmitFailure extends DietFormState {
+  final DietFormSubmit previousData;
   final String Function(BuildContext)? getMessage;
   final ApiException? error;
 
-  DietFormSubmitFailure({this.getMessage, this.error});
+  DietFormSubmitFailure({
+    required this.previousData,
+    this.getMessage,
+    this.error,
+  });
 }
