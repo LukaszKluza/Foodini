@@ -62,8 +62,7 @@ import 'app_localizations_pl.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('pl'),
+    Locale('pl')
   ];
 
   /// No description provided for @foodini.
@@ -614,6 +611,36 @@ abstract class AppLocalizations {
   /// **'Generate weekly diet'**
   String get generateWeeklyDiet;
 
+  /// No description provided for @predictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted calories'**
+  String get predictedCalories;
+
+  /// No description provided for @bmr.
+  ///
+  /// In en, this message translates to:
+  /// **'Basal Metabolic Rate (BMR)'**
+  String get bmr;
+
+  /// No description provided for @tdee.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Daily Energy Expenditure (TDEE)'**
+  String get tdee;
+
+  /// No description provided for @predictedMacros.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted macronutrients'**
+  String get predictedMacros;
+
+  /// No description provided for @dietDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet duration'**
+  String get dietDuration;
+
   /// No description provided for @dietType_FatLoss.
   ///
   /// In en, this message translates to:
@@ -901,10 +928,81 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fill all necessary fields'**
   String get fillAllNecessaryFields;
+
+  /// No description provided for @macros.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros'**
+  String get macros;
+
+  /// No description provided for @kcal.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get kcal;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @expected.
+  ///
+  /// In en, this message translates to:
+  /// **'expected'**
+  String get expected;
+
+  /// No description provided for @proteinG.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein (g)'**
+  String get proteinG;
+
+  /// No description provided for @fatG.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat (g)'**
+  String get fatG;
+
+  /// No description provided for @carbsG.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs (g)'**
+  String get carbsG;
+
+  /// No description provided for @fillFormToSeePredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to see predictions'**
+  String get fillFormToSeePredictions;
+
+  /// No description provided for @redirectToProfileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect to profile details'**
+  String get redirectToProfileDetails;
+
+  /// No description provided for @savePredictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Save predicted calories'**
+  String get savePredictedCalories;
+
+  /// No description provided for @refreshRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh request'**
+  String get refreshRequest;
+
+  /// No description provided for @changeCaloriesPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change calories prediction'**
+  String get changeCaloriesPrediction;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -913,26 +1011,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'pl':
-      return AppLocalizationsPl();
+    case 'en': return AppLocalizationsEn();
+    case 'pl': return AppLocalizationsPl();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

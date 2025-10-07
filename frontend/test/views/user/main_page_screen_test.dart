@@ -27,10 +27,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-  });
 
-  testWidgets('Main page shows all buttons', (tester) async {
-    // Given, When
     UserStorage().setUser(
       UserResponse(
         id: 1,
@@ -39,30 +36,26 @@ void main() {
         email: 'jan4@example.com',
       ),
     );
-    await tester.pumpWidget(buildTestWidget(MainPageScreen()));
+  });
 
+  testWidgets('Main page shows all buttons', (tester) async {
+    // Given, When
+    await tester.pumpWidget(buildTestWidget(MainPageScreen()));
     // Then
     expect(find.text('My Account'), findsOneWidget);
     expect(find.byIcon(Icons.person), findsOneWidget);
     expect(find.text('Diet preferences'), findsOneWidget);
     expect(find.byIcon(Icons.food_bank_rounded), findsOneWidget);
-    expect(find.text('Button 3'), findsOneWidget);
+    expect(find.text('Change calories prediction'), findsOneWidget);
+    expect(find.byIcon(Icons.change_circle_outlined), findsOneWidget);
     expect(find.text('Button 4'), findsOneWidget);
-    expect(find.byIcon(Icons.do_not_disturb), findsNWidgets(2));
+    expect(find.byIcon(Icons.do_not_disturb), findsOneWidget);
 
     expect(find.text('Foodini'), findsOneWidget);
   });
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
     // Given, When
-    UserStorage().setUser(
-      UserResponse(
-        id: 1,
-        name: 'Jan',
-        language: Language.en,
-        email: 'jan4@example.com',
-      ),
-    );
     await tester.pumpWidget(
       buildTestWidget(
         MainPageScreen(),
@@ -87,14 +80,6 @@ void main() {
     tester,
   ) async {
     // Given, When
-    UserStorage().setUser(
-      UserResponse(
-        id: 1,
-        name: 'Jan',
-        language: Language.en,
-        email: 'jan4@example.com',
-      ),
-    );
     await tester.pumpWidget(
       buildTestWidget(
         MainPageScreen(),
@@ -114,5 +99,27 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(Key('profile_details')), findsOneWidget);
+  });
+
+  testWidgets('Tap on Change calories prediction, navigates to prediction result screen', (tester) async {
+    // Given, When
+    await tester.pumpWidget(
+      buildTestWidget(
+        MainPageScreen(),
+        additionalRoutes: [
+          GoRoute(
+            path: '/calories-result',
+            builder: (context, state) => const Scaffold(key: Key('calories_result')),
+          ),
+        ],
+      ),
+    );
+
+    // Then
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Change calories prediction'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(Key('calories_result')), findsOneWidget);
   });
 }

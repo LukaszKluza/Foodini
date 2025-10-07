@@ -207,7 +207,11 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       final userId = UserStorage().getUserId!;
       await userDetailsRepository.submitDietForm(dietForm, userId);
 
-      emit(DietFormSubmitSuccess());
+      final predicted = await userDetailsRepository.addCaloriesPrediction(
+        userId,
+      );
+
+      emit(DietFormSubmitSuccess(predicted));
     } on ApiException catch (e) {
       emit(DietFormSubmitFailure(previousData: currentState, error: e));
     }

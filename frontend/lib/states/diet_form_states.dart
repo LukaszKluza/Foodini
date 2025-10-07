@@ -7,6 +7,7 @@ import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 
@@ -179,7 +180,13 @@ class DietFormSubmit extends DietFormState {
   }
 }
 
-class DietFormSubmitSuccess extends DietFormState {}
+class DietFormSubmitSuccess extends DietFormState {
+  final PredictedCalories predictedCalories;
+
+  DietFormSubmitSuccess(this.predictedCalories);
+
+  get targetCalories => null;
+}
 
 class DietFormSubmitFailure extends DietFormState {
   final DietFormSubmit previousData;
