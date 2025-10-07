@@ -1,46 +1,31 @@
 from datetime import date
-from typing import List, Optional
+from typing import Dict
 
 from pydantic import BaseModel, Field
 
 from backend.diet_prediction.enums.meal_status import MealStatus
+from backend.diet_prediction.enums.meal_type import MealType
 
 
-class MealResponse(BaseModel):
-    id: int
-    name: str
-    calories: int
-    protein: int
-    fat: int
-    carbs: int
-    status: str
-
-
-class UserDailyMealItemCreate(BaseModel):
+class MealInfo(BaseModel):
     meal_id: int
-    status: MealStatus = MealStatus.PENDING
+    status: MealStatus = Field(default=MealStatus.PENDING)
 
 
-class UserDailySummaryCreate(BaseModel):
+class DailyMealsCreate(BaseModel):
     day: date
-    meal_items: List[UserDailyMealItemCreate]
-    next_meal: Optional[int] = None
-    calories_consumed: int = Field(default=0, ge=0)
-    protein_consumed: int = Field(default=0, ge=0)
-    fat_consumed: int = Field(default=0, ge=0)
-    carbs_consumed: int = Field(default=0, ge=0)
+    meals: Dict[MealType, MealInfo]
 
 
-class DailySummaryResponse(BaseModel):
-    id: int
+class DailyMacrosSummaryCreate(BaseModel):
     day: date
-    calories_consumed: int
-    protein_consumed: int
-    fat_consumed: int
-    carbs_consumed: int
-    next_meal: Optional[int]
-    meal_items: List[MealResponse]
+    calories: int = Field(default=0, ge=0)
+    protein: int = Field(default=0, ge=0)
+    carbs: int = Field(default=0, ge=0)
+    fats: int = Field(default=0, ge=0)
 
 
-class DailySummaryUpdateRequest(BaseModel):
-    eaten_meal_id: int
+class MealInfoUpdateRequest(BaseModel):
+    day: date
+    meal_type: MealType
+    status: MealStatus

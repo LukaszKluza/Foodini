@@ -2,55 +2,50 @@ from datetime import date
 from typing import Optional, Type
 
 from backend.diet_prediction.daily_summary_repository import DailySummaryRepository
-from backend.diet_prediction.schemas import DailySummaryResponse, MealResponse, UserDailySummaryCreate
+from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
 from backend.models import User
-from backend.models.user_daily_summary_model import UserDailyMealItem, UserDailySummary
-
-
-def make_daily_summary_response(summary: UserDailySummary) -> DailySummaryResponse:
-    return DailySummaryResponse(
-        id=summary.id,
-        day=summary.day,
-        calories_consumed=summary.calories_consumed,
-        protein_consumed=summary.protein_consumed,
-        fat_consumed=summary.fat_consumed,
-        carbs_consumed=summary.carbs_consumed,
-        next_meal=summary.next_meal,
-        meal_items=[
-            MealResponse(
-                id=item.meal_id,
-                name=item.meal.name,
-                calories=item.meal.calories,
-                protein=int(item.meal.protein),
-                fat=int(item.meal.fat),
-                carbs=int(item.meal.carbs),
-                status=item.status.value,
-            )
-            for item in summary.meal_items
-        ],
-    )
+from backend.models.user_daily_summary_model import DailyMeals, DailyMacrosSummary
+from backend.user_details.service.user_details_validation_service import UserDetailsValidationService
 
 
 class DailySummaryService:
-    def __init__(self, meals_repo: DailySummaryRepository):
+    def __init__(self, meals_repo: DailySummaryRepository, user_details_validators: UserDetailsValidationService):
         self.daily_summary_repo = meals_repo
+        self.user_details_validators = user_details_validators
 
-    async def add_summary(
-        self, daily_summary_data: UserDailySummaryCreate, user: Type[User]
-    ) -> Optional[DailySummaryResponse]:
-        summary = await self.daily_summary_repo.add_daily_summary(daily_summary_data, user.id)
+    async def get_user_details_by_user(self, user_id: int):
+        return await self.user_details_validators.ensure_user_details_exist_by_user_id(user_id)
 
-        return make_daily_summary_response(summary)
+    async def add_daily_meals(
+        self, daily_meals_data: DailyMealsCreate, user_id: int
+    ) -> DailyMeals:
+        await self.get_user_details_by_user(user_id)
+        daily_meals = await self.daily_summary_repo.get_daily_meals(user_id, daily_meals_data.day)
+        if daily_meals:
+            raise ValueError(f"Daily meals already exist for user {user_id} and day {daily_meals_data.day}")
+        return await self.daily_summary_repo.add_daily_meals(daily_meals_data, user_id)
 
-    async def get_summary(self, user_id: int, day: date) -> Optional[DailySummaryResponse]:
-        summary = await self.daily_summary_repo.get_daily_summary(user_id, day)
-        if not summary:
-            return None
+    async def get_daily_meals(self, user_id: int, day: date) -> Optional[DailyMeals]:
+        await self.get_user_details_by_user(user_id)
+        return await self.daily_summary_repo.get_daily_meals(user_id, day)
 
-        return make_daily_summary_response(summary)
+    async def add_daily_macros_summary(self, user_id: int, data: DailyMacrosSummaryCreate) -> DailyMacrosSummary:
+        await self.get_user_details_by_user(user_id)
+        daily_macros_summary = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
+        if daily_macros_summary:
+            raise ValueError(f"Daily macros summary already exist for user {user_id} and day {data.day}.")
+        return await self.daily_summary_repo.add_daily_macros_summary(data, user_id)
 
-    async def get_next_meal(self, user_id: int, day: date) -> Optional[UserDailyMealItem]:
-        return await self.daily_summary_repo.get_next_meal(user_id, day)
+    async def get_daily_macros_summary(self, user_id: int, day: date) -> Optional[DailyMacrosSummary]:
+        await self.get_user_details_by_user(user_id)
+        return await self.daily_summary_repo.get_daily_macros_summary(user_id, day)
 
-    async def update_meal_status(self, daily_summary_id: int, eaten_meal_id: int) -> Optional[UserDailySummary]:
-        return await self.daily_summary_repo.update_daily_summary(daily_summary_id, eaten_meal_id)
+    async def update_daily_macros_summary(self, user_id: int, data: DailyMacrosSummaryCreate) -> DailyMacrosSummary:
+        await self.get_user_details_by_user(user_id)
+        return await self.daily_summary_repo.update_daily_macros_summary(user_id, data)
+
+    async def update_meal_status(self, user_id: int, update_data: MealInfoUpdateRequest) -> DailyMeals:
+        updated_meals = await self.daily_summary_repo.update_meal_status(user_id, update_data)
+        if not updated_meals:
+            raise ValueError("Plan for given user and day does not exist or there is no wanted meal.")
+        return updated_meals
