@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/blocs/diet_generation/meal_recipe_bloc.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
 import 'package:frontend/models/diet_generation/meal_icon_info.dart';
@@ -26,6 +27,8 @@ void main() {
   late MealRecipeBloc mealRecipeBloc;
   late MealRecipe mealRecipe;
   late MealIconInfo mealIconInfo;
+  late LanguageCubit languageCubit;
+
 
   Widget buildTestWidget(
     Widget child, {
@@ -33,6 +36,7 @@ void main() {
   }) {
     return TestWrapperBuilder(child)
         .withRouter()
+        .addProvider(Provider<LanguageCubit>.value(value: languageCubit))
         .addProvider(BlocProvider<MealRecipeBloc>.value(value: mealRecipeBloc))
         .addProvider(
           Provider<MealRecipeRepository>.value(value: mockMealRecipeRepository),
@@ -42,6 +46,7 @@ void main() {
   }
 
   setUp(() {
+    languageCubit = LanguageCubit();
     SharedPreferences.setMockInitialValues({});
     mealRecipeBloc = MealRecipeBloc(mockMealRecipeRepository);
 
@@ -55,7 +60,12 @@ void main() {
       iconId: 1,
       ingredients: Ingredients(
         ingredients: [
-          Ingredient(volume: 1, unit: 'cup', name: 'Soy milk', optionalNote: 'cold or warm, as preferred'),
+          Ingredient(
+            volume: 1,
+            unit: 'cup',
+            name: 'Soy milk',
+            optionalNote: 'cold or warm, as preferred',
+          ),
           Ingredient(volume: 1, unit: 'cup', name: 'Cornflakes'),
           Ingredient(volume: 1, unit: 'spoon', name: 'Sugar'),
         ],
@@ -118,9 +128,7 @@ void main() {
     ).thenAnswer((_) async => mealIconInfo);
 
     // When
-    await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1)),
-    );
+    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
     await tester.pump(const Duration(milliseconds: 100));
 
     // Then
@@ -128,35 +136,46 @@ void main() {
     expect(find.byKey(const Key('body_1_EN')), findsOneWidget);
     expect(find.text('Cornflakes with soy milk'), findsOneWidget);
     expect(find.text('Meal description'), findsOneWidget);
-    expect(find.text('Cornflakes with soy milk; Meal description'), findsOneWidget);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsOneWidget,
+    );
     expect(find.text('Groceries'), findsOneWidget);
-    expect(find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'), findsOneWidget);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsOneWidget,
+    );
     expect(find.text('• 1.0 cup Cornflakes'), findsOneWidget);
     expect(find.text('• 1.0 spoon Sugar'), findsOneWidget);
     expect(find.text('Optional: Honey, fruits'), findsOneWidget);
     expect(find.text('Recipe'), findsOneWidget);
     expect(find.text('1. Pour the cornflakes into a bowl.'), findsOneWidget);
     expect(find.text('2. Add the milk over the cornflakes.'), findsOneWidget);
-    expect(find.text('3. (Optional) Sweeten with sugar or honey.'), findsOneWidget);
-    expect(find.text('4. (Optional) Top with sliced fruits or nuts.'), findsOneWidget);
-    expect(find.text('5. Serve immediately before it gets soggy.'), findsOneWidget);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsOneWidget,
+    );
 
     expect(find.byKey(const Key('refresh_request_button')), findsNothing);
     expect(find.byKey(const Key('redirect_to_main_page_button')), findsNothing);
   });
 
-  testWidgets('Meal recipe screen, server error', (
-      WidgetTester tester,
-      ) async {
+  testWidgets('Meal recipe screen, server error', (WidgetTester tester) async {
     // Given
     when(
       mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
     ).thenThrow(ApiException({'detail': 'Server error'}, statusCode: 500));
 
     // When
-    await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1)),
-    );
+    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
     await tester.pumpAndSettle();
 
     // Then
@@ -166,57 +185,85 @@ void main() {
 
     expect(find.text('Cornflakes with soy milk'), findsNothing);
     expect(find.text('Meal description'), findsNothing);
-    expect(find.text('Cornflakes with soy milk; Meal description'), findsNothing);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsNothing,
+    );
     expect(find.text('Groceries'), findsNothing);
-    expect(find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'), findsNothing);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsNothing,
+    );
     expect(find.text('• 1.0 cup Cornflakes'), findsNothing);
     expect(find.text('• 1.0 spoon Sugar'), findsNothing);
     expect(find.text('Optional: Honey, fruits'), findsNothing);
     expect(find.text('Recipe'), findsNothing);
     expect(find.text('1. Pour the cornflakes into a bowl.'), findsNothing);
     expect(find.text('2. Add the milk over the cornflakes.'), findsNothing);
-    expect(find.text('3. (Optional) Sweeten with sugar or honey.'), findsNothing);
-    expect(find.text('4. (Optional) Top with sliced fruits or nuts.'), findsNothing);
-    expect(find.text('5. Serve immediately before it gets soggy.'), findsNothing);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsNothing,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsNothing,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsNothing,
+    );
     expect(find.byKey(const Key('redirect_to_main_page_button')), findsNothing);
   });
 
-  testWidgets('Meal recipe screen, 404 error', (
-      WidgetTester tester,
-      ) async {
+  testWidgets('Meal recipe screen, 404 error', (WidgetTester tester) async {
     // Given
-    when(
-      mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
-    ).thenThrow(ApiException({'detail': 'Meal recipe not found'}, statusCode: 404));
+    when(mockMealRecipeRepository.getMealRecipe(1, 1, Language.en)).thenThrow(
+      ApiException({'detail': 'Meal recipe not found'}, statusCode: 404),
+    );
 
     // When
-    await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1)),
-    );
+    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
     await tester.pumpAndSettle();
 
     // Then
     expect(find.byKey(const Key('bloc_1_EN')), findsOneWidget);
     expect(find.byKey(const Key('body_1_EN')), findsOneWidget);
-    expect(find.byKey(const Key('redirect_to_main_page_button')), findsOneWidget);
+    expect(
+      find.byKey(const Key('redirect_to_main_page_button')),
+      findsOneWidget,
+    );
     expect(find.text('Go to main page'), findsOneWidget);
     expect(find.text('Meal recipe not found'), findsOneWidget);
 
-
     expect(find.text('Cornflakes with soy milk'), findsNothing);
     expect(find.text('Meal description'), findsNothing);
-    expect(find.text('Cornflakes with soy milk; Meal description'), findsNothing);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsNothing,
+    );
     expect(find.text('Groceries'), findsNothing);
-    expect(find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'), findsNothing);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsNothing,
+    );
     expect(find.text('• 1.0 cup Cornflakes'), findsNothing);
     expect(find.text('• 1.0 spoon Sugar'), findsNothing);
     expect(find.text('Optional: Honey, fruits'), findsNothing);
     expect(find.text('Recipe'), findsNothing);
     expect(find.text('1. Pour the cornflakes into a bowl.'), findsNothing);
     expect(find.text('2. Add the milk over the cornflakes.'), findsNothing);
-    expect(find.text('3. (Optional) Sweeten with sugar or honey.'), findsNothing);
-    expect(find.text('4. (Optional) Top with sliced fruits or nuts.'), findsNothing);
-    expect(find.text('5. Serve immediately before it gets soggy.'), findsNothing);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsNothing,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsNothing,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsNothing,
+    );
     expect(find.byKey(const Key('refresh_request_button')), findsNothing);
   });
 }

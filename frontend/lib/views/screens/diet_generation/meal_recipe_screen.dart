@@ -227,8 +227,6 @@ class _MealRecipe extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder:
             (context, url) => SizedBox(
-              // height: 100,
-              // width: 100,
               child: Center(child: CircularProgressIndicator()),
             ),
         errorWidget: (context, url, error) {
