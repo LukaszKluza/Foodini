@@ -62,6 +62,8 @@
   "enterYourDietGoal": "Enter your diet goal",
   "weightKg": "Weight (kg)",
   "dietGoalShouldBeBetween": "Diet goal should be between",
+  "muscleGainGoalCantBeLower": "Diet goal for 'Muscle Gain' can't be lower than current weight",
+  "fatLossGoalCantBeHigher": "Diet goal for 'Fat Loss' cant't be higher than current weight",
   "kg": "kg",
   "mealsPerDay": "Meals per day",
   "dietIntensity": "Diet intensity",

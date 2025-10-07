@@ -62,6 +62,8 @@
   "enterYourDietGoal": "Wprowadź swój cel diety",
   "weightKg": "Waga (kg)",
   "dietGoalShouldBeBetween": "Cel diety powinien być pomiędzy",
+  "muscleGainGoalCantBeLower": "Cel diety dla 'Przyrostu masy mięśniowej' nie może być mniejszy niż obecna waga",
+  "fatLossGoalCantBeHigher": "Cel diety dla 'Utraty tłuszczu' nie może być większy niż obecna waga",
   "kg": "kg",
   "mealsPerDay": "Liczba posiłków dziennie",
   "dietIntensity": "Intensywność diety",

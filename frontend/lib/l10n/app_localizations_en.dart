@@ -195,6 +195,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
+  String get muscleGainGoalCantBeLower =>
+      'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
+
+  @override
+  String get fatLossGoalCantBeHigher =>
+      'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
+
+  @override
   String get kg => 'kg';
 
   @override

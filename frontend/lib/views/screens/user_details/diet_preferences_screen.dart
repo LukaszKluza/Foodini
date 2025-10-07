@@ -76,6 +76,9 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   double _selectedDietGoal = Constants.defaultWeight;
   DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = Constants.defaultMealsPerDay;
+  double _selectedWeight = Constants.defaultWeight;
+
+  String? _dietGoalError;
 
   @override
   void initState() {
@@ -84,15 +87,21 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
+      _selectedDietGoal = blocState.dietGoal ?? _selectedDietGoal;
       _selectedAllergies = blocState.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
-      if (blocState.dietGoal != null) {
-        _selectedDietGoal = blocState.dietGoal!;
-      } else if (blocState.weight != null) {
-        _selectedDietGoal = blocState.weight!;
-        context.read<DietFormBloc>().add(UpdateDietGoal(blocState.weight!));
+      _selectedWeight = blocState.weight!;
+
+      if (_selectedDietType == DietType.weightMaintenance ||
+          (_selectedDietType == DietType.muscleGain &&
+              _selectedDietGoal < _selectedWeight) ||
+          (_selectedDietType == DietType.fatLoss &&
+              _selectedDietGoal > _selectedWeight) ||
+          _selectedDietType == null) {
+        _selectedDietGoal = _selectedWeight;
+        context.read<DietFormBloc>().add(UpdateDietGoal(_selectedDietGoal));
       }
     }
 
@@ -104,9 +113,20 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         _selectedDietType != null &&
         _selectedDietIntensity != null &&
         _selectedMealsPerDay > 0;
-    final dietGoalValid =
-        (_selectedDietType == DietType.weightMaintenance) ||
-        (_selectedDietGoal > 0);
+
+    final error = validateDietGoal(
+      _selectedDietGoal.toString(),
+      context,
+      dietType: _selectedDietType,
+      weight: _selectedWeight,
+    );
+
+    setState(() {
+      _dietGoalError = error;
+    });
+
+    final dietGoalValid = error == null;
+
     widget.onFormValidityChanged?.call(allRequiredFilled && dietGoalValid);
   }
 
@@ -208,10 +228,14 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(
           value: _selectedDietGoal,
-          validator: (value) => validateDietGoal(value, context),
           onChanged: _onDietGoalChanged,
           label: AppLocalizations.of(context)!.dietGoal,
           dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
+        ),
+      if (_dietGoalError != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(_dietGoalError!, style: Styles.errorStyle),
         ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

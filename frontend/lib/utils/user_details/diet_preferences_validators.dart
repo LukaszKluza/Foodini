@@ -11,12 +11,21 @@ String? validateDietType(DietType? value, BuildContext context) {
   return null;
 }
 
-String? validateDietGoal(String? value, BuildContext context) {
-  final weight = double.tryParse(value ?? '');
-  if (weight == null ||
-      weight < Constants.minWeight ||
-      weight > Constants.maxWeight) {
+String? validateDietGoal(
+  String? value,
+  BuildContext context, {
+  DietType? dietType,
+  double? weight,
+}) {
+  final goal = double.tryParse(value ?? '');
+  if (goal == null ||
+      goal < Constants.minWeight ||
+      goal > Constants.maxWeight) {
     return '${AppLocalizations.of(context)!.dietGoalShouldBeBetween} [${Constants.minWeight}, ${Constants.maxWeight}]';
+  } else if (dietType == DietType.muscleGain && goal < weight!) {
+    return AppLocalizations.of(context)!.muscleGainGoalCantBeLower;
+  } else if (dietType == DietType.fatLoss && goal > weight!) {
+    return AppLocalizations.of(context)!.fatLossGoalCantBeHigher;
   }
   return null;
 }

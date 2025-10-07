@@ -40,6 +40,10 @@ class DietFormListenerHelper {
         },
       );
     } else if (state is DietFormSubmitFailure) {
+      final bloc = context.read<DietFormBloc>();
+
+      bloc.add(RestoreDietFormStateAfterFailure(state.previousData));
+
       String message = AppLocalizations.of(context)!.unknownError;
       if (state.error != null) {
         message = ExceptionConverter.formatErrorMessage(

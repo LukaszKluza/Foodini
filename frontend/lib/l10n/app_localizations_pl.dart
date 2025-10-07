@@ -195,6 +195,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
+  String get muscleGainGoalCantBeLower =>
+      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+
+  @override
+  String get fatLossGoalCantBeHigher =>
+      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+
+  @override
   String get kg => 'kg';
 
   @override
