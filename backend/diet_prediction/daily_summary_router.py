@@ -4,11 +4,7 @@ from fastapi import APIRouter, Depends, status
 
 from backend.diet_prediction.daily_summary_service import DailySummaryService
 from backend.diet_prediction.dependencies import get_daily_summary_service
-from backend.diet_prediction.schemas import (
-    MealInfoUpdateRequest,
-    DailyMealsCreate,
-    DailyMacrosSummaryCreate
-)
+from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
 daily_summary_router = APIRouter(prefix="/v1/daily_summary")

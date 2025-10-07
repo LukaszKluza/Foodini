@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import Dict
 
 from sqlalchemy import JSON
-from sqlmodel import SQLModel, Field, Column, DateTime, func
+from sqlmodel import Column, DateTime, Field, SQLModel, func
 
 
 class DailyMeals(SQLModel, table=True):

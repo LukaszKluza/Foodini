@@ -3,10 +3,8 @@ from datetime import date
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_prediction.enums.meal_status import MealStatus
-from backend.diet_prediction.enums.meal_type import MealType
-from backend.diet_prediction.schemas import DailyMealsCreate, DailyMacrosSummaryCreate, MealInfoUpdateRequest
-from backend.models.user_daily_summary_model import DailyMeals, DailyMacrosSummary
+from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
+from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 
 
 class DailySummaryRepository:
@@ -22,11 +20,13 @@ class DailySummaryRepository:
         return user_daily_meals
 
     async def get_daily_meals(self, user_id: int, day: date) -> DailyMeals | None:
-        query = (select(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day))
+        query = select(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def add_daily_macros_summary(self, daily_summary_data: DailyMacrosSummaryCreate, user_id: int) -> DailyMacrosSummary:
+    async def add_daily_macros_summary(
+        self, daily_summary_data: DailyMacrosSummaryCreate, user_id: int
+    ) -> DailyMacrosSummary:
         user_daily_macros_summary = DailyMacrosSummary(user_id=user_id, **daily_summary_data.model_dump())
 
         self.db.add(user_daily_macros_summary)
@@ -35,11 +35,13 @@ class DailySummaryRepository:
         return user_daily_macros_summary
 
     async def get_daily_macros_summary(self, user_id: int, day: date) -> DailyMacrosSummary | None:
-        query = (select(DailyMacrosSummary).where(DailyMeals.user_id == user_id, DailyMeals.day == day))
+        query = select(DailyMacrosSummary).where(DailyMeals.user_id == user_id, DailyMeals.day == day)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def update_daily_macros_summary(self, user_id: int, daily_summary_data: DailyMacrosSummaryCreate) -> DailyMacrosSummary | None:
+    async def update_daily_macros_summary(
+        self, user_id: int, daily_summary_data: DailyMacrosSummaryCreate
+    ) -> DailyMacrosSummary | None:
         daily_macros_summary = await self.get_daily_macros_summary(user_id, daily_summary_data.day)
         if daily_macros_summary:
             daily_macros_summary_request = DailyMacrosSummary(id=user_id, **daily_summary_data.model_dump())

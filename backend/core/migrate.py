@@ -5,7 +5,7 @@ from sqlmodel import SQLModel
 
 from backend.core.database import engine, get_db
 from backend.diet_prediction.enums.meal_type import MealType
-from backend.models import MealIcon, User, UserDetails, DailyMeals, DailyMacrosSummary
+from backend.models import DailyMacrosSummary, DailyMeals, MealIcon, User, UserDetails
 
 MEAL_ICONS = [
     {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "db/pictures_meals/black-coffee-fried-egg-with-toasts.jpg"},
@@ -27,6 +27,7 @@ MEAL_ICONS = [
         "icon_path": "db/pictures_meals/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
     },
 ]
+
 
 async def create_tables():
     async with engine.begin() as conn:

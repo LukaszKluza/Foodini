@@ -1,10 +1,9 @@
 from datetime import date
-from typing import Optional, Type
+from typing import Optional
 
 from backend.diet_prediction.daily_summary_repository import DailySummaryRepository
 from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
-from backend.models import User
-from backend.models.user_daily_summary_model import DailyMeals, DailyMacrosSummary
+from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 from backend.user_details.service.user_details_validation_service import UserDetailsValidationService
 
 
@@ -16,9 +15,7 @@ class DailySummaryService:
     async def get_user_details_by_user(self, user_id: int):
         return await self.user_details_validators.ensure_user_details_exist_by_user_id(user_id)
 
-    async def add_daily_meals(
-        self, daily_meals_data: DailyMealsCreate, user_id: int
-    ) -> DailyMeals:
+    async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int) -> DailyMeals:
         await self.get_user_details_by_user(user_id)
         daily_meals = await self.daily_summary_repo.get_daily_meals(user_id, daily_meals_data.day)
         if daily_meals:
