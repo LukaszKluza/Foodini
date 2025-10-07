@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
@@ -54,20 +53,17 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/meal-recipe/:id/:language',
+      path: '/meal-recipe/:id',
       builder: (context, state) {
         final id = int.parse(state.pathParameters['id']!);
-        final language = Language.fromJson(state.pathParameters['language']!);
-        return MealRecipeScreen(mealId: id, language: language);
+        return MealRecipeScreen(mealId: id);
       },
       redirect: (context, state) {
         try {
           int.parse(state.pathParameters['id']!);
-          Language.fromJson(state.pathParameters['language']!);
-          return null;
+          return _redirectIfUnauthenticated(context);
         } catch (_) {
-          // This path cannot exist; the name doesn't matter.
-          return '/does-not-exist';
+          return '/.../meal-recipe/${state.pathParameters['id']}';
         }
       },
     ),

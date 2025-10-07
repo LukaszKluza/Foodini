@@ -119,7 +119,7 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1, language: Language.en)),
+      buildTestWidget(const MealRecipeScreen(mealId: 1)),
     );
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -155,7 +155,7 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1, language: Language.en)),
+      buildTestWidget(const MealRecipeScreen(mealId: 1)),
     );
     await tester.pumpAndSettle();
 
@@ -191,7 +191,7 @@ void main() {
 
     // When
     await tester.pumpWidget(
-      buildTestWidget(const MealRecipeScreen(mealId: 1, language: Language.en)),
+      buildTestWidget(const MealRecipeScreen(mealId: 1)),
     );
     await tester.pumpAndSettle();
 

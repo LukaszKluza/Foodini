@@ -30,9 +30,9 @@ def mock_meal_icons_repository():
 @pytest.fixture
 def mock_meal_recipes_repository():
     repo = AsyncMock()
-    repo.get_meal_recipe_by_uuid = AsyncMock()
-    repo.get_meal_recipes_by_recipe_id = AsyncMock()
-    repo.get_meal_recipe_by_recipe_id_and_language = AsyncMock()
+    repo.get_meal_recipe_by_recipe_id = AsyncMock()
+    repo.get_meal_recipes_by_meal_id = AsyncMock()
+    repo.get_meal_recipe_by_meal_id_and_language = AsyncMock()
     repo.add_meal_recipe = AsyncMock()
     return repo
 
@@ -82,45 +82,93 @@ async def test_get_get_meal_icon_info_when_info_not_exist(
 
 
 @pytest.mark.asyncio
-async def test_get_meal_recipe_by_uuid_when_exist(
+async def test_get_meal_recipe_by_recipe_id_when_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipe_by_uuid.return_value = CORNFLAKES_EN_RECIPE
+    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = CORNFLAKES_EN_RECIPE
 
     # When
-    response = await diet_generation_service.get_meal_recipe_by_uuid(1)
+    response = await diet_generation_service.get_meal_recipe_by_recipe_id(1)
 
     # Then
     assert response == CORNFLAKES_EN_RECIPE
 
 
 @pytest.mark.asyncio
-async def test_get_meal_recipe_by_meal_recipe_id_when_exist(
+async def test_get_meal_recipe_by_recipe_id_when_not_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipes_by_recipe_id.return_value = MEAL_RECIPES
+    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = None
 
     # When
-    response = await diet_generation_service.get_meal_recipes_by_meal_recipe_id(1)
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
+        await diet_generation_service.get_meal_recipe_by_recipe_id(1)
+
+    # Then
+    assert exc_info.value.detail == "Meal recipe not found"
+
+
+@pytest.mark.asyncio
+async def test_get_meal_recipe_by_meal_id_when_exist(
+    diet_generation_service,
+    mock_meal_recipes_repository,
+):
+    # Given
+    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = MEAL_RECIPES
+
+    # When
+    response = await diet_generation_service.get_meal_recipes_by_meal_id(1)
 
     # Then
     assert response == MEAL_RECIPES
 
 
 @pytest.mark.asyncio
-async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_exist(
+async def test_get_meal_recipe_by_meal_id_when_not_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id_and_language.return_value = CORNFLAKES_PL_RECIPE
+    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = None
 
     # When
-    response = await diet_generation_service.get_meal_recipe_by_meal_recipe_id_and_language(1, Language.PL)
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
+        await diet_generation_service.get_meal_recipes_by_meal_id(1)
+
+    # Then
+    assert exc_info.value.detail == "Meal recipes not found"
+
+
+@pytest.mark.asyncio
+async def test_get_meal_recipe_by_meal_id_and_language_when_exist(
+    diet_generation_service,
+    mock_meal_recipes_repository,
+):
+    # Given
+    mock_meal_recipes_repository.get_meal_recipe_by_meal_id_and_language.return_value = CORNFLAKES_PL_RECIPE
+
+    # When
+    response = await diet_generation_service.get_meal_recipe_by_meal_id_and_language(1, Language.PL)
 
     # Then
     assert response == CORNFLAKES_PL_RECIPE
+
+
+@pytest.mark.asyncio
+async def test_get_meal_recipe_by_meal_id_and_language_when_not_exist(
+    diet_generation_service,
+    mock_meal_recipes_repository,
+):
+    # Given
+    mock_meal_recipes_repository.get_meal_recipe_by_meal_id_and_language.return_value = None
+
+    # When
+    with pytest.raises(NotFoundInDatabaseException) as exc_info:
+        await diet_generation_service.get_meal_recipe_by_meal_id_and_language(1, Language.PL)
+
+    # Then
+    assert exc_info.value.detail == "Meal recipe not found"

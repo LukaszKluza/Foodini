@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/meal_recipe_bloc.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/meal_recipe_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
@@ -18,16 +20,16 @@ import 'package:provider/provider.dart';
 
 class MealRecipeScreen extends StatelessWidget {
   final int mealId;
-  final Language language;
 
   const MealRecipeScreen({
     super.key,
     required this.mealId,
-    required this.language,
   });
 
   @override
   Widget build(BuildContext context) {
+    var state = context.watch<LanguageCubit>().state;
+    var language = Language.fromJson(state.languageCode);
     return BlocProvider(
       key: ValueKey('bloc_${mealId}_${language.code}'),
       create: (_) {
@@ -212,6 +214,8 @@ class _MealRecipe extends StatelessWidget {
 
   Container generateMealIcon(MealRecipeState state, BuildContext context) {
     return Container(
+      width: 420,
+      height: 420,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
@@ -223,8 +227,8 @@ class _MealRecipe extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder:
             (context, url) => SizedBox(
-              height: 100,
-              width: 100,
+              // height: 100,
+              // width: 100,
               child: Center(child: CircularProgressIndicator()),
             ),
         errorWidget: (context, url, error) {
@@ -306,7 +310,7 @@ class _MealRecipe extends StatelessWidget {
       ),
       ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFDD9E74),
-        minimumSize: const Size.fromHeight(48),
+        minimumSize: const Size.fromHeight(Constants.buttonTextHeight),
       ),
       Text(AppLocalizations.of(context)!.refreshRequest),
     );
@@ -319,7 +323,7 @@ class _MealRecipe extends StatelessWidget {
       () => context.go('/main-page'),
       ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFF2D8B2),
-        minimumSize: const Size.fromHeight(48),
+        minimumSize: const Size.fromHeight(Constants.buttonTextHeight),
       ),
       Text(AppLocalizations.of(context)!.goToMainPage),
     );

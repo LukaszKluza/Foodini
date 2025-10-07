@@ -25,16 +25,16 @@ class DietGenerationService:
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)
 
-    async def get_meal_recipe_by_uuid(self, uuid: int) -> MealRecipe:
-        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_uuid(uuid)
+    async def get_meal_recipe_by_recipe_id(self, recipe_id: int) -> MealRecipe:
+        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_recipe_id(recipe_id)
         return await self.validate_response(meal_recipe)
 
-    async def get_meal_recipes_by_meal_recipe_id(self, meal_id: int) -> List[MealRecipe]:
-        meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_recipe_id(meal_id)
+    async def get_meal_recipes_by_meal_id(self, meal_id: int) -> List[MealRecipe]:
+        meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_meal_id(meal_id)
         return await self.validate_response(meal_recipes, "Meal recipes not found")
 
-    async def get_meal_recipe_by_meal_recipe_id_and_language(self, meal_id: int, language: Language) -> MealRecipe:
-        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_recipe_id_and_language(meal_id, language)
+    async def get_meal_recipe_by_meal_id_and_language(self, meal_id: int, language: Language) -> MealRecipe:
+        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_meal_id_and_language(meal_id, language)
         return await self.validate_response(meal_recipe)
 
     @classmethod

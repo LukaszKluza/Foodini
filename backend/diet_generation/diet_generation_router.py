@@ -23,27 +23,27 @@ async def get_meal_icon_info(
     return await meal_prediction_service.get_meal_icon(meal_type)
 
 
-@diet_prediction_router.get("/meal-recipe/{recipe_id}", response_model=MealRecipe | List[MealRecipe])
+@diet_prediction_router.get("/meal-recipe/{meal_id}", response_model=MealRecipe | List[MealRecipe])
 async def get_meal_recipe_by_meal_id(
-    recipe_id: int,
+    meal_id: int,
     language: Optional[Language] = Query(None),
     meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
     if language:
-        return await meal_prediction_service.get_meal_recipe_by_meal_recipe_id_and_language(recipe_id, language)
-    return await meal_prediction_service.get_meal_recipes_by_meal_recipe_id(recipe_id)
+        return await meal_prediction_service.get_meal_recipe_by_meal_id_and_language(meal_id, language)
+    return await meal_prediction_service.get_meal_recipes_by_meal_id(meal_id)
 
 
 @diet_prediction_router.get("/meal-recipe", response_model=MealRecipe)
 async def get_meal_recipe_by_id(
-    uuid: int,
+    recipe_id: int,
     meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
-    return await meal_prediction_service.get_meal_recipe_by_uuid(uuid)
+    return await meal_prediction_service.get_meal_recipe_by_recipe_id(recipe_id)
 
 
 # TODO REMOVE IT

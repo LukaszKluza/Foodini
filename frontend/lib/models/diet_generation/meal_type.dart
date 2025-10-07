@@ -16,7 +16,7 @@ enum MealType {
   static MealType fromJson(String value) {
     return MealType.values.firstWhere(
       (e) => e.nameStr == value,
-      orElse: () => throw ArgumentError('Unknown diet type: $value'),
+      orElse: () => throw ArgumentError('Unknown meal type: $value'),
     );
   }
 
