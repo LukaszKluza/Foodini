@@ -2,8 +2,9 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
-from backend.diet_generation.dependencies import get_diet_generation_service
+from backend.diet_generation.dependencies import get_diet_generation_service, get_prompt_service
 from backend.diet_generation.diet_generation_service import DietGenerationService
+from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.enums.meal_type import MealType
 from backend.models import MealRecipe
 from backend.models.meal_icon_model import MealIcon
@@ -32,8 +33,8 @@ async def get_meal_recipe_by_meal_id(
 ):
     await user_gateway.get_current_user()
     if language:
-        return await meal_prediction_service.get_meal_recipe_by_meal_id_and_language(meal_id, language)
-    return await meal_prediction_service.get_meal_recipes_by_meal_id(meal_id)
+        return await meal_prediction_service.get_meal_recipe_by_meal_recipe_id_and_language(meal_id, language)
+    return await meal_prediction_service.get_meal_recipes_by_meal_recipe_id(meal_id)
 
 
 @diet_prediction_router.get("/meal-recipe", response_model=MealRecipe)
@@ -46,12 +47,10 @@ async def get_meal_recipe_by_id(
     return await meal_prediction_service.get_meal_recipe_by_recipe_id(recipe_id)
 
 
-# TODO REMOVE IT
-@diet_prediction_router.post("/meal-recipe", response_model=MealRecipe)
-async def add_meal_recipe(
-    meal_recipe: MealRecipe,
-    meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
+@diet_prediction_router.post("/generate_meal_plan", response_model=MealRecipe | List[MealRecipe])
+async def generate_meal_plan(
+    prompt_service: PromptService = Depends(get_prompt_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
-    await user_gateway.get_current_user()
-    return await meal_prediction_service.add_meal_recipe(meal_recipe)
+    user, _ = await user_gateway.get_current_user()
+    return await prompt_service.generate_meal_plan(user)

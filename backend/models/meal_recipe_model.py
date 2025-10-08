@@ -31,7 +31,7 @@ class MealRecipe(SQLModel, table=True):
 
     id: int = Field(default=None, primary_key=True)
     # Can be duplicated for the same recipe but different language
-    meal_id: int = Field(nullable=False, index=True)
+    meal_id: int = Field(nullable=True, index=True)
     language: Language = Field(default=Language.EN, nullable=False)
     meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)

@@ -14,6 +14,7 @@ class Endpoints {
   // TODO: remove unused endpoint
   static const String dietPreferences = '$baseUrl/user_details';
   static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
+  static const String generateMealPlan = '$baseUrl/diet-prediction/generate_meal_plan';
   static const String mealRecipe = '$baseUrl/diet-prediction/meal-recipe';
   static const String mealIconInfo = '$baseUrl/diet-prediction/meal-icon';
   static const String mealIcon= '$baseUrl/static/meals-icon';

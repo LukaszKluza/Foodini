@@ -195,12 +195,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
-  String get muscleGainGoalCantBeLower =>
-      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+  String get muscleGainGoalCantBeLower => 'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
 
   @override
-  String get fatLossGoalCantBeHigher =>
-      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+  String get fatLossGoalCantBeHigher => 'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
 
   @override
   String get kg => 'kg';
@@ -462,9 +460,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
-
-  @override
-  String get refreshRequest => 'Odśwież żądanie';
 
   @override
   String get goToMainPage => 'Idź na stronę główną';

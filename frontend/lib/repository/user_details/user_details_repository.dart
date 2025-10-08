@@ -37,6 +37,7 @@ class UserDetailsRepository {
   ) async {
     try {
       final response = await apiClient.submitMacrosChange(request, userId);
+      final _ = await apiClient.generateMealPlan(userId);
       return PredictedCalories.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);

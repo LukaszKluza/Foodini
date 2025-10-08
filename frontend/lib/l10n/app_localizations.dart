@@ -1001,12 +1001,6 @@ abstract class AppLocalizations {
   /// **'Change calories prediction'**
   String get changeCaloriesPrediction;
 
-  /// No description provided for @refreshRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh request'**
-  String get refreshRequest;
-
   /// No description provided for @goToMainPage.
   ///
   /// In en, this message translates to:
