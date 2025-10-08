@@ -295,4 +295,34 @@ void main() {
 
     expect(find.textContaining('13.5'), findsOneWidget);
   });
+
+  testWidgets('Advanced parameters are reset after unchecking checkbox', (
+    tester,
+  ) async {
+    // Given
+    await tester.pumpWidget(buildTestWidget(const CaloriesPredictionScreen()));
+    await tester.pumpAndSettle();
+
+    final checkboxFinder = find.widgetWithText(
+      CheckboxListTile,
+      'Advance body parameters',
+    );
+
+    // When
+    await tester.tap(checkboxFinder);
+    await tester.pumpAndSettle();
+
+    final sliderFinder = find.byKey(const Key('muscle_percentage'));
+    await tester.drag(sliderFinder, const Offset(100, 0));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Muscle percentage:'), findsOneWidget);
+
+    await tester.tap(checkboxFinder);
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.textContaining('Muscle percentage:'), findsNothing);
+    expect(find.byKey(const Key('muscle_percentage')), findsNothing);
+  });
 }

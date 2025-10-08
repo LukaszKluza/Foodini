@@ -9,7 +9,7 @@ enum Gender {
 
   static Gender fromJson(String value) {
     return Gender.values.firstWhere(
-          (e) => e.nameStr == value,
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown gender: $value'),
     );
   }

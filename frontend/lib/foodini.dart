@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/app_router.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
@@ -59,6 +60,11 @@ class Foodini extends StatelessWidget {
             create:
                 (context) =>
                     DietFormBloc(context.read<UserDetailsRepository>()),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    MacrosChangeBloc(context.read<UserDetailsRepository>()),
           ),
         ],
         child: BlocBuilder<LanguageCubit, Locale>(
