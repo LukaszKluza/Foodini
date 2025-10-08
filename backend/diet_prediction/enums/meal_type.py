@@ -2,13 +2,19 @@ from enum import Enum
 
 
 class MealType(Enum):
-    BREAKFAST = ("breakfast", 1)
-    MORNING_SNACK = ("morning_snack", 2)
-    LUNCH = ("lunch", 3)
-    AFTERNOON_SNACK = ("afternoon_snack", 4)
-    DINNER = ("dinner", 5)
-    EVENING_SNACK = ("evening_snack", 6)
+    BREAKFAST = "breakfast"
+    MORNING_SNACK = "morning_snack"
+    LUNCH = "lunch"
+    AFTERNOON_SNACK = "afternoon_snack"
+    DINNER = "dinner"
+    EVENING_SNACK = "evening_snack"
 
-    def __init__(self, value, order):
-        self.__value = value
-        self.__order = order
+    def __str__(self):
+        return self.value
+
+    @classmethod
+    def _missing_(cls, value):
+        for member in cls:
+            if member.value == value:
+                return member
+        return None

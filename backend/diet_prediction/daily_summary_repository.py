@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
@@ -64,10 +64,14 @@ class DailySummaryRepository:
         if meal_type not in meals:
             return None
 
-        meals[meal_type]["status"] = status.value
+        meals[meal_type]["status"] = status
         user_daily_meals.meals = meals
 
-        self.db.add(user_daily_meals)
+        # return user_daily_meals
+
+        await self.db.execute(
+            update(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day).values(meals=meals)
+        )
         await self.db.commit()
         await self.db.refresh(user_daily_meals)
         return user_daily_meals

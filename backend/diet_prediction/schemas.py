@@ -11,10 +11,14 @@ class MealInfo(BaseModel):
     meal_id: int
     status: MealStatus = Field(default=MealStatus.PENDING)
 
+    model_config = {"use_enum_values": True}
+
 
 class DailyMealsCreate(BaseModel):
     day: date
     meals: Dict[MealType, MealInfo]
+
+    model_config = {"use_enum_values": True}
 
 
 class DailyMacrosSummaryCreate(BaseModel):

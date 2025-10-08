@@ -2,6 +2,7 @@ from datetime import date, datetime
 from typing import Dict
 
 from sqlalchemy import JSON
+from sqlalchemy.ext.mutable import MutableDict
 from sqlmodel import Column, DateTime, Field, SQLModel, func
 
 
@@ -10,7 +11,7 @@ class DailyMeals(SQLModel, table=True):
 
     id: int = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="users.id")
-    meals: Dict[str, Dict[str, str]] = Field(sa_column=Column(JSON))
+    meals: Dict[str, Dict[str, str]] = Field(sa_column=Column(MutableDict.as_mutable(JSON)))
     day: date = Field(nullable=False)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

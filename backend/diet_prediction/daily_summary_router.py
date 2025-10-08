@@ -60,7 +60,7 @@ async def update_daily_macros_summary(
     return await daily_summary_service.update_daily_macros_summary(user.id, daily_summary)
 
 
-@daily_summary_router.patch("/meals/status", response_model=DailyMealsCreate)
+@daily_summary_router.patch("/meals", response_model=DailyMealsCreate)
 async def update_meal_status(
     meal_info_update: MealInfoUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),

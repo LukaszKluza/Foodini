@@ -6,6 +6,8 @@ from backend.diet_prediction.daily_summary_repository import DailySummaryReposit
 from backend.diet_prediction.daily_summary_service import DailySummaryService
 from backend.diet_prediction.diet_prediction_service import MealIconsService
 from backend.diet_prediction.meal_icons_repository import MealIconsRepository
+from backend.users.dependencies import get_user_validators
+from backend.users.service.user_validation_service import UserValidationService
 
 
 async def get_meal_icons_repository(
@@ -28,5 +30,6 @@ async def get_daily_summary_repository(
 
 async def get_daily_summary_service(
     daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
+    user_validators: UserValidationService = Depends(get_user_validators),
 ) -> DailySummaryService:
-    return DailySummaryService(daily_summary_repository)
+    return DailySummaryService(daily_summary_repository, user_validators)
