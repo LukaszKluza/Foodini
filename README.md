@@ -21,7 +21,7 @@ python ./run.py
 #### Generating translation
 ``` bash
 cd Foodini/frontend
-flutter gen-l10n                  
+flutter gen-l10n
 ```
 
 #### Generating frontend mocks
