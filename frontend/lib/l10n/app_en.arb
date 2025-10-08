@@ -142,5 +142,14 @@
   "dateOfBirth": "Date of birth",
   "enterDateOfBirth": "Enter your date of birth",
   "formSuccessfullySubmitted": "Form successfully submitted",
-  "fillAllNecessaryFields": "Fill all necessary fields"
+  "fillAllNecessaryFields": "Fill all necessary fields",
+
+  "refreshRequest": "Refresh request",
+  "goToMainPage": "Go to main page",
+  "errorWhileFetchingMealIcon": "Error while fetching meal icon",
+
+  "mealDescriptions": "Meal description",
+  "groceries": "Groceries",
+  "recipe": "Recipe",
+  "optional": "Optional"
 }

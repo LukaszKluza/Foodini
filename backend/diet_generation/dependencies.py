@@ -2,10 +2,11 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db
-from backend.diet_prediction.daily_summary_repository import DailySummaryRepository
-from backend.diet_prediction.daily_summary_service import DailySummaryService
-from backend.diet_prediction.diet_prediction_service import MealIconsService
-from backend.diet_prediction.meal_icons_repository import MealIconsRepository
+from backend.diet_generation.daily_summary_repository import DailySummaryRepository
+from backend.diet_generation.daily_summary_service import DailySummaryService
+from backend.diet_generation.diet_generation_service import DietGenerationService
+from backend.diet_generation.meal_icons_repository import MealIconsRepository
+from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
 from backend.users.dependencies import get_user_validators
 from backend.users.service.user_validation_service import UserValidationService
 
@@ -16,10 +17,17 @@ async def get_meal_icons_repository(
     return MealIconsRepository(db)
 
 
-async def get_meal_icons_service(
+async def get_meal_recipes_repository(
+    db: AsyncSession = Depends(get_db),
+) -> MealRecipesRepository:
+    return MealRecipesRepository(db)
+
+
+async def get_diet_generation_service(
     meal_icons_repository: MealIconsRepository = Depends(get_meal_icons_repository),
-) -> MealIconsService:
-    return MealIconsService(meal_icons_repository)
+    meal_recipes_repository: MealRecipesRepository = Depends(get_meal_recipes_repository),
+) -> DietGenerationService:
+    return DietGenerationService(meal_icons_repository, meal_recipes_repository)
 
 
 async def get_daily_summary_repository(

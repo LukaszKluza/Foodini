@@ -3,7 +3,7 @@ from datetime import date
 from sqlalchemy import select, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
+from backend.diet_generation.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 
 
@@ -35,7 +35,7 @@ class DailySummaryRepository:
         return user_daily_macros_summary
 
     async def get_daily_macros_summary(self, user_id: int, day: date) -> DailyMacrosSummary | None:
-        query = select(DailyMacrosSummary).where(DailyMeals.user_id == user_id, DailyMeals.day == day)
+        query = select(DailyMacrosSummary).where(DailyMacrosSummary.user_id == user_id, DailyMacrosSummary.day == day)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
@@ -66,8 +66,6 @@ class DailySummaryRepository:
 
         meals[meal_type]["status"] = status
         user_daily_meals.meals = meals
-
-        # return user_daily_meals
 
         await self.db.execute(
             update(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day).values(meals=meals)

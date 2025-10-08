@@ -1,8 +1,8 @@
 from datetime import date
 from typing import Optional
 
-from backend.diet_prediction.daily_summary_repository import DailySummaryRepository
-from backend.diet_prediction.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
+from backend.diet_generation.daily_summary_repository import DailySummaryRepository
+from backend.diet_generation.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 from backend.users.service.user_validation_service import UserValidationService
 

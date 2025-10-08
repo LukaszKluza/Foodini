@@ -3,8 +3,8 @@ from typing import Dict
 
 from pydantic import BaseModel, Field
 
-from backend.diet_prediction.enums.meal_status import MealStatus
-from backend.diet_prediction.enums.meal_type import MealType
+from backend.diet_generation.enums.meal_status import MealStatus
+from backend.diet_generation.enums.meal_type import MealType
 
 
 class MealInfo(BaseModel):
