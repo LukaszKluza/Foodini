@@ -3,7 +3,12 @@ from datetime import date
 from sqlalchemy import select, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_generation.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfoUpdateRequest
+from backend.diet_generation.schemas import (
+    CustomMealUpdateRequest,
+    DailyMacrosSummaryCreate,
+    DailyMealsCreate,
+    MealInfoUpdateRequest,
+)
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 
 
@@ -59,7 +64,7 @@ class DailySummaryRepository:
         if not user_daily_meals:
             return None
 
-        meals = user_daily_meals.meals or {}
+        meals = user_daily_meals.meals
 
         if meal_type not in meals:
             return None
@@ -72,4 +77,34 @@ class DailySummaryRepository:
         )
         await self.db.commit()
         await self.db.refresh(user_daily_meals)
+        return user_daily_meals
+
+    async def update_custom_meal(self, user_id: int, custom_meal: CustomMealUpdateRequest) -> DailyMeals | None:
+        day = custom_meal.day
+        user_daily_meals = await self.get_daily_meals(user_id, day)
+
+        if not user_daily_meals:
+            return None
+
+        meals = user_daily_meals.meals
+
+        meals[custom_meal.meal_type] = {
+            "status": custom_meal.status.value,
+            "custom_name": custom_meal.custom_name,
+            "custom_calories": custom_meal.custom_calories,
+            "custom_protein": custom_meal.custom_protein,
+            "custom_carbs": custom_meal.custom_carbs,
+            "custom_fats": custom_meal.custom_fats,
+        }
+
+        user_daily_meals.meals = meals
+
+        await self.db.execute(
+            update(DailyMeals)
+            .where(DailyMeals.user_id == user_id, DailyMeals.day == custom_meal.day)
+            .values(meals=meals)
+        )
+        await self.db.commit()
+        await self.db.refresh(user_daily_meals)
+
         return user_daily_meals

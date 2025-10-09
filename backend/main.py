@@ -11,8 +11,8 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.diet_generation.daily_summary_router import daily_summary_router
+from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router

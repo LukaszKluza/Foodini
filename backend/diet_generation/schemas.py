@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict
+from typing import Dict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -8,8 +8,13 @@ from backend.diet_generation.enums.meal_type import MealType
 
 
 class MealInfo(BaseModel):
-    meal_id: int
+    meal_id: Optional[int] = None
     status: MealStatus = Field(default=MealStatus.PENDING)
+    custom_name: Optional[str] = None
+    custom_calories: Optional[int] = None
+    custom_protein: Optional[int] = None
+    custom_carbs: Optional[int] = None
+    custom_fats: Optional[int] = None
 
     model_config = {"use_enum_values": True}
 
@@ -33,3 +38,14 @@ class MealInfoUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
     status: MealStatus
+
+
+class CustomMealUpdateRequest(BaseModel):
+    day: date
+    meal_type: MealType
+    custom_name: str
+    custom_calories: int = Field(default=0, ge=0)
+    custom_protein: int = Field(default=0, ge=0)
+    custom_carbs: int = Field(default=0, ge=0)
+    custom_fats: int = Field(default=0, ge=0)
+    status: MealStatus = Field(default=MealStatus.EATEN)
