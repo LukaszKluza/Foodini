@@ -47,14 +47,24 @@ class DailySummaryRepository:
     async def update_daily_macros_summary(
         self, user_id: int, daily_summary_data: DailyMacrosSummaryCreate
     ) -> DailyMacrosSummary | None:
-        daily_macros_summary = await self.get_daily_macros_summary(user_id, daily_summary_data.day)
-        if daily_macros_summary:
-            daily_macros_summary_request = DailyMacrosSummary(id=user_id, **daily_summary_data.model_dump())
-            updated_daily_macros_summary = await self.db.merge(daily_macros_summary_request)
-            await self.db.commit()
-            await self.db.refresh(updated_daily_macros_summary)
-            return updated_daily_macros_summary
-        return None
+        day = daily_summary_data.day
+        existing_summary = await self.get_daily_macros_summary(user_id, day)
+        if not existing_summary:
+            return None
+
+        await self.db.execute(
+            update(DailyMacrosSummary)
+            .where(DailyMacrosSummary.user_id == user_id, DailyMacrosSummary.day == day)
+            .values(
+                calories=daily_summary_data.calories,
+                protein=daily_summary_data.protein,
+                carbs=daily_summary_data.carbs,
+                fats=daily_summary_data.fats,
+            )
+        )
+        await self.db.commit()
+        await self.db.refresh(existing_summary)
+        return existing_summary
 
     async def update_meal_status(self, user_id: int, update_meal_data: MealInfoUpdateRequest) -> DailyMeals | None:
         day = update_meal_data.day
@@ -79,7 +89,7 @@ class DailySummaryRepository:
         await self.db.refresh(user_daily_meals)
         return user_daily_meals
 
-    async def update_custom_meal(self, user_id: int, custom_meal: CustomMealUpdateRequest) -> DailyMeals | None:
+    async def add_custom_meal(self, user_id: int, custom_meal: CustomMealUpdateRequest) -> DailyMeals | None:
         day = custom_meal.day
         user_daily_meals = await self.get_daily_meals(user_id, day)
 

@@ -603,6 +603,150 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Daily Summary",
+			"item": [
+				{
+					"name": "Get Daily Meals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+						"raw": "http://localhost:8000/v1/daily_summary/meals/2025-10-09?user_id=1",
+						"protocol": "http",
+						"host": ["localhost"],
+						"port": "8000",
+						"path": ["v1", "daily_summary", "meals", "2025-10-09"],
+						"query": [
+							{ "key": "user_id", "value": "1" }
+						]
+						}
+					}
+				},
+				{
+					"name": "Add Daily Meals",
+					"request": {
+						"method": "POST",
+						"header": [
+						{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 11,\n      \"status\": \"eaten\"\n    },\n    \"lunch\": {\n      \"meal_id\": 102,\n      \"status\": \"pending\"\n    },\n    \"dinner\": {\n      \"meal_id\": 203,\n      \"status\": \"skipped\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/meals?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "meals"],
+							"query": [
+								{ "key": "user_id", "value": "1" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Meal Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meal_type\": \"lunch\",\n  \"status\": \"eaten\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/meals?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "meals"],
+							"query": [
+								{ "key": "user_id", "value": "1" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Custom Meal",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+						"mode": "raw",
+						"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meal_type\": \"lunch\",\n  \"custom_name\": \"Pizza Margherita\",\n  \"custom_calories\": 850,\n  \"custom_protein\": 80,\n  \"custom_carbs\": 50,\n  \"custom_fats\": 200,\n  \"status\": \"eaten\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/meals/custom?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "meals", "custom"],
+							"query": [
+								{"key": "user_id", "value": "1"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Daily Macros",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/macros/2025-10-09?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "macros", "2025-10-09"],
+							"query": [{"key": "user_id", "value": "1"}]
+						}
+					}
+				},
+				{
+					"name": "Add Daily Macros",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/macros?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "macros"],
+							"query": [{"key": "user_id", "value": "1"}]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 2000,\n  \"protein\": 140,\n  \"carbs\": 240,\n  \"fats\": 65\n}"
+						}
+					}
+				},
+				{
+					"name": "Update Daily Macros",
+					"request": {
+						"method": "PATCH",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/macros?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "macros"],
+							"query": [{"key": "user_id", "value": "1"}]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-18\",\n  \"calories\": 2000,\n  \"protein\": 240,\n  \"carbs\": 40,\n  \"fats\": 2500\n}"
+						}
+					}
+				}
+			]
 		}
 	]
 }

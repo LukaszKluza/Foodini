@@ -82,4 +82,4 @@ async def add_custom_meal(
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await daily_summary_service.update_custom_meal(user.id, custom_meal)
+    return await daily_summary_service.add_custom_meal(user.id, custom_meal)
