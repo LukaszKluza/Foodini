@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:frontend/states/register_states.dart';
+import 'package:frontend/api_exception.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/states/register_states.dart';
 
 class ExceptionConverter extends RegisterState {
   static String formatErrorMessage(dynamic error, BuildContext context) {
-    if (error == null) return AppLocalizations.of(context)!.unknownError;
+    if (error == null || (error is ApiException && error.data == null)) return AppLocalizations.of(context)!.unknownError;
 
     if (error is String) return error;
 

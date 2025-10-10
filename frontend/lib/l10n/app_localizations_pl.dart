@@ -195,6 +195,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
+  String get muscleGainGoalCantBeLower =>
+      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+
+  @override
+  String get fatLossGoalCantBeHigher =>
+      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+
+  @override
   String get kg => 'kg';
 
   @override
@@ -259,6 +267,21 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
+
+  @override
+  String get predictedCalories => 'Przewidywana liczba kalorii';
+
+  @override
+  String get bmr => 'Podstawowa przemiana materii (BMR)';
+
+  @override
+  String get tdee => 'Całkowite dzienne zapotrzebowanie (TDEE)';
+
+  @override
+  String get predictedMacros => 'Przewidywane makroskładniki';
+
+  @override
+  String get dietDuration => 'Czas trwania diety';
 
   @override
   String get dietType_FatLoss => 'Utrata tłuszczu';
@@ -403,4 +426,40 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+
+  @override
+  String get macros => 'Makro';
+
+  @override
+  String get kcal => 'kcal';
+
+  @override
+  String get days => 'dni';
+
+  @override
+  String get expected => 'oczekiwane';
+
+  @override
+  String get proteinG => 'Białko (g)';
+
+  @override
+  String get fatG => 'Tłuszcz (g)';
+
+  @override
+  String get carbsG => 'Węgle (g)';
+
+  @override
+  String get fillFormToSeePredictions => 'Proszę wypełnić formularz, aby zobaczyć predykcje';
+
+  @override
+  String get redirectToProfileDetails => 'Przejdź do szczegółów profilu';
+
+  @override
+  String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
+
+  @override
+  String get refreshRequest => 'Odśwież żądanie';
+
+  @override
+  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
 }

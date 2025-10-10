@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
+import 'package:go_router/go_router.dart';
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
@@ -172,7 +178,7 @@ void main() {
   ) async {
     // Given
     tester.view.devicePixelRatio = 1.5;
-    
+
     await tester.pumpWidget(buildTestWidget(const DietPreferencesScreen()));
     await tester.pumpAndSettle();
 
@@ -207,5 +213,49 @@ void main() {
 
     // Then
     expect(find.byType(Slider), findsNothing);
+  });
+
+  testWidgets('Diet goal validation error messages are displayed', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    dietFormBloc.emit(
+      DietFormSubmit(
+        dietType: DietType.muscleGain,
+        dietGoal: 50,
+        allergies: [Allergy.gluten],
+        dietIntensity: DietIntensity.medium,
+        mealsPerDay: 3,
+        weight: 80,
+      ),
+    );
+
+    final router = GoRouter(
+      initialLocation: '/diet-preferences',
+      routes: [
+        GoRoute(
+          path: '/diet-preferences',
+          builder:
+              (context, state) => BlocProvider<DietFormBloc>.value(
+                value: dietFormBloc,
+                child: const DietPreferencesScreen(),
+              ),
+        ),
+      ],
+    );
+
+    // When
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.textContaining('goal', findRichText: true), findsWidgets);
   });
 }

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
+import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user_details/diet_form_listener.dart';
+import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/sleep_quality.dart';
+import 'package:frontend/models/user_details/stress_level.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/sleep_quality.dart';
-import 'package:frontend/models/user_details/stress_level.dart';
-import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
-import 'package:frontend/events/user_details/diet_form_events.dart';
-import 'package:frontend/states/diet_form_states.dart';
-
-import '../../../config/constants.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
   const CaloriesPredictionScreen({super.key});
@@ -73,12 +71,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
 
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
-      _selectedActivityLevel = blocState.activityLevel ?? _selectedActivityLevel;
+      _selectedActivityLevel =
+          blocState.activityLevel ?? _selectedActivityLevel;
       _selectedStressLevel = blocState.stressLevel ?? _selectedStressLevel;
       _selectedSleepQuality = blocState.sleepQuality ?? _selectedSleepQuality;
-      _selectedMusclePercentage = blocState.musclePercentage ?? _selectedMusclePercentage;
-      _selectedWaterPercentage = blocState.waterPercentage ?? _selectedWaterPercentage;
-      _selectedFatPercentage = blocState.fatPercentage ?? _selectedFatPercentage;
+      _selectedMusclePercentage =
+          blocState.musclePercentage ?? _selectedMusclePercentage;
+      _selectedWaterPercentage =
+          blocState.waterPercentage ?? _selectedWaterPercentage;
+      _selectedFatPercentage =
+          blocState.fatPercentage ?? _selectedFatPercentage;
       if (blocState.musclePercentage != null ||
           blocState.waterPercentage != null ||
           blocState.fatPercentage != null) {
@@ -181,13 +183,22 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
               _isChecked = value!;
               if (_isChecked) {
                 context.read<DietFormBloc>().add(
-                  UpdateMusclePercentage(_selectedMusclePercentage),
+                  UpdateAdvancedParameters(
+                    musclePercentage: _selectedMusclePercentage,
+                    waterPercentage: _selectedWaterPercentage,
+                    fatPercentage: _selectedFatPercentage,
+                  ),
                 );
+              } else {
+                _selectedMusclePercentage = Constants.defaultMusclePercentage;
+                _selectedWaterPercentage = Constants.defaultWaterPercentage;
+                _selectedFatPercentage = Constants.defaultFatPercentage;
                 context.read<DietFormBloc>().add(
-                  UpdateWaterPercentage(_selectedWaterPercentage),
-                );
-                context.read<DietFormBloc>().add(
-                  UpdateFatPercentage(_selectedFatPercentage),
+                  UpdateAdvancedParameters(
+                    musclePercentage: null,
+                    waterPercentage: null,
+                    fatPercentage: null,
+                  ),
                 );
               }
             });
@@ -207,7 +218,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedMusclePercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateMusclePercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
         PercentageOptionSlider(
@@ -221,7 +238,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedWaterPercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateWaterPercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
         PercentageOptionSlider(
@@ -235,7 +258,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedFatPercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateFatPercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
       ],
@@ -250,7 +279,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             context: context,
             state: state,
             mounted: mounted,
-            setState: setState,
             setMessage: (msg) => _message = msg,
             setMessageStyle: (style) => _messageStyle = style,
           );

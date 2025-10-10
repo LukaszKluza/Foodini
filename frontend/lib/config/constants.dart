@@ -1,7 +1,7 @@
 class Constants {
   static const int minPasswordLength = 8;
   static const int maxPasswordLength = 64;
-  static const int redirectionDelay = 100;
+  static const int redirectionDelay = 200;
   static const double minWeight = 20;
   static const double maxWeight = 160;
   static const double defaultWeight = 65;
@@ -16,6 +16,10 @@ class Constants {
   static const double defaultFatPercentage = 15;
 
   static const double horizontalPaddingRatio = 0.07;
-  static const double screenWidth= 1170;
-  static const double screenHeight= 2532;
+  static const double screenWidth = 1170;
+  static const double screenHeight = 2532;
+
+  static const int proteinEstimator = 4;
+  static const int fatEstimator = 9;
+  static const int carbsEstimator = 4;
 }

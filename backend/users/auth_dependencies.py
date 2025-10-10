@@ -23,15 +23,11 @@ class AuthDependency:
         self.user_validators = user_validators
         self.authorization_service = authorization_service
 
-    async def get_token_payload(
-        self, credentials: HTTPAuthorizationCredentials
-    ) -> dict:
+    async def get_token_payload(self, credentials: HTTPAuthorizationCredentials) -> dict:
         return await self.authorization_service.verify_access_token(credentials)
 
     async def get_current_user(self) -> tuple[Type[User], dict]:
-        token_payload = await self.authorization_service.verify_access_token(
-            self.credentials
-        )
+        token_payload = await self.authorization_service.verify_access_token(self.credentials)
         user_id_from_token = token_payload["id"]
 
         self.user_validators.check_user_permission(user_id_from_token, self.user_id)

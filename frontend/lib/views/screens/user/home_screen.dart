@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

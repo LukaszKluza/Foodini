@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import AsyncMock
 
+import pytest
+
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.models import UserDetails
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
-from backend.models import UserDetails
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 
 
 @pytest.mark.asyncio
@@ -36,9 +37,7 @@ async def test_ensure_user_details_exist_by_user_id():
 async def test_ensure_user_details_exist_by_user_id_failure():
     # Given
     mock_repo = AsyncMock()
-    mock_repo.get_user_details_by_user_id = AsyncMock(
-        side_effect=NotFoundInDatabaseException("Details not found")
-    )
+    mock_repo.get_user_details_by_user_id = AsyncMock(side_effect=NotFoundInDatabaseException("Details not found"))
     validator = UserDetailsValidationService(user_details_repository=mock_repo)
 
     # When

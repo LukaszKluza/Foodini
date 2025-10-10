@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user/provide_email_block.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/provide_email_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/provide_email_listener.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
+import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/config/styles.dart';
-import 'package:frontend/repository/user/user_repository.dart';
-import 'package:frontend/utils/user/user_validators.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/views/widgets/language_picker.dart';
 
 class ProvideEmailScreen extends StatelessWidget {
   final ProvideEmailBloc? bloc;

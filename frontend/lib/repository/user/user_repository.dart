@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
 import 'package:frontend/models/user/default_response.dart';
 import 'package:frontend/models/user/logged_user.dart';
@@ -7,7 +8,6 @@ import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/refreshed_tokens_response.dart';
 import 'package:frontend/models/user/register_request.dart';
-import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/services/api_client.dart';
 

@@ -1,14 +1,16 @@
+from typing import Type
+
 from fastapi import HTTPException
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
+from backend.user_details.enums import DietType
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
 from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.users.user_gateway import UserGateway
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.user_details.enums import DietType
 
 
 class UserDetailsService:
@@ -22,15 +24,13 @@ class UserDetailsService:
         self.user_gateway = user_gateway
         self.user_details_validators = user_details_validators
 
-    async def get_user_details_by_user(self, user: User):
-        return await self.user_details_validators.ensure_user_details_exist_by_user_id(
-            user.id
-        )
+    async def get_user_details_by_user(self, user: Type[User]):
+        return await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)
 
     async def add_user_details(
         self,
         user_details_data: UserDetailsCreate,
-        user: User,
+        user: Type[User],
     ):
         if user_details_data.diet_type == DietType.WEIGHT_MAINTENANCE:
             user_details_data.diet_goal_kg = user_details_data.weight_kg
@@ -42,17 +42,13 @@ class UserDetailsService:
                 user,
             )
         except (HTTPException, NotFoundInDatabaseException):
-            return await self.user_details_repository.add_user_details(
-                user_details_data, user.id
-            )
+            return await self.user_details_repository.add_user_details(user_details_data, user.id)
 
     async def update_user_details(
         self,
         user_details_data: UserDetailsUpdate,
-        user: User,
+        user: Type[User],
     ):
         await self.get_user_details_by_user(user)
 
-        return await self.user_details_repository.update_user_details_by_user_id(
-            user.id, user_details_data
-        )
+        return await self.user_details_repository.update_user_details_by_user_id(user.id, user_details_data)

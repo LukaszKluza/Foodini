@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/repository/user/user_storage.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:frontend/views/widgets/rectangular_button.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:go_router/go_router.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({super.key});
@@ -93,15 +92,15 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
-                            "Button 3",
-                            Icons.do_not_disturb,
+                            AppLocalizations.of(context)!.changeCaloriesPrediction,
+                            Icons.change_circle_outlined,
                             screenWidth,
                             screenHeight,
-                            null,
+                            () => context.push('/calories-result'),
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
-                            "Button 4",
+                            'Button 4',
                             Icons.do_not_disturb,
                             screenWidth,
                             screenHeight,

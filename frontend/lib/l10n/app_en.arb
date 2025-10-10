@@ -62,6 +62,8 @@
   "enterYourDietGoal": "Enter your diet goal",
   "weightKg": "Weight (kg)",
   "dietGoalShouldBeBetween": "Diet goal should be between",
+  "muscleGainGoalCantBeLower": "Diet goal for 'Muscle Gain' can't be lower than current weight",
+  "fatLossGoalCantBeHigher": "Diet goal for 'Fat Loss' cant't be higher than current weight",
   "kg": "kg",
   "mealsPerDay": "Meals per day",
   "dietIntensity": "Diet intensity",
@@ -84,6 +86,11 @@
   "enterFatPercentage": "Enter your fat percentage",
   "fatPercentageShouldBeBetween": "Fat % should be %",
   "generateWeeklyDiet": "Generate weekly diet",
+  "predictedCalories": "Predicted calories",
+  "bmr": "Basal Metabolic Rate (BMR)",
+  "tdee": "Total Daily Energy Expenditure (TDEE)",
+  "predictedMacros": "Predicted macronutrients",
+  "dietDuration": "Diet duration",
 
   "dietType_FatLoss": "Fat Loss",
   "dietType_MuscleGain": "Muscle Gain",
@@ -142,5 +149,18 @@
   "dateOfBirth": "Date of birth",
   "enterDateOfBirth": "Enter your date of birth",
   "formSuccessfullySubmitted": "Form successfully submitted",
-  "fillAllNecessaryFields": "Fill all necessary fields"
+  "fillAllNecessaryFields": "Fill all necessary fields",
+
+  "macros": "Macros",
+  "kcal": "kcal",
+  "days": "days",
+  "expected": "expected",
+  "proteinG": "Protein (g)",
+  "fatG": "Fat (g)",
+  "carbsG": "Carbs (g)",
+  "fillFormToSeePredictions": "Please fill out the form to see predictions",
+  "redirectToProfileDetails": "Redirect to profile details",
+  "savePredictedCalories": "Save predicted calories",
+  "refreshRequest": "Refresh request",
+  "changeCaloriesPrediction": "Change calories prediction"
 }

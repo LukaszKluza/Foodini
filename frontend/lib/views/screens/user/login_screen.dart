@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:frontend/blocs/user/login_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/login_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/login_listener.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/repository/user/user_repository.dart';
@@ -11,9 +11,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

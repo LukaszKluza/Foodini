@@ -467,6 +467,18 @@ abstract class AppLocalizations {
   /// **'Diet goal should be between'**
   String get dietGoalShouldBeBetween;
 
+  /// No description provided for @muscleGainGoalCantBeLower.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet goal for \'Muscle Gain\' can\'t be lower than current weight'**
+  String get muscleGainGoalCantBeLower;
+
+  /// No description provided for @fatLossGoalCantBeHigher.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet goal for \'Fat Loss\' cant\'t be higher than current weight'**
+  String get fatLossGoalCantBeHigher;
+
   /// No description provided for @kg.
   ///
   /// In en, this message translates to:
@@ -598,6 +610,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generate weekly diet'**
   String get generateWeeklyDiet;
+
+  /// No description provided for @predictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted calories'**
+  String get predictedCalories;
+
+  /// No description provided for @bmr.
+  ///
+  /// In en, this message translates to:
+  /// **'Basal Metabolic Rate (BMR)'**
+  String get bmr;
+
+  /// No description provided for @tdee.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Daily Energy Expenditure (TDEE)'**
+  String get tdee;
+
+  /// No description provided for @predictedMacros.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted macronutrients'**
+  String get predictedMacros;
+
+  /// No description provided for @dietDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet duration'**
+  String get dietDuration;
 
   /// No description provided for @dietType_FatLoss.
   ///
@@ -886,6 +928,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fill all necessary fields'**
   String get fillAllNecessaryFields;
+
+  /// No description provided for @macros.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros'**
+  String get macros;
+
+  /// No description provided for @kcal.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get kcal;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @expected.
+  ///
+  /// In en, this message translates to:
+  /// **'expected'**
+  String get expected;
+
+  /// No description provided for @proteinG.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein (g)'**
+  String get proteinG;
+
+  /// No description provided for @fatG.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat (g)'**
+  String get fatG;
+
+  /// No description provided for @carbsG.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs (g)'**
+  String get carbsG;
+
+  /// No description provided for @fillFormToSeePredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to see predictions'**
+  String get fillFormToSeePredictions;
+
+  /// No description provided for @redirectToProfileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect to profile details'**
+  String get redirectToProfileDetails;
+
+  /// No description provided for @savePredictedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Save predicted calories'**
+  String get savePredictedCalories;
+
+  /// No description provided for @refreshRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh request'**
+  String get refreshRequest;
+
+  /// No description provided for @changeCaloriesPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change calories prediction'**
+  String get changeCaloriesPrediction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

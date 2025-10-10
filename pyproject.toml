@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 120
+exclude = [".venv", "__pycache__", "migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "W", "C90"]
+extend-ignore = ["E203", "B008"]
+per-file-ignores = { "__init__.py" = ["F401"], "backend/core/migrate.py" = ["F401"]}
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10

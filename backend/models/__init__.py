@@ -1,7 +1,8 @@
+from .user_details_model import UserDetails, UserDietPredictions
 from .user_model import User
-from .user_details_model import UserDetails
 
 __all__ = [
     "User",
     "UserDetails",
+    "UserDietPredictions",
 ]

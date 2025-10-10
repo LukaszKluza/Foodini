@@ -1,11 +1,9 @@
-from sqlalchemy import select
-from sqlmodel import SQLModel
-from backend.core.database import engine, SessionLocal
-from backend.models import (
-    UserDetails,
-    User,
-)
 import asyncio
+
+from sqlmodel import SQLModel
+
+from backend.core.database import engine
+from backend.models import User, UserDetails, UserDietPredictions
 
 
 async def create_tables():

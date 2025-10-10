@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from backend.models import User
 from backend.users.auth_dependencies import AuthDependency
-from backend.users.dependencies import get_user_validators, get_auth_dependency
+from backend.users.dependencies import get_auth_dependency, get_user_validators
 from backend.users.service.user_validation_service import (
     UserValidationService,
 )
@@ -29,12 +29,8 @@ class UserGateway:
     async def get_current_user(self) -> tuple[Type[User], dict]:
         return await self.auth_dependency.get_current_user()
 
-    def check_user_permission(
-        self, user_param_from_token, user_param_from_request
-    ) -> None:
-        self.user_validation_service.check_user_permission(
-            user_param_from_token, user_param_from_request
-        )
+    def check_user_permission(self, user_param_from_token, user_param_from_request) -> None:
+        self.user_validation_service.check_user_permission(user_param_from_token, user_param_from_request)
 
 
 def get_user_gateway(

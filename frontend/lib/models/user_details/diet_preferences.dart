@@ -1,6 +1,6 @@
-import 'allergy.dart';
-import 'diet_intensity.dart';
-import 'diet_type.dart';
+import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_type.dart';
 
 class DietPreferences {
   final DietType dietType;

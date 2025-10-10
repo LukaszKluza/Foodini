@@ -13,108 +13,104 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
 
   DietFormBloc(this.userDetailsRepository) : super(DietFormInit()) {
     on<UpdateGender>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(gender: event.gender));
       }
     });
 
     on<UpdateHeight>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(height: event.height));
       }
     });
 
     on<UpdateWeight>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(weight: event.weight));
       }
     });
 
     on<UpdateDateOfBirth>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dateOfBirth: event.dateOfBirth));
       }
     });
 
     on<UpdateDietType>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietType: event.dietType));
       }
     });
 
     on<UpdateAllergies>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(allergies: event.allergies));
       }
     });
 
     on<UpdateDietGoal>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietGoal: event.dietGoal));
       }
     });
 
     on<UpdateMealsPerDay>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(mealsPerDay: event.mealsPerDay));
       }
     });
 
     on<UpdateDietIntensity>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(dietIntensity: event.dietIntensity));
       }
     });
 
     on<UpdateActivityLevel>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(activityLevel: event.activityLevel));
       }
     });
 
     on<UpdateStressLevel>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(stressLevel: event.stressLevel));
       }
     });
 
     on<UpdateSleepQuality>((event, emit) {
-      if (state is DietFormSubmit ){
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(sleepQuality: event.sleepQuality));
       }
     });
 
-    on<UpdateMusclePercentage>((event, emit) {
-      if (state is DietFormSubmit ){
+    on<UpdateAdvancedParameters>((event, emit) {
+      if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(musclePercentage: event.musclePercentage));
+        emit(
+          currentState.copyWith(
+            musclePercentage: event.musclePercentage,
+            fatPercentage: event.fatPercentage,
+            waterPercentage: event.waterPercentage,
+          ),
+        );
       }
     });
 
-    on<UpdateWaterPercentage>((event, emit) {
-      if (state is DietFormSubmit ){
-        final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(waterPercentage: event.waterPercentage));
-      }
-    });
-
-    on<UpdateFatPercentage>((event, emit) {
-      if (state is DietFormSubmit ){
-        final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(fatPercentage: event.fatPercentage));
-      }
+    on<RestoreDietFormStateAfterFailure>((event, emit) {
+      emit(event.previousData);
     });
 
     on<DietFormResetRequested>((event, emit) {
@@ -127,6 +123,13 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
   }
 
   Future<void> _onInitForm(InitForm event, Emitter<DietFormState> emit) async {
+    final currentState =
+        state is DietFormSubmit
+            ? state as DietFormSubmit
+            : DietFormSubmit.initial();
+
+    emit(currentState);
+
     try {
       final userId = UserStorage().getUserId!;
       final dietPreferences = await userDetailsRepository.getDietPreferences(
@@ -135,12 +138,12 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
 
       emit(DietFormSubmit.fromDietForm(dietPreferences));
     } on ApiException catch (e) {
-      if (e.statusCode == 404){
+      if (e.statusCode == 404) {
         emit(DietFormSubmit.initial());
         return;
       }
-      logger.w("Unable to fetch user diet preferences");
-      emit(DietFormSubmitFailure(error: e));
+      logger.w('Unable to fetch user diet preferences');
+      emit(currentState.copyWith(errorMessage: e.toString()));
     }
   }
 
@@ -148,7 +151,12 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     SubmitForm event,
     Emitter<DietFormState> emit,
   ) async {
-    final currentState = state as DietFormSubmit;
+    DietFormSubmit currentState;
+    if (state is DietFormSubmit) {
+      currentState = state as DietFormSubmit;
+    } else {
+      currentState = DietFormSubmit.initial();
+    }
     emit(currentState.copyWith(isSubmitting: true, errorMessage: null));
 
     final requiredFields = [
@@ -169,6 +177,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     if (requiredFields.any((field) => field == null)) {
       emit(
         DietFormSubmitFailure(
+          previousData: currentState,
           getMessage:
               (context) => AppLocalizations.of(context)!.fillAllNecessaryFields,
         ),
@@ -198,9 +207,13 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       final userId = UserStorage().getUserId!;
       await userDetailsRepository.submitDietForm(dietForm, userId);
 
-      emit(DietFormSubmitSuccess());
+      final predicted = await userDetailsRepository.addCaloriesPrediction(
+        userId,
+      );
+
+      emit(DietFormSubmitSuccess(predicted));
     } on ApiException catch (e) {
-      emit(DietFormSubmitFailure(error: e));
+      emit(DietFormSubmitFailure(previousData: currentState, error: e));
     }
   }
 }

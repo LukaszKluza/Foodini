@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from unittest.mock import patch, AsyncMock, MagicMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import jwt
 import pytest
@@ -7,7 +7,7 @@ import redis.asyncio as aioredis
 from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from itsdangerous import BadSignature
-from pydantic import TypeAdapter, EmailStr
+from pydantic import EmailStr, TypeAdapter
 
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
@@ -101,9 +101,7 @@ async def test_create_tokens_success(authorization_service, mock_redis):
 
 
 @pytest.mark.asyncio
-async def test_verify_token_success(
-    authorization_service, mock_redis, credentials, valid_payload
-):
+async def test_verify_token_success(authorization_service, mock_redis, credentials, valid_payload):
     # given
     with (
         patch.object(
@@ -138,9 +136,7 @@ async def test_verify_token_expired(authorization_service, credentials):
 
 
 @pytest.mark.asyncio
-async def test_refresh_token_success(
-    authorization_service, mock_redis, credentials, valid_refresh_payload
-):
+async def test_refresh_token_success(authorization_service, mock_redis, credentials, valid_refresh_payload):
     # given
     with (
         patch("jwt.decode", return_value=valid_refresh_payload) as mock_decode,
@@ -195,9 +191,7 @@ async def test_create_url_safe_token(authorization_service):
         return_value=mock_serializer,
     ):
         # when
-        token = await authorization_service.create_url_safe_token(
-            {"email": "test@example.com"}
-        )
+        token = await authorization_service.create_url_safe_token({"email": "test@example.com"})
 
         # then
         assert token == "safe_token"

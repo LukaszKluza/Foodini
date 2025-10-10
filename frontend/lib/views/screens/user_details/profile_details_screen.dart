@@ -4,16 +4,16 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
-import 'package:frontend/states/diet_form_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/gender.dart';
+import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/gender.dart';
 
 class ProfileDetailsScreen extends StatefulWidget {
   const ProfileDetailsScreen({super.key});
@@ -70,8 +70,8 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
   bool _didEnter = false;
 
   Gender? _selectedGender;
-  double? _selectedHeight;
-  double? _selectedWeight;
+  double _selectedHeight = Constants.defaultHeight;
+  double _selectedWeight = Constants.defaultWeight;
   DateTime? _selectedDateOfBirth;
 
   @override
@@ -96,13 +96,14 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
       _selectedHeight = blocState.height ?? _selectedHeight;
       _selectedWeight = blocState.weight ?? _selectedWeight;
       _selectedDateOfBirth = blocState.dateOfBirth ?? _selectedDateOfBirth;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _softFormValidation(),
+      );
     }
   }
 
   void _softFormValidation() {
-    final formIsReady = _selectedGender != null && _selectedHeight != null &&
-        _selectedWeight != null && _selectedDateOfBirth != null;
+    final formIsReady = _selectedGender != null && _selectedDateOfBirth != null;
 
     widget.onFormValidityChanged?.call(formIsReady);
   }
@@ -163,7 +164,9 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             _selectedWeight = state.weight ?? _selectedWeight;
             _selectedDateOfBirth = state.dateOfBirth ?? _selectedDateOfBirth;
           });
-          WidgetsBinding.instance.addPostFrameCallback((_) => _softFormValidation());
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => _softFormValidation(),
+          );
         }
       },
       child: Padding(
@@ -197,13 +200,13 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
               const SizedBox(height: 20),
               HeightSlider(
                 key: const Key('height'),
-                value: _selectedHeight ?? Constants.defaultHeight,
+                value: _selectedHeight,
                 onChanged: _onHeightChanged,
               ),
               const SizedBox(height: 20),
               WeightSlider(
                 key: const Key('weight'),
-                value: _selectedWeight ?? Constants.defaultWeight,
+                value: _selectedWeight,
                 label: AppLocalizations.of(context)!.weight,
                 dialogTitle: AppLocalizations.of(context)!.enterYourWeight,
                 onChanged: _onWeightChanged,

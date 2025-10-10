@@ -62,6 +62,8 @@
   "enterYourDietGoal": "Wprowadź swój cel diety",
   "weightKg": "Waga (kg)",
   "dietGoalShouldBeBetween": "Cel diety powinien być pomiędzy",
+  "muscleGainGoalCantBeLower": "Cel diety dla 'Przyrostu masy mięśniowej' nie może być mniejszy niż obecna waga",
+  "fatLossGoalCantBeHigher": "Cel diety dla 'Utraty tłuszczu' nie może być większy niż obecna waga",
   "kg": "kg",
   "mealsPerDay": "Liczba posiłków dziennie",
   "dietIntensity": "Intensywność diety",
@@ -84,6 +86,11 @@
   "enterFatPercentage": "Wprowadź procent tłuszczu",
   "fatPercentageShouldBeBetween": "Procent tłuszczu powinien być pomiędzy",
   "generateWeeklyDiet": "Wygeneruj tygodniową dietę",
+  "predictedCalories": "Przewidywana liczba kalorii",
+  "bmr": "Podstawowa przemiana materii (BMR)",
+  "tdee": "Całkowite dzienne zapotrzebowanie (TDEE)",
+  "predictedMacros": "Przewidywane makroskładniki",
+  "dietDuration": "Czas trwania diety",
 
   "dietType_FatLoss": "Utrata tłuszczu",
   "dietType_MuscleGain": "Przyrost masy mięśniowej",
@@ -142,5 +149,18 @@
   "dateOfBirth": "Data urodzenia",
   "enterDateOfBirth": "Wprowadź swoją datę urodzenia",
   "formSuccessfullySubmitted": "Formularz został pomyślnie wysłany",
-  "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola"
+  "fillAllNecessaryFields": "Wypełnij wszystki wymagane pola",
+
+  "macros": "Makro",
+  "kcal": "kcal",
+  "days": "dni",
+  "expected": "oczekiwane",
+  "proteinG": "Białko (g)",
+  "fatG": "Tłuszcz (g)",
+  "carbsG": "Węgle (g)",
+  "fillFormToSeePredictions": "Proszę wypełnić formularz, aby zobaczyć predykcje",
+  "redirectToProfileDetails": "Przejdź do szczegółów profilu",
+  "savePredictedCalories": "Zapisz wygenerowane kalorie",
+  "refreshRequest": "Odśwież żądanie",
+  "changeCaloriesPrediction": "Zmień przewidywane kalorie"
 }

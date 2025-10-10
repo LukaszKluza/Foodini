@@ -102,11 +102,11 @@ void main() {
 
         expect(
           validateEmail('invalidEmail', context),
-          equals("Enter valid e-mail"),
+          equals('Enter valid e-mail'),
         );
         expect(
           validateEmail('invalid@com', context),
-          equals("Enter valid e-mail"),
+          equals('Enter valid e-mail'),
         );
       },
     );
