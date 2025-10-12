@@ -3,7 +3,7 @@ from typing import Any, Sequence
 from sqlalchemy import Row, RowMapping, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.models import MealRecipe
+from backend.models import Meal, MealRecipe
 from backend.models.meal_recipe_model import Ingredients, Step
 from backend.users.enums.language import Language
 
@@ -30,6 +30,16 @@ class MealRecipesRepository:
         result = await self.db.execute(query)
 
         return await self._map_meal_recipe(result.scalars().one_or_none())
+
+    async def get_meal_by_id(self, meal_id: int) -> Meal | None:
+        result = await self.db.get(Meal, meal_id)
+        return result
+
+    async def add_meal(self, meal: Meal) -> Meal:
+        self.db.add(meal)
+        await self.db.commit()
+        await self.db.refresh(meal)
+        return meal
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         self.db.add(meal_recipe)
