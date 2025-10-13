@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-enum SleepQuality {
-  POOR = 0;
-  FAIR = 1;
-  GOOD = 2;
-  EXCELLENT = 3;
-}
