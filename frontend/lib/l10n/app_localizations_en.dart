@@ -195,6 +195,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
+  String get muscleGainGoalCantBeLower => 'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
+
+  @override
+  String get fatLossGoalCantBeHigher => 'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
+
+  @override
   String get kg => 'kg';
 
   @override
@@ -259,6 +265,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generateWeeklyDiet => 'Generate weekly diet';
+
+  @override
+  String get predictedCalories => 'Predicted calories';
+
+  @override
+  String get bmr => 'Basal Metabolic Rate (BMR)';
+
+  @override
+  String get tdee => 'Total Daily Energy Expenditure (TDEE)';
+
+  @override
+  String get predictedMacros => 'Predicted macronutrients';
+
+  @override
+  String get dietDuration => 'Diet duration';
 
   @override
   String get dietType_FatLoss => 'Fat Loss';
@@ -403,6 +424,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fillAllNecessaryFields => 'Fill all necessary fields';
+
+  @override
+  String get macros => 'Macros';
+
+  @override
+  String get kcal => 'kcal';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get expected => 'expected';
+
+  @override
+  String get proteinG => 'Protein (g)';
+
+  @override
+  String get fatG => 'Fat (g)';
+
+  @override
+  String get carbsG => 'Carbs (g)';
+
+  @override
+  String get fillFormToSeePredictions => 'Please fill out the form to see predictions';
+
+  @override
+  String get redirectToProfileDetails => 'Redirect to profile details';
+
+  @override
+  String get savePredictedCalories => 'Save predicted calories';
+
+  @override
+  String get changeCaloriesPrediction => 'Change calories prediction';
 
   @override
   String get refreshRequest => 'Refresh request';
