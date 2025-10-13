@@ -20,7 +20,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           UserStorage().removeUser();
         }
         await tokenStorageRepository.deleteAccessToken();
-        await tokenStorageRepository.deleteRefreshToken();
 
         emit(AccountLogoutSuccess());
       } on ApiException catch (error) {
@@ -53,7 +52,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         await authRepository.delete(UserStorage().getUserId!);
         UserStorage().removeUser();
         await tokenStorageRepository.deleteAccessToken();
-        await tokenStorageRepository.deleteRefreshToken();
 
         emit(AccountDeleteSuccess());
       } on ApiException catch (error) {

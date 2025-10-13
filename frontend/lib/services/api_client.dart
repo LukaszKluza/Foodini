@@ -89,11 +89,9 @@ class ApiClient {
   }
 
   Future<Response> refreshTokens(int userId) async {
-    final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
       Endpoints.refreshTokens,
       queryParameters: {'user_id': userId},
-      options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
     );
   }
 

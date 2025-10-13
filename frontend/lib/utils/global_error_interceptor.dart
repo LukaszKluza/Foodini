@@ -62,18 +62,15 @@ class GlobalErrorInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    final refreshToken = await _tokenStorage.getRefreshToken();
     final userId = UserStorage().getUserId;
 
-    if (refreshToken != null && userId != null) {
+    if (userId != null) {
       try {
         final response = await _apiClient.refreshTokens(userId);
 
         if (response.statusCode == 200) {
           final newAccessToken = response.data['access_token'];
-          final newRefreshToken = response.data['refresh_token'];
           await _tokenStorage.saveAccessToken(newAccessToken);
-          await _tokenStorage.saveRefreshToken(newRefreshToken);
 
           final requestOptions = err.response?.requestOptions;
           if (requestOptions != null) {
@@ -101,7 +98,6 @@ class GlobalErrorInterceptor extends Interceptor {
   ) async {
     UserStorage().removeUser();
     await TokenStorageRepository().deleteAccessToken();
-    await TokenStorageRepository().deleteRefreshToken();
 
     router.go('/');
   }

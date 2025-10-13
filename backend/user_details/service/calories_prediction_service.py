@@ -1,11 +1,10 @@
 from typing import Type
 
-from models import UserDietPredictions
 from pydantic import ValidationError
-from settings import config
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.models import User
+from backend.models import User, UserDietPredictions
+from backend.settings import config
 from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
 from backend.user_details.schemas import PredictedCalories, PredictedMacros
 from backend.user_details.service.calories_prediction_algorithm import CaloriesPredictionAlgorithm

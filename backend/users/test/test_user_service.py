@@ -186,8 +186,8 @@ async def test_login_user_success(
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
     mock_password_service["verify_password"].return_value = True
     mock_authorization_service.create_tokens.return_value = (
-        "access_token",
-        "refresh_token",
+        b"access_token",
+        b"refresh_token",
     )
     user_login = UserLogin(
         email=TypeAdapter(EmailStr).validate_python("test@example.com"),
@@ -198,8 +198,8 @@ async def test_login_user_success(
     result = await user_service.login(user_login)
 
     # Then
-    assert result.email == "test@example.com"
-    assert result.access_token == "access_token"
+    assert result[0].email == "test@example.com"
+    assert result[0].access_token == "access_token"
 
 
 @pytest.mark.asyncio
@@ -339,7 +339,7 @@ async def test_confirm_new_account_successfully(user_service, mock_user_validato
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "http://localhost:3000/#/login?status=success"
+    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=success"
 
 
 @pytest.mark.asyncio
@@ -357,7 +357,7 @@ async def test_confirm_new_account_with_revoked_token(user_service, mock_user_va
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "http://localhost:3000/#/login?status=error&email=test@example.com"
+    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=error&email=test@example.com"
 
 
 @pytest.mark.asyncio
@@ -375,7 +375,7 @@ async def test_confirm_new_account_with_corrupted_token(user_service, mock_user_
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "http://localhost:3000/#/login?status=error"
+    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=error"
 
 
 @pytest.mark.asyncio

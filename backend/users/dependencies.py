@@ -3,12 +3,14 @@ from fastapi import Depends, Query, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_mail import ConnectionConfig, FastMail
 from sqlmodel.ext.asyncio.session import AsyncSession
+from starlette.requests import Request
 
 from backend.core.database import get_db, get_redis
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
 from backend.users.auth_dependencies import AuthDependency
 from backend.users.mail import MailService
+from backend.users.refresh_token_dependencies import RefreshTokenDependency
 from backend.users.service.email_verification_sevice import EmailVerificationService
 from backend.users.service.user_service import UserService
 from backend.users.service.user_validation_service import UserValidationService
@@ -80,3 +82,10 @@ async def get_auth_dependency(
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> AuthDependency:
     return AuthDependency(user_id, credentials, user_validators, authorization_service)
+
+
+async def get_refresh_token_dependency(
+    request: Request,
+    authorization_service: AuthorizationService = Depends(get_authorization_service),
+) -> RefreshTokenDependency:
+    return RefreshTokenDependency(request, authorization_service)

@@ -22,9 +22,4 @@ class TokenStorageRepository {
   Future<void> saveAccessToken(String token) => _storage.saveAccessToken(token);
   Future<String?> getAccessToken() => _storage.getAccessToken();
   Future<void> deleteAccessToken() => _storage.deleteAccessToken();
-
-  Future<void> saveRefreshToken(String token) =>
-      _storage.saveRefreshToken(token);
-  Future<String?> getRefreshToken() => _storage.getRefreshToken();
-  Future<void> deleteRefreshToken() => _storage.deleteRefreshToken();
 }

@@ -14,9 +14,10 @@ from backend.user_details.enums import (
     StressLevel,
 )
 from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
+from backend.user_details.mixins.float_field_validator_mixin import FloatFieldValidatorMixin
 
 
-class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
+class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
@@ -34,7 +35,7 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Bas
     fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
 
 
-class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
+class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)

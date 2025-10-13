@@ -17,7 +17,6 @@ void main() {
       expect(user.id, 42);
       expect(user.email, 'test@example.com');
       expect(user.accessToken, 'access123');
-      expect(user.refreshToken, 'refresh456');
     });
 
     test('should parse correctly from JSON with string id', () {
@@ -33,7 +32,6 @@ void main() {
       expect(user.id, 42);
       expect(user.email, 'string@example.com');
       expect(user.accessToken, 'access789');
-      expect(user.refreshToken, 'refresh987');
     });
   });
 }

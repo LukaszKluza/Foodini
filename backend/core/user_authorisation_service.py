@@ -19,7 +19,7 @@ from itsdangerous import (
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
-from backend.users.schemas import RefreshTokensResponse
+from backend.users.schemas import LoginUserResponse
 
 security = HTTPBearer()
 
@@ -80,8 +80,8 @@ class AuthorizationService:
 
     async def refresh_tokens(
         self,
-        refresh_token: HTTPAuthorizationCredentials = Security(security),
-    ) -> RefreshTokensResponse:
+        refresh_token: str,
+    ) -> (LoginUserResponse, str):
         payload = await self.verify_refresh_token(refresh_token)
 
         refresh_token_jti = payload.get("jti")
@@ -91,28 +91,27 @@ class AuthorizationService:
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
-        return RefreshTokensResponse(
+        return LoginUserResponse(
             id=payload["id"],
             email=payload["sub"],
             access_token=new_access_token,
-            refresh_token=new_refresh_token,
-        )
+        ), new_refresh_token.decode()
 
     async def verify_access_token(
         self,
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await self.verify_token_by_type(credentials, Token.ACCESS.value)
+        return await self.verify_token_by_type(credentials.credentials, Token.ACCESS.value)
 
     async def verify_refresh_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
+        credentials: str,
     ):
         return await self.verify_token_by_type(credentials, Token.REFRESH.value)
 
     async def verify_token_by_type(
         self,
-        credentials: HTTPAuthorizationCredentials,
+        credentials: str,
         expected_type: str,
     ):
         token = await self.get_payload_from_token(credentials, expected_type)
@@ -155,12 +154,12 @@ class AuthorizationService:
 
     async def get_payload_from_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
+        credentials: str,
         token_type: str = None,
     ):
         try:
             return jwt.decode(
-                credentials.credentials,
+                credentials,
                 config.SECRET_KEY,
                 algorithms=[config.ALGORITHM],
             )

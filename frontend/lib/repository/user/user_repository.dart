@@ -6,7 +6,6 @@ import 'package:frontend/models/user/default_response.dart';
 import 'package:frontend/models/user/logged_user.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
-import 'package:frontend/models/user/refreshed_tokens_response.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/services/api_client.dart';
@@ -115,10 +114,9 @@ class UserRepository {
     }
   }
 
-  Future<RefreshedTokensResponse> refreshTokens(int userId) async {
+  Future<void> refreshTokens(int userId) async {
     try {
-      final response = await apiClient.refreshTokens(userId);
-      return RefreshedTokensResponse.fromJson(response.data);
+      await apiClient.refreshTokens(userId);
     } on DioException catch (e) {
       throw ApiException(e.response?.data);
     } catch (e) {

@@ -23,14 +23,6 @@ Future<void> fetchTokenTaskCallback([
       final userId = UserStorage().getUserId;
 
       if (userId != null) {
-        refreshedTokens = await authRepository.refreshTokens(userId);
-        await TokenStorageRepository().saveAccessToken(
-          refreshedTokens.accessToken,
-        );
-        await TokenStorageRepository().saveRefreshToken(
-          refreshedTokens.refreshToken,
-        );
-
         userResponse = await authRepository.getUser(userId);
         userStorage.setUser(userResponse);
 
@@ -39,7 +31,6 @@ Future<void> fetchTokenTaskCallback([
     } catch (e) {
       userStorage.removeUser();
       await TokenStorageRepository().deleteAccessToken();
-      await TokenStorageRepository().deleteRefreshToken();
 
       router.go('/');
     }

@@ -161,9 +161,6 @@ void main() {
       type: DioExceptionType.badResponse,
     );
 
-    when(
-      mockTokenStorageRepository.getRefreshToken(),
-    ).thenAnswer((_) async => null);
     final handler = MockErrorInterceptorHandler();
     final interceptor = GlobalErrorInterceptor(
       apiClient,
@@ -172,7 +169,6 @@ void main() {
 
     await interceptor.onError(error, handler);
 
-    verify(mockTokenStorageRepository.getRefreshToken()).called(1);
     verifyNever(
       mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     );

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from fastapi import HTTPException, Response, status
 from starlette.responses import RedirectResponse
@@ -69,8 +70,7 @@ class UserService:
             id=user_.id,
             email=user_.email,
             access_token=access_token,
-            refresh_token=refresh_token,
-        )
+        ), refresh_token.decode()
 
     async def logout(self, token_payload: dict):
         await self.authorization_service.revoke_tokens(token_payload["jti"], token_payload["linked_jti"])
@@ -89,17 +89,17 @@ class UserService:
             email=user_.email,
         )
 
-    async def update(self, user: User, new_user_data: UserUpdate):
+    async def update(self, user: Type[User], new_user_data: UserUpdate):
         return await self.user_repository.update_user(user.id, new_user_data)
 
     async def change_language(
         self,
-        user: User,
+        user: Type[User],
         change_language_request: ChangeLanguageRequest,
     ):
         return await self.user_repository.change_language(user.id, change_language_request.language)
 
-    async def delete(self, user: User, token_payload: dict):
+    async def delete(self, user: Type[User], token_payload: dict):
         await self.authorization_service.revoke_tokens(token_payload["jti"], token_payload["linked_jti"])
         return await self.user_repository.delete_user(user.id)
 

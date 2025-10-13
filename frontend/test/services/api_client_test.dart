@@ -164,13 +164,6 @@ void main() {
       mockDio.post(
         Endpoints.refreshTokens,
         queryParameters: {'user_id': 1},
-        options: argThat(
-          predicate<Options>(
-            (opt) =>
-                opt.headers?['Authorization'] == 'Bearer $testRefreshToken',
-          ),
-          named: 'options',
-        ),
       ),
     ).called(1);
   });

@@ -18,7 +18,6 @@ class ChangePasswordBloc
         await authRepository.changePassword(event.request);
 
         await tokenStorage.deleteAccessToken();
-        await tokenStorage.deleteRefreshToken();
 
         emit(ChangePasswordSuccess());
       } on ApiException catch (error) {
