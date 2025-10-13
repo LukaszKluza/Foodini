@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 from backend.core.database import engine, get_db
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.test.test_data import MEAL_RECIPES
-from backend.models import MealIcon, MealRecipe
+from backend.models import MealIcon, MealRecipe, User, UserDetails, UserDietPredictions
 
 MEAL_ICONS = [
     {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
