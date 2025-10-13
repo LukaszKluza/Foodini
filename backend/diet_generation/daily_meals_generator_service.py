@@ -8,9 +8,6 @@ import requests
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
 from backend.models import Meal, MealRecipe, Ingredients, Ingredient, Step, UserDetails, UserDietPredictions
-from backend.models import User
-from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
-from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.users.enums.language import Language
 from backend.settings import config
 
@@ -18,13 +15,9 @@ from backend.settings import config
 class PromptService:
     def __init__(
         self,
-        user_details_repo: UserDetailsRepository,
         meal_recipes_repo: MealRecipesRepository,
-        calories_repo: CaloriesPredictionRepository,
     ):
-        self.user_details_repo = user_details_repo
         self.meal_recipes_repo = meal_recipes_repo
-        self.calories_repo = calories_repo
         self._prompt_template_cache: Optional[str] = None
 
     @staticmethod
@@ -48,10 +41,9 @@ class PromptService:
             raise ValueError("Response does not contain a JSON array")
         return json.loads(response[start:end + 1])
 
-    async def generate_meal_plan(self, user: User, retries: int = 2) -> List[MealRecipe]:
-        user_details = await self._get_user_details(user.id)
-        user_predictions = await self._get_user_predictions(user.id)
-        params = self._prepare_params(user_details, user_predictions)
+    async def generate_meal_plan(self, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2) -> List[MealRecipe]:
+
+        params = self._prepare_params(user_details, user_diet_predictions)
         prompt = self._build_prompt(params)
 
         response = await self._get_valid_json_from_model(prompt, retries)
@@ -118,15 +110,3 @@ class PromptService:
                 print(traceback.format_exc())
                 print(f"[ERROR] Failed to save recipe '{meal_data["meal_name"]}': {e}")
         return saved_recipes
-
-    async def _get_user_details(self, user_id: int) -> UserDetails:
-        details = await self.user_details_repo.get_user_details_by_id(user_id)
-        if not details:
-            raise ValueError(f"No user details found for user_id={user_id}")
-        return details
-
-    async def _get_user_predictions(self, user_id: int) -> UserDietPredictions:
-        predictions = await self.calories_repo.get_user_calories_prediction_by_user_id(user_id)
-        if not predictions:
-            raise ValueError(f"No diet predictions found for user_id={user_id}")
-        return predictions
