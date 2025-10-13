@@ -7,9 +7,9 @@ import requests
 
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.models import Meal, MealRecipe, Ingredients, Ingredient, Step, UserDetails, UserDietPredictions
-from backend.users.enums.language import Language
+from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDetails, UserDietPredictions
 from backend.settings import config
+from backend.users.enums.language import Language
 
 
 class PromptService:
@@ -26,11 +26,7 @@ class PromptService:
             "allergens": [a.value for a in details.allergies],
             "meals_per_day": details.meals_per_day,
             "calories": predictions.target_calories,
-            "macros": {
-                "protein": predictions.protein,
-                "carbs": predictions.carbs,
-                "fat": predictions.fat
-            }
+            "macros": {"protein": predictions.protein, "carbs": predictions.carbs, "fat": predictions.fat},
         }
 
     @staticmethod
@@ -39,10 +35,11 @@ class PromptService:
         end = response.rfind("]")
         if start == -1 or end == -1:
             raise ValueError("Response does not contain a JSON array")
-        return json.loads(response[start:end + 1])
+        return json.loads(response[start : end + 1])
 
-    async def generate_meal_plan(self, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2) -> List[MealRecipe]:
-
+    async def generate_meal_plan(
+        self, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2
+    ) -> List[MealRecipe]:
         params = self._prepare_params(user_details, user_diet_predictions)
         prompt = self._build_prompt(params)
 
@@ -51,24 +48,27 @@ class PromptService:
 
     def _build_prompt(self, params: dict) -> str:
         if self._prompt_template_cache is None:
-            prompt_file_path = os.path.join(os.path.dirname(__file__), config.PROMPTS_DIR, config.DAILY_MEALS_PROMPT_FILENAME)
+            prompt_file_path = os.path.join(
+                os.path.dirname(__file__), config.PROMPTS_DIR, config.DAILY_MEALS_PROMPT_FILENAME
+            )
             try:
-                with open(prompt_file_path, 'r', encoding='utf-8') as f:
+                with open(prompt_file_path, "r", encoding="utf-8") as f:
                     self._prompt_template_cache = f.read()
-            except FileNotFoundError:
-                raise RuntimeError(f"Prompt file not found at: {prompt_file_path}")
+            except FileNotFoundError as err:
+                raise RuntimeError(f"Prompt file not found at: {prompt_file_path}") from err
 
         meal_types = ", ".join(f'"{m.value}"' for m in MealType)
         return self._prompt_template_cache.format(
-            input_data=json.dumps(params, indent=2, ensure_ascii=False),
-            meal_type_options=meal_types
+            input_data=json.dumps(params, indent=2, ensure_ascii=False), meal_type_options=meal_types
         )
 
     async def _get_valid_json_from_model(self, prompt: str, retries: int) -> List[Dict[str, Any]]:
         last_exception = None
-        for attempt in range(retries + 1):
+        for _attempt in range(retries + 1):
             try:
-                resp = requests.post(config.OLLAMA_URL, json={"model": config.MODEL_NAME, "prompt": prompt, "stream": False})
+                resp = requests.post(
+                    config.OLLAMA_URL, json={"model": config.MODEL_NAME, "prompt": prompt, "stream": False}
+                )
                 resp.raise_for_status()
                 return self._parse_json_response(resp.json()["response"])
             except Exception as e:
@@ -81,11 +81,10 @@ class PromptService:
         print(meals_data)
         for meal_data in meals_data:
             try:
-
                 meal = Meal(
                     meal_name=meal_data["meal_name"].capitalize(),
                     meal_type=MealType(meal_data["meal_type"].lower()),
-                    icon_id=MealType(meal_data["meal_type"].lower()).meal_order
+                    icon_id=MealType(meal_data["meal_type"].lower()).meal_order,
                 )
                 saved_meal = await self.meal_recipes_repo.add_meal(meal)
 
@@ -108,5 +107,5 @@ class PromptService:
                 saved_recipes.append(saved)
             except Exception as e:
                 print(traceback.format_exc())
-                print(f"[ERROR] Failed to save recipe '{meal_data["meal_name"]}': {e}")
+                print(f"[ERROR] Failed to save recipe '{meal_data['meal_name']}': {e}")
         return saved_recipes

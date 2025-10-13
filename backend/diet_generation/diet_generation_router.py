@@ -2,9 +2,9 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
+from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.dependencies import get_diet_generation_service, get_prompt_service
 from backend.diet_generation.diet_generation_service import DietGenerationService
-from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.enums.meal_type import MealType
 from backend.models import MealRecipe
 from backend.models.meal_icon_model import MealIcon

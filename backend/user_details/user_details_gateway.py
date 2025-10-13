@@ -2,17 +2,15 @@ from typing import Type
 
 from fastapi import Depends
 
-from backend.models import UserDetails, UserDietPredictions, User
+from backend.models import User, UserDetails, UserDietPredictions
+from backend.user_details.dependencies import get_calories_prediction_service, get_user_details_service
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
 from backend.user_details.service.user_details_service import UserDetailsService
-from backend.user_details.dependencies import get_user_details_service, get_calories_prediction_service
 
 
 class UserDetailsGateway:
     def __init__(
-        self,
-        user_details_service: UserDetailsService,
-        calories_prediction_service: CaloriesPredictionService
+        self, user_details_service: UserDetailsService, calories_prediction_service: CaloriesPredictionService
     ):
         self.user_details_service = user_details_service
         self.calories_prediction_service = calories_prediction_service

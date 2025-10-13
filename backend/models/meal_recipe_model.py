@@ -25,8 +25,9 @@ class Step(SQLModel):
     description: str
     optional: bool = False
 
+
 class Meal(SQLModel, table=True):
-    __tablename__ = 'meal'
+    __tablename__ = "meal"
 
     id: int = Field(default=None, primary_key=True)
     meal_name: str = Field(nullable=False)
@@ -36,6 +37,7 @@ class Meal(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
 
 class MealRecipe(SQLModel, table=True):
     __tablename__ = "meal_recipes"

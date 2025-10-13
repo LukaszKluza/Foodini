@@ -191,12 +191,4 @@ class ApiClient {
       options: Options(extra: {'requiresAuth': true}),
     );
   }
-
-  Future<Response> generateMealPlan(int userId) {
-    return _client.post(
-      Endpoints.generateMealPlan,
-      queryParameters: {'user_id': userId},
-      options: Options(extra: {'requiresAuth': true}),
-    );
-  }
 }
