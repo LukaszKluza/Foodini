@@ -1,5 +1,9 @@
 from typing import Type
 
+from models import UserDietPredictions
+from pydantic import ValidationError
+from settings import config
+
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
@@ -40,4 +44,26 @@ class CaloriesPredictionService:
         changed_macros: PredictedMacros,
         user_id: int,
     ):
+        user_diet_predictions = await self.calories_prediction_repository.get_diet_predicting_by_user_id(user_id)
+        if user_diet_predictions is None:
+            raise NotFoundInDatabaseException("No calorie prediction found for the user.")
+
+        await self.validate_changed_macros(changed_macros, user_diet_predictions)
+
         return await self.calories_prediction_repository.update_macros_prediction(changed_macros, user_id)
+
+    @staticmethod
+    async def validate_changed_macros(changed_macros: PredictedMacros, user_diet_predictions: UserDietPredictions):
+        user_calories = user_diet_predictions.target_calories
+
+        if changed_macros.protein <= 0 or changed_macros.fat <= 0 or changed_macros.carbs <= 0:
+            raise ValidationError("Macros cannot be negative or zero.")
+
+        approx_new_calories = (
+            changed_macros.protein * config.PROTEIN_CONVERSION_FACTOR
+            + changed_macros.fat * config.FAT_CONVERSION_FACTOR
+            + changed_macros.carbs * config.CARBS_CONVERSION_FACTOR
+        )
+
+        if abs(approx_new_calories - user_calories) > config.MACROS_CHANGE_TOLERANCE:
+            raise ValidationError("New macros are too far from predicted calories")

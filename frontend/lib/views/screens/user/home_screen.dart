@@ -11,18 +11,22 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.homePage,
-            style: Styles.titleStyle,
-          ),
+        title: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.homePage,
+              style: Styles.titleStyle,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.translate_rounded),
+                onPressed: () => LanguagePicker.show(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.translate_rounded),
-            onPressed: () => LanguagePicker.show(context),
-          ),
-        ],
       ),
       body: Center(
         child: Column(
