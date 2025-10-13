@@ -161,6 +161,14 @@
   "fillFormToSeePredictions": "Please fill out the form to see predictions",
   "redirectToProfileDetails": "Redirect to profile details",
   "savePredictedCalories": "Save predicted calories",
+  "changeCaloriesPrediction": "Change calories prediction",
+
   "refreshRequest": "Refresh request",
-  "changeCaloriesPrediction": "Change calories prediction"
+  "goToMainPage": "Go to main page",
+  "errorWhileFetchingMealIcon": "Error while fetching meal icon",
+
+  "mealDescriptions": "Meal description",
+  "groceries": "Groceries",
+  "recipe": "Recipe",
+  "optional": "Optional"
 }

@@ -989,17 +989,53 @@ abstract class AppLocalizations {
   /// **'Save predicted calories'**
   String get savePredictedCalories;
 
+  /// No description provided for @changeCaloriesPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change calories prediction'**
+  String get changeCaloriesPrediction;
+
   /// No description provided for @refreshRequest.
   ///
   /// In en, this message translates to:
   /// **'Refresh request'**
   String get refreshRequest;
 
-  /// No description provided for @changeCaloriesPrediction.
+  /// No description provided for @goToMainPage.
   ///
   /// In en, this message translates to:
-  /// **'Change calories prediction'**
-  String get changeCaloriesPrediction;
+  /// **'Go to main page'**
+  String get goToMainPage;
+
+  /// No description provided for @errorWhileFetchingMealIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while fetching meal icon'**
+  String get errorWhileFetchingMealIcon;
+
+  /// No description provided for @mealDescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal description'**
+  String get mealDescriptions;
+
+  /// No description provided for @groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get groceries;
+
+  /// No description provided for @recipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe'**
+  String get recipe;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

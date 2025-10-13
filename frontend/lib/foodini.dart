@@ -6,6 +6,7 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
+import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
@@ -47,6 +48,9 @@ class Foodini extends StatelessWidget {
         ),
         ProxyProvider<ApiClient, UserDetailsRepository>(
           update: (_, apiClient, __) => UserDetailsRepository(apiClient),
+        ),
+        ProxyProvider<ApiClient, MealRecipeRepository>(
+          update: (_, apiClient, __) => MealRecipeRepository(apiClient),
         ),
       ],
       child: MultiBlocProvider(

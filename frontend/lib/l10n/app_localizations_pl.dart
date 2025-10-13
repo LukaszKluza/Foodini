@@ -195,12 +195,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
-  String get muscleGainGoalCantBeLower =>
-      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+  String get muscleGainGoalCantBeLower => 'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
 
   @override
-  String get fatLossGoalCantBeHigher =>
-      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+  String get fatLossGoalCantBeHigher => 'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
 
   @override
   String get kg => 'kg';
@@ -425,7 +423,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
 
   @override
-  String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+  String get fillAllNecessaryFields => 'Wypełnij wszystkie wymagane pola';
 
   @override
   String get macros => 'Makro';
@@ -458,8 +456,26 @@ class AppLocalizationsPl extends AppLocalizations {
   String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
 
   @override
+  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+
+  @override
   String get refreshRequest => 'Odśwież żądanie';
 
   @override
-  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+  String get goToMainPage => 'Idź na stronę główną';
+
+  @override
+  String get errorWhileFetchingMealIcon => 'Błąd podczas pobierania ikony posiłku';
+
+  @override
+  String get mealDescriptions => 'Opis posiłku';
+
+  @override
+  String get groceries => 'Produkty spożywcze';
+
+  @override
+  String get recipe => 'Przepis';
+
+  @override
+  String get optional => 'Opcjonalnie';
 }

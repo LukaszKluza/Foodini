@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
@@ -51,6 +52,21 @@ final GoRouter router = GoRouter(
       path: '/calories-prediction',
       builder: (context, state) => CaloriesPredictionScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/meal-recipe/:id',
+      builder: (context, state) {
+        final id = int.parse(state.pathParameters['id']!);
+        return MealRecipeScreen(mealId: id);
+      },
+      redirect: (context, state) {
+        try {
+          int.parse(state.pathParameters['id']!);
+          return _redirectIfUnauthenticated(context);
+        } catch (_) {
+          return '/.../meal-recipe/${state.pathParameters['id']}';
+        }
+      },
     ),
     GoRoute(
       path: '/change-password',
