@@ -6,9 +6,6 @@ from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.diet_generation_service import DietGenerationService
 from backend.diet_generation.meal_icons_repository import MealIconsRepository
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
-from backend.user_details.dependencies import get_calories_prediction_repository, get_user_details_repository
-from backend.user_details.user_details_repository import UserDetailsRepository
 
 
 async def get_meal_icons_repository(
