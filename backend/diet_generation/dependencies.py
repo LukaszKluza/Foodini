@@ -32,7 +32,5 @@ async def get_diet_generation_service(
 
 async def get_prompt_service(
     meal_recipes_repository: MealRecipesRepository = Depends(get_meal_recipes_repository),
-    user_details_repository: UserDetailsRepository = Depends(get_user_details_repository),
-    calories_prediction_repository: CaloriesPredictionRepository = Depends(get_calories_prediction_repository),
 ) -> PromptService:
-    return PromptService(user_details_repository, meal_recipes_repository, calories_prediction_repository)
+    return PromptService(meal_recipes_repository)

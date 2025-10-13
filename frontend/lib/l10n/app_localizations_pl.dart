@@ -423,7 +423,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
 
   @override
-  String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+  String get fillAllNecessaryFields => 'Wypełnij wszystkie wymagane pola';
 
   @override
   String get macros => 'Makro';
@@ -456,10 +456,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
 
   @override
-  String get refreshRequest => 'Odśwież żądanie';
+  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
 
   @override
-  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+  String get refreshRequest => 'Odśwież żądanie';
 
   @override
   String get goToMainPage => 'Idź na stronę główną';

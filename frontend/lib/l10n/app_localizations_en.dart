@@ -456,10 +456,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savePredictedCalories => 'Save predicted calories';
 
   @override
-  String get refreshRequest => 'Refresh request';
+  String get changeCaloriesPrediction => 'Change calories prediction';
 
   @override
-  String get changeCaloriesPrediction => 'Change calories prediction';
+  String get refreshRequest => 'Refresh request';
 
   @override
   String get goToMainPage => 'Go to main page';
