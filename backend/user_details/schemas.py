@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from backend.models import UserDietPredictions
 from backend.user_details.enums import (
     ActivityLevel,
     Allergies,
@@ -83,3 +84,15 @@ class PredictedCalories(BaseModel):
     target_calories: int
     diet_duration_days: Optional[int] = None
     predicted_macros: PredictedMacros
+
+    @staticmethod
+    def from_user_diet_predictions(user_diet_predictions: UserDietPredictions):
+        return PredictedCalories(
+            bmr=user_diet_predictions.bmr,
+            tdee=user_diet_predictions.tdee,
+            target_calories=user_diet_predictions.target_calories,
+            diet_duration_days=user_diet_predictions.diet_duration_days,
+            predicted_macros=PredictedMacros(
+                protein=user_diet_predictions.protein, fat=user_diet_predictions.fat, carbs=user_diet_predictions.carbs
+            ),
+        )

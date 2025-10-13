@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
+import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
@@ -25,14 +26,15 @@ import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
+late MockApiClient mockApiClient;
+late MockLanguageCubit mockLanguageCubit;
+late MockUserDetailsRepository mockUserDetailsRepository;
+late MockTokenStorageRepository mockTokenStorageRepository;
+
 late AccountBloc accountBloc;
 late DietFormBloc dietFormBloc;
-late MockApiClient mockApiClient;
+late MacrosChangeBloc macrosChangeBloc;
 late UserRepository authRepository;
-late UserStorage userStorage;
-late MockTokenStorageRepository mockTokenStorageRepository;
-late MockUserDetailsRepository mockUserDetailsRepository;
-late MockLanguageCubit mockLanguageCubit;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +48,7 @@ void main() {
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
         .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
+        .addProvider(BlocProvider<MacrosChangeBloc>.value(value: macrosChangeBloc))
         .addRoutes(additionalRoutes)
         .setInitialLocation(initialLocation)
         .build();
@@ -54,15 +57,23 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
-    userStorage = UserStorage();
-    authRepository = UserRepository(mockApiClient);
     mockLanguageCubit = MockLanguageCubit();
-    mockTokenStorageRepository = MockTokenStorageRepository();
     mockUserDetailsRepository = MockUserDetailsRepository();
-    accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    mockTokenStorageRepository = MockTokenStorageRepository();
+
+    authRepository = UserRepository(mockApiClient);
     dietFormBloc = DietFormBloc(mockUserDetailsRepository);
+    macrosChangeBloc = MacrosChangeBloc(mockUserDetailsRepository);
+    accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+
     when(mockDio.interceptors).thenReturn(Interceptors());
     SharedPreferences.setMockInitialValues({});
+  });
+
+  tearDown(() {
+    accountBloc.close();
+    dietFormBloc.close();
+    macrosChangeBloc.close();
   });
 
   testWidgets('Account screen shows all buttons', (WidgetTester tester) async {

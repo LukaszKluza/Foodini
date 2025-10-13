@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Styles {
-  static const TextStyle titleStyle = TextStyle(
-    fontSize: 32,
+  static TextStyle titleStyle = TextStyle(
+    fontSize: 40.sp.clamp(30.0, 50.0),
     fontStyle: FontStyle.italic,
   );
 

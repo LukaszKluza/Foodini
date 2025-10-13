@@ -183,13 +183,22 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
               _isChecked = value!;
               if (_isChecked) {
                 context.read<DietFormBloc>().add(
-                  UpdateMusclePercentage(_selectedMusclePercentage),
+                  UpdateAdvancedParameters(
+                    musclePercentage: _selectedMusclePercentage,
+                    waterPercentage: _selectedWaterPercentage,
+                    fatPercentage: _selectedFatPercentage,
+                  ),
                 );
+              } else {
+                _selectedMusclePercentage = Constants.defaultMusclePercentage;
+                _selectedWaterPercentage = Constants.defaultWaterPercentage;
+                _selectedFatPercentage = Constants.defaultFatPercentage;
                 context.read<DietFormBloc>().add(
-                  UpdateWaterPercentage(_selectedWaterPercentage),
-                );
-                context.read<DietFormBloc>().add(
-                  UpdateFatPercentage(_selectedFatPercentage),
+                  UpdateAdvancedParameters(
+                    musclePercentage: null,
+                    waterPercentage: null,
+                    fatPercentage: null,
+                  ),
                 );
               }
             });
@@ -209,7 +218,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedMusclePercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateMusclePercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
         PercentageOptionSlider(
@@ -223,7 +238,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedWaterPercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateWaterPercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
         PercentageOptionSlider(
@@ -237,7 +258,13 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             setState(() {
               _selectedFatPercentage = value;
             });
-            context.read<DietFormBloc>().add(UpdateFatPercentage(value));
+            context.read<DietFormBloc>().add(
+              UpdateAdvancedParameters(
+                musclePercentage: _selectedMusclePercentage,
+                waterPercentage: _selectedWaterPercentage,
+                fatPercentage: _selectedFatPercentage,
+              ),
+            );
           },
         ),
       ],
@@ -252,7 +279,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
             context: context,
             state: state,
             mounted: mounted,
-            setState: setState,
             setMessage: (msg) => _message = msg,
             setMessageStyle: (style) => _messageStyle = style,
           );
