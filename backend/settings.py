@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     MAIL_PORT: int
     MAIL_SERVER: str
     MAIL_FROM_NAME: str
+    MACROS_CHANGE_TOLERANCE: int = 30
+    FAT_CONVERSION_FACTOR: int = 9
+    CARBS_CONVERSION_FACTOR: int = 4
+    PROTEIN_CONVERSION_FACTOR: int = 4
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

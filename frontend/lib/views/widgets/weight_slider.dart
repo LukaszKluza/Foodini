@@ -30,39 +30,42 @@ class WeightSlider extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(dialogTitle),
-        content: Form(
-          key: formKey,
-          child: TextFormField(
-            key: const Key('weight_kg'),
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.weightKg,
+      builder:
+          (context) => AlertDialog(
+            title: Text(dialogTitle),
+            content: Form(
+              key: formKey,
+              child: TextFormField(
+                key: const Key('weight_kg'),
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.weightKg,
+                ),
+                validator: validator ?? (val) => validateWeight(val, context),
+              ),
             ),
-            validator: validator ?? (val) => validateWeight(val, context),
+            actions: [
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context)!.cancel),
+                onPressed: () => Navigator.pop(context),
+              ),
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context)!.ok),
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    final newValue = double.tryParse(controller.text);
+                    if (newValue != null) {
+                      onChanged(newValue);
+                      Navigator.pop(context);
+                    }
+                  }
+                },
+              ),
+            ],
           ),
-        ),
-        actions: [
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.cancel),
-            onPressed: () => Navigator.pop(context),
-          ),
-          ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.ok),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                final newValue = double.tryParse(controller.text);
-                if (newValue != null) {
-                  onChanged(newValue);
-                  Navigator.pop(context);
-                }
-              }
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -82,7 +85,8 @@ class WeightSlider extends StatelessWidget {
           min: min,
           max: max,
           divisions: (max - min).toInt() * 10,
-          label: '${value.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}',
+          label:
+              '${value.toStringAsFixed(1)} ${AppLocalizations.of(context)!.kg}',
           onChanged: onChanged,
         ),
       ],

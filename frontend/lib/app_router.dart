@@ -10,6 +10,7 @@ import 'package:frontend/views/screens/user/provide_email_screen.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
 import 'package:frontend/views/screens/user_details/calories_prediction_screen.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
+import 'package:frontend/views/screens/user_details/prediction_results_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -78,6 +79,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/provide-email',
       builder: (context, state) => ProvideEmailScreen(),
+    ),
+    GoRoute(
+      path: '/calories-result',
+      builder: (context, state) => PredictionResultsScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
   ],
 );

@@ -11,6 +11,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.core.value_error_exception import ValueErrorException
 from backend.diet_generation.daily_summary_router import daily_summary_router
 from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.settings import config
@@ -46,6 +47,14 @@ async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseExceptio
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
         content={"detail": exc.detail},
+    )
+
+
+@app.exception_handler(ValueErrorException)
+async def value_error_exception_handler_handler(request: Request, exc: ValueErrorException):
+    raise HTTPException(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        detail=exc.detail,
     )
 
 
