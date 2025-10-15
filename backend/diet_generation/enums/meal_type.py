@@ -14,7 +14,8 @@ class MealType(str, Enum):
 
     @classmethod
     def _missing_(cls, value):
-        for member in cls:
-            if member.value == value:
-                return member
-        return None
+        if isinstance(value, str):
+            for member in cls:
+                if member.value == value.lower():
+                    return member
+        return super()._missing_(value)

@@ -26,6 +26,23 @@ class Step(SQLModel):
     optional: bool = False
 
 
+class Meal(SQLModel, table=True):
+    __tablename__ = "meal"
+
+    id: int = Field(default=None, primary_key=True)
+    meal_name: str = Field(nullable=False)
+    meal_type: MealType = Field(nullable=False)
+    icon_id: int = Field(nullable=False)
+    calories: int = Field(nullable=False, ge=0)
+    protein: int = Field(ge=0)
+    fat: int = Field(ge=0)
+    carbs: int = Field(ge=0)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    )
+
+
 class MealRecipe(SQLModel, table=True):
     __tablename__ = "meal_recipes"
 
@@ -33,10 +50,7 @@ class MealRecipe(SQLModel, table=True):
     # Can be duplicated for the same recipe but different language
     meal_id: int = Field(nullable=False, index=True)
     language: Language = Field(default=Language.EN, nullable=False)
-    meal_name: str = Field(nullable=False)
-    meal_type: MealType = Field(nullable=False)
     meal_description: str = Field(nullable=False)
-    icon_id: int = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
     steps: List[Step] = Field(sa_column=Column(JSONB, nullable=False))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

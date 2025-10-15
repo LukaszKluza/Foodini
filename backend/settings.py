@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     FAT_CONVERSION_FACTOR: int = 9
     CARBS_CONVERSION_FACTOR: int = 4
     PROTEIN_CONVERSION_FACTOR: int = 4
+    PROMPTS_DIR: str = "prompts"
+    DAILY_MEALS_PROMPT_FILENAME: str = "daily_meals_generator_prompt.txt"
+    OLLAMA_URL: str = "http://localhost:11434/api/generate"
+    MODEL_NAME: str = "qwen3:30b"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

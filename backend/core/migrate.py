@@ -57,7 +57,6 @@ async def init_meal_recipes():
 async def main():
     await create_tables()
     await init_meal_icons()
-    await init_meal_recipes()
 
 
 if __name__ == "__main__":

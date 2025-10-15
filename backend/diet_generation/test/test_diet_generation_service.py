@@ -118,10 +118,10 @@ async def test_get_meal_recipe_by_meal_id_when_exist(
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = MEAL_RECIPES
+    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = MEAL_RECIPES
 
     # When
-    response = await diet_generation_service.get_meal_recipes_by_meal_id(1)
+    response = await diet_generation_service.get_meal_recipes_by_meal_recipe_id(1)
 
     # Then
     assert response == MEAL_RECIPES
@@ -133,18 +133,18 @@ async def test_get_meal_recipe_by_meal_id_when_not_exist(
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = None
+    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = None
 
     # When
     with pytest.raises(NotFoundInDatabaseException) as exc_info:
-        await diet_generation_service.get_meal_recipes_by_meal_id(1)
+        await diet_generation_service.get_meal_recipes_by_meal_recipe_id(1)
 
     # Then
     assert exc_info.value.detail == "Meal recipes not found"
 
 
 @pytest.mark.asyncio
-async def test_get_meal_recipe_by_meal_id_and_language_when_exist(
+async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
 ):
@@ -152,14 +152,14 @@ async def test_get_meal_recipe_by_meal_id_and_language_when_exist(
     mock_meal_recipes_repository.get_meal_recipe_by_meal_id_and_language.return_value = CORNFLAKES_PL_RECIPE
 
     # When
-    response = await diet_generation_service.get_meal_recipe_by_meal_id_and_language(1, Language.PL)
+    response = await diet_generation_service.get_meal_recipe_by_meal_recipe_id_and_language(1, Language.PL)
 
     # Then
     assert response == CORNFLAKES_PL_RECIPE
 
 
 @pytest.mark.asyncio
-async def test_get_meal_recipe_by_meal_id_and_language_when_not_exist(
+async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_not_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
 ):
@@ -168,7 +168,7 @@ async def test_get_meal_recipe_by_meal_id_and_language_when_not_exist(
 
     # When
     with pytest.raises(NotFoundInDatabaseException) as exc_info:
-        await diet_generation_service.get_meal_recipe_by_meal_id_and_language(1, Language.PL)
+        await diet_generation_service.get_meal_recipe_by_meal_recipe_id_and_language(1, Language.PL)
 
     # Then
     assert exc_info.value.detail == "Meal recipe not found"
