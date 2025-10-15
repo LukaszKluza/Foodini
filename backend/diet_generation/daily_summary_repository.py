@@ -57,7 +57,6 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    # Temporary not used
     async def update_daily_macros_summary(
         self, user_id: int, daily_summary_data: DailyMacrosSummaryCreate, day: date
     ) -> DailyMacrosSummary | None:

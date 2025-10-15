@@ -23,6 +23,7 @@ def mock_daily_summary_repository():
     repo.add_daily_meals = AsyncMock()
     repo.get_daily_macros_summary = AsyncMock()
     repo.add_daily_macros_summary = AsyncMock()
+    repo.update_daily_macros_summary = AsyncMock()
     repo.update_meal_status = AsyncMock()
     repo.update_custom_meal = AsyncMock()
     return repo
