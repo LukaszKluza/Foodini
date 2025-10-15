@@ -2,9 +2,9 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db
+from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.daily_summary_repository import DailySummaryRepository
 from backend.diet_generation.daily_summary_service import DailySummaryService
-from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.diet_generation_service import DietGenerationService
 from backend.diet_generation.meal_icons_repository import MealIconsRepository
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository

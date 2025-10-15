@@ -9,7 +9,7 @@ from backend.diet_generation.enums.meal_type import MealType
 
 class MealInfo(BaseModel):
     meal_id: Optional[int] = None
-    status: MealStatus = Field(default=MealStatus.PENDING)
+    status: MealStatus = Field(default=MealStatus.TO_EAT)
     custom_name: Optional[str] = None
     custom_calories: Optional[int] = None
     custom_protein: Optional[int] = None
@@ -22,6 +22,10 @@ class MealInfo(BaseModel):
 class DailyMealsCreate(BaseModel):
     day: date
     meals: Dict[MealType, MealInfo]
+    target_calories: int
+    target_protein: int
+    target_carbs: int
+    target_fats: int
 
     model_config = {"use_enum_values": True}
 

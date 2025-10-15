@@ -613,14 +613,24 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-						"raw": "http://localhost:8000/v1/daily_summary/meals/2025-10-09?user_id=1",
-						"protocol": "http",
-						"host": ["localhost"],
-						"port": "8000",
-						"path": ["v1", "daily_summary", "meals", "2025-10-09"],
-						"query": [
-							{ "key": "user_id", "value": "1" }
-						]
+							"raw": "http://localhost:8000/v1/daily_summary/meals/2025-10-09?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "meals", "2025-10-09"],
+							"query": [
+								{ "key": "user_id", "value": "1" }
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						}
 					}
 				},
@@ -633,7 +643,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 11,\n      \"status\": \"eaten\"\n    },\n    \"lunch\": {\n      \"meal_id\": 102,\n      \"status\": \"pending\"\n    },\n    \"dinner\": {\n      \"meal_id\": 203,\n      \"status\": \"skipped\"\n    }\n  }\n}"
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 11,\n      \"status\": \"eaten\"\n    },\n    \"lunch\": {\n      \"meal_id\": 102,\n      \"status\": \"pending\"\n    },\n    \"dinner\": {\n      \"meal_id\": 203,\n      \"status\": \"skipped\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fats\": 70\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8000/v1/daily_summary/meals?user_id=1",
@@ -643,6 +653,16 @@
 							"path": ["v1", "daily_summary", "meals"],
 							"query": [
 								{ "key": "user_id", "value": "1" }
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
 							]
 						}
 					}
@@ -667,6 +687,16 @@
 							"query": [
 								{ "key": "user_id", "value": "1" }
 							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						}
 					}
 				},
@@ -690,6 +720,16 @@
 							"query": [
 								{"key": "user_id", "value": "1"}
 							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						}
 					}
 				},
@@ -705,6 +745,16 @@
 							"port": "8000",
 							"path": ["v1", "daily_summary", "macros", "2025-10-09"],
 							"query": [{"key": "user_id", "value": "1"}]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						}
 					}
 				},
@@ -721,28 +771,19 @@
 							"path": ["v1", "daily_summary", "macros"],
 							"query": [{"key": "user_id", "value": "1"}]
 						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 2000,\n  \"protein\": 140,\n  \"carbs\": 240,\n  \"fats\": 65\n}"
-						}
-					}
-				},
-				{
-					"name": "Update Daily Macros",
-					"request": {
-						"method": "PATCH",
-						"header": [{"key": "Content-Type", "value": "application/json"}],
-						"url": {
-							"raw": "http://localhost:8000/v1/daily_summary/macros?user_id=1",
-							"protocol": "http",
-							"host": ["localhost"],
-							"port": "8000",
-							"path": ["v1", "daily_summary", "macros"],
-							"query": [{"key": "user_id", "value": "1"}]
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-18\",\n  \"calories\": 2000,\n  \"protein\": 240,\n  \"carbs\": 40,\n  \"fats\": 2500\n}"
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 2000,\n  \"protein\": 140,\n  \"carbs\": 240,\n  \"fats\": 65\n}"
 						}
 					}
 				}

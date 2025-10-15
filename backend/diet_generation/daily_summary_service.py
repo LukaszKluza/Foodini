@@ -17,7 +17,7 @@ class DailySummaryService:
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int):
         daily_meals = await self.daily_summary_repo.get_daily_meals(user_id, daily_meals_data.day)
         if daily_meals:
-            raise ValueError(f"Daily meals already exist for user {user_id} and day {daily_meals_data.day}")
+            return await self.daily_summary_repo.update_daily_meals(user_id, daily_meals_data, daily_meals_data.day)
         return await self.daily_summary_repo.add_daily_meals(daily_meals_data, user_id)
 
     async def get_daily_meals(self, user_id: int, day: date):
@@ -29,7 +29,7 @@ class DailySummaryService:
     async def add_daily_macros_summary(self, user_id: int, data: DailyMacrosSummaryCreate):
         daily_macros_summary = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
         if daily_macros_summary:
-            raise ValueError(f"Daily macros summary already exist for user {user_id} and day {data.day}.")
+            return await self.daily_summary_repo.update_daily_macros_summary(user_id, data, data.day)
         return await self.daily_summary_repo.add_daily_macros_summary(data, user_id)
 
     async def get_daily_macros_summary(self, user_id: int, day: date):
@@ -38,6 +38,7 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
 
+    # Temporary not used
     async def update_daily_macros_summary(self, user_id: int, data: DailyMacrosSummaryCreate):
         user_daily_macros = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
         if not user_daily_macros:

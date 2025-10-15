@@ -44,16 +44,6 @@ async def init_meal_icons():
             await db.commit()
 
 
-async def init_meal_recipes():
-    async for db in get_db():
-        await db.execute(delete(MealRecipe))
-
-        for meal_recipe in MEAL_RECIPES:
-            db.add(meal_recipe)
-
-        await db.commit()
-
-
 async def main():
     await create_tables()
     await init_meal_icons()

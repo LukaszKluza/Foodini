@@ -27,6 +27,21 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
+    async def update_daily_meals(
+        self, user_id: int, daily_meals_data: DailyMealsCreate, day: date
+    ) -> DailyMeals | None:
+        user_daily_meals = await self.get_daily_meals(user_id, day)
+        if user_daily_meals:
+            await self.db.execute(
+                update(DailyMeals)
+                .where(DailyMeals.user_id == user_id, DailyMeals.day == day)
+                .values(**daily_meals_data.model_dump())
+            )
+            await self.db.commit()
+            await self.db.refresh(user_daily_meals)
+            return user_daily_meals
+        return None
+
     async def add_daily_macros_summary(
         self, daily_summary_data: DailyMacrosSummaryCreate, user_id: int
     ) -> DailyMacrosSummary:
@@ -42,20 +57,16 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
+    # Temporary not used
     async def update_daily_macros_summary(
-        self, user_id: int, day: date, daily_summary_data: DailyMacrosSummary
+        self, user_id: int, daily_summary_data: DailyMacrosSummaryCreate, day: date
     ) -> DailyMacrosSummary | None:
         user_daily_macros = await self.get_daily_macros_summary(user_id, day)
         if user_daily_macros:
             await self.db.execute(
                 update(DailyMacrosSummary)
                 .where(DailyMacrosSummary.user_id == user_id, DailyMacrosSummary.day == day)
-                .values(
-                    calories=daily_summary_data.calories,
-                    protein=daily_summary_data.protein,
-                    carbs=daily_summary_data.carbs,
-                    fats=daily_summary_data.fats,
-                )
+                .values(**daily_summary_data.model_dump())
             )
             await self.db.commit()
             await self.db.refresh(user_daily_macros)

@@ -14,6 +14,11 @@ class DailyMeals(SQLModel, table=True):
     meals: Dict[str, Dict[str, str]] = Field(sa_column=Column(MutableDict.as_mutable(JSON)))
     day: date = Field(nullable=False)
 
+    target_calories: int = Field(nullable=False)
+    target_protein: int = Field(nullable=False)
+    target_carbs: int = Field(nullable=False)
+    target_fats: int = Field(nullable=False)
+
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

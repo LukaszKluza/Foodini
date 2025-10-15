@@ -55,16 +55,6 @@ async def add_daily_macros_summary(
     return await daily_summary_service.add_daily_macros_summary(user.id, daily_summary)
 
 
-@daily_summary_router.patch("/macros", response_model=DailyMacrosSummaryCreate)
-async def update_daily_macros_summary(
-    daily_summary: DailyMacrosSummaryCreate,
-    daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
-    user_gateway: UserGateway = Depends(get_user_gateway),
-):
-    user, _ = await user_gateway.get_current_user()
-    return await daily_summary_service.update_daily_macros_summary(user.id, daily_summary)
-
-
 @daily_summary_router.patch("/meals", response_model=DailyMealsCreate)
 async def update_meal_status(
     meal_info_update: MealInfoUpdateRequest,
