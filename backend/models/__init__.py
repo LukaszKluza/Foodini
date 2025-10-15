@@ -1,6 +1,7 @@
 from .meal_icon_model import MealIcon
 from .meal_recipe_model import Ingredient, Ingredients, Meal, MealRecipe, Step
-from .user_details_model import UserDetails, UserDietPredictions
+from .user_details_model import UserDetails
+from .user_diet_prediction_model import UserDietPredictions
 from .user_model import User
 
 __all__ = [

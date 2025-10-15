@@ -78,13 +78,17 @@ class PromptService:
 
     async def _save_meals(self, meals_data: List[Dict[str, Any]]) -> List[MealRecipe]:
         saved_recipes = []
-        print(meals_data)
+
         for meal_data in meals_data:
             try:
                 meal = Meal(
                     meal_name=meal_data["meal_name"].capitalize(),
                     meal_type=MealType(meal_data["meal_type"].lower()),
                     icon_id=MealType(meal_data["meal_type"].lower()).meal_order,
+                    calories=int(meal_data["calories"]),
+                    protein=int(meal_data["macros"]["protein"]),
+                    fat=int(meal_data["macros"]["fat"]),
+                    carbs=int(meal_data["macros"]["carbs"]),
                 )
                 saved_meal = await self.meal_recipes_repo.add_meal(meal)
 
