@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:go_router/go_router.dart';
 

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/blocs/user_details/change_password_bloc.dart';
+import 'package:frontend/blocs/user/change_password_bloc.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/views/screens/user/change_password_screen.dart';
@@ -14,7 +14,7 @@ late MockDio mockDio;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late ChangePasswordBloc changePasswordBloc;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   Widget buildTestWidget(Widget child) {
@@ -25,10 +25,10 @@ void main() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
     authRepository = UserRepository(mockApiClient);
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
     changePasswordBloc = ChangePasswordBloc(
       authRepository,
-      mockTokenStorageRepository,
+      mockTokenStorageService,
     );
     when(mockDio.interceptors).thenReturn(Interceptors());
   });

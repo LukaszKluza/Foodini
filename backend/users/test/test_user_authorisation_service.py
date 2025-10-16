@@ -12,7 +12,7 @@ from pydantic import EmailStr, TypeAdapter
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
 from backend.users.enums.token import Token
-from backend.users.schemas import LoginUserResponse
+from backend.users.schemas import RefreshTokensResponse
 
 
 @pytest.fixture
@@ -148,10 +148,11 @@ async def test_refresh_token_success(authorization_service, mock_redis, credenti
         result = await authorization_service.refresh_tokens(credentials)
 
         # then
-        assert result[0] == LoginUserResponse(
+        assert result == RefreshTokensResponse(
             id=1,
             email=TypeAdapter(EmailStr).validate_python("user@example.com"),
             access_token="new_access",
+            refresh_token="new_refresh",
         )
 
         mock_decode.assert_called_once()

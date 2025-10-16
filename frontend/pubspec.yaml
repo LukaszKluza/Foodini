@@ -61,6 +61,7 @@ dependencies:
   mocktail: ^1.0.4
   equatable: 2.0.7
   cached_network_image: ^3.4.1
+  auto_size_text: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -75,6 +76,17 @@ dependencies:
 
 dev_dependencies:
   protoc_plugin: any
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  image_path: "assets/icons/icon_10.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icons/icon_10.png"
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -85,6 +97,8 @@ flutter:
     - family: KaushanScript
       fonts:
         - asset: assets/fonts/KaushanScript-Regular.ttf
+  assets:
+    - assets/icons/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

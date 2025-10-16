@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/app_router.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/logger.dart';
 
 class GlobalErrorInterceptor extends Interceptor {
   final ApiClient _apiClient;
-  final TokenStorageRepository _tokenStorage;
+  final TokenStorageService _tokenStorage;
 
   GlobalErrorInterceptor(this._apiClient, this._tokenStorage);
 
@@ -62,15 +62,18 @@ class GlobalErrorInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    final refreshToken = await _tokenStorage.getRefreshToken();
     final userId = UserStorage().getUserId;
 
-    if (userId != null) {
+    if (refreshToken != null && userId != null) {
       try {
         final response = await _apiClient.refreshTokens(userId);
 
         if (response.statusCode == 200) {
           final newAccessToken = response.data['access_token'];
+          final newRefreshToken = response.data['refresh_token'];
           await _tokenStorage.saveAccessToken(newAccessToken);
+          await _tokenStorage.saveRefreshToken(newRefreshToken);
 
           final requestOptions = err.response?.requestOptions;
           if (requestOptions != null) {
@@ -79,16 +82,16 @@ class GlobalErrorInterceptor extends Interceptor {
             return handler.resolve(newRequest);
           }
         } else {
-          throw DioException(
-            requestOptions: err.requestOptions,
-            response: Response(requestOptions: err.requestOptions),
-          );
+          _showErrorDialog('Session expired.');
+          return handler.reject(err);
         }
       } catch (e) {
         _showErrorDialog('Session expired.');
+        return handler.reject(err);
       }
     } else {
       _showErrorDialog('Session expired.');
+      return handler.reject(err);
     }
   }
 
@@ -97,7 +100,8 @@ class GlobalErrorInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     UserStorage().removeUser();
-    await TokenStorageRepository().deleteAccessToken();
+    await TokenStorageService().deleteAccessToken();
+    await TokenStorageService().deleteRefreshToken();
 
     router.go('/');
   }

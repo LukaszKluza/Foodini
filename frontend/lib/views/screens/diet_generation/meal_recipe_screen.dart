@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/meal_recipe_bloc.dart';
-import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/meal_recipe_events.dart';
@@ -14,6 +13,7 @@ import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
 import 'package:frontend/states/diet_generation/meal_recipe.dart';
+import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +21,7 @@ import 'package:provider/provider.dart';
 class MealRecipeScreen extends StatelessWidget {
   final int mealId;
 
-  const MealRecipeScreen({
-    super.key,
-    required this.mealId,
-  });
+  const MealRecipeScreen({super.key, required this.mealId});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +111,7 @@ class _MealRecipe extends StatelessWidget {
           const SizedBox(height: 6),
           for (var ingredient in state.mealRecipe!.ingredients.ingredients)
             generateIngredientLine(ingredient),
-          if(state.mealRecipe!.ingredients.foodAdditives != null)
+          if (state.mealRecipe!.ingredients.foodAdditives != null)
             generateFoodAdditives(state.mealRecipe!.ingredients, context),
           const SizedBox(height: 16),
 
@@ -175,7 +172,7 @@ class _MealRecipe extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Text(
-        '${AppLocalizations.of(context)!.optional}: ${ ingredients.foodAdditives!}',
+        '${AppLocalizations.of(context)!.optional}: ${ingredients.foodAdditives!}',
         style: const TextStyle(fontSize: 16),
       ),
     );
@@ -226,11 +223,12 @@ class _MealRecipe extends StatelessWidget {
         imageUrl: '${Endpoints.mealIcon}/${state.iconUrl!}',
         fit: BoxFit.cover,
         placeholder:
-            (context, url) => SizedBox(
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            (context, url) =>
+                SizedBox(child: Center(child: CircularProgressIndicator())),
         errorWidget: (context, url, error) {
-          CachedNetworkImage.evictFromCache('${Endpoints.mealIcon}/${state.iconUrl!}');
+          CachedNetworkImage.evictFromCache(
+            '${Endpoints.mealIcon}/${state.iconUrl!}',
+          );
 
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -245,16 +243,12 @@ class _MealRecipe extends StatelessWidget {
             ],
           );
         },
-
       ),
     );
   }
 
-  Padding generateRecipeStep(
-      MealRecipeState state,
-      int i,
-      BuildContext context,
-      ) {
+  Padding generateRecipeStep(MealRecipeState state, int i,
+      BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Text(
@@ -279,50 +273,20 @@ class _MealRecipe extends StatelessWidget {
     return '${idx + 1}. ${step.description}';
   }
 
-  Center basicButton(
-    BuildContext context,
-    Key buttonKey,
-    VoidCallback? onPressed,
-    ButtonStyle buttonStyle,
-    Widget? buttonChild,
-  ) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: ElevatedButton(
-          key: buttonKey,
-          onPressed: () => onPressed?.call(),
-          style: buttonStyle,
-          child: buttonChild,
-        ),
-      ),
-    );
-  }
-
   Center retryRequestButton(BuildContext context, MealRecipeState state) {
-    return basicButton(
-      context,
+    return customRetryButton(
       Key('refresh_request_button'),
       () => context.read<MealRecipeBloc>().add(
         MealRecipeInit(state.mealId!, state.language!),
-      ),
-      ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFDD9E74),
-        minimumSize: const Size.fromHeight(Constants.buttonTextHeight),
       ),
       Text(AppLocalizations.of(context)!.refreshRequest),
     );
   }
 
   Center redirectToProfileDetailsButton(BuildContext context) {
-    return basicButton(
-      context,
+    return customRedirectButton(
       Key('redirect_to_main_page_button'),
       () => context.go('/main-page'),
-      ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFF2D8B2),
-        minimumSize: const Size.fromHeight(Constants.buttonTextHeight),
-      ),
       Text(AppLocalizations.of(context)!.goToMainPage),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/models/user_details/macros.dart';

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/config/styles.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,9 +15,8 @@ class HomeScreen extends StatelessWidget {
         title: Stack(
           alignment: Alignment.center,
           children: [
-            Text(
-              AppLocalizations.of(context)!.homePage,
-              style: Styles.titleStyle,
+            TitleTextWidgets.scaledTitle(
+              AppLocalizations.of(context)!.welcome,
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -30,22 +30,34 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppLocalizations.of(context)!.welcome,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Spacer(flex: 1),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Image.asset(Constants.mainFoodiniIcon),
+              ),
             ),
-            SizedBox(height: 20),
+            Spacer(flex: 2),
+            // Spacer(flex: 1),
             ElevatedButton(
+              style: ButtonStyle(
+                minimumSize: WidgetStateProperty.all(Size(200, 50)),
+              ),
               onPressed: () => context.go('/login'),
               child: Text(AppLocalizations.of(context)!.login),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             ElevatedButton(
+              style: ButtonStyle(
+                minimumSize: WidgetStateProperty.all(Size(200, 50)),
+              ),
               onPressed: () => context.go('/register'),
               child: Text(AppLocalizations.of(context)!.register),
             ),
+            Spacer(flex: 6),
           ],
         ),
       ),

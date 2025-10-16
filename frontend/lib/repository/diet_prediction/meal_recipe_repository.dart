@@ -4,7 +4,7 @@ import 'package:frontend/models/diet_generation/meal_icon_info.dart';
 import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user/language.dart';
-import 'package:frontend/services/api_client.dart';
+import 'package:frontend/repository/api_client.dart';
 
 class MealRecipeRepository {
   final ApiClient apiClient;

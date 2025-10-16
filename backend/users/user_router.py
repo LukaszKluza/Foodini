@@ -1,12 +1,12 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.params import Query
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
 from backend.settings import config
-from backend.users.service.email_verification_sevice import (
+from backend.users.service.email_verification_service import (
     EmailVerificationService,
 )
 from backend.users.service.user_service import UserService
@@ -15,10 +15,8 @@ from .auth_dependencies import AuthDependency
 from .dependencies import (
     get_auth_dependency,
     get_email_verification_service,
-    get_refresh_token_dependency,
     get_user_service,
 )
-from .refresh_token_dependencies import RefreshTokenDependency
 from .schemas import (
     ChangeLanguageRequest,
     DefaultResponse,
@@ -61,41 +59,32 @@ async def update_user(
 
 @user_router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
-    response: Response,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
     user, token_payload = await auth_dependency.get_current_user()
-    RefreshTokenDependency.delete_refresh_token_cookie(response)
     return await user_service.delete(user, token_payload)
 
 
 @user_router.post("/login", response_model=LoginUserResponse)
-async def login_user(user: UserLogin, response: Response, user_service: UserService = Depends(get_user_service)):
-    user_data, refresh_token = await user_service.login(user)
-    RefreshTokenDependency.set_refresh_token_cookie(response, refresh_token)
-    return user_data
+async def login_user(user: UserLogin, user_service: UserService = Depends(get_user_service)):
+    return await user_service.login(user)
 
 
 @user_router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout_user(
-    response: Response,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
     _, token_payload = await auth_dependency.get_current_user()
-    RefreshTokenDependency.delete_refresh_token_cookie(response)
     return await user_service.logout(token_payload)
 
 
-@user_router.post("/refresh-tokens")
+@user_router.post("/refresh-tokens", status_code=status.HTTP_200_OK)
 async def refresh_tokens(
-    response: Response,
-    refresh_token_dependency: RefreshTokenDependency = Depends(get_refresh_token_dependency),
+    auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
-    user_data, refresh_token = await refresh_token_dependency.get_refreshed_tokens()
-    RefreshTokenDependency.set_refresh_token_cookie(response, refresh_token)
-    return user_data
+    return await auth_dependency.get_refreshed_tokens()
 
 
 @user_router.post("/reset-password/request", response_model=DefaultResponse)

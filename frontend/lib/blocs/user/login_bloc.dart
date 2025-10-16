@@ -9,9 +9,9 @@ import 'package:frontend/states/login_states.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository authRepository;
-  final TokenStorageRepository tokenStorageRepository;
+  final TokenStorageService tokenStorageService;
 
-  LoginBloc(this.authRepository, this.tokenStorageRepository)
+  LoginBloc(this.authRepository, this.tokenStorageService)
     : super(LoginInitial()) {
     on<InitFromUrl>((event, emit) {
       if (event.status == 'success') {
@@ -31,8 +31,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         final response = await authRepository.login(event.request);
         final accessToken = response.accessToken;
+        final refreshToken = response.refreshToken;
 
-        tokenStorageRepository.saveAccessToken(accessToken);
+        tokenStorageService.saveAccessToken(accessToken);
+        tokenStorageService.saveRefreshToken(refreshToken);
 
         final user = await authRepository.getUser(response.id);
         UserStorage().setUser(user);

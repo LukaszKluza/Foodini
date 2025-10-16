@@ -11,7 +11,7 @@ python -m backend.core.migrate
 
 ``` bash
 cd Foodini
-uvicorn backend.main:app --reload --log-config backend/logging_config.yaml --port 8000
+$env:ENV=".env.local"; uvicorn backend.main:app --reload --log-config backend/logging_config.yaml --port 8000
 ```
 
 #### 3. Running the frontend

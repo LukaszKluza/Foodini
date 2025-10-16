@@ -13,6 +13,7 @@ def valid_user_data():
         "country": "Poland",
         "email": "jan@example.com",
         "password": "ValidPass123",
+        "language": "PL",
     }
 
 
@@ -35,14 +36,11 @@ def test_password_model_validation(valid_user_data, invalid_password):
     invalid_data = prepare_invalid_data(valid_user_data, password=invalid_password)
 
     # When/Then
-    if len(invalid_password) < 8 or len(invalid_password) > 64:
-        with pytest.raises(ValidationError) as exc_info:
-            UserCreate(**invalid_data)
-            errors = exc_info.value.errors()
-            assert len(errors) == 1
-    else:
-        with pytest.raises(ValueErrorException) as exc_info:
-            UserCreate(**invalid_data)
+    with pytest.raises(ValueErrorException) as exc_info:
+        UserCreate(**invalid_data)
+
+    # Then
+    assert exc_info.type == ValueErrorException
 
 
 @pytest.mark.parametrize(
@@ -64,10 +62,10 @@ def test_country_validation(valid_user_data, invalid_country):
         with pytest.raises(ValidationError) as exc_info:
             UserCreate(**invalid_data)
 
-            errors = exc_info.value.errors()
-            assert len(errors) == 1
+        errors = exc_info.value.errors()
+        assert len(errors) == 1
     else:
-        with pytest.raises(ValueErrorException) as exc_info:
+        with pytest.raises(ValueErrorException) as _:
             UserCreate(**invalid_data)
 
 
@@ -115,6 +113,23 @@ def test_last_name_validation(valid_user_data, invalid_last_name):
 def test_email_validation(valid_user_data, invalid_email):
     # Given
     invalid_data = prepare_invalid_data(valid_user_data, email=invalid_email)
+
+    # When/Then
+    with pytest.raises(ValidationError) as exc_info:
+        UserCreate(**invalid_data)
+
+    # Optional
+    errors = exc_info.value.errors()
+    assert len(errors) == 1
+
+
+@pytest.mark.parametrize(
+    "invalid_language",
+    ["Pl", "pl", "Polish", "polish", "Polski", "polski"],
+)
+def test_language_validation(valid_user_data, invalid_language):
+    # Given
+    invalid_data = prepare_invalid_data(valid_user_data, language=invalid_language)
 
     # When/Then
     with pytest.raises(ValidationError) as exc_info:

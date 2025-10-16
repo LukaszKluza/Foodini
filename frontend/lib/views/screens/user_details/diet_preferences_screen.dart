@@ -12,6 +12,7 @@ import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:frontend/views/widgets/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
@@ -41,10 +42,7 @@ class _DietPreferencesScreenState extends State<DietPreferencesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.dietPreferences,
-            style: Styles.titleStyle,
-          ),
+          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dietPreferences),
         ),
       ),
       body: _DietPreferencesForm(onFormValidityChanged: _onFormValidityChanged),

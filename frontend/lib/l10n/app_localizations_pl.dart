@@ -30,10 +30,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get home => 'Strona główna';
 
   @override
-  String get homePage => 'Strona główna Foodini';
-
-  @override
-  String get welcome => 'Witamy w Foodini';
+  String get welcome => 'Witamy';
 
   @override
   String get requiredName => 'Imię jest wymagane';

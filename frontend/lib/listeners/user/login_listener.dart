@@ -11,16 +11,13 @@ class LoginListenerHelper {
   static void onLoginListener({
     required BuildContext context,
     required LoginState state,
-    required void Function(void Function()) setState,
     required bool mounted,
     required void Function(String) setMessage,
     required void Function(TextStyle) setMessageStyle,
   }) {
     if (state is LoginSuccess) {
-      setState(() {
-        setMessage(state.getMessage!(context));
-        setMessageStyle(Styles.successStyle);
-      });
+      setMessage(state.getMessage!(context));
+      setMessageStyle(Styles.successStyle);
 
       var newLanguage = state.userResponse.language;
       context.read<LanguageCubit>().change(newLanguage);
@@ -37,17 +34,13 @@ class LoginListenerHelper {
       );
     } else if (state is AccountSuccessVerification ||
         state is ResendAccountVerificationSuccess) {
-      setState(() {
-        setMessage(state.getMessage!(context));
-        setMessageStyle(Styles.successStyle);
-      });
+      setMessage(state.getMessage!(context));
+      setMessageStyle(Styles.successStyle);
     } else if (state is LoginFailure) {
-      setState(() {
-        setMessage(
-          ExceptionConverter.formatErrorMessage(state.error.data, context),
-        );
-        setMessageStyle(Styles.errorStyle);
-      });
+      setMessage(
+        ExceptionConverter.formatErrorMessage(state.error.data, context),
+      );
+      setMessageStyle(Styles.errorStyle);
     }
   }
 }

@@ -36,4 +36,31 @@ class TokenStorageMobile implements TokenStorage {
       throw Exception('Failed to delete access token');
     }
   }
+
+  @override
+  Future<void> saveRefreshToken(String token) async {
+    try {
+      await _storage.write(key: _refreshTokenKey, value: token);
+    } catch (e) {
+      throw Exception('Failed to save refresh token');
+    }
+  }
+
+  @override
+  Future<String?> getRefreshToken() async {
+    try {
+      return await _storage.read(key: _refreshTokenKey);
+    } catch (e) {
+      throw Exception('Failed to get refresh token');
+    }
+  }
+
+  @override
+  Future<void> deleteRefreshToken() async {
+    try {
+      await _storage.delete(key: _refreshTokenKey);
+    } catch (e) {
+      throw Exception('Failed to delete refresh token');
+    }
+  }
 }

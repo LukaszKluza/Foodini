@@ -8,9 +8,9 @@ import 'package:frontend/states/account_states.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final UserRepository authRepository;
-  final TokenStorageRepository tokenStorageRepository;
+  final TokenStorageService tokenStorageService;
 
-  AccountBloc(this.authRepository, this.tokenStorageRepository)
+  AccountBloc(this.authRepository, this.tokenStorageService)
     : super(AccountInitial()) {
     on<AccountLogoutRequested>((event, emit) async {
       emit(AccountActionInProgress());
@@ -19,7 +19,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           await authRepository.logout(UserStorage().getUserId!);
           UserStorage().removeUser();
         }
-        await tokenStorageRepository.deleteAccessToken();
+        await tokenStorageService.deleteAccessToken();
+        await tokenStorageService.deleteRefreshToken();
 
         emit(AccountLogoutSuccess());
       } on ApiException catch (error) {
@@ -51,7 +52,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         }
         await authRepository.delete(UserStorage().getUserId!);
         UserStorage().removeUser();
-        await tokenStorageRepository.deleteAccessToken();
+        await tokenStorageService.deleteAccessToken();
+        await tokenStorageService.deleteRefreshToken();
 
         emit(AccountDeleteSuccess());
       } on ApiException catch (error) {

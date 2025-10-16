@@ -19,7 +19,7 @@ from itsdangerous import (
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
-from backend.users.schemas import LoginUserResponse
+from backend.users.schemas import RefreshTokensResponse
 
 security = HTTPBearer()
 
@@ -80,8 +80,8 @@ class AuthorizationService:
 
     async def refresh_tokens(
         self,
-        refresh_token: str,
-    ) -> (LoginUserResponse, str):
+        refresh_token: HTTPAuthorizationCredentials = Security(security),
+    ) -> RefreshTokensResponse:
         payload = await self.verify_refresh_token(refresh_token)
 
         refresh_token_jti = payload.get("jti")
@@ -91,27 +91,28 @@ class AuthorizationService:
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
-        return LoginUserResponse(
+        return RefreshTokensResponse(
             id=payload["id"],
             email=payload["sub"],
             access_token=new_access_token,
-        ), new_refresh_token.decode()
+            refresh_token=new_refresh_token,
+        )
 
     async def verify_access_token(
         self,
         credentials: HTTPAuthorizationCredentials = Security(security),
     ):
-        return await self.verify_token_by_type(credentials.credentials, Token.ACCESS.value)
+        return await self.verify_token_by_type(credentials, Token.ACCESS.value)
 
     async def verify_refresh_token(
         self,
-        credentials: str,
+        credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         return await self.verify_token_by_type(credentials, Token.REFRESH.value)
 
     async def verify_token_by_type(
         self,
-        credentials: str,
+        credentials: HTTPAuthorizationCredentials,
         expected_type: str,
     ):
         token = await self.get_payload_from_token(credentials, expected_type)
@@ -154,12 +155,12 @@ class AuthorizationService:
 
     async def get_payload_from_token(
         self,
-        credentials: str,
+        credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
     ):
         try:
             return jwt.decode(
-                credentials,
+                credentials.credentials,
                 config.SECRET_KEY,
                 algorithms=[config.ALGORITHM],
             )
@@ -173,15 +174,28 @@ class AuthorizationService:
 
     async def extract_email_from_base64(self, token: str) -> str | None:
         try:
-            padding = len(token) % 4
-            if padding:
-                token += "=" * (4 - padding)
+            decoded = await self.decode_token(token)
+            email = re.search(rb"[\w.-]+@[\w.-]+", decoded)
 
-            decoded = base64.urlsafe_b64decode(token)
-            match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
-            return match.group(0).decode("utf-8")
+            return email.group(0).decode("utf-8")
         except Exception:
             return None
+
+    async def extract_language_from_base64(self, token: str) -> str | None:
+        try:
+            decoded = await self.decode_token(token)
+            language = re.search(rb'"language":"(.*?)"', decoded)
+
+            return language.group(0).decode("utf-8")['"language":"'.__len__() : -1]
+        except Exception:
+            return None
+
+    async def decode_token(self, token):
+        padding = len(token) % 4
+        if padding:
+            token += "=" * (4 - padding)
+        decoded = base64.urlsafe_b64decode(token)
+        return decoded
 
     async def get_serializer(self, salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)

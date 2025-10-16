@@ -3,7 +3,7 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
-import 'package:frontend/services/api_client.dart';
+import 'package:frontend/repository/api_client.dart';
 
 class UserDetailsRepository {
   final ApiClient apiClient;

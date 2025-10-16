@@ -5,8 +5,8 @@ import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,12 +14,12 @@ import '../mocks/mocks.mocks.dart';
 
 void main() {
   late MockDio mockDio;
-  late MockTokenStorageRepository mockTokenStorage;
+  late MockTokenStorageService mockTokenStorage;
   late ApiClient apiClient;
 
   setUp(() {
     mockDio = MockDio();
-    mockTokenStorage = MockTokenStorageRepository();
+    mockTokenStorage = MockTokenStorageService();
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     apiClient = ApiClient(mockDio, mockTokenStorage);
@@ -33,6 +33,7 @@ void main() {
       country: 'Poland',
       email: 'john.doe@example.com',
       password: 'securepassword123',
+      language: Language.pl,
     );
 
     final expectedResponse = Response(
@@ -164,6 +165,13 @@ void main() {
       mockDio.post(
         Endpoints.refreshTokens,
         queryParameters: {'user_id': 1},
+        options: argThat(
+          predicate<Options>(
+            (opt) =>
+                opt.headers?['Authorization'] == 'Bearer $testRefreshToken',
+          ),
+          named: 'options',
+        ),
       ),
     ).called(1);
   });

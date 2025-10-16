@@ -14,6 +14,7 @@ import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
@@ -24,10 +25,7 @@ class CaloriesPredictionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.caloriesPrediction,
-            style: Styles.titleStyle,
-          ),
+          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.caloriesPrediction),
         ),
       ),
       body: _CaloriesPredictionForm(),

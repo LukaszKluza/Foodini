@@ -137,16 +137,10 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home;
 
-  /// No description provided for @homePage.
-  ///
-  /// In en, this message translates to:
-  /// **'Foodini Home Page'**
-  String get homePage;
-
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome in Foodini'**
+  /// **'Welcome'**
   String get welcome;
 
   /// No description provided for @requiredName.
