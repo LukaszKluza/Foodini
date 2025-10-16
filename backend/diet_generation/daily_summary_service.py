@@ -2,6 +2,8 @@ from datetime import date
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.diet_generation.daily_summary_repository import DailySummaryRepository
+from backend.diet_generation.enums.meal_status import MealStatus
+from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.schemas import (
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
@@ -54,7 +56,7 @@ class DailySummaryService:
 
     async def update_meal_status(self, user_id: int, update_meal_data: MealInfoUpdateRequest):
         day = update_meal_data.day
-        meal_type = update_meal_data.meal_type.value
+        meal_type_enum = update_meal_data.meal_type
         status = update_meal_data.status.value
 
         user_daily_meals = await self.daily_summary_repo.get_daily_meals(user_id, day)
@@ -62,10 +64,26 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals = user_daily_meals.meals
-        if meal_type not in meals:
+        if meal_type_enum.value not in meals:
             raise NotFoundInDatabaseException("Meal type does not exist in user's plan.")
 
-        meals[meal_type]["status"] = status
+        meals[meal_type_enum.value]["status"] = status
+
+        sorted_meals = MealType.sorted_meals()
+        current_idx = sorted_meals.index(meal_type_enum)
+        for next_idx in range(current_idx + 1, len(sorted_meals)):
+            next_meal_enum = sorted_meals[next_idx]
+            next_meal = meals.get(next_meal_enum.value)
+            if next_meal:
+                next_status = next_meal["status"]
+                print(status, next_status)
+                if (
+                    status in [MealStatus.EATEN.value, MealStatus.SKIPPED.value]
+                    and next_status == MealStatus.TO_EAT.value
+                ):
+                    next_meal["status"] = MealStatus.PENDING.value
+                break
+
         user_daily_meals.meals = meals
 
         updated_meals = await self.daily_summary_repo.update_meal_status(user_id, day, meals)

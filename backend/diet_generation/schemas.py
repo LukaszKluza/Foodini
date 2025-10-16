@@ -5,9 +5,10 @@ from pydantic import BaseModel, Field
 
 from backend.diet_generation.enums.meal_status import MealStatus
 from backend.diet_generation.enums.meal_type import MealType
+from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
 
 
-class MealInfo(BaseModel):
+class MealInfo(MealInfoMixin, BaseModel):
     meal_id: Optional[int] = None
     status: MealStatus = Field(default=MealStatus.TO_EAT)
     custom_name: Optional[str] = None

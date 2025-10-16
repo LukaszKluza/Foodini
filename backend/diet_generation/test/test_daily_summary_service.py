@@ -5,6 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.diet_generation.enums.meal_status import MealStatus
+from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.schemas import (
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
@@ -160,16 +162,24 @@ async def test_get_daily_macros_summary_not_found(daily_summary_service, mock_da
 
 @pytest.mark.asyncio
 async def test_update_meal_status_success(daily_summary_service, mock_daily_summary_repository):
-    update = MealInfoUpdateRequest(day=date.today(), meal_type="breakfast", status="eaten")
-
     user_daily_meals = MagicMock()
-    user_daily_meals.meals = {"breakfast": {"status": "pending"}}
-
+    user_daily_meals.meals = {
+        "breakfast": {"status": MealStatus.TO_EAT.value, "meal_id": 1},
+        "lunch": {"status": MealStatus.TO_EAT.value, "meal_id": 2},
+        "dinner": {"status": MealStatus.TO_EAT.value, "meal_id": 3},
+    }
     mock_daily_summary_repository.get_daily_meals.return_value = user_daily_meals
+
+    update = MealInfoUpdateRequest(day=date.today(), meal_type=MealType.BREAKFAST, status=MealStatus.EATEN)
+    expected_meals = {
+        "breakfast": {"status": MealStatus.EATEN.value, "meal_id": 1},
+        "lunch": {"status": MealStatus.PENDING.value, "meal_id": 2},
+        "dinner": {"status": MealStatus.TO_EAT.value, "meal_id": 3},
+    }
 
     updated_meals = DailyMealsCreate(
         day=date.today(),
-        meals={"breakfast": {"status": "eaten"}},
+        meals=expected_meals,
         target_calories=0,
         target_protein=0,
         target_carbs=0,
@@ -181,9 +191,7 @@ async def test_update_meal_status_success(daily_summary_service, mock_daily_summ
 
     assert result == updated_meals
     mock_daily_summary_repository.get_daily_meals.assert_awaited_once_with(1, date.today())
-    mock_daily_summary_repository.update_meal_status.assert_awaited_once_with(
-        1, date.today(), {"breakfast": {"status": "eaten"}}
-    )
+    mock_daily_summary_repository.update_meal_status.assert_awaited_once_with(1, date.today(), expected_meals)
 
 
 @pytest.mark.asyncio
