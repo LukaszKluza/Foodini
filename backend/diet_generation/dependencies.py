@@ -8,6 +8,7 @@ from backend.diet_generation.daily_summary_service import DailySummaryService
 from backend.diet_generation.diet_generation_service import DietGenerationService
 from backend.diet_generation.meal_icons_repository import MealIconsRepository
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
+from backend.diet_generation.meal_repository import MealRepository
 
 
 async def get_meal_icons_repository(
@@ -35,10 +36,17 @@ async def get_daily_summary_repository(
     return DailySummaryRepository(db)
 
 
+async def get_meal_repository(
+    db: AsyncSession = Depends(get_db),
+) -> MealRepository:
+    return MealRepository(db)
+
+
 async def get_daily_summary_service(
     daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
+    meal_repository: MealRepository = Depends(get_meal_repository),
 ) -> DailySummaryService:
-    return DailySummaryService(daily_summary_repository)
+    return DailySummaryService(daily_summary_repository, meal_repository)
 
 
 async def get_prompt_service(

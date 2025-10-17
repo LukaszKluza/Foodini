@@ -48,9 +48,19 @@ class MealInfoUpdateRequest(BaseModel):
 class CustomMealUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
-    custom_name: str
+    custom_name: Optional[str]
     custom_calories: int = Field(default=0, ge=0)
     custom_protein: int = Field(default=0, ge=0)
     custom_carbs: int = Field(default=0, ge=0)
     custom_fats: int = Field(default=0, ge=0)
     status: MealStatus = Field(default=MealStatus.EATEN)
+
+
+class MealCreate(BaseModel):
+    meal_name: str = Field(min_length=1)
+    meal_type: MealType
+    icon_id: int
+    calories: int = Field(default=0, ge=0)
+    protein: int = Field(default=0, ge=0)
+    fat: int = Field(default=0, ge=0)
+    carbs: int = Field(default=0, ge=0)
