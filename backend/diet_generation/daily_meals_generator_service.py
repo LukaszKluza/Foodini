@@ -1,13 +1,15 @@
+from datetime import date
 import json
 import os
-import traceback
 from typing import Any, Dict, List, Optional
 
 import requests
 
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDetails, UserDietPredictions
+from backend.diet_generation.daily_summary_repository import DailySummaryRepository
+from backend.diet_generation.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealCreate, MealInfo
+from backend.models import Ingredient, Ingredients, MealRecipe, Step, UserDetails, UserDietPredictions
 from backend.settings import config
 from backend.users.enums.language import Language
 
@@ -16,8 +18,10 @@ class PromptService:
     def __init__(
         self,
         meal_recipes_repo: MealRecipesRepository,
+        daily_summary_repo: DailySummaryRepository,
     ):
         self.meal_recipes_repo = meal_recipes_repo
+        self.daily_summary_repo = daily_summary_repo
         self._prompt_template_cache: Optional[str] = None
 
     @staticmethod
@@ -38,13 +42,13 @@ class PromptService:
         return json.loads(response[start : end + 1])
 
     async def generate_meal_plan(
-        self, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2
-    ) -> List[MealRecipe]:
+        self, day: date, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2
+    ) -> List[int]:
         params = self._prepare_params(user_details, user_diet_predictions)
         prompt = self._build_prompt(params)
 
         response = await self._get_valid_json_from_model(prompt, retries)
-        return await self._save_meals(response)
+        return await self._save_meals(day, response, user_diet_predictions)
 
     def _build_prompt(self, params: dict) -> str:
         if self._prompt_template_cache is None:
@@ -75,41 +79,55 @@ class PromptService:
                 last_exception = e
                 prompt += "\n\nWarning: Previous response was not valid JSON. Return only valid JSON."
         raise ValueError(f"Model did not return valid JSON: {last_exception}")
+    
+    async def _save_meal(self, meal_data: Dict[str, Any]) -> int:
+        meal = MealCreate(**meal_data)
+        saved_meal = await self.meal_recipes_repo.add_meal(meal)
+        
+        return saved_meal.id
+    
+    async def _save_recipes(self, meal_id, meal_data: List[Dict[str, Any]]):
+        ingredients = Ingredients(
+            ingredients=[
+                Ingredient(name=i["name"], unit=i["unit"], volume=float(i["volume"]))
+                for i in meal_data["ingredients"]
+            ]
+        )
+        steps = [Step(description=s) for s in meal_data.get("steps", [])]
 
-    async def _save_meals(self, meals_data: List[Dict[str, Any]]) -> List[MealRecipe]:
-        saved_recipes = []
+        recipe = MealRecipe(
+            meal_id=meal_id,
+            language=Language.EN,
+            meal_description=meal_data["meal_description"],
+            ingredients=ingredients.model_dump(),
+            steps=[s.model_dump() for s in steps],
+        )
+        await self.meal_recipes_repo.add_meal_recipe(recipe)
+        
+    async def _save_daily_meals(self, day: date, meals_data: Dict[MealType, MealInfo], user_diet_predictions: UserDietPredictions):
+        daily_meal = DailyMealsCreate(
+                                        day=day,
+                                        meals=meals_data,
+                                        user_diet_predictions=user_diet_predictions
+                                    )
+        await self.daily_summary_repo.add_daily_meals(daily_meal, user_diet_predictions.user_id)
+        
+    async def _save_daily_macros_summary(self, day: date, user_id: int):
+        daily_summary = DailyMacrosSummaryCreate(day=day)
+        await self.daily_summary_repo.add_daily_macros_summary(daily_summary, user_id)
+
+    async def _save_meals(self, day: date, meals_data: List[Dict[str, Any]], user_diet_predictions: UserDietPredictions) -> List[int]:
+        saved_meals_id = []
+        saved_meals_map = {}
 
         for meal_data in meals_data:
-            try:
-                meal = Meal(
-                    meal_name=meal_data["meal_name"].capitalize(),
-                    meal_type=MealType(meal_data["meal_type"].lower()),
-                    icon_id=MealType(meal_data["meal_type"].lower()).meal_order,
-                    calories=int(meal_data["calories"]),
-                    protein=int(meal_data["macros"]["protein"]),
-                    fat=int(meal_data["macros"]["fat"]),
-                    carbs=int(meal_data["macros"]["carbs"]),
-                )
-                saved_meal = await self.meal_recipes_repo.add_meal(meal)
-
-                ingredients = Ingredients(
-                    ingredients=[
-                        Ingredient(name=i["name"], unit=i["unit"], volume=float(i["volume"]))
-                        for i in meal_data["ingredients"]
-                    ]
-                )
-                steps = [Step(description=s) for s in meal_data.get("steps", [])]
-
-                recipe = MealRecipe(
-                    meal_id=saved_meal.id,
-                    language=Language.EN,
-                    meal_description=meal_data["meal_description"],
-                    ingredients=ingredients.model_dump(),
-                    steps=[s.model_dump() for s in steps],
-                )
-                saved = await self.meal_recipes_repo.add_meal_recipe(recipe)
-                saved_recipes.append(saved)
-            except Exception as e:
-                print(traceback.format_exc())
-                print(f"[ERROR] Failed to save recipe '{meal_data['meal_name']}': {e}")
-        return saved_recipes
+            
+            saved_meal_id = await self._save_meal(meal_data)
+            saved_meals_id.append(saved_meal_id)
+            saved_meals_map[MealType(meals_data["meal_type"].lower())] = MealInfo(meal_id=saved_meal_id)
+            await self._save_recipes(saved_meal_id, meal_data)
+            
+        await self._save_daily_meals(day, saved_meals_map, user_diet_predictions)
+        await self._save_daily_macros_summary(day, user_diet_predictions.user_id)
+            
+        return saved_meals_id

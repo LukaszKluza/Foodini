@@ -1,11 +1,12 @@
 from datetime import date
 from typing import Dict, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from backend.diet_generation.enums.meal_status import MealStatus
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
+from backend.models.user_diet_prediction_model import UserDietPredictions
 
 
 class MealInfo(MealInfoMixin, BaseModel):
@@ -29,6 +30,21 @@ class DailyMealsCreate(BaseModel):
     target_fats: int
 
     model_config = {"use_enum_values": True}
+    
+    @model_validator(mode="before")
+    def preprocess(cls, data):
+        if isinstance(data, dict):
+            predictions = data.pop("user_diet_predictions", None)
+            if predictions:
+                if hasattr(predictions, "model_dump"):
+                    predictions = predictions.model_dump()
+
+                data["target_calories"] = predictions.get("target_calories", 0)
+                data["target_protein"] = predictions.get("protein", 0)
+                data["target_carbs"] = predictions.get("carbs", 0)
+                data["target_fats"] = predictions.get("fat", 0)
+
+        return data
 
 
 class DailyMacrosSummaryCreate(BaseModel):
@@ -64,3 +80,17 @@ class MealCreate(BaseModel):
     protein: int = Field(default=0, ge=0)
     fat: int = Field(default=0, ge=0)
     carbs: int = Field(default=0, ge=0)
+
+    @model_validator(mode="before")
+    def preprocess(cls, data):
+        if isinstance(data, dict):
+            macros = data.pop("macros", {})
+            data["protein"] = int(macros.get("protein", 0))
+            data["fat"] = int(macros.get("fat", 0))
+            data["carbs"] = int(macros.get("carbs", 0))
+
+            meal_type = MealType(data["meal_type"].lower())
+            data["meal_type"] = meal_type
+            data["icon_id"] = meal_type.meal_order
+            data["meal_name"] = data["meal_name"].capitalize()
+        return data
