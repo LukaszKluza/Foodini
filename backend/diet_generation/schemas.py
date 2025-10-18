@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field, model_validator
 from backend.diet_generation.enums.meal_status import MealStatus
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
-from backend.models.user_diet_prediction_model import UserDietPredictions
 
 
 class MealInfo(MealInfoMixin, BaseModel):
@@ -30,7 +29,7 @@ class DailyMealsCreate(BaseModel):
     target_fats: int
 
     model_config = {"use_enum_values": True}
-    
+
     @model_validator(mode="before")
     def preprocess(cls, data):
         if isinstance(data, dict):
@@ -91,6 +90,6 @@ class MealCreate(BaseModel):
 
             meal_type = MealType(data["meal_type"].lower())
             data["meal_type"] = meal_type
-            data["icon_id"] = meal_type.meal_order
+            data["icon_id"] = meal_type.order
             data["meal_name"] = data["meal_name"].capitalize()
         return data
