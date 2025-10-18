@@ -19,6 +19,7 @@ class DailySummaryService:
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
 
+    # Only for test purposes, to delete
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int):
         daily_meals = await self.daily_summary_repo.get_daily_meals(user_id, daily_meals_data.day)
         if daily_meals:
@@ -43,19 +44,6 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
 
-    async def add_macros_to_daily_summary(self, user_id: int, data: DailyMacrosSummaryCreate):
-        user_daily_macros = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
-        if not user_daily_macros:
-            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
-
-        data.calories += user_daily_macros.calories
-        data.protein += user_daily_macros.protein
-        data.carbs += user_daily_macros.carbs
-        data.fats += user_daily_macros.fats
-
-        await self.daily_summary_repo.update_daily_macros_summary(user_id, data, data.day)
-        return user_daily_macros
-
     async def update_meal_status(self, user_id: int, update_meal_data: MealInfoUpdateRequest):
         day = update_meal_data.day
         meal_type_enum = update_meal_data.meal_type
@@ -70,49 +58,12 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Meal type does not exist in user's plan.")
 
         meal_info = meals[meal_type_enum.value]
+        previous_status = meal_info.get("status")
         meal_info["status"] = status
 
-        if status == MealStatus.EATEN.value:
-            if meal_info.get("meal_id"):
-                try:
-                    meal_id = int(meal_info["meal_id"])
-                except (TypeError, ValueError):
-                    meal_id = None
-                calories = await self.get_meal_calories(meal_id)
-                macros = await self.get_meal_macros(meal_id)
-                protein = macros["protein"]
-                carbs = macros["carbs"]
-                fats = macros["fats"]
-            else:
-                calories = meal_info.get("custom_calories", 0)
-                protein = meal_info.get("custom_protein", 0)
-                carbs = meal_info.get("custom_carbs", 0)
-                fats = meal_info.get("custom_fats", 0)
+        await self._add_macros_after_status_change(day, meal_info, status, user_id, previous_status)
 
-            data = DailyMacrosSummaryCreate(
-                day=day,
-                calories=calories,
-                protein=protein,
-                carbs=carbs,
-                fats=fats,
-            )
-
-            await self.add_macros_to_daily_summary(user_id, data)
-
-        if status != MealStatus.PENDING.value:
-            sorted_meals = MealType.sorted_meals()
-            current_idx = sorted_meals.index(meal_type_enum)
-            for next_idx in range(current_idx + 1, len(sorted_meals)):
-                next_meal_enum = sorted_meals[next_idx]
-                next_meal = meals.get(next_meal_enum.value)
-                if next_meal:
-                    next_status = next_meal["status"]
-                    if (
-                        status in [MealStatus.EATEN.value, MealStatus.SKIPPED.value]
-                        and next_status == MealStatus.TO_EAT.value
-                    ):
-                        next_meal["status"] = MealStatus.PENDING.value
-                    break
+        await self._update_next_meal_status(meal_type_enum, meals, status)
 
         user_daily_meals.meals = meals
 
@@ -129,25 +80,23 @@ class DailySummaryService:
         meal_type = custom_meal.meal_type.value
         existing_meal = meals.get(meal_type)
 
-        if not custom_meal.custom_name:
-            meals[meal_type] = {
-                "meal_id": existing_meal.get("meal_id") if existing_meal else None,
-                "status": custom_meal.status.value,
-                "custom_calories": custom_meal.custom_calories,
-                "custom_protein": custom_meal.custom_protein,
-                "custom_carbs": custom_meal.custom_carbs,
-                "custom_fats": custom_meal.custom_fats,
-            }
-        else:
-            meals[custom_meal.meal_type] = {
-                "status": custom_meal.status.value,
-                "custom_name": custom_meal.custom_name,
-                "custom_calories": custom_meal.custom_calories,
-                "custom_protein": custom_meal.custom_protein,
-                "custom_carbs": custom_meal.custom_carbs,
-                "custom_fats": custom_meal.custom_fats,
-            }
+        previous_status = existing_meal.get("status") if existing_meal else None
 
+        meal_info = {
+            "status": custom_meal.status.value,
+            "custom_name": custom_meal.custom_name,
+            "custom_calories": custom_meal.custom_calories,
+            "custom_protein": custom_meal.custom_protein,
+            "custom_carbs": custom_meal.custom_carbs,
+            "custom_fats": custom_meal.custom_fats,
+        }
+
+        if not custom_meal.custom_name and existing_meal:
+            meal_info["meal_id"] = existing_meal.get("meal_id")
+
+        meals[meal_type] = meal_info
+
+        await self._add_macros_after_status_change(day, meal_info, custom_meal.status.value, user_id, previous_status)
         updated_plan = await self.daily_summary_repo.add_custom_meal(user_id, day, meals)
         return updated_plan
 
@@ -181,3 +130,72 @@ class DailySummaryService:
             "fats": fats,
             "carbs": carbs,
         }
+
+    async def _add_macros_to_daily_summary(self, user_id: int, data: DailyMacrosSummaryCreate):
+        user_daily_macros = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
+        if not user_daily_macros:
+            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
+
+        data.calories += user_daily_macros.calories
+        data.protein += user_daily_macros.protein
+        data.carbs += user_daily_macros.carbs
+        data.fats += user_daily_macros.fats
+
+        await self.daily_summary_repo.update_daily_macros_summary(user_id, data, data.day)
+        return user_daily_macros
+
+    async def _add_macros_after_status_change(self, day, meal_info, status, user_id, previous_status):
+        if status != MealStatus.EATEN.value or previous_status == MealStatus.EATEN.value:
+            return
+
+        calories = meal_info.get("custom_calories")
+        protein = meal_info.get("custom_protein")
+        carbs = meal_info.get("custom_carbs")
+        fats = meal_info.get("custom_fats")
+
+        if calories is None or protein is None or carbs is None or fats is None:
+            meal_id = None
+            if meal_info.get("meal_id"):
+                try:
+                    meal_id = int(meal_info["meal_id"])
+                except (TypeError, ValueError):
+                    meal_id = None
+
+            if meal_id:
+                db_calories = await self.get_meal_calories(meal_id)
+                db_macros = await self.get_meal_macros(meal_id)
+                calories = calories if calories is not None else db_calories
+                protein = protein if protein is not None else db_macros["protein"]
+                carbs = carbs if carbs is not None else db_macros["carbs"]
+                fats = fats if fats is not None else db_macros["fats"]
+
+        calories = calories or 0
+        protein = protein or 0
+        carbs = carbs or 0
+        fats = fats or 0
+
+        data = DailyMacrosSummaryCreate(
+            day=day,
+            calories=calories,
+            protein=protein,
+            carbs=carbs,
+            fats=fats,
+        )
+
+        await self._add_macros_to_daily_summary(user_id, data)
+
+    async def _update_next_meal_status(self, meal_type_enum, meals, status):
+        if status != MealStatus.PENDING.value:
+            sorted_meals = MealType.sorted_meals()
+            current_idx = sorted_meals.index(meal_type_enum)
+            for next_idx in range(current_idx + 1, len(sorted_meals)):
+                next_meal_enum = sorted_meals[next_idx]
+                next_meal = meals.get(next_meal_enum.value)
+                if next_meal:
+                    next_status = next_meal["status"]
+                    if (
+                        status in [MealStatus.EATEN.value, MealStatus.SKIPPED.value]
+                        and next_status == MealStatus.TO_EAT.value
+                    ):
+                        next_meal["status"] = MealStatus.PENDING.value
+                    break

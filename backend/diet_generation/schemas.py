@@ -48,7 +48,7 @@ class MealInfoUpdateRequest(BaseModel):
 class CustomMealUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
-    custom_name: Optional[str]
+    custom_name: Optional[str] = None
     custom_calories: int = Field(default=0, ge=0)
     custom_protein: int = Field(default=0, ge=0)
     custom_carbs: int = Field(default=0, ge=0)

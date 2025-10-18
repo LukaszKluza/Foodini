@@ -52,38 +52,6 @@ def daily_summary_service(mock_daily_summary_repository, mock_meal_repository):
 
 
 @pytest.mark.asyncio
-async def test_add_daily_meals_success(daily_summary_service, mock_daily_summary_repository):
-    daily_meals = DailyMealsCreate(
-        day=date.today(), meals={}, target_calories=0, target_protein=0, target_carbs=0, target_fats=0
-    )
-    mock_daily_summary_repository.get_daily_meals.return_value = None
-    mock_daily_summary_repository.add_daily_meals.return_value = daily_meals
-
-    result = await daily_summary_service.add_daily_meals(daily_meals, user_id=1)
-
-    assert result == daily_meals
-    mock_daily_summary_repository.add_daily_meals.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_add_daily_meals_already_exists(daily_summary_service, mock_daily_summary_repository):
-    daily_meals = DailyMealsCreate(
-        day=date.today(), meals={}, target_calories=0, target_protein=0, target_carbs=0, target_fats=0
-    )
-    updated_meals = DailyMealsCreate(
-        day=date.today(), meals={}, target_calories=2, target_protein=3, target_carbs=4, target_fats=5
-    )
-    mock_daily_summary_repository.get_daily_meals.return_value = daily_meals
-    mock_daily_summary_repository.update_daily_meals.return_value = updated_meals
-
-    result = await daily_summary_service.add_daily_meals(updated_meals, user_id=1)
-
-    assert result == updated_meals
-    mock_daily_summary_repository.get_daily_meals.assert_called_once()
-    mock_daily_summary_repository.update_daily_meals.assert_called_once()
-
-
-@pytest.mark.asyncio
 async def test_get_daily_meals_success(daily_summary_service, mock_daily_summary_repository):
     daily_meals = DailyMealsCreate(
         day=date.today(), meals={}, target_calories=0, target_protein=0, target_carbs=0, target_fats=0
@@ -147,34 +115,6 @@ async def test_get_daily_macros_summary_not_found(daily_summary_service, mock_da
         await daily_summary_service.get_daily_macros_summary(user_id=1, day=date.today())
 
 
-# @pytest.mark.asyncio
-# async def test_update_daily_macros_summary_success(daily_summary_service, mock_daily_summary_repository):
-#     summary = DailyMacrosSummaryCreate(day=date.today(), calories=2000, protein=80, carbs=170, fats=55)
-#
-#     mock_daily_summary_repository.get_daily_macros_summary.return_value = DailyMacrosSummaryCreate(
-#         day=date.today(), calories=1500, protein=50, carbs=150, fats=50
-#     )
-#     mock_daily_summary_repository.update_daily_macros_summary.return_value = None
-#
-#     result = await daily_summary_service.update_daily_macros_summary(user_id=1, data=summary)
-#
-#     assert result.calories == 2000
-#     assert result.protein == 80
-#     assert result.carbs == 170
-#     assert result.fats == 55
-#     mock_daily_summary_repository.get_daily_macros_summary.assert_awaited_once_with(1, date.today())
-#     mock_daily_summary_repository.update_daily_macros_summary.assert_awaited_once_with(1, date.today(), result)
-
-
-# @pytest.mark.asyncio
-# async def test_update_daily_macros_summary_not_found(daily_summary_service, mock_daily_summary_repository):
-#     summary = DailyMacrosSummaryCreate(day=date.today())
-#     mock_daily_summary_repository.get_daily_macros_summary.return_value = None
-#
-#     with pytest.raises(NotFoundInDatabaseException):
-#         await daily_summary_service.update_daily_macros_summary(user_id=1, data=summary)
-
-
 @pytest.mark.asyncio
 async def test_update_meal_status_success(daily_summary_service, mock_daily_summary_repository):
     user_daily_meals = MagicMock()
@@ -211,7 +151,7 @@ async def test_update_meal_status_success(daily_summary_service, mock_daily_summ
 
 @pytest.mark.asyncio
 async def test_update_meal_status_not_found(daily_summary_service, mock_daily_summary_repository):
-    update = MealInfoUpdateRequest(day=date.today(), meal_type="breakfast", status="eaten")
+    update = MealInfoUpdateRequest(day=date.today(), meal_type=MealType.BREAKFAST, status=MealStatus.EATEN)
     mock_daily_summary_repository.update_meal_status.return_value = None
 
     with pytest.raises(NotFoundInDatabaseException):
@@ -242,7 +182,7 @@ async def test_update_meal_status_adds_macros_when_eaten(
 
     daily_summary_service.get_meal_calories = AsyncMock(return_value=300)
     daily_summary_service.get_meal_macros = AsyncMock(return_value={"protein": 20, "carbs": 30, "fats": 10})
-    daily_summary_service.add_macros_to_daily_summary = AsyncMock()
+    daily_summary_service._add_macros_to_daily_summary = AsyncMock()
 
     update_request = MealInfoUpdateRequest(
         day=date.today(),
@@ -252,8 +192,8 @@ async def test_update_meal_status_adds_macros_when_eaten(
 
     await daily_summary_service.update_meal_status(user_id=1, update_meal_data=update_request)
 
-    daily_summary_service.add_macros_to_daily_summary.assert_awaited_once()
-    called_data = daily_summary_service.add_macros_to_daily_summary.call_args[0][1]
+    daily_summary_service._add_macros_to_daily_summary.assert_awaited_once()
+    called_data = daily_summary_service._add_macros_to_daily_summary.call_args[0][1]
     assert isinstance(called_data, DailyMacrosSummaryCreate)
     assert called_data.calories == 300
     assert called_data.protein == 20
@@ -267,36 +207,69 @@ async def test_update_meal_status_adds_macros_when_eaten(
 async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary_repository):
     custom = CustomMealUpdateRequest(
         day=date.today(),
-        meal_type="breakfast",
+        meal_type=MealType.BREAKFAST,
         custom_name="Omelette",
         custom_calories=300,
         custom_protein=20,
         custom_carbs=5,
         custom_fats=15,
-        status="eaten",
+        status=MealStatus.EATEN,
     )
-    daily_meals = DailyMealsCreate(
-        day=date.today(), meals={}, target_calories=0, target_protein=0, target_carbs=0, target_fats=0
+
+    daily_meals_mock = MagicMock()
+    daily_meals_mock.meals = {}
+
+    mock_daily_summary_repository.get_daily_meals = AsyncMock(return_value=daily_meals_mock)
+    daily_meals_result = DailyMealsCreate(
+        day=date.today(),
+        meals={
+            "breakfast": {
+                "status": custom.status.value,
+                "custom_name": custom.custom_name,
+                "custom_calories": custom.custom_calories,
+                "custom_protein": custom.custom_protein,
+                "custom_carbs": custom.custom_carbs,
+                "custom_fats": custom.custom_fats,
+            }
+        },
+        target_calories=0,
+        target_protein=0,
+        target_carbs=0,
+        target_fats=0,
     )
-    mock_daily_summary_repository.add_custom_meal.return_value = daily_meals
+    mock_daily_summary_repository.add_custom_meal = AsyncMock(return_value=daily_meals_result)
 
     result = await daily_summary_service.add_custom_meal(user_id=1, custom_meal=custom)
 
-    assert result == daily_meals
-    mock_daily_summary_repository.add_custom_meal.assert_called_once()
+    assert result == daily_meals_result
+    mock_daily_summary_repository.get_daily_meals.assert_awaited_once_with(1, custom.day)
+    mock_daily_summary_repository.add_custom_meal.assert_awaited_once_with(
+        1,
+        custom.day,
+        {
+            "breakfast": {
+                "status": custom.status.value,
+                "custom_name": custom.custom_name,
+                "custom_calories": custom.custom_calories,
+                "custom_protein": custom.custom_protein,
+                "custom_carbs": custom.custom_carbs,
+                "custom_fats": custom.custom_fats,
+            }
+        },
+    )
 
 
 @pytest.mark.asyncio
 async def test_add_custom_meal_not_found(daily_summary_service, mock_daily_summary_repository):
     custom = CustomMealUpdateRequest(
         day=date.today(),
-        meal_type="breakfast",
+        meal_type=MealType.BREAKFAST,
         custom_name="Omelette",
         custom_calories=300,
         custom_protein=20,
         custom_carbs=5,
         custom_fats=15,
-        status="eaten",
+        status=MealStatus.EATEN,
     )
     mock_daily_summary_repository.get_daily_meals.return_value = None
 
@@ -338,6 +311,7 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
             MealType.BREAKFAST.value: {
                 "meal_id": 1,
                 "status": MealStatus.EATEN.value,
+                "custom_name": None,
                 "custom_calories": 350,
                 "custom_protein": 25,
                 "custom_carbs": 10,
@@ -362,6 +336,7 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
             MealType.BREAKFAST.value: {
                 "meal_id": 1,
                 "status": MealStatus.EATEN.value,
+                "custom_name": None,
                 "custom_calories": 350,
                 "custom_protein": 25,
                 "custom_carbs": 10,
@@ -374,7 +349,7 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
 @pytest.mark.asyncio
 async def test_add_meal_details_add_new(daily_summary_service, mock_meal_repository):
     meal_data = MealCreate(
-        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type="BREAKFAST", icon_id=1
+        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type=MealType.BREAKFAST, icon_id=1
     )
     mock_meal_repository.get_meal_by_name.return_value = None
     mock_meal_repository.add_meal.return_value = meal_data
@@ -390,7 +365,7 @@ async def test_add_meal_details_add_new(daily_summary_service, mock_meal_reposit
 @pytest.mark.asyncio
 async def test_add_meal_details_update_existing(daily_summary_service, mock_meal_repository):
     meal_data = MealCreate(
-        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type="BREAKFAST", icon_id=1
+        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type=MealType.BREAKFAST, icon_id=1
     )
     mock_meal_repository.get_meal_by_name.return_value = meal_data
     mock_meal_repository.update_meal.return_value = meal_data
@@ -407,7 +382,7 @@ async def test_add_meal_details_update_existing(daily_summary_service, mock_meal
 async def test_get_meal_details_success(daily_summary_service, mock_meal_repository):
     meal_id = 1
     meal_data = MealCreate(
-        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type="BREAKFAST", icon_id=1
+        meal_name="Omelette", calories=300, protein=20, carbs=5, fats=15, meal_type=MealType.BREAKFAST, icon_id=1
     )
     mock_meal_repository.get_meal_by_id.return_value = meal_data
 

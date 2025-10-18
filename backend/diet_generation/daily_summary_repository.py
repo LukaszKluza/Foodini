@@ -14,6 +14,7 @@ class DailySummaryRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    # Only for test purposes, to delete
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int) -> DailyMeals:
         user_daily_meals = DailyMeals(user_id=user_id, **daily_meals_data.model_dump())
 

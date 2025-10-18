@@ -16,7 +16,7 @@ class MealRepository:
         await self.db.refresh(meal)
         return meal
 
-    async def update_meal(self, meal_data: MealCreate) -> MealCreate | None:
+    async def update_meal(self, meal_data: MealCreate) -> Meal | None:
         meal_name = meal_data.meal_name
         meal = await self.get_meal_by_name(meal_name)
         if meal:
@@ -32,7 +32,7 @@ class MealRepository:
         return result.scalar_one_or_none()
 
     async def get_meal_by_name(self, meal_name: str) -> Meal | None:
-        query = select(Meal).where(Meal.name == meal_name)
+        query = select(Meal).where(Meal.meal_name == meal_name)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
@@ -52,6 +52,6 @@ class MealRepository:
         return result.scalar_one_or_none()
 
     async def get_meal_fats_by_id(self, meal_id: int) -> int | None:
-        query = select(Meal.fats).where(Meal.id == meal_id)
+        query = select(Meal.fat).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()

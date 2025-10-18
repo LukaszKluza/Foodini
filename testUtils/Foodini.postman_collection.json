@@ -643,7 +643,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 11,\n      \"status\": \"eaten\"\n    },\n    \"lunch\": {\n      \"meal_id\": 102,\n      \"status\": \"pending\"\n    },\n    \"dinner\": {\n      \"meal_id\": 203,\n      \"status\": \"skipped\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fats\": 70\n}"
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 11,\n      \"status\": \"eaten\"\n    },\n    \"lunch\": {\n      \"meal_id\": 1,\n      \"status\": \"pending\"\n    },\n    \"dinner\": {\n      \"meal_id\": 203,\n      \"status\": \"skipped\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fats\": 70\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8000/v1/daily_summary/meals?user_id=1",
@@ -734,6 +734,39 @@
 					}
 				},
 				{
+					"name": "Add Custom Meal Without Name",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+						"mode": "raw",
+						"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meal_type\": \"lunch\",\n  \"custom_calories\": 850,\n  \"custom_protein\": 80,\n  \"custom_carbs\": 50,\n  \"custom_fats\": 200,\n  \"status\": \"eaten\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/v1/daily_summary/meals/custom?user_id=1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "daily_summary", "meals", "custom"],
+							"query": [
+								{"key": "user_id", "value": "1"}
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						}
+					}
+				},
+				{
 					"name": "Get Daily Macros",
 					"request": {
 						"method": "GET",
@@ -784,6 +817,62 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 2000,\n  \"protein\": 140,\n  \"carbs\": 240,\n  \"fats\": 65\n}"
+						}
+					}
+				},
+				{
+					"name": "Add Meal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"url": {
+							"raw": "http://localhost:8000/v1/meal",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "meal"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"meal_name\": \"Chicken Salad\",\n  \"meal_type\": \"lunch\",\n  \"icon_id\": 5,\n  \"calories\": 520,\n  \"protein\": 42,\n  \"fat\": 18,\n  \"carbs\": 45\n}"
+						}
+					}
+				},
+				{
+					"name": "Get Meal by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"url": {
+							"raw": "http://localhost:8000/v1/meal/1",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["v1", "meals", "1"]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
 						}
 					}
 				}
