@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -84,6 +85,11 @@ final GoRouter router = GoRouter(
       path: '/calories-result',
       builder: (context, state) => PredictionResultsScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/meal-details',
+      builder: (context, state) => MealDetailsScreen(),
+      // redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
   ],
 );
