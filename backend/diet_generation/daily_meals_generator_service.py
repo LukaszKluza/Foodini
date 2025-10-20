@@ -76,7 +76,7 @@ class PromptService:
         for _attempt in range(retries + 1):
             # try:
             # headers = {
-            #     "Authorization": f"Bearer 27067041099a4d0b85375bf46722ce24.VkE50bIx_4EdiU_jTKs3zrkq",
+            #     "Authorization": f"Bearer ",
             #     "Content-Type": "application/json",
             # }
             # resp = requests.post(
