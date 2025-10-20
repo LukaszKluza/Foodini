@@ -51,5 +51,6 @@ async def get_daily_summary_service(
 
 async def get_prompt_service(
     meal_recipes_repository: MealRecipesRepository = Depends(get_meal_recipes_repository),
+    daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
 ) -> PromptService:
-    return PromptService(meal_recipes_repository)
+    return PromptService(meal_recipes_repository, daily_summary_repository)

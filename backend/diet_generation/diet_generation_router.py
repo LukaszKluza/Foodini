@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
@@ -48,8 +49,9 @@ async def get_meal_recipe_by_id(
     return await meal_prediction_service.get_meal_recipe_by_recipe_id(recipe_id)
 
 
-@diet_generation_router.post("/generate_meal_plan", response_model=int | List[int])
+@diet_generation_router.post("/generate_meal_plan/{day}", response_model=int | List[int])
 async def generate_meal_plan(
+    day: date,
     prompt_service: PromptService = Depends(get_prompt_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
     user_details_gateway: UserDetailsGateway = Depends(get_user_details_gateway),
@@ -57,4 +59,4 @@ async def generate_meal_plan(
     user, _ = await user_gateway.get_current_user()
     user_details = await user_details_gateway.get_user_details(user)
     user_diet_prediction = await user_details_gateway.get_user_diet_predictions(user)
-    return await prompt_service.generate_meal_plan(user_details, user_diet_prediction)
+    return await prompt_service.generate_meal_plan(day, user_details, user_diet_prediction)

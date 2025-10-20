@@ -3,7 +3,7 @@ import os
 from datetime import date
 from typing import Any, Dict, List, Optional
 
-import requests
+from ollama import Client
 
 from backend.diet_generation.daily_summary_repository import DailySummaryRepository
 from backend.diet_generation.enums.meal_type import MealType
@@ -11,6 +11,7 @@ from backend.diet_generation.meal_recipes_repository import MealRecipesRepositor
 from backend.diet_generation.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealCreate, MealInfo
 from backend.models import Ingredient, Ingredients, MealRecipe, Step, UserDetails, UserDietPredictions
 from backend.settings import config
+from backend.user_details.schemas import PredictedCalories
 from backend.users.enums.language import Language
 
 
@@ -25,12 +26,16 @@ class PromptService:
         self._prompt_template_cache: Optional[str] = None
 
     @staticmethod
-    def _prepare_params(details: UserDetails, predictions: UserDietPredictions) -> dict:
+    def _prepare_params(details: UserDetails, predictions: PredictedCalories) -> dict:
         return {
             "allergens": [a.value for a in details.allergies],
             "meals_per_day": details.meals_per_day,
             "calories": predictions.target_calories,
-            "macros": {"protein": predictions.protein, "carbs": predictions.carbs, "fat": predictions.fat},
+            "macros": {
+                "protein": predictions.predicted_macros.protein,
+                "carbs": predictions.predicted_macros.carbs,
+                "fat": predictions.predicted_macros.fat,
+            },
         }
 
     @staticmethod
@@ -69,16 +74,61 @@ class PromptService:
     async def _get_valid_json_from_model(self, prompt: str, retries: int) -> List[Dict[str, Any]]:
         last_exception = None
         for _attempt in range(retries + 1):
-            try:
-                resp = requests.post(
-                    config.OLLAMA_URL, json={"model": config.MODEL_NAME, "prompt": prompt, "stream": False}
-                )
-                resp.raise_for_status()
-                return self._parse_json_response(resp.json()["response"])
-            except Exception as e:
-                last_exception = e
-                prompt += "\n\nWarning: Previous response was not valid JSON. Return only valid JSON."
-        raise ValueError(f"Model did not return valid JSON: {last_exception}")
+            # try:
+            # headers = {
+            #     "Authorization": f"Bearer 27067041099a4d0b85375bf46722ce24.VkE50bIx_4EdiU_jTKs3zrkq",
+            #     "Content-Type": "application/json",
+            # }
+            # resp = requests.post(
+            #     "https://api.ollama.com/v1/generate", headers=headers, json={"model": "deepseek-v3.1:671b-cloud",
+            #                                                                  "prompt": prompt,
+            #                                                  "stream": False}
+            # )
+
+            prompt = [
+                {"role": "system", "content": "You are an AI dietitian. Your task is to generate a one-day meal plan."},
+                {
+                    "role": "user",
+                    "content": """
+                Here's Input data:
+                {
+                  "allergens": ["lactose", "meat"],
+                  "meals_per_day": 5,
+                  "calories": 2253,
+                  "macros": {"protein": 98, "carbs": 296, "fat": 75}
+                }
+    
+                Generate a list of meals in pure JSON (array of objects).
+                The output must be valid JSON only, without any additional text.
+    
+                Important requirements:
+                - The sum of all meal calories must exactly match the daily calorie target (±1% margin).
+                - The sum of protein, carbs, and fat across all meals must exactly match the target macros (±1g margin).
+                - Each meal must have realistic macro proportions.
+                - The number of meals must equal `meals_per_day` — no more, no less.
+    
+                Each meal must contain:
+                - "meal_name": simple name of the meal
+                - "meal_type": one of ["breakfast","morning_snack","lunch","afternoon_snack","dinner","evening_snack"]
+                - "meal_description": short description of the meal
+                - "calories": total calories for the meal
+                - "macros": {"protein": int, "carbs": int, "fat": int}
+                - "ingredients": list of objects {"name": string, "unit": string, "volume": float}
+                - "steps": list of preparation steps (strings)
+                """,
+                },
+            ]
+
+            client = Client(host="https://ollama.com", headers={"Authorization": "Bearer tajny-token"})
+            resp = client.chat("qwen3-coder:480b-cloud", messages=prompt, stream=False)
+            print(resp)
+
+            resp.raise_for_status()
+            return self._parse_json_response(resp.json()["response"])
+            # except Exception as e:
+            #     last_exception = e
+            #     prompt += "\n\nWarning: Previous response was not valid JSON. Return only valid JSON."
+        # raise ValueError(f"Model did not return valid JSON: {last_exception}")
 
     async def _save_meal(self, meal_data: Dict[str, Any]) -> int:
         meal = MealCreate(**meal_data)
@@ -86,7 +136,7 @@ class PromptService:
 
         return saved_meal.id
 
-    async def _save_recipes(self, meal_id, meal_data: List[Dict[str, Any]]):
+    async def _save_recipes(self, meal_id, meal_data: Dict[str, Any]):
         ingredients = Ingredients(
             ingredients=[
                 Ingredient(name=i["name"], unit=i["unit"], volume=float(i["volume"])) for i in meal_data["ingredients"]
