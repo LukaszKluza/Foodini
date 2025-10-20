@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Dict, Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 from backend.diet_generation.enums.meal_status import MealStatus
 from backend.diet_generation.enums.meal_type import MealType
@@ -30,20 +30,20 @@ class DailyMealsCreate(BaseModel):
 
     model_config = {"use_enum_values": True}
 
-    @model_validator(mode="before")
-    def preprocess(cls, data):
-        if isinstance(data, dict):
-            predictions = data.pop("user_diet_predictions", None)
-            if predictions:
-                if hasattr(predictions, "model_dump"):
-                    predictions = predictions.model_dump()
-
-                data["target_calories"] = predictions.get("target_calories", 0)
-                data["target_protein"] = predictions.get("protein", 0)
-                data["target_carbs"] = predictions.get("carbs", 0)
-                data["target_fats"] = predictions.get("fat", 0)
-
-        return data
+    # @model_validator(mode="before")
+    # def preprocess(cls, data):
+    #     if isinstance(data, dict):
+    #         predictions = data.pop("user_diet_predictions", None)
+    #         if predictions:
+    #             if hasattr(predictions, "model_dump"):
+    #                 predictions = predictions.model_dump()
+    #
+    #             data["target_calories"] = predictions.get("target_calories", 0)
+    #             data["target_protein"] = predictions.get("protein", 0)
+    #             data["target_carbs"] = predictions.get("carbs", 0)
+    #             data["target_fats"] = predictions.get("fat", 0)
+    #
+    #     return data
 
 
 class DailyMacrosSummaryCreate(BaseModel):
@@ -80,16 +80,16 @@ class MealCreate(BaseModel):
     fat: int = Field(default=0, ge=0)
     carbs: int = Field(default=0, ge=0)
 
-    @model_validator(mode="before")
-    def preprocess(cls, data):
-        if isinstance(data, dict):
-            macros = data.pop("macros", {})
-            data["protein"] = int(macros.get("protein", 0))
-            data["fat"] = int(macros.get("fat", 0))
-            data["carbs"] = int(macros.get("carbs", 0))
-
-            meal_type = MealType(data["meal_type"].lower())
-            data["meal_type"] = meal_type
-            data["icon_id"] = meal_type.order
-            data["meal_name"] = data["meal_name"].capitalize()
-        return data
+    # @model_validator(mode="before")
+    # def preprocess(cls, data):
+    #     if isinstance(data, dict):
+    #         macros = data.pop("macros", {})
+    #         data["protein"] = int(macros.get("protein", 0))
+    #         data["fat"] = int(macros.get("fat", 0))
+    #         data["carbs"] = int(macros.get("carbs", 0))
+    #
+    #         meal_type = MealType(data["meal_type"].lower())
+    #         data["meal_type"] = meal_type
+    #         data["icon_id"] = meal_type.order
+    #         data["meal_name"] = data["meal_name"].capitalize()
+    #     return data

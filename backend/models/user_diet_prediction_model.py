@@ -26,7 +26,7 @@ class UserDietPredictions(SQLModel, table=True):
     carbs: int = Field(ge=0)
     bmr: int = Field(ge=0)
     tdee: int = Field(ge=0)
-    target_calories: int = Field(ge=0)
+    target_calories: int = Field(ge=0, le=8000)
     diet_duration_days: Optional[int] = None
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
