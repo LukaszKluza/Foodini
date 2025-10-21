@@ -179,3 +179,4 @@ cython_debug/
 
 #ruff configuration files
 .ruff_cache
+/.env.local
