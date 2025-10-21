@@ -41,6 +41,7 @@ class _DietPreferencesScreenState extends State<DietPreferencesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
           child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dietPreferences),
         ),

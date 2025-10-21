@@ -25,7 +25,10 @@ class CaloriesPredictionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.caloriesPrediction),
+          child: TitleTextWidgets.scaledTitle(
+            AppLocalizations.of(context)!.caloriesPrediction,
+            longText: true,
+          ),
         ),
       ),
       body: _CaloriesPredictionForm(),

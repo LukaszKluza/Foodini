@@ -10,7 +10,7 @@ class CaloriesPredictionRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_diet_predicting_by_user_id(self, user_id: int) -> UserDietPredictions | None:
+    async def get_diet_prediction_by_user_id(self, user_id: int) -> UserDietPredictions | None:
         query = select(UserDietPredictions).where(UserDietPredictions.user_id == user_id)
         result = await self.db.execute(query)
         return result.scalars().first()
@@ -18,7 +18,7 @@ class CaloriesPredictionRepository:
     async def add_user_calories_prediction(
         self, user_id: int, predicted_calories: PredictedCalories
     ) -> PredictedCalories:
-        user_diet_predictions = await self.get_diet_predicting_by_user_id(user_id)
+        user_diet_predictions = await self.get_diet_prediction_by_user_id(user_id)
 
         if user_diet_predictions:
             for key, value in predicted_calories.model_dump(exclude={"predicted_macros"}).items():
@@ -47,7 +47,7 @@ class CaloriesPredictionRepository:
         )
 
     async def update_macros_prediction(self, changed_macros: PredictedMacros, user_id: int) -> PredictedCalories:
-        user_diet_predictions = await self.get_diet_predicting_by_user_id(user_id)
+        user_diet_predictions = await self.get_diet_prediction_by_user_id(user_id)
 
         for key, value in changed_macros.model_dump().items():
             setattr(user_diet_predictions, key, value)

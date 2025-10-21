@@ -37,6 +37,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
           child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.profileDetails),
         ),

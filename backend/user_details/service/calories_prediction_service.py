@@ -43,7 +43,7 @@ class CaloriesPredictionService:
         changed_macros: PredictedMacros,
         user_id: int,
     ):
-        user_diet_predictions = await self.calories_prediction_repository.get_diet_predicting_by_user_id(user_id)
+        user_diet_predictions = await self.calories_prediction_repository.get_diet_prediction_by_user_id(user_id)
         if user_diet_predictions is None:
             raise NotFoundInDatabaseException("No calorie prediction found for the user.")
 

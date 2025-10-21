@@ -247,8 +247,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Padding generateRecipeStep(MealRecipeState state, int i,
-      BuildContext context) {
+  Padding generateRecipeStep(MealRecipeState state, int i, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Text(
