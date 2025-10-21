@@ -176,6 +176,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             children: [
               DropdownButtonFormField<Gender>(
                 key: const Key('gender'),
+                isExpanded: true,
                 value: _selectedGender,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.gender,

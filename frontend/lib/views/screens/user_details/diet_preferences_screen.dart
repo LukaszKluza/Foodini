@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
@@ -184,9 +186,12 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     final fields = [
       DropdownButtonFormField<DietType>(
         key: const Key('diet_type'),
+        isExpanded: true,
         value: _selectedDietType,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietType,
@@ -244,9 +249,19 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           FractionallySizedBox(
             widthFactor: 1,
             child: SegmentedButton<int>(
+              showSelectedIcon: true,
+              style: ButtonStyle(
+                  iconSize: WidgetStateProperty.all(min(screenWidth * 0.06, 30)),
+                  padding: WidgetStateProperty.all(
+                      EdgeInsets.symmetric(horizontal: 0, vertical: 0))
+              ),
               segments: [
                 for (var i = 1; i <= Constants.maxMealsPerDay; i++)
-                  ButtonSegment(value: i, label: Text('$i')),
+                  ButtonSegment(
+                      value: i,
+                      label: Text('$i', style: TextStyle(
+                          fontSize: min(screenWidth * 0.04, 20)))
+                  ),
               ],
               selected: <int>{_selectedMealsPerDay},
               onSelectionChanged: (newSelection) {
@@ -259,6 +274,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       const SizedBox(height: 20),
       DropdownButtonFormField<DietIntensity>(
         key: const Key('diet_intensity'),
+        isExpanded: true,
         value: _selectedDietIntensity,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietIntensity,
