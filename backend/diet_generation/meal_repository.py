@@ -51,7 +51,7 @@ class MealRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_fats_by_id(self, meal_id: int) -> int | None:
+    async def get_meal_fat_by_id(self, meal_id: int) -> int | None:
         query = select(Meal.fat).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
