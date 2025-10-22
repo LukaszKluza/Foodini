@@ -32,12 +32,8 @@ class User(SQLModel, table=True):
 
     details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
     diet_predictions: Optional["UserDietPredictions"] = Relationship(back_populates="user", cascade_delete=True)
-    daily_meals: List["DailyMeals"] = Relationship(
-        back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"}
-    )
-    daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(
-        back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"}
-    )
+    daily_meals: List["DailyMeals"] = Relationship(back_populates="user", cascade_delete=True)
+    daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(back_populates="user", cascade_delete=True)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

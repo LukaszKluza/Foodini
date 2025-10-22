@@ -45,8 +45,8 @@ class Meal(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
-    recipes: List["MealRecipe"] = Relationship(back_populates="meal")
-    icon: "MealIcon" = Relationship(back_populates="meals")
+    recipes: List["MealRecipe"] = Relationship(back_populates="meal", cascade_delete=True)
+    icon: Optional["MealIcon"] = Relationship(back_populates="meals")
 
 
 class MealRecipe(SQLModel, table=True):
@@ -54,7 +54,7 @@ class MealRecipe(SQLModel, table=True):
 
     id: int = Field(default=None, primary_key=True)
     # Can be duplicated for the same recipe but different language
-    meal_id: int = Field(foreign_key="meal.id", nullable=False, index=True)
+    meal_id: int = Field(foreign_key="meal.id", nullable=False, index=True, ondelete="CASCADE")
     language: Language = Field(default=Language.EN, nullable=False)
     meal_description: str = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
@@ -64,4 +64,4 @@ class MealRecipe(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
-    meal: "Meal" = Relationship(back_populates="recipes")
+    meal: Optional["Meal"] = Relationship(back_populates="recipes")

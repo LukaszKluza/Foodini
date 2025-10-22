@@ -13,7 +13,7 @@ class DailyMeals(SQLModel, table=True):
     __tablename__ = "daily_meals"
 
     id: int = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id")
+    user_id: int = Field(foreign_key="users.id", ondelete="CASCADE")
     meals: Dict[str, Dict[str, str]] = Field(sa_column=Column(MutableDict.as_mutable(JSON)))
     day: date = Field(nullable=False)
 
@@ -34,7 +34,7 @@ class DailyMacrosSummary(SQLModel, table=True):
     __tablename__ = "daily_macros_summaries"
 
     id: int = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id")
+    user_id: int = Field(foreign_key="users.id", ondelete="CASCADE")
     day: date = Field(nullable=False)
 
     calories: int = Field(default=0, nullable=False)
