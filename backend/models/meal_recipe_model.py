@@ -1,12 +1,15 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import Column, DateTime, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
 from backend.users.enums.language import Language
+
+if TYPE_CHECKING:
+    from .meal_icon_model import MealIcon
 
 
 class Ingredient(SQLModel):
@@ -32,7 +35,7 @@ class Meal(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)
-    icon_id: int = Field(nullable=False)
+    icon_id: int = Field(foreign_key="meal_icons.id", nullable=False)
     calories: int = Field(nullable=False, ge=0)
     protein: int = Field(ge=0)
     fat: int = Field(ge=0)
@@ -42,13 +45,16 @@ class Meal(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
+    recipes: List["MealRecipe"] = Relationship(back_populates="meal")
+    icon: "MealIcon" = Relationship(back_populates="meals")
+
 
 class MealRecipe(SQLModel, table=True):
     __tablename__ = "meal_recipes"
 
     id: int = Field(default=None, primary_key=True)
     # Can be duplicated for the same recipe but different language
-    meal_id: int = Field(nullable=False, index=True)
+    meal_id: int = Field(foreign_key="meal.id", nullable=False, index=True)
     language: Language = Field(default=Language.EN, nullable=False)
     meal_description: str = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
@@ -57,3 +63,5 @@ class MealRecipe(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    meal: "Meal" = Relationship(back_populates="recipes")

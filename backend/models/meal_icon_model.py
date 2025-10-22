@@ -1,9 +1,13 @@
 from datetime import datetime
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Column, DateTime, func
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
+
+if TYPE_CHECKING:
+    from .meal_recipe_model import Meal
 
 
 class MealIcon(SQLModel, table=True):
@@ -16,3 +20,5 @@ class MealIcon(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    meals: List["Meal"] = Relationship(back_populates="icon")

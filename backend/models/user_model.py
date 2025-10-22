@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import EmailStr
 from sqlalchemy import Column, DateTime, func
@@ -9,7 +9,9 @@ from backend.settings import config
 from backend.users.enums.language import Language
 
 if TYPE_CHECKING:
-    from .user_details_model import UserDetails, UserDietPredictions
+    from .user_daily_summary_model import DailyMacrosSummary, DailyMeals
+    from .user_details_model import UserDetails
+    from .user_diet_prediction_model import UserDietPredictions
 
 
 class User(SQLModel, table=True):
@@ -30,6 +32,12 @@ class User(SQLModel, table=True):
 
     details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
     diet_predictions: Optional["UserDietPredictions"] = Relationship(back_populates="user", cascade_delete=True)
+    daily_meals: List["DailyMeals"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"}
+    )
+    daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"}
+    )
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

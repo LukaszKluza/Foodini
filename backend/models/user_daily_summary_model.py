@@ -1,9 +1,12 @@
 from datetime import date, datetime
-from typing import Dict
+from typing import TYPE_CHECKING, Dict, Optional
 
 from sqlalchemy import JSON
 from sqlalchemy.ext.mutable import MutableDict
-from sqlmodel import Column, DateTime, Field, SQLModel, func
+from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
+
+if TYPE_CHECKING:
+    from .user_model import User
 
 
 class DailyMeals(SQLModel, table=True):
@@ -24,6 +27,8 @@ class DailyMeals(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
+    user: Optional["User"] = Relationship(back_populates="daily_meals")
+
 
 class DailyMacrosSummary(SQLModel, table=True):
     __tablename__ = "daily_macros_summaries"
@@ -41,3 +46,5 @@ class DailyMacrosSummary(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    user: Optional["User"] = Relationship(back_populates="daily_macros_summaries")
