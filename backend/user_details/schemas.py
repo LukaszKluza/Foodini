@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from backend.models import UserDietPredictions
 from backend.user_details.enums import (
     ActivityLevel,
-    Allergies,
+    DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
@@ -23,7 +23,7 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     weight_kg: float = Field(..., ge=20, le=160)
     date_of_birth: date
     diet_type: DietType
-    allergies: List[Allergies]
+    dietary_restrictions: List[DietaryRestriction]
     diet_goal_kg: float = Field(..., ge=20, le=160)
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
@@ -41,7 +41,7 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
     date_of_birth: Optional[date] = None
     diet_type: Optional[DietType] = None
-    allergies: Optional[List[Allergies]] = None
+    dietary_restrictions: Optional[List[DietaryRestriction]] = None
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
     meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
@@ -60,7 +60,7 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
             weight_kg=data.weight_kg,
             date_of_birth=data.date_of_birth,
             diet_type=data.diet_type,
-            allergies=data.allergies,
+            dietary_restrictions=data.dietary_restrictions,
             diet_goal_kg=data.diet_goal_kg,
             meals_per_day=data.meals_per_day,
             diet_intensity=data.diet_intensity,

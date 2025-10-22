@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     API_URL: str
     FRONTEND_URL: str
     REFRESH_TOKEN_EXPIRE_HOURS: int = 3

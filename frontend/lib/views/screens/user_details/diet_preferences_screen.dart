@@ -8,9 +8,9 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -73,7 +73,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final _formKey = GlobalKey<FormState>();
 
   DietType? _selectedDietType;
-  List<Allergy> _selectedAllergies = [];
+  List<DietaryRestriction> _selectedDietaryRestrictions = [];
   double _selectedDietGoal = Constants.defaultWeight;
   DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = Constants.defaultMealsPerDay;
@@ -89,7 +89,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     if (blocState is DietFormSubmit) {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
       _selectedDietGoal = blocState.dietGoal ?? _selectedDietGoal;
-      _selectedAllergies = blocState.allergies ?? _selectedAllergies;
+      _selectedDietaryRestrictions = blocState.dietaryRestrictions ?? _selectedDietaryRestrictions;
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
@@ -156,10 +156,10 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 
-  void _onAllergiesChanged(List<Allergy> values) {
+  void _onDietaryRestrictionsChanged(List<DietaryRestriction> values) {
     _updateStateAndBloc(
-      updateState: () => _selectedAllergies = values,
-      blocEvent: UpdateAllergies(values),
+      updateState: () => _selectedDietaryRestrictions = values,
+      blocEvent: UpdateDietaryRestrictions(values),
     );
   }
 
@@ -209,25 +209,25 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         onChanged: _onDietTypeChanged,
         validator: (value) => validateDietType(value, context),
       ),
-      MultiSelectDialogField<Allergy>(
-        initialValue: _selectedAllergies,
+      MultiSelectDialogField<DietaryRestriction>(
+        initialValue: _selectedDietaryRestrictions,
         items:
-            Allergy.values
+            DietaryRestriction.values
                 .map(
-                  (allergy) => MultiSelectItem<Allergy>(
-                    allergy,
-                    AppConfig.allergyLabels(context)[allergy]!,
+                  (dietaryRestriction) => MultiSelectItem<DietaryRestriction>(
+                    dietaryRestriction,
+                    AppConfig.dietaryRestrictionLabels(context)[dietaryRestriction]!,
                   ),
                 )
                 .toList(),
-        title: Text(AppLocalizations.of(context)!.allergies),
+        title: Text(AppLocalizations.of(context)!.dietaryRestrictions),
         selectedColor: Colors.purpleAccent,
         chipDisplay: MultiSelectChipDisplay(
           chipColor: Colors.purpleAccent[50],
           textStyle: const TextStyle(color: Colors.black),
         ),
-        buttonText: Text(AppLocalizations.of(context)!.allergies),
-        onConfirm: _onAllergiesChanged,
+        buttonText: Text(AppLocalizations.of(context)!.dietaryRestrictions),
+        onConfirm: _onDietaryRestrictionsChanged,
       ),
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(

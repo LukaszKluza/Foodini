@@ -431,11 +431,11 @@ abstract class AppLocalizations {
   /// **'Diet type is required'**
   String get requiredDietType;
 
-  /// No description provided for @allergies.
+  /// No description provided for @dietaryRestrictions.
   ///
   /// In en, this message translates to:
-  /// **'Allergies'**
-  String get allergies;
+  /// **'Dietary restrictions'**
+  String get dietaryRestrictions;
 
   /// No description provided for @dietGoal.
   ///
@@ -653,77 +653,77 @@ abstract class AppLocalizations {
   /// **'Weight Maintenance'**
   String get dietType_WeightMaintenance;
 
-  /// No description provided for @dietType_Vegetarian.
-  ///
-  /// In en, this message translates to:
-  /// **'Vegetarian'**
-  String get dietType_Vegetarian;
-
-  /// No description provided for @dietType_Vegan.
-  ///
-  /// In en, this message translates to:
-  /// **'Vegan'**
-  String get dietType_Vegan;
-
-  /// No description provided for @dietType_Keto.
-  ///
-  /// In en, this message translates to:
-  /// **'Keto'**
-  String get dietType_Keto;
-
-  /// No description provided for @allergy_Gluten.
+  /// No description provided for @dietaryRestriction_Gluten.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get allergy_Gluten;
+  String get dietaryRestriction_Gluten;
 
-  /// No description provided for @allergy_Peanuts.
+  /// No description provided for @dietaryRestriction_Peanuts.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get allergy_Peanuts;
+  String get dietaryRestriction_Peanuts;
 
-  /// No description provided for @allergy_Lactose.
+  /// No description provided for @dietaryRestriction_Lactose.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get allergy_Lactose;
+  String get dietaryRestriction_Lactose;
 
-  /// No description provided for @allergy_Fish.
+  /// No description provided for @dietaryRestriction_Fish.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get allergy_Fish;
+  String get dietaryRestriction_Fish;
 
-  /// No description provided for @allergy_Soy.
+  /// No description provided for @dietaryRestriction_Soy.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get allergy_Soy;
+  String get dietaryRestriction_Soy;
 
-  /// No description provided for @allergy_Wheat.
+  /// No description provided for @dietaryRestriction_Wheat.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get allergy_Wheat;
+  String get dietaryRestriction_Wheat;
 
-  /// No description provided for @allergy_Celery.
+  /// No description provided for @dietaryRestriction_Celery.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get allergy_Celery;
+  String get dietaryRestriction_Celery;
 
-  /// No description provided for @allergy_Sulphites.
+  /// No description provided for @dietaryRestriction_Sulphites.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get allergy_Sulphites;
+  String get dietaryRestriction_Sulphites;
 
-  /// No description provided for @allergy_Lupin.
+  /// No description provided for @dietaryRestriction_Lupin.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get allergy_Lupin;
+  String get dietaryRestriction_Lupin;
+
+  /// No description provided for @dietaryRestriction_Vegetarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetarian'**
+  String get dietaryRestriction_Vegetarian;
+
+  /// No description provided for @dietaryRestriction_Vegan.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegan'**
+  String get dietaryRestriction_Vegan;
+
+  /// No description provided for @dietaryRestriction_Keto.
+  ///
+  /// In en, this message translates to:
+  /// **'Keto'**
+  String get dietaryRestriction_Keto;
 
   /// No description provided for @dietIntensity_Slow.
   ///
