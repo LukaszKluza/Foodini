@@ -1,16 +1,55 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/config/constants.dart';
+import 'package:frontend/models/diet_generation/meal.dart';
+import 'package:frontend/views/widgets/action_button.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
+
 
 class DailyMealsScreen extends StatelessWidget {
   final DateTime selectedDate;
 
-  const DailyMealsScreen({super.key, required this.selectedDate});
+  const DailyMealsScreen({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Tymczasowa lista do testów
+    final List<Meal> meals = [
+      Meal(
+        type: 'Breakfast',
+        mealName: 'Oatmeal with fruits',
+        description: 'A healthy oatmeal with banana and blueberries.',
+        iconUrl: 'https://via.placeholder.com/150',
+      ),
+      Meal(
+        type: 'Lunch',
+        mealName: 'Grilled chicken with rice',
+        description: 'Tender chicken breast with steamed rice and salad.',
+        iconUrl: 'https://via.placeholder.com/150',
+      ),
+      Meal(
+        type: 'Afternoon Snack',
+        mealName: 'Vegetable soup',
+        description: 'Warm and light vegetable soup to end the day.',
+        iconUrl: 'https://via.placeholder.com/150',
+      ),
+      Meal(
+        type: 'Dinner',
+        mealName: 'Vegetable soup',
+        description: 'Warm and light vegetable soup to end the day.',
+        iconUrl: 'https://via.placeholder.com/150',
+      ),
+      Meal(
+        type: 'Evening Snack',
+        mealName: 'Vegetable soup',
+        description: 'Warm and light vegetable soup to end the day.',
+        iconUrl: 'https://via.placeholder.com/150',
+      ),
+    ];
+
     String formatForUrl(DateTime date) =>
         '${date.year.toString().padLeft(4, '0')}-'
         '${date.month.toString().padLeft(2, '0')}-'
@@ -25,53 +64,69 @@ class DailyMealsScreen extends StatelessWidget {
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
     return Scaffold(
-      body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text(
-                  'Meals for $displayDate',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+
+                  for (final meal in meals)
+                    _buildMealSection(
+                      title: meal.type,
+                      color: _getMealColor(meal.type),
+                      imageUrl: meal.iconUrl,
+                      mealName: meal.mealName,
+                      description: meal.description,
+                    ),
+
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical:12),
+                child: Center(
+                  child: Text(
+                    'Meals for $displayDate',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+            ),
 
-              _buildMealSection(
-                title: 'Breakfast',
-                color: const Color(0xFFFFF0B3),
-                imageUrl: 'https://via.placeholder.com/150',
-                mealName: 'Oatmeal with fruits',
-                description:
-                    'A healthy oatmeal with banana and blueberries.',
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 8,
+              child: Row(
+                children: [
+                  ActionButton(
+                    onPressed: () {
+                      // TODO: logika generowania nowych posiłków
+                    },
+                    color: const Color(0xFFF09090),
+                    label: 'Regenerate meals',
+                    keyId: 'generate_meals_button',
+                  ),
+                ],
               ),
-
-              _buildMealSection(
-                title: 'Lunch',
-                color: const Color(0xFFC9EAB8),
-                imageUrl: 'https://via.placeholder.com/150',
-                mealName: 'Grilled chicken with rice',
-                description:
-                    'Tender chicken breast with steamed rice and salad.',
-              ),
-
-              _buildMealSection(
-                title: 'Dinner',
-                color: const Color(0xFFB6D8E7),
-                imageUrl: 'https://via.placeholder.com/150',
-                mealName: 'Vegetable soup',
-                description: 'Warm and light vegetable soup to end the day.',
-              ),
-
-              const SizedBox(height: 24),
-              _generateNewMealsButton(),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
@@ -79,6 +134,25 @@ class DailyMealsScreen extends StatelessWidget {
         nextRoute: nextRoute,
       ),
     );
+  }
+
+  Color _getMealColor(String type) {
+    switch (type.toLowerCase()) {
+      case 'breakfast':
+        return const Color(0xFFFFF0B3);
+      case 'morning snack':
+        return const Color(0xFFDFB2C4);
+      case 'lunch':
+        return const Color(0xFFC9EAB8);
+      case 'afternoon snack':
+        return const Color(0xFFCCBAAA);
+      case 'dinner':
+        return const Color(0xFFB6D8E7);
+      case 'evening snack':
+        return const Color(0xFFCBE3A8);
+      default:
+        return const Color(0xFFE0E0E0);
+    }
   }
 
   Widget _buildMealSection({
@@ -145,10 +219,7 @@ class DailyMealsScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                   ],
                 ),
@@ -156,25 +227,6 @@ class DailyMealsScreen extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _generateNewMealsButton() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFF2B2B2),
-          minimumSize: const Size(double.infinity, Constants.buttonTextHeight),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: const Text(
-          'Generate new meals',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
       ),
     );
   }
