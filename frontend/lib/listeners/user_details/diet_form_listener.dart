@@ -54,10 +54,6 @@ class DietFormListenerHelper {
         message = state.getMessage!(context);
       }
       setMessage(message);
-
-      if (mounted) {
-        context.read<DietFormBloc>().add(DietFormResetRequested());
-      }
     }
   }
 }
