@@ -9,8 +9,8 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user_details/macros_change_listener.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
-import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
