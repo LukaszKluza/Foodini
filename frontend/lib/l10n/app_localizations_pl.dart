@@ -177,7 +177,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredDietType => 'Wymagany typ diety';
 
   @override
-  String get dietaryRestrictions => 'Preferencje żywieniowe';
+  String get dietaryRestrictions => 'Restrykcje żywieniowe';
 
   @override
   String get dietGoal => 'Cel diety';
