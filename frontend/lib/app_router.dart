@@ -14,7 +14,7 @@ import 'package:frontend/views/screens/user_details/prediction_results_screen.da
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:go_router/go_router.dart';
 
-final TokenStorageRepository _storage = TokenStorageRepository();
+final TokenStorageService _storage = TokenStorageService();
 
 final GoRouter router = GoRouter(
   routes: [

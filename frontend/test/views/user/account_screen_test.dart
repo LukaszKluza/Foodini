@@ -29,7 +29,7 @@ late MockDio mockDio;
 late MockApiClient mockApiClient;
 late MockLanguageCubit mockLanguageCubit;
 late MockUserDetailsRepository mockUserDetailsRepository;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 late AccountBloc accountBloc;
 late DietFormBloc dietFormBloc;
@@ -59,12 +59,12 @@ void main() {
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
     mockUserDetailsRepository = MockUserDetailsRepository();
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
 
     authRepository = UserRepository(mockApiClient);
     dietFormBloc = DietFormBloc(mockUserDetailsRepository);
     macrosChangeBloc = MacrosChangeBloc(mockUserDetailsRepository);
-    accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    accountBloc = AccountBloc(authRepository, mockTokenStorageService);
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     SharedPreferences.setMockInitialValues({});
@@ -93,7 +93,6 @@ void main() {
     expect(find.text('Change password'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
@@ -169,7 +168,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Account logged out successfully'), findsOneWidget);
-    expect(find.text('Foodini Home Page'), findsOneWidget);
+    expect(find.text('Welcome'), findsOneWidget);
   });
 
   testWidgets('User can successfully delete account', (
@@ -220,7 +219,7 @@ void main() {
 
     // Then
     expect(find.text('Account deleted successfully'), findsOneWidget);
-    expect(find.text('Foodini Home Page'), findsOneWidget);
+    expect(find.text('Welcome'), findsOneWidget);
   });
 
   testWidgets('User close delete account pop-up', (WidgetTester tester) async {
@@ -249,10 +248,9 @@ void main() {
     // Then
     verifyZeroInteractions(mockDio);
     verifyZeroInteractions(mockApiClient);
-    verifyZeroInteractions(mockTokenStorageRepository);
+    verifyZeroInteractions(mockTokenStorageService);
     expect(accountBloc.state, isA<AccountInitial>());
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.text('Foodini'), findsOneWidget);
   });
 
   testWidgets('User can successfully change the language', (

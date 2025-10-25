@@ -9,7 +9,9 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user_details/macros_change_listener.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
+import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
 class PredictionResultsScreen extends StatelessWidget {
@@ -19,10 +21,11 @@ class PredictionResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
-          child: Text(
+          child: TitleTextWidgets.scaledTitle(
             AppLocalizations.of(context)!.caloriesPrediction,
-            style: Styles.titleStyle,
+            longText: true,
           ),
         ),
       ),
@@ -30,7 +33,6 @@ class PredictionResultsScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/calories-prediction',
       ),
     );
   }
@@ -47,8 +49,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   late final TextEditingController _proteinController = TextEditingController();
   late final TextEditingController _fatController = TextEditingController();
   late final TextEditingController _carbsController = TextEditingController();
-  late final TextEditingController _dietDurationController =
-      TextEditingController();
 
   String? _message;
   int? _errorCode;
@@ -66,7 +66,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     _proteinController.dispose();
     _fatController.dispose();
     _carbsController.dispose();
-    _dietDurationController.dispose();
     super.dispose();
   }
 
@@ -135,11 +134,10 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
               children: [
                 if (state.processingStatus!.isOngoing)
                   const Center(child: CircularProgressIndicator()),
-                if (state.processingStatus!.isSuccess)
-                  ...[
-                    ...caloriesPredictionProperties(context, state),
-                    submitButton(context)
-                  ],
+                if (state.processingStatus!.isSuccess) ...[
+                  ...caloriesPredictionProperties(context, state),
+                  submitButton(context),
+                ],
                 if (state.processingStatus!.isFailure) ...[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -152,17 +150,21 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                   if (_errorCode == 404) ...[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.fillFormToSeePredictions,
-                        style: TextStyle(
-                          fontSize: 30.sp.clamp(20.0, 40.0),
-                          color: Colors.orangeAccent
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.fillFormToSeePredictions,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30.sp.clamp(20.0, 40.0),
+                            color: Colors.orangeAccent,
+                          ),
                         ),
                       ),
                     ),
-                    redirectToProfileDetailsButton(context)
-                  ]
-                  else
+                    redirectToProfileDetailsButton(context),
+                  ] else
                     retryRequestButton(context),
                 ],
                 if (_message != null)
@@ -218,7 +220,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       ),
     ];
 
-    if (dietDurationDays != null) {
+    if (dietDurationDays != null && dietDurationDays > 0) {
       fields.add(const SizedBox(height: 16));
       fields.add(
         buildField(
@@ -233,7 +235,10 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       Center(
         child: Text(
           AppLocalizations.of(context)!.predictedMacros,
-          style: Styles.titleStyle,
+          style: TextStyle(
+            fontSize: 60.sp.clamp(15.0, 20.0),
+            fontStyle: FontStyle.italic,
+          ),
           textAlign: TextAlign.center,
         ),
       ),
@@ -264,35 +269,13 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     return fields;
   }
 
-  Center basicButton(
-    BuildContext context,
-    Key buttonKey,
-    VoidCallback? onPressed,
-    ButtonStyle buttonStyle,
-    Widget? buttonChild,
-  ) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: ElevatedButton(
-          key: buttonKey,
-          onPressed: () {
-            _message = null;
-            _errorCode = null;
-            onPressed?.call();
-          },
-          style: buttonStyle,
-          child: buttonChild,
-        ),
-      ),
-    );
-  }
-
   Center submitButton(BuildContext context) {
-    return basicButton(
-      context,
+    return customSubmitButton(
       Key('save_predicted_calories_button'),
       () {
+        _message = null;
+        _errorCode = null;
+
         if (_formKey.currentState!.validate()) {
           context.read<MacrosChangeBloc>().add(
             SubmitMacrosChange(
@@ -305,36 +288,32 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           );
         }
       },
-      ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFB2F2BB),
-        minimumSize: const Size.fromHeight(48),
-      ),
       Text(AppLocalizations.of(context)!.savePredictedCalories),
     );
   }
 
   Center retryRequestButton(BuildContext context) {
-    return basicButton(
-      context,
+    return customRetryButton(
       Key('refresh_request_button'),
-      () => context.read<MacrosChangeBloc>().add(LoadInitialMacros()),
-      ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFDD9E74),
-        minimumSize: const Size.fromHeight(48),
-      ),
+      () {
+        _message = null;
+        _errorCode = null;
+
+        context.read<MacrosChangeBloc>().add(LoadInitialMacros());
+      },
       Text(AppLocalizations.of(context)!.refreshRequest),
     );
   }
 
   Center redirectToProfileDetailsButton(BuildContext context) {
-    return basicButton(
-      context,
+    return customRedirectButton(
       Key('redirect_to_profile_details_button'),
-      () => context.go('/profile-details'),
-      ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFF2D8B2),
-        minimumSize: const Size.fromHeight(48),
-      ),
+      () {
+        _message = null;
+        _errorCode = null;
+
+        context.go('/profile-details');
+      },
       Text(AppLocalizations.of(context)!.redirectToProfileDetails),
     );
   }

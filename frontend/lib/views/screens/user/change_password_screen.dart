@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/app_router.dart';
-import 'package:frontend/blocs/user_details/change_password_bloc.dart';
+import 'package:frontend/blocs/user/change_password_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/change_password_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/change_password_listener.dart';
 import 'package:frontend/models/user/change_password_request.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
@@ -31,7 +34,7 @@ class ChangePasswordScreen extends StatelessWidget {
           create:
               (_) => ChangePasswordBloc(
                 Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageRepository>(context, listen: false),
+                Provider.of<TokenStorageService>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );
@@ -40,18 +43,21 @@ class ChangePasswordScreen extends StatelessWidget {
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.changePassword,
-            style: Styles.titleStyle,
-          ),
+        title: Stack(
+          alignment: Alignment.center,
+          children: [
+            TitleTextWidgets.scaledTitle(
+              AppLocalizations.of(context)!.changePassword,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.translate_rounded),
+                onPressed: () => LanguagePicker.show(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.translate_rounded),
-            onPressed: () => LanguagePicker.show(context),
-          ),
-        ],
       ),
       body: _ChangePasswordForm(),
     );
@@ -86,6 +92,10 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
             QueryParametersMapper.parseQueryParams(pathAndQuery[1]);
 
         final token = queryParameters['token'];
+        if (queryParameters['language'] != null) {
+          context.read<LanguageCubit>().change(
+              Language.fromJson(queryParameters['language']!));
+        }
         if (token != null && token.isNotEmpty) {
           setState(() {
             _token = token;
@@ -147,10 +157,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                   ChangePasswordListenerHelper.onChangePasswordListener(
                     context: context,
                     state: state,
-                    setState: setState,
                     mounted: mounted,
-                    setMessage: (msg) => _message = msg,
-                    setMessageStyle: (style) => _messageStyle = style,
+                    setMessage: (msg) => setState(() => _message = msg),
+                    setMessageStyle: (style) => setState(() => _messageStyle = style),
                   );
                 },
                 builder: (context, state) {

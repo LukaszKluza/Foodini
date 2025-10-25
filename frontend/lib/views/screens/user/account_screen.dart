@@ -31,7 +31,7 @@ class AccountScreen extends StatelessWidget {
           create:
               (_) => AccountBloc(
                 Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageRepository>(context, listen: false),
+                Provider.of<TokenStorageService>(context, listen: false),
               ),
           child: _AccountBody(),
         );
@@ -55,9 +55,11 @@ class _AccountScreenState extends State<_AccountBody> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.foodini,
-            style: Styles.titleStyle,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Image.asset(
+              Constants.mainFoodiniIcon, width: 124,
+            ),
           ),
         ),
       ),
@@ -73,7 +75,7 @@ class _AccountScreenState extends State<_AccountBody> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsets.only(

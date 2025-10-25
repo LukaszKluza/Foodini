@@ -9,6 +9,7 @@ from pydantic import EmailStr, TypeAdapter
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.settings import config
+from backend.users.enums.language import Language
 from backend.users.schemas import (
     NewPasswordConfirm,
     PasswordResetRequest,
@@ -57,6 +58,7 @@ def mock_authorization_service():
     mock.revoke_tokens = AsyncMock()
     mock.create_url_safe_token = AsyncMock()
     mock.extract_email_from_base64 = AsyncMock()
+    mock.extract_language_from_base64 = AsyncMock()
     mock.decode_url_safe_token = AsyncMock()
     mock.verify_access_token = AsyncMock()
     return mock
@@ -96,6 +98,7 @@ user_create = UserCreate(
     country="Poland",
     email=TypeAdapter(EmailStr).validate_python("test@example.com"),
     password="Password123",
+    language=Language.EN,
 )
 
 basic_user = User(
@@ -186,8 +189,8 @@ async def test_login_user_success(
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
     mock_password_service["verify_password"].return_value = True
     mock_authorization_service.create_tokens.return_value = (
-        "access_token",
-        "refresh_token",
+        b"access_token",
+        b"refresh_token",
     )
     user_login = UserLogin(
         email=TypeAdapter(EmailStr).validate_python("test@example.com"),
@@ -298,7 +301,7 @@ async def test_reset_password_too_early(
 @pytest.mark.asyncio
 async def test_update_when_user_exist(user_service, mock_user_validators, mock_user_repository):
     # Given
-    update_user = UserUpdate(name="Newname", last_name="Newlastname")
+    update_user = UserUpdate(name="Newname", last_name="NewLastName")
     mock_user_validators.ensure_user_exists_by_id.return_value = basic_user
     mock_user_repository.update_user.return_value = update_user
 
@@ -333,13 +336,15 @@ async def test_delete_account_when_user_exist(
 async def test_confirm_new_account_successfully(user_service, mock_user_validators, mock_authorization_service):
     # Given
     mock_authorization_service.decode_url_safe_token.return_value = {"email": "test@email.com"}
+    mock_authorization_service.extract_email_from_base64.return_value = "test@email.com"
+    mock_authorization_service.extract_language_from_base64.return_value = None
 
     # When
     response = await user_service.confirm_new_account("test_token")
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=success"
+    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=success&email=test@email.com"
 
 
 @pytest.mark.asyncio
@@ -350,6 +355,7 @@ async def test_confirm_new_account_with_revoked_token(user_service, mock_user_va
         detail="Token verification failed",
     )
     mock_authorization_service.extract_email_from_base64.return_value = "test@example.com"
+    mock_authorization_service.extract_language_from_base64.return_value = "PL"
     mock_user_validators.ensure_user_exists_by_email.return_value = basic_user
 
     # When
@@ -357,7 +363,9 @@ async def test_confirm_new_account_with_revoked_token(user_service, mock_user_va
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=error&email=test@example.com"
+    assert (
+        response.headers["location"] == "https://foodini.com.pl/#/login?status=error&email=test@example.com&language=PL"
+    )
 
 
 @pytest.mark.asyncio
@@ -368,6 +376,7 @@ async def test_confirm_new_account_with_corrupted_token(user_service, mock_user_
         detail="Token verification failed",
     )
     mock_authorization_service.extract_email_from_base64.return_value = None
+    mock_authorization_service.extract_language_from_base64.return_value = "PL"
     mock_user_validators.ensure_user_exists_by_email.return_value = basic_user
 
     # When
@@ -375,7 +384,7 @@ async def test_confirm_new_account_with_corrupted_token(user_service, mock_user_
 
     # Assert
     assert response.status_code == 302
-    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=error"
+    assert response.headers["location"] == "https://foodini.com.pl/#/login?status=error&language=PL"
 
 
 @pytest.mark.asyncio

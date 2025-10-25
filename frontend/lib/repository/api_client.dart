@@ -14,13 +14,13 @@ import 'package:frontend/utils/global_error_interceptor.dart';
 
 class ApiClient {
   final Dio _client;
-  final TokenStorageRepository _tokenStorage;
+  final TokenStorageService _tokenStorage;
 
-  ApiClient([Dio? client, TokenStorageRepository? tokenStorage])
+  ApiClient([Dio? client, TokenStorageService? tokenStorage])
     : _client =
           client ??
           Dio(BaseOptions(headers: {'Content-Type': 'application/json'})),
-      _tokenStorage = tokenStorage ?? TokenStorageRepository() {
+      _tokenStorage = tokenStorage ?? TokenStorageService() {
     _client.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {

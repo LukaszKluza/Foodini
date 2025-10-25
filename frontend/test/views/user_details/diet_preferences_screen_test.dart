@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +47,7 @@ void main() {
     // Then
     expect(find.byKey(const Key('diet_type')), findsOneWidget);
     expect(find.byKey(const Key('diet_intensity')), findsOneWidget);
-    expect(find.text('Allergies'), findsOneWidget);
+    expect(find.text('Dietary restrictions'), findsOneWidget);
     expect(find.textContaining('Diet goal'), findsOneWidget);
     expect(find.text('Meals per day'), findsOneWidget);
     expect(find.text('Diet intensity'), findsOneWidget);
@@ -68,9 +68,6 @@ void main() {
     expect(find.text('Fat Loss'), findsOneWidget);
     expect(find.text('Muscle Gain'), findsOneWidget);
     expect(find.text('Weight Maintenance'), findsOneWidget);
-    expect(find.text('Vegetarian'), findsOneWidget);
-    expect(find.text('Vegan'), findsOneWidget);
-    expect(find.text('Keto'), findsOneWidget);
 
     await tester.tap(find.text('Weight Maintenance'));
     await tester.pumpAndSettle();
@@ -78,7 +75,7 @@ void main() {
     expect(find.text('Weight Maintenance'), findsOneWidget);
   });
 
-  testWidgets('Allergies enums are displayed after tap', (
+  testWidgets('Dietary restrictions enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
@@ -86,7 +83,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.text('Allergies'));
+    await tester.tap(find.text('Dietary restrictions'));
     await tester.pumpAndSettle();
 
     // Then
@@ -99,6 +96,9 @@ void main() {
     expect(find.text('Celery'), findsOneWidget);
     expect(find.text('Sulphites'), findsOneWidget);
     expect(find.text('Lupin', skipOffstage: false), findsOneWidget);
+    expect(find.text('Vegetarian', skipOffstage: false), findsOneWidget);
+    expect(find.text('Vegan', skipOffstage: false), findsOneWidget);
+    expect(find.text('Keto', skipOffstage: false), findsOneWidget);
 
     expect(find.text('Ok'.toUpperCase(), skipOffstage: false), findsOneWidget);
     expect(
@@ -223,7 +223,7 @@ void main() {
       DietFormSubmit(
         dietType: DietType.muscleGain,
         dietGoal: 50,
-        allergies: [Allergy.gluten],
+        dietaryRestrictions: [DietaryRestriction.gluten],
         dietIntensity: DietIntensity.medium,
         mealsPerDay: 3,
         weight: 80,

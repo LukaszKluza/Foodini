@@ -5,9 +5,9 @@ import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 import 'package:mockito/mockito.dart';
@@ -19,13 +19,13 @@ late MockDio mockDio;
 late AccountBloc accountBloc;
 late ApiClient apiClient;
 late UserRepository authRepository;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<UserRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+      Provider<TokenStorageService>.value(value: mockTokenStorageService),
     ],
     child: MaterialApp(home: child),
   );
@@ -36,11 +36,11 @@ void main() {
     mockDio = MockDio();
     when(mockDio.interceptors).thenReturn(Interceptors());
 
-    mockTokenStorageRepository = MockTokenStorageRepository();
-    apiClient = ApiClient(mockDio, mockTokenStorageRepository);
+    mockTokenStorageService = MockTokenStorageService();
+    apiClient = ApiClient(mockDio, mockTokenStorageService);
 
     authRepository = UserRepository(apiClient);
-    accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    accountBloc = AccountBloc(authRepository, mockTokenStorageService);
   });
 
   testWidgets('Should retry when access token revoke', (
@@ -77,7 +77,7 @@ void main() {
     );
 
     when(
-      mockTokenStorageRepository.getRefreshToken(),
+      mockTokenStorageService.getRefreshToken(),
     ).thenAnswer((_) async => 'refresh_token');
 
     when(
@@ -118,7 +118,7 @@ void main() {
       final handler = MockErrorInterceptorHandler();
       final interceptor = GlobalErrorInterceptor(
         apiClient,
-        mockTokenStorageRepository,
+        mockTokenStorageService,
       );
 
       await interceptor.onError(e as DioException, handler);
@@ -162,17 +162,17 @@ void main() {
     );
 
     when(
-      mockTokenStorageRepository.getRefreshToken(),
+      mockTokenStorageService.getRefreshToken(),
     ).thenAnswer((_) async => null);
     final handler = MockErrorInterceptorHandler();
     final interceptor = GlobalErrorInterceptor(
       apiClient,
-      mockTokenStorageRepository,
+      mockTokenStorageService,
     );
 
     await interceptor.onError(error, handler);
 
-    verify(mockTokenStorageRepository.getRefreshToken()).called(1);
+    verify(mockTokenStorageService.getRefreshToken()).called(1);
     verifyNever(
       mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     );

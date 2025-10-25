@@ -8,7 +8,7 @@ import 'package:frontend/states/change_password_states.dart';
 class ChangePasswordBloc
     extends Bloc<ChangePasswordEvent, ChangePasswordState> {
   final UserRepository authRepository;
-  final TokenStorageRepository tokenStorage;
+  final TokenStorageService tokenStorage;
 
   ChangePasswordBloc(this.authRepository, this.tokenStorage)
     : super(ChangePasswordInitial()) {

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user/login_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/login_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/login_listener.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/login_request.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
@@ -12,6 +14,7 @@ import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +34,7 @@ class LoginScreen extends StatelessWidget {
           create:
               (_) => LoginBloc(
                 Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageRepository>(context, listen: false),
+                Provider.of<TokenStorageService>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );
@@ -39,19 +42,23 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.login,
-            style: Styles.titleStyle,
-          ),
+        title: Stack(
+          alignment: Alignment.center,
+          children: [
+            TitleTextWidgets.scaledTitle(
+              AppLocalizations.of(context)!.login,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.translate_rounded),
+                onPressed: () => LanguagePicker.show(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.translate_rounded),
-            onPressed: () => LanguagePicker.show(context),
-          ),
-        ],
       ),
       body: _LoginForm(),
     );
@@ -84,6 +91,10 @@ class _LoginFormState extends State<_LoginForm> {
         }
         if (queryParameters['email'] != null) {
           _emailController.text = queryParameters['email']!;
+        }
+        if (queryParameters['language'] != null) {
+          var language = Language.fromJson(queryParameters['language']!);
+          context.read<LanguageCubit>().change(language);
         }
       }
     });
@@ -129,10 +140,9 @@ class _LoginFormState extends State<_LoginForm> {
                   LoginListenerHelper.onLoginListener(
                     context: context,
                     state: state,
-                    setState: setState,
                     mounted: mounted,
-                    setMessage: (msg) => _message = msg,
-                    setMessageStyle: (style) => _messageStyle = style,
+                    setMessage: (msg) => setState(() => _message = msg),
+                    setMessageStyle: (style) => setState(() => _messageStyle = style),
                   );
                 },
                 builder: (context, state) {

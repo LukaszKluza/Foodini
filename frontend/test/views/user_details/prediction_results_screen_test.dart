@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/states/macros_change_states.dart';
