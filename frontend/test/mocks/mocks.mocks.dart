@@ -30,12 +30,12 @@ import 'package:frontend/models/user/user_response.dart' as _i3;
 import 'package:frontend/models/user_details/diet_form.dart' as _i9;
 import 'package:frontend/models/user_details/macros.dart' as _i28;
 import 'package:frontend/models/user_details/predicted_calories.dart' as _i10;
+import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart'
     as _i29;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
 import 'package:frontend/repository/user_details/user_details_repository.dart'
     as _i27;
-import 'package:frontend/services/api_client.dart' as _i2;
 import 'package:frontend/services/token_storage_service.dart' as _i26;
 import 'package:frontend/states/register_states.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
@@ -421,12 +421,12 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
   );
 }
 
-/// A class which mocks [TokenStorageRepository].
+/// A class which mocks [TokenStorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTokenStorageRepository extends _i1.Mock
-    implements _i26.TokenStorageRepository {
-  MockTokenStorageRepository() {
+class MockTokenStorageService extends _i1.Mock
+    implements _i26.TokenStorageService {
+  MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }
 

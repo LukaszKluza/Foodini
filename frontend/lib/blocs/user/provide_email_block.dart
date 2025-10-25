@@ -11,15 +11,15 @@ class ProvideEmailBloc extends Bloc<ProvideEmailEvent?, ProvideEmailState> {
 
   ProvideEmailBloc(
     this.authRepository, {
-    TokenStorageRepository? tokenStorageRepository,
+      TokenStorageService? tokenStorageService,
   }) : super(ProvideEmailInitial()) {
     on<ProvideEmailSubmitted>((event, emit) async {
       emit(ProvideEmailLoading());
       try {
         final response = await authRepository.provideEmail(event.request);
 
-        if (tokenStorageRepository != null) {
-          fetchTokenTaskCallback(tokenStorageRepository);
+        if (tokenStorageService != null) {
+          fetchTokenTaskCallback(tokenStorageService);
         } else {
           fetchTokenTaskCallback();
         }

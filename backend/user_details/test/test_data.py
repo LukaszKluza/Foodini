@@ -3,7 +3,7 @@ from datetime import date
 from backend.models import UserDetails
 from backend.user_details.enums import (
     ActivityLevel,
-    Allergies,
+    DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
@@ -19,7 +19,7 @@ user_1 = UserDetails(
     weight_kg=65.0,
     date_of_birth=date(2002, 5, 15),
     diet_type=DietType.MUSCLE_GAIN,
-    allergies=[Allergies.LACTOSE],
+    dietary_restrictions=[DietaryRestriction.LACTOSE],
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity=DietIntensity.SLOW,
@@ -39,7 +39,7 @@ user_2 = UserDetails(
     weight_kg=65.0,
     date_of_birth=date(1990, 3, 10),
     diet_type=DietType.FAT_LOSS,
-    allergies=[],
+    dietary_restrictions=[],
     diet_goal_kg=60.0,
     meals_per_day=4,
     diet_intensity=DietIntensity.FAST,

@@ -14,8 +14,8 @@ import 'package:frontend/models/user/provide_email_request.dart' as _i11;
 import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i6;
 import 'package:frontend/models/user/register_request.dart' as _i10;
 import 'package:frontend/models/user/user_response.dart' as _i3;
+import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
-import 'package:frontend/services/api_client.dart' as _i2;
 import 'package:frontend/services/token_storage_service.dart' as _i14;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -191,12 +191,12 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<_i6.RefreshedTokensResponse>);
 }
 
-/// A class which mocks [TokenStorageRepository].
+/// A class which mocks [TokenStorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTokenStorageRepository extends _i1.Mock
-    implements _i14.TokenStorageRepository {
-  MockTokenStorageRepository() {
+class MockTokenStorageService extends _i1.Mock
+    implements _i14.TokenStorageService {
+  MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }
 

@@ -39,7 +39,7 @@ void main() {
     testWidgets('validateDietType returns null when provided', (tester) async {
       final context = await pumpAppWithLocalization(tester);
 
-      expect(validateDietType(DietType.keto, context), isNull);
+      expect(validateDietType(DietType.fatLoss, context), isNull);
     });
 
     testWidgets('validateDietGoal returns error when null or out of range', (

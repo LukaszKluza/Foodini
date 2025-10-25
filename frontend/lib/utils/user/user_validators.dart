@@ -38,7 +38,7 @@ String? validatePassword(String? value, BuildContext context) {
   }
   if (value.length < Constants.minPasswordLength ||
       value.length > Constants.maxPasswordLength) {
-    return AppLocalizations.of(context)!.passwordLengthMustBeBetween;
+    return '${AppLocalizations.of(context)!.passwordLengthMustBeBetween} (${Constants.minPasswordLength}, ${Constants.maxPasswordLength})';
   }
   if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
     return AppLocalizations.of(context)!.passwordComplexityError;

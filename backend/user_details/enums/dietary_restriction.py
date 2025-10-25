@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Allergies(str, Enum):
+class DietaryRestriction(str, Enum):
     GLUTEN = "gluten"
     PEANUTS = "peanuts"
     LACTOSE = "lactose"
@@ -11,3 +11,6 @@ class Allergies(str, Enum):
     CELERY = "celery"
     SULPHITES = "sulphites"
     LUPIN = "lupin"
+    VEGETARIAN = "vegetarian"
+    VEGAN = "vegan"
+    KETO = "keto"

@@ -140,7 +140,7 @@ async def test_refresh_token_success(authorization_service, mock_redis, credenti
     # given
     with (
         patch("jwt.decode", return_value=valid_refresh_payload) as mock_decode,
-        patch("jwt.encode", side_effect=["new_access", "new_refresh"]) as mock_encode,
+        patch("jwt.encode", side_effect=[b"new_access", b"new_refresh"]) as mock_encode,
     ):
         mock_redis.get.return_value = b"valid_token"
 
