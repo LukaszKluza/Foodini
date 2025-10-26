@@ -12,7 +12,8 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
-import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:mockito/mockito.dart';
@@ -21,7 +22,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
-MockMealRecipeRepository mockMealRecipeRepository = MockMealRecipeRepository();
+MockDietPredictionRepository mockDietPredictionRepository = MockDietPredictionRepository();
+MockMealsRepository mockMealsRepository = MockMealsRepository();
 
 void main() {
   late MealRecipeBloc mealRecipeBloc;
@@ -38,8 +40,9 @@ void main() {
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: languageCubit))
         .addProvider(BlocProvider<MealRecipeBloc>.value(value: mealRecipeBloc))
+        .addProvider(Provider<MealsRepository>.value(value: mockMealsRepository))
         .addProvider(
-          Provider<MealRecipeRepository>.value(value: mockMealRecipeRepository),
+          Provider<DietPredictionRepository>.value(value: mockDietPredictionRepository),
         )
         .setInitialLocation(initialLocation)
         .build();
@@ -48,7 +51,7 @@ void main() {
   setUp(() {
     languageCubit = LanguageCubit();
     SharedPreferences.setMockInitialValues({});
-    mealRecipeBloc = MealRecipeBloc(mockMealRecipeRepository);
+    mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository, mockMealsRepository);
 
     mealRecipe = MealRecipe(
       id: 1,
@@ -120,11 +123,11 @@ void main() {
   ) async {
     // Given
     when(
-      mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
+      mockDietPredictionRepository.getMealRecipe(1, 1, Language.en),
     ).thenAnswer((_) async => mealRecipe);
 
     when(
-      mockMealRecipeRepository.getMealIconInfo(1, MealType.breakfast),
+      mockMealsRepository.getMealIconInfo(1, MealType.breakfast),
     ).thenAnswer((_) async => mealIconInfo);
 
     // When
@@ -171,7 +174,7 @@ void main() {
   testWidgets('Meal recipe screen, server error', (WidgetTester tester) async {
     // Given
     when(
-      mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
+      mockDietPredictionRepository.getMealRecipe(1, 1, Language.en),
     ).thenThrow(ApiException({'detail': 'Server error'}, statusCode: 500));
 
     // When
@@ -217,7 +220,7 @@ void main() {
 
   testWidgets('Meal recipe screen, 404 error', (WidgetTester tester) async {
     // Given
-    when(mockMealRecipeRepository.getMealRecipe(1, 1, Language.en)).thenThrow(
+    when(mockDietPredictionRepository.getMealRecipe(1, 1, Language.en)).thenThrow(
       ApiException({'detail': 'Meal recipe not found'}, statusCode: 404),
     );
 

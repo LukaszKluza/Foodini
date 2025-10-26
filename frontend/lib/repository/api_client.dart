@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
@@ -223,10 +224,10 @@ class ApiClient {
     );
   }
 
-  Future<Response> addCustomMeal(DailyMealsCreate dailyMealsCreate, int userId) {
+  Future<Response> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, int userId) {
     return _client.patch(
       Endpoints.dailySummaryCustomMeal,
-      data: dailyMealsCreate.toJson,
+      data: customMealUpdateRequest.toJson,
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -250,18 +251,18 @@ class ApiClient {
   }
 
   // meals
-  Future<Response> getMealIconInfo(MealType mealType, int userId) {
-    return _client.get(
-      Endpoints.mealIconInfo,
-      queryParameters: {'user_id': userId, 'meal_type': mealType.toJson()},
-      options: Options(extra: {'requiresAuth': true}),
-    );
-  }
-
   Future<Response> getMealDetails(int mealId, int userId) {
     return _client.get(
       '${Endpoints.meal}/$mealId',
       queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getMealIconInfo(MealType mealType, int userId) {
+    return _client.get(
+      Endpoints.mealIconInfo,
+      queryParameters: {'user_id': userId, 'meal_type': mealType.toJson()},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
