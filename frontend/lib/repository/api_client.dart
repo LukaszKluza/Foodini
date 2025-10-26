@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/config/endpoints.dart';
+import 'package:frontend/models/diet_generation/daily_meals_create.dart';
+import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
@@ -134,6 +136,7 @@ class ApiClient {
     );
   }
 
+  // user details
   Future<Response> getDietPreferences(int userId) {
     return _client.get(
       Endpoints.dietPreferences,
@@ -147,22 +150,6 @@ class ApiClient {
       Endpoints.dietPreferences,
       data: request.toJson(),
       queryParameters: {'user_id': userId},
-      options: Options(extra: {'requiresAuth': true}),
-    );
-  }
-
-  Future<Response> getMealRecipe(int recipeId, Language language, int userId) {
-    return _client.get(
-      '${Endpoints.mealRecipe}/$recipeId',
-      queryParameters: {'user_id': userId, 'language': language.toJson()},
-      options: Options(extra: {'requiresAuth': true}),
-    );
-  }
-
-  Future<Response> getMealIconInfo(MealType mealType, int userId) {
-    return _client.get(
-      Endpoints.mealIconInfo,
-      queryParameters: {'user_id': userId, 'meal_type': mealType.toJson()},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
@@ -187,6 +174,93 @@ class ApiClient {
   Future<Response> getCaloriesPrediction(int userId) {
     return _client.get(
       Endpoints.userCaloriesPrediction,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  // diet prediction
+  Future<Response> getMealRecipe(int recipeId, Language language, int userId) {
+    return _client.get(
+      '${Endpoints.mealRecipe}/$recipeId',
+      queryParameters: {'user_id': userId, 'language': language.toJson()},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> generateMealPlan(int userId) {
+    return _client.post(
+      Endpoints.generateMealPlan,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  // diet-generation
+  Future<Response> getDailySummaryMeals(DateTime day, int userId) {
+    return _client.get(
+      '${Endpoints.dailySummaryMeals}/$day',
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> addDailySummaryMeals(DailyMealsCreate dailyMealsCreate, int userId) {
+    return _client.post(
+      Endpoints.dailySummaryMeals,
+      data: dailyMealsCreate.toJson,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, int userId) {
+    return _client.patch(
+      Endpoints.dailySummaryMeals,
+      data: mealInfoUpdateRequest.toJson,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> addCustomMeal(DailyMealsCreate dailyMealsCreate, int userId) {
+    return _client.patch(
+      Endpoints.dailySummaryCustomMeal,
+      data: dailyMealsCreate.toJson,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getDailySummaryMacros(DateTime day, int userId) {
+    return _client.get(
+      '${Endpoints.dailySummaryMacros}/$day',
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> addDailySummaryMacros(DailyMealsCreate dailyMealsCreate, int userId) {
+    return _client.post(
+      Endpoints.dailySummaryMacros,
+      data: dailyMealsCreate.toJson,
+      queryParameters: {'user_id': userId},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  // meals
+  Future<Response> getMealIconInfo(MealType mealType, int userId) {
+    return _client.get(
+      Endpoints.mealIconInfo,
+      queryParameters: {'user_id': userId, 'meal_type': mealType.toJson()},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getMealDetails(int mealId, int userId) {
+    return _client.get(
+      '${Endpoints.meal}/$mealId',
       queryParameters: {'user_id': userId},
       options: Options(extra: {'requiresAuth': true}),
     );
