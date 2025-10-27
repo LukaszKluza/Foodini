@@ -18,17 +18,6 @@ class DailyMealsCreate {
     required this.targetFat,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'day': day.toIso8601String().split('T').first,
-      'meals': meals.map((key, value) => MapEntry(key.name, value.toJson())),
-      'target_calories': targetCalories,
-      'target_protein': targetProtein,
-      'target_carbs': targetCarbs,
-      'target_fat': targetFat,
-    };
-  }
-
   factory DailyMealsCreate.fromJson(Map<String, dynamic> json) {
     final mealsMap = <MealType, MealInfo>{};
     if (json['meals'] != null) {

@@ -17,17 +17,16 @@ class Endpoints {
   static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
 
   // diet-prediction
-  static const String mealRecipe = '$baseUrl/diet-prediction/meal-recipe';
   static const String generateMealPlan = '$baseUrl/diet-prediction/generate-meal-plan';
 
   // diet-generation
   static const String dailySummaryMeals = '$baseUrl/daily-summary/meals';
   static const String dailySummaryMacros = '$baseUrl/daily-summary/macros';
-  static const String dailySummaryCustomMeal = '$baseUrl/daily-summary/meals/custom';
 
   // meals
-  static const String meal = '$baseUrl/meal';
-  static const String mealIconInfo = '$baseUrl/diet-prediction/meal-icon';
+  static const String meal = '$baseUrl/meals';
+  static const String mealRecipe = '$baseUrl/meals/meal-recipe';
+  static const String mealIconInfo = '$baseUrl/meals/meal-icon';
 
   // static
   static const String mealIcon= '$baseUrl/static/meals-icon';

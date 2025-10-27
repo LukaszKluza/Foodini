@@ -7,6 +7,7 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/fetch_token_task_callback.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/repository/user/user_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 const fetchTokenTask = 'fetchTokenTask';
@@ -42,13 +43,14 @@ void main() async {
 
   await fetchTokenTaskCallback();
   await UserStorage().loadUser();
+  final appDir = await getApplicationDocumentsDirectory();
 
   runApp(
     ScreenUtilInit(
       designSize: Size(Constants.screenWidth, Constants.screenHeight),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) => const Foodini(),
+      builder: (context, child) => Foodini(appDir),
     ),
   );
 }

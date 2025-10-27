@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/states/account_states.dart';
+import 'package:frontend/utils/cache_manager.dart';
 import 'package:frontend/utils/exception_converter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,6 +27,7 @@ class AccountListenerHelper {
         ),
       );
       context.read<MacrosChangeBloc>().add(ResetMacrosChangeBloc());
+      unawaited(context.read<CacheManager>().clearAllCache());
       goHome(mounted, context);
     } else if (state is AccountLogoutSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,6 +36,8 @@ class AccountListenerHelper {
         ),
       );
       context.read<MacrosChangeBloc>().add(ResetMacrosChangeBloc());
+      unawaited(context.read<CacheManager>().clearAllCache());
+      context.read<CacheManager>().clearAllCache();
       goHome(mounted, context);
     } else if (state is AccountChangeLanguageSuccess) {
       var newLanguage = state.language;

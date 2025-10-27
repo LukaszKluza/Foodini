@@ -3,11 +3,13 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/api_client.dart';
+import 'package:frontend/utils/cache_manager.dart';
 
 class DietPredictionRepository {
   final ApiClient apiClient;
+  final CacheManager cacheManager;
 
-  DietPredictionRepository(this.apiClient);
+  DietPredictionRepository(this.apiClient, this.cacheManager);
 
   Future<MealRecipe> getMealRecipe(int userId, int mealRecipeId, Language language) async {
     try {
@@ -27,6 +29,8 @@ class DietPredictionRepository {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while generating meal plan: $e');
+    } finally {
+      await cacheManager.clearAllCache();
     }
   }
 }
