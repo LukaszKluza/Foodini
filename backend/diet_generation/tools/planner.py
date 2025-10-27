@@ -6,12 +6,13 @@ from langchain_ollama import OllamaLLM
 from langchain_core.runnables import Runnable
 
 from backend.diet_generation.schemas import Output, AgentState, CompleteMeal
+from backend.settings import config
 
 """Tool used for generating and correcting output"""
 class PlannerTool:
 
-    def __init__(self, model_name: str = "qwen3:30b"):
-        self.llm: Runnable = OllamaLLM(model=model_name)
+    def __init__(self):
+        self.llm: Runnable = OllamaLLM(model=config.MODEL_NAME)
         self.parser = JsonOutputParser(pydantic_object=Output)
 
         self.system_instruction = (
