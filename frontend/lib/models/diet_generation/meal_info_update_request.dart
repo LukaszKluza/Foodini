@@ -24,7 +24,7 @@ class MealInfoUpdateRequest {
     return MealInfoUpdateRequest(
       day: DateTime.parse(json['day']),
       mealType: MealType.fromJson(json['meal_type']),
-      mealStatus: MealStatus.fromJson(json['target_protein']),
+      mealStatus: MealStatus.fromJson(json['meal_status']),
     );
   }
 }

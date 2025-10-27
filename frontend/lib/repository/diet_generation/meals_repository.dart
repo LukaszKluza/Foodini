@@ -36,27 +36,27 @@ class MealsRepository {
     }
   }
 
-  Future<DailyMealsCreate> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, int userId) async {
+  Future<DailyMealsCreate> addMealDetails(CustomMealUpdateRequest customMealUpdateRequest, int userId) async {
     try {
-      final response = await apiClient.addCustomMeal(customMealUpdateRequest, userId);
+      final response = await apiClient.addMealDetails(customMealUpdateRequest, userId);
       return DailyMealsCreate.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while adding custom meal: $e');
+      throw Exception('Error while adding meal details: $e');
     } finally {
       await cacheManager.clearAllCache();
     }
   }
 
-  Future<DailyMealsCreate> updateCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, int userId) async {
+  Future<DailyMealsCreate> updateMealDetails(CustomMealUpdateRequest customMealUpdateRequest, int userId) async {
     try {
-      final response = await apiClient.updateCustomMeal(customMealUpdateRequest, userId);
+      final response = await apiClient.updateMealDetails(customMealUpdateRequest, userId);
       return DailyMealsCreate.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while adding custom meal: $e');
+      throw Exception('Error while updating meal details: $e');
     } finally {
       await cacheManager.clearAllCache();
     }

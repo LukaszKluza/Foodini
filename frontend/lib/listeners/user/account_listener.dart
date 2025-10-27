@@ -37,7 +37,6 @@ class AccountListenerHelper {
       );
       context.read<MacrosChangeBloc>().add(ResetMacrosChangeBloc());
       unawaited(context.read<CacheManager>().clearAllCache());
-      context.read<CacheManager>().clearAllCache();
       goHome(mounted, context);
     } else if (state is AccountChangeLanguageSuccess) {
       var newLanguage = state.language;

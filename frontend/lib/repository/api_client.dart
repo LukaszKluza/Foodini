@@ -243,7 +243,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> addCustomMeal(
+  Future<Response> addMealDetails(
       CustomMealUpdateRequest customMealUpdateRequest,
       int userId,
   ) {
@@ -255,7 +255,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> updateCustomMeal(
+  Future<Response> updateMealDetails(
       CustomMealUpdateRequest customMealUpdateRequest,
       int userId,
   ) {

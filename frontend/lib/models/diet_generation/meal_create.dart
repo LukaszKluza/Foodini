@@ -4,7 +4,7 @@ class MealCreate {
   final String mealName;
   final MealType mealType;
   final int iconId;
-  final double calories;
+  final int calories;
   final double protein;
   final double carbs;
   final double fat;
@@ -36,7 +36,7 @@ class MealCreate {
       mealType: MealType.fromJson(json['meal_type']),
       mealName: json['meal_name'],
       iconId: json['icon_id'],
-      calories: (json['calories'] as num).toDouble(),
+      calories: json['calories'] as int,
       protein: (json['protein'] as num).toDouble(),
       carbs: (json['carbs'] as num).toDouble(),
       fat: (json['fat'] as num).toDouble(),

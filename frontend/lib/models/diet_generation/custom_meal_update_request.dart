@@ -5,7 +5,7 @@ class CustomMealUpdateRequest {
   final DateTime day;
   final MealType mealType;
   final String customName;
-  final double customCalories;
+  final int customCalories;
   final double customProtein;
   final double customCarbs;
   final double customFat;
@@ -40,7 +40,7 @@ class CustomMealUpdateRequest {
       day: DateTime.parse(json['day']),
       mealType: MealType.fromJson(json['meal_type']),
       customName: json['custom_name'],
-      customCalories: (json['custom_calories'] as num).toDouble(),
+      customCalories: json['custom_calories'] as int,
       customProtein: (json['custom_protein'] as num).toDouble(),
       customCarbs: (json['custom_carbs'] as num).toDouble(),
       customFat: (json['custom_fat'] as num).toDouble(),
