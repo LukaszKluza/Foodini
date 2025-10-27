@@ -113,9 +113,9 @@ class PlannerTool:
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
-        - Exclude allergens: [{targets.allergens}]
+        - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
         - Avoid using any of the user’s previous meals: {targets.previous_meals or "None"}.
-        - Meal type must be one of the following: {targets.meal_types}.
+        - Meal types must match the following: {targets.meal_types}.
         - Each meal must include: name, type, ingredients, calories, protein, carbs, and fat.
         
         ---

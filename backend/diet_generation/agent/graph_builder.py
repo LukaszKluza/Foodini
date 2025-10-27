@@ -18,9 +18,9 @@ def should_continue(state: AgentState) -> str:
 """Main agent class"""
 class DietAgentBuilder:
 
-    def __init__(self):
+    def __init__(self, meals_per_day: int):
         self.planner = PlannerTool()
-        self.validator = ValidatorTool()
+        self.validator = ValidatorTool(meals_per_day)
 
     def build_graph(self) -> CompiledStateGraph:
         graph_builder = StateGraph(AgentState)

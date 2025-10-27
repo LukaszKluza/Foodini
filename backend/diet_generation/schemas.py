@@ -36,13 +36,13 @@ class Output(BaseModel):
 
 
 class Input(BaseModel):
-    allergens: List[DietaryRestriction]
+    dietary_restriction: List[DietaryRestriction]
     meals_per_day: int = Field(default=1, ge=1)
+    meal_types: List[str] = Field(min_length=1)
     calories: int = Field(default=0, ge=0)
     protein: int = Field(default=0, ge=0)
     fat: int = Field(default=0, ge=0)
     carbs: int = Field(default=0, ge=0)
-    meal_types: List[str] = Field(default_factory=lambda: [m.value for m in MealType])
     previous_meals: Optional[List[str]] = Field(None, description="Optional list of previously generated meals.")
 
 

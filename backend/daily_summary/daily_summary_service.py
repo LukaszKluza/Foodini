@@ -1,4 +1,5 @@
 from datetime import date
+from typing import List
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.daily_summary_repository import DailySummaryRepository
@@ -38,6 +39,10 @@ class DailySummaryService:
         if not macros_summary:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
+
+    #TODO: implement after database consolidation
+    async def get_user_latest_meal_names(self, user_id: int, day: date) -> List[str]:
+        return []
 
     async def update_meal_status(self, user_id: int, update_meal_data: MealInfoUpdateRequest):
         day = update_meal_data.day
