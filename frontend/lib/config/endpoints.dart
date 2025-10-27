@@ -10,9 +10,10 @@ class Endpoints {
   static const String confirmNewPassword =
       '$baseUrl/users/confirm/new-password';
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
-  static const String dietPreferences = '$baseUrl/user_details';
+  static const String dietPreferences = '$baseUrl/user-details';
   static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
-  static const String mealRecipe = '$baseUrl/diet-prediction/meal-recipe';
-  static const String mealIconInfo = '$baseUrl/diet-prediction/meal-icon';
+  static const String mealRecipe = '$baseUrl/meals/meal-recipe';
+  static const String mealIconInfo = '$baseUrl/meals/meal-icon';
+  static const String generateDiet = '$baseUrl/diet-prediction/generate-meal-plan';
   static const String mealIcon= '$baseUrl/static/meals-icon';
 }

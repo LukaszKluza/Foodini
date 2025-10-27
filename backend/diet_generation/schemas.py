@@ -1,95 +1,59 @@
-from datetime import date
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Any
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
-from backend.diet_generation.enums.meal_status import MealStatus
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
+from backend.meals.enums.meal_type import MealType
+from backend.user_details.enums import Allergies
 
 
-class MealInfo(MealInfoMixin, BaseModel):
-    meal_id: Optional[int] = None
-    status: MealStatus = Field(default=MealStatus.TO_EAT)
-    custom_name: Optional[str] = None
-    custom_calories: Optional[int] = None
-    custom_protein: Optional[int] = None
-    custom_carbs: Optional[int] = None
-    custom_fats: Optional[int] = None
-
-    model_config = {"use_enum_values": True}
+class IngredientCreate(BaseModel):
+    volume: float = Field(default=0, ge=0)
+    unit: str = Field(default="")
+    name: str = Field(min_length=1)
+    optional_note: Optional[str] = None
 
 
-class DailyMealsCreate(BaseModel):
-    day: date
-    meals: Dict[MealType, MealInfo]
-    target_calories: int
-    target_protein: int
-    target_carbs: int
-    target_fats: int
-
-    model_config = {"use_enum_values": True}
-
-    @model_validator(mode="before")
-    def preprocess(cls, data):
-        if isinstance(data, dict):
-            predictions = data.pop("user_diet_predictions", None)
-            if predictions:
-                if hasattr(predictions, "model_dump"):
-                    predictions = predictions.model_dump()
-
-                data["target_calories"] = predictions.get("target_calories", 0)
-                data["target_protein"] = predictions.get("protein", 0)
-                data["target_carbs"] = predictions.get("carbs", 0)
-                data["target_fats"] = predictions.get("fat", 0)
-
-        return data
+class StepCreate(BaseModel):
+    description: str = Field(min_length=1)
+    optional: bool = Field(default=False)
 
 
-class DailyMacrosSummaryCreate(BaseModel):
-    day: date
-    calories: int = Field(default=0, ge=0)
-    protein: int = Field(default=0, ge=0)
-    carbs: int = Field(default=0, ge=0)
-    fats: int = Field(default=0, ge=0)
-
-
-class MealInfoUpdateRequest(BaseModel):
-    day: date
-    meal_type: MealType
-    status: MealStatus
-
-
-class CustomMealUpdateRequest(BaseModel):
-    day: date
-    meal_type: MealType
-    custom_name: Optional[str] = None
-    custom_calories: int = Field(default=0, ge=0)
-    custom_protein: int = Field(default=0, ge=0)
-    custom_carbs: int = Field(default=0, ge=0)
-    custom_fats: int = Field(default=0, ge=0)
-    status: MealStatus = Field(default=MealStatus.EATEN)
-
-
-class MealCreate(BaseModel):
+class CompleteMeal(BaseModel):
     meal_name: str = Field(min_length=1)
-    meal_type: MealType
-    icon_id: int
+    meal_type: str = Field(min_length=1)
+    meal_description: str = Field(min_length=1)
     calories: int = Field(default=0, ge=0)
     protein: int = Field(default=0, ge=0)
     fat: int = Field(default=0, ge=0)
     carbs: int = Field(default=0, ge=0)
 
-    @model_validator(mode="before")
-    def preprocess(cls, data):
-        if isinstance(data, dict):
-            macros = data.pop("macros", {})
-            data["protein"] = int(macros.get("protein", 0))
-            data["fat"] = int(macros.get("fat", 0))
-            data["carbs"] = int(macros.get("carbs", 0))
+    ingredients_list: List[IngredientCreate]
+    steps: List[StepCreate]
 
-            meal_type = MealType(data["meal_type"].lower())
-            data["meal_type"] = meal_type
-            data["icon_id"] = meal_type.order
-            data["meal_name"] = data["meal_name"].capitalize()
-        return data
+
+class Output(BaseModel):
+    meals: List[CompleteMeal]
+
+
+class Input(BaseModel):
+    allergens: List[Allergies]
+    meals_per_day: int = Field(default=1, ge=1)
+    calories: int = Field(default=0, ge=0)
+    protein: int = Field(default=0, ge=0)
+    fat: int = Field(default=0, ge=0)
+    carbs: int = Field(default=0, ge=0)
+    meal_types: List[str] = Field(default_factory=lambda: [m.value for m in MealType])
+    previous_meals: Optional[List[str]] = Field(None, description="Optional list of previously generated meals.")
+
+
+class AgentState(BaseModel):
+    targets: Input
+    current_plan: Optional[List[CompleteMeal]] = None
+    validation_report: Optional[str] = None
+    correction_count: int = 0
+
+def agent_state_to_dict(state: AgentState) -> Dict[str, Any]:
+    return state.model_dump()
+
+def create_agent_state(targets: Input) -> AgentState:
+    return AgentState(targets=targets).model_dump()

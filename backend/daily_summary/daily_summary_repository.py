@@ -3,10 +3,7 @@ from datetime import date
 from sqlalchemy import select, update
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_generation.schemas import (
-    DailyMacrosSummaryCreate,
-    DailyMealsCreate,
-)
+from backend.daily_summary.schemas import DailyMealsCreate, DailyMacrosSummaryCreate
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
 
 

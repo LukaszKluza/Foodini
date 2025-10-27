@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_generation.enums.meal_type import MealType
+from backend.meals.enums.meal_type import MealType
 from backend.models.meal_icon_model import MealIcon
 
 

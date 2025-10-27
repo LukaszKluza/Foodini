@@ -1,17 +1,13 @@
 from datetime import date
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.daily_summary_repository import DailySummaryRepository
-from backend.diet_generation.enums.meal_status import MealStatus
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.meal_repository import MealRepository
-from backend.diet_generation.schemas import (
-    CustomMealUpdateRequest,
-    DailyMacrosSummaryCreate,
-    DailyMealsCreate,
-    MealCreate,
-    MealInfoUpdateRequest,
-)
+from backend.daily_summary.daily_summary_repository import DailySummaryRepository
+from backend.daily_summary.enums.meal_status import MealStatus
+from backend.daily_summary.schemas import DailyMealsCreate, DailyMacrosSummaryCreate, MealInfoUpdateRequest, \
+    CustomMealUpdateRequest
+from backend.meals.enums.meal_type import MealType
+from backend.meals.repositories.meal_repository import MealRepository
+from backend.meals.schemas import MealCreate
 
 
 class DailySummaryService:

@@ -5,7 +5,7 @@ from sqlalchemy import Column, DateTime, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
-from backend.diet_generation.enums.meal_type import MealType
+from backend.meals.enums.meal_type import MealType
 from backend.users.enums.language import Language
 
 

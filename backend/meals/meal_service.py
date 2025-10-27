@@ -1,14 +1,14 @@
 from typing import List
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.meal_icons_repository import MealIconsRepository
-from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.models import MealIcon, MealRecipe
+from backend.meals.enums.meal_type import MealType
+from backend.meals.repositories.meal_icons_repository import MealIconsRepository
+from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
+from backend.models import MealIcon, MealRecipe, Meal
 from backend.users.enums.language import Language
 
 
-class DietGenerationService:
+class MealService:
     def __init__(
         self,
         meal_icons_repository: MealIconsRepository,
@@ -20,6 +20,9 @@ class DietGenerationService:
     async def get_meal_icon(self, meal_type: MealType) -> MealIcon:
         meal_icon = await self.meal_icons_repository.get_meal_icon_by_type(meal_type)
         return await self.validate_response(meal_icon, "Meal icon not found")
+
+    async def add_meal(self, meal: Meal) -> Meal:
+        return await self.meal_recipes_repository.add_meal(meal)
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)

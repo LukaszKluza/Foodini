@@ -1,5 +1,5 @@
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.enums.unit import Unit
+from backend.meals.enums.meal_type import MealType
+from backend.meals.enums.unit import Unit
 from backend.models import MealIcon, MealRecipe
 from backend.models.meal_recipe_model import Ingredient, Ingredients, Step
 from backend.users.enums.language import Language
