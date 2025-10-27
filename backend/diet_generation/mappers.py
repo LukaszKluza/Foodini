@@ -1,6 +1,6 @@
-from backend.meals.enums.meal_type import MealType
 from backend.diet_generation.schemas import CompleteMeal
-from backend.models import Meal, MealRecipe, Ingredient, Ingredients, Step
+from backend.meals.enums.meal_type import MealType
+from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step
 from backend.users.enums.language import Language
 
 
@@ -14,6 +14,7 @@ def complete_meal_to_meal(meal_data: CompleteMeal) -> Meal:
         fat=meal_data.fat,
         carbs=meal_data.carbs,
     )
+
 
 def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: int) -> MealRecipe:
     return MealRecipe(

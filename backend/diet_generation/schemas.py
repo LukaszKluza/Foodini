@@ -1,8 +1,7 @@
-from typing import Dict, Optional, List, Any
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from backend.meals.enums.meal_type import MealType
 from backend.user_details.enums import DietaryRestriction
 
 
@@ -52,8 +51,10 @@ class AgentState(BaseModel):
     validation_report: Optional[str] = None
     correction_count: int = 0
 
+
 def agent_state_to_dict(state: AgentState) -> Dict[str, Any]:
     return state.model_dump()
+
 
 def create_agent_state(targets: Input) -> AgentState:
     return AgentState(targets=targets).model_dump()

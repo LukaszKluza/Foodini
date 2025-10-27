@@ -1,13 +1,15 @@
 import json
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from backend.diet_generation.schemas import AgentState, CompleteMeal
 from backend.meals.enums.meal_type import MealType
 
 """Tool used for validation in LangGraph"""
-class ValidatorTool:
 
+
+class ValidatorTool:
     """We can get rid of it or rethink if we want to adjust in case of failing"""
+
     def __init__(self, meals_per_day: int, macro_tolerance: int = 1, calorie_tolerance: int = 1):
         self.meals_per_day = meals_per_day
         self.macro_tolerance = macro_tolerance
@@ -19,7 +21,9 @@ class ValidatorTool:
         errors = []
         suggestions = []
 
-        meals_number_errors, meals_number_suggestions = self._validate_number_and_type_of_meals(plan_meals, self.meals_per_day)
+        meals_number_errors, meals_number_suggestions = self._validate_number_and_type_of_meals(
+            plan_meals, self.meals_per_day
+        )
         errors.extend(meals_number_errors)
         suggestions.extend(meals_number_suggestions)
 
@@ -36,7 +40,7 @@ class ValidatorTool:
 
         machine_block = {
             "global": {"actual": actual, "target": target, "diffs": diffs},
-            "per_meal_targets": per_meal_targets
+            "per_meal_targets": per_meal_targets,
         }
 
         report_text = self._format_report(errors, suggestions, machine_block)
@@ -73,8 +77,9 @@ class ValidatorTool:
                 suggestions.append(f"→ {direction.capitalize()} total {macro} by {abs(diffs[macro]):.1f} ({pct:.1f}%).")
         return errors, suggestions
 
-    def _compute_per_meal_targets(self, plan_meals: List[CompleteMeal], diffs: Dict[str, float]) -> List[
-        Dict[str, Any]]:
+    def _compute_per_meal_targets(
+        self, plan_meals: List[CompleteMeal], diffs: Dict[str, float]
+    ) -> List[Dict[str, Any]]:
         n = len(plan_meals)
 
         def meal_share(current_sum, meal_value):
@@ -90,12 +95,9 @@ class ValidatorTool:
                 s = meal_share(current_sum, shares[macro][i])
                 new_val = getattr(meal, macro) + diffs[macro] * s
                 mt[macro] = max(0.0, round(new_val, 1))
-            per_meal_targets.append({
-                "meal_index": i,
-                "meal_name": meal.meal_name,
-                "type": meal.meal_type,
-                "targets": mt
-            })
+            per_meal_targets.append(
+                {"meal_index": i, "meal_name": meal.meal_name, "type": meal.meal_type, "targets": mt}
+            )
         return per_meal_targets
 
     @staticmethod
@@ -111,12 +113,14 @@ class ValidatorTool:
     @staticmethod
     def _format_report(errors, suggestions, machine_block):
         return (
-                "VALIDATION FAILED:\n"
-                + "\n".join(errors) + "\n\n"
-                + "ACTIONABLE GUIDANCE:\n"
-                + "\n".join(suggestions) + "\n\n"
-                + "PER-MEAL TARGETS (machine-readable JSON follows):\n"
-                + json.dumps(machine_block, indent=2)
+            "VALIDATION FAILED:\n"
+            + "\n".join(errors)
+            + "\n\n"
+            + "ACTIONABLE GUIDANCE:\n"
+            + "\n".join(suggestions)
+            + "\n\n"
+            + "PER-MEAL TARGETS (machine-readable JSON follows):\n"
+            + json.dumps(machine_block, indent=2)
         )
 
     @staticmethod
@@ -124,17 +128,11 @@ class ValidatorTool:
         errors = []
         suggestions = []
         if len(plan_meals) != meals_per_day:
-            errors.append(
-                f"Invalid number of meals: expected {meals_per_day}, got {len(plan_meals)}"
-            )
-            suggestions.append(
-                f"Try removing or adding meals to get exactly {meals_per_day} meals"
-            )
+            errors.append(f"Invalid number of meals: expected {meals_per_day}, got {len(plan_meals)}")
+            suggestions.append(f"Try removing or adding meals to get exactly {meals_per_day} meals")
         plan_meal_types = [plan_meal.meal_type for plan_meal in plan_meals]
         if set(plan_meal_types) != set(MealType.daily_meals(meals_per_day)):
-            errors.append(
-                "Meal types mismatch"
-            )
+            errors.append("Meal types mismatch")
             suggestions.append(
                 f"Try changing meals so there is exactly one meal of each of this types: {MealType.daily_meals(meals_per_day)}"
             )

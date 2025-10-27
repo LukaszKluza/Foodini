@@ -52,7 +52,7 @@ basic_user = User(
 
 @pytest.mark.asyncio
 async def test_get_get_meal_icon_info_when_exist(
-        meal_service,
+    meal_service,
     mock_meal_icons_repository,
 ):
     # Given
@@ -67,7 +67,7 @@ async def test_get_get_meal_icon_info_when_exist(
 
 @pytest.mark.asyncio
 async def test_get_get_meal_icon_info_when_info_not_exist(
-        meal_service,
+    meal_service,
     mock_meal_icons_repository,
 ):
     # Given
@@ -83,7 +83,7 @@ async def test_get_get_meal_icon_info_when_info_not_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_recipe_id_when_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given
@@ -98,7 +98,7 @@ async def test_get_meal_recipe_by_recipe_id_when_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_recipe_id_when_not_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given
@@ -114,7 +114,7 @@ async def test_get_meal_recipe_by_recipe_id_when_not_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_meal_id_when_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given
@@ -129,7 +129,7 @@ async def test_get_meal_recipe_by_meal_id_when_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_meal_id_when_not_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given
@@ -145,7 +145,7 @@ async def test_get_meal_recipe_by_meal_id_when_not_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given
@@ -160,7 +160,7 @@ async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_exist(
 
 @pytest.mark.asyncio
 async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_not_exist(
-        meal_service,
+    meal_service,
     mock_meal_recipes_repository,
 ):
     # Given

@@ -2,10 +2,10 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db
+from backend.meals.meal_service import MealService
 from backend.meals.repositories.meal_icons_repository import MealIconsRepository
 from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
 from backend.meals.repositories.meal_repository import MealRepository
-from backend.meals.meal_service import MealService
 
 
 async def get_meal_icons_repository(

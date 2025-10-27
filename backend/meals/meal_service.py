@@ -4,7 +4,7 @@ from backend.core.not_found_in_database_exception import NotFoundInDatabaseExcep
 from backend.meals.enums.meal_type import MealType
 from backend.meals.repositories.meal_icons_repository import MealIconsRepository
 from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
-from backend.models import MealIcon, MealRecipe, Meal
+from backend.models import Meal, MealIcon, MealRecipe
 from backend.users.enums.language import Language
 
 

@@ -1,16 +1,18 @@
 import json
-from typing import Dict, Any
+from typing import Any, Dict
+
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_ollama import OllamaLLM
 from langchain_core.runnables import Runnable
+from langchain_ollama import OllamaLLM
 
-from backend.diet_generation.schemas import Output, AgentState, CompleteMeal
+from backend.diet_generation.schemas import AgentState, CompleteMeal, Output
 from backend.settings import config
 
 """Tool used for generating and correcting output"""
-class PlannerTool:
 
+
+class PlannerTool:
     def __init__(self):
         self.llm: Runnable = OllamaLLM(model=config.MODEL_NAME)
         self.parser = JsonOutputParser(pydantic_object=Output)
@@ -37,15 +39,13 @@ class PlannerTool:
             "Respond only with valid JSON that strictly follows this schema."
         )
 
-        self.generation_chain = (
-                PromptTemplate.from_template("{prompt_content}") | self.llm | self.parser
-        )
+        self.generation_chain = PromptTemplate.from_template("{prompt_content}") | self.llm | self.parser
 
     """Used to add to prompt eventual correction instructions"""
+
     def _build_correction_prompt(self, state: AgentState) -> str:
         previous_json = json.dumps(
-            [m.model_dump() if isinstance(m, CompleteMeal) else m for m in state.current_plan],
-            indent=2
+            [m.model_dump() if isinstance(m, CompleteMeal) else m for m in state.current_plan], indent=2
         )
 
         return f"""
@@ -77,6 +77,7 @@ class PlannerTool:
         """
 
     """Used to build initial prompt"""
+
     def _build_initial_prompt(self, targets) -> str:
         return f"""
         # TASK: Initial Meal Plan Generation
@@ -135,7 +136,6 @@ class PlannerTool:
         """
 
     def generate_plan(self, state: AgentState) -> Dict[str, Any]:
-
         if state.correction_count == 0:
             prompt_content = self._build_initial_prompt(state.targets)
         else:
@@ -154,4 +154,6 @@ class PlannerTool:
             }
 
         except Exception as e:
-            return {"validation_report": f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)}"}
+            return {
+                "validation_report": f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)}"
+            }

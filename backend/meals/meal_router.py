@@ -3,8 +3,8 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 
 from backend.meals.dependencies import get_meal_service
-from backend.meals.meal_service import MealService
 from backend.meals.enums.meal_type import MealType
+from backend.meals.meal_service import MealService
 from backend.models import MealRecipe
 from backend.models.meal_icon_model import MealIcon
 from backend.users.enums.language import Language

@@ -7,7 +7,8 @@ from backend.models import Meal, MealRecipe
 
 class MealGateway:
     def __init__(
-            self, meal_service: MealService,
+        self,
+        meal_service: MealService,
     ):
         self.meal_service = meal_service
 
@@ -17,7 +18,8 @@ class MealGateway:
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_service.add_meal_recipe(meal_recipe)
 
+
 def get_meal_gateway(
-        meal_service: MealService = Depends(get_meal_service),
+    meal_service: MealService = Depends(get_meal_service),
 ) -> MealGateway:
     return MealGateway(meal_service)

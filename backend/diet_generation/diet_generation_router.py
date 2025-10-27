@@ -10,6 +10,7 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 
 diet_generation_router = APIRouter(prefix="/v1/diet-prediction")
 
+
 @diet_generation_router.post("/generate-meal-plan", response_model=Meal | List[Meal])
 async def generate_meal_plan(
     day: date,

@@ -6,8 +6,12 @@ import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.schemas import DailyMealsCreate, DailyMacrosSummaryCreate, MealInfoUpdateRequest, \
-    CustomMealUpdateRequest
+from backend.daily_summary.schemas import (
+    CustomMealUpdateRequest,
+    DailyMacrosSummaryCreate,
+    DailyMealsCreate,
+    MealInfoUpdateRequest,
+)
 from backend.meals.enums.meal_type import MealType
 from backend.meals.schemas import MealCreate
 

@@ -2,13 +2,13 @@ from datetime import date
 from typing import List
 
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
-from backend.daily_summary.schemas import MealInfo, DailyMealsCreate, DailyMacrosSummaryCreate
+from backend.daily_summary.schemas import DailyMealsCreate, MealInfo
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import complete_meal_to_meal, complete_meal_to_recipe
+from backend.diet_generation.schemas import CompleteMeal, Input, create_agent_state
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
-from backend.diet_generation.schemas import  Input, create_agent_state, CompleteMeal
-from backend.models import UserDetails, UserDietPredictions, Meal, User
+from backend.models import Meal, User, UserDetails, UserDietPredictions
 from backend.user_details.user_details_gateway import UserDetailsGateway
 
 
@@ -33,12 +33,10 @@ class PromptService:
             protein=predictions.protein,
             carbs=predictions.carbs,
             fat=predictions.fat,
-            previous_meals=previous_meals
+            previous_meals=previous_meals,
         )
 
-    async def generate_meal_plan(
-        self, user: User, day: date
-    ) -> List[Meal]:
+    async def generate_meal_plan(self, user: User, day: date) -> List[Meal]:
         try:
             user_details = await self.user_details_gateway.get_user_details(user)
             user_diet_predictions = await self.user_details_gateway.get_user_diet_predictions(user)
@@ -53,7 +51,7 @@ class PromptService:
 
             generated_diet = app.invoke(initial_state)
 
-            #TODO: only for test purposes ~ remove later
+            # TODO: only for test purposes ~ remove later
             # if generated_diet.get('validation_report') == 'OK' and generated_diet.get('current_plan'):
             #     print("STATUS: SUCCESS. Plan meets all the requirements.")
             #     final_plan = [meal for meal in generated_diet['current_plan']]
@@ -65,12 +63,14 @@ class PromptService:
             #         print(f"Last generated plan:")
             #         print(json.dumps(generated_diet['current_plan'], indent=2, default=str))
 
-            saved_meals = await self._save_meals(day, user_diet_predictions, generated_diet.get('current_plan'))
+            saved_meals = await self._save_meals(day, user_diet_predictions, generated_diet.get("current_plan"))
         except Exception as e:
             raise RuntimeError(f"Error generating diet plan for user {user.id}") from e
         return saved_meals
 
-    async def _save_meals(self, day: date, user_diet_predictions: UserDietPredictions, daily_diet: List[CompleteMeal]) -> List[Meal]:
+    async def _save_meals(
+        self, day: date, user_diet_predictions: UserDietPredictions, daily_diet: List[CompleteMeal]
+    ) -> List[Meal]:
         saved_meals = []
         meals_type_map = {}
 
@@ -87,10 +87,10 @@ class PromptService:
             target_calories=user_diet_predictions.target_calories,
             target_protein=user_diet_predictions.protein,
             target_fat=user_diet_predictions.fat,
-            target_carbs=user_diet_predictions.carbs
+            target_carbs=user_diet_predictions.carbs,
         )
 
-        #TODO: uncomment after database consolidation
+        # TODO: uncomment after database consolidation
         # await self.daily_summary_gateway.add_daily_meals(daily_meals, user_diet_predictions.user_id)
         # await self.daily_summary_gateway.add_daily_macros_summary(DailyMacrosSummaryCreate(day=day), user_diet_predictions.user_id)
 

@@ -4,8 +4,13 @@ from typing import List
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.schemas import DailyMealsCreate, DailyMacrosSummaryCreate, MealInfoUpdateRequest, \
-    CustomMealUpdateRequest, MealInfo
+from backend.daily_summary.schemas import (
+    CustomMealUpdateRequest,
+    DailyMacrosSummaryCreate,
+    DailyMealsCreate,
+    MealInfo,
+    MealInfoUpdateRequest,
+)
 from backend.meals.enums.meal_type import MealType
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
@@ -40,7 +45,7 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
 
-    #TODO: implement after database consolidation
+    # TODO: implement after database consolidation
     async def get_user_latest_meal_names(self, user_id: int, day: date) -> List[str]:
         return []
 
