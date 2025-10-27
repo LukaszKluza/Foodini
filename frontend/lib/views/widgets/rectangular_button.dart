@@ -7,8 +7,8 @@ Widget rectangularButton(
   double screenHeight,
   VoidCallback? onPressed,
 ) {
-  final width = screenWidth * 0.4;
-  final height = screenHeight * 0.2;
+  final width = screenWidth * 0.38;
+  final height = screenHeight * 0.20;
 
   return ElevatedButton(
     onPressed: onPressed,

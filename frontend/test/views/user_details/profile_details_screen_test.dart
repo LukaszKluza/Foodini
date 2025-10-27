@@ -151,7 +151,7 @@ void main() {
             'sleep_quality': 'fair',
             'diet_type': 'muscle_gain',
             'muscle_percentage': null,
-            'allergies': [],
+            'dietary_restrictions': [],
             'water_percentage': null,
             'user_id': 1,
             'diet_goal_kg': 53.0,

@@ -3,7 +3,7 @@ from typing import Dict, Optional, List, Any
 from pydantic import BaseModel, Field
 
 from backend.meals.enums.meal_type import MealType
-from backend.user_details.enums import Allergies
+from backend.user_details.enums import DietaryRestriction
 
 
 class IngredientCreate(BaseModel):
@@ -36,7 +36,7 @@ class Output(BaseModel):
 
 
 class Input(BaseModel):
-    allergens: List[Allergies]
+    allergens: List[DietaryRestriction]
     meals_per_day: int = Field(default=1, ge=1)
     calories: int = Field(default=0, ge=0)
     protein: int = Field(default=0, ge=0)

@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr
 
 from backend.settings import config
-from backend.users.service.email_verification_sevice import (
+from backend.users.service.email_verification_service import (
     EmailVerificationService,
 )
 from backend.users.service.user_service import UserService
@@ -80,7 +80,7 @@ async def logout_user(
     return await user_service.logout(token_payload)
 
 
-@user_router.post("/refresh-tokens")
+@user_router.post("/refresh-tokens", status_code=status.HTTP_200_OK)
 async def refresh_tokens(
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):

@@ -1,9 +1,12 @@
+import 'package:frontend/models/user/language.dart';
+
 class RegisterRequest {
   final String name;
   final String lastName;
   final String country;
   final String email;
   final String password;
+  final Language language;
 
   RegisterRequest({
     required this.name,
@@ -11,6 +14,7 @@ class RegisterRequest {
     required this.country,
     required this.email,
     required this.password,
+    required this.language,
   });
 
   Map<String, dynamic> toJson() => {
@@ -19,5 +23,6 @@ class RegisterRequest {
     'country': country,
     'email': email,
     'password': password,
+    'language': language,
   };
 }

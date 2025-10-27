@@ -18,7 +18,7 @@ late MockDio mockDio;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -38,16 +38,16 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
     authRepository = UserRepository(mockApiClient);
     provideEmailBloc = ProvideEmailBloc(
       authRepository,
-      tokenStorageRepository: mockTokenStorageRepository,
+      tokenStorageService: mockTokenStorageService,
     );
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     when(
-      mockTokenStorageRepository.getAccessToken(),
+      mockTokenStorageService.getAccessToken(),
     ).thenAnswer((_) async => null);
   });
 

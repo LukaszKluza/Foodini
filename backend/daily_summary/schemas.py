@@ -15,7 +15,7 @@ class MealInfo(MealInfoMixin, BaseModel):
     custom_calories: Optional[int] = None
     custom_protein: Optional[int] = None
     custom_carbs: Optional[int] = None
-    custom_fats: Optional[int] = None
+    custom_fat: Optional[int] = None
 
     model_config = {"use_enum_values": True}
 
@@ -26,7 +26,7 @@ class DailyMealsCreate(BaseModel):
     target_calories: int
     target_protein: int
     target_carbs: int
-    target_fats: int
+    target_fat: int
 
     model_config = {"use_enum_values": True}
 
@@ -36,7 +36,7 @@ class DailyMacrosSummaryCreate(BaseModel):
     calories: int = Field(default=0, ge=0)
     protein: int = Field(default=0, ge=0)
     carbs: int = Field(default=0, ge=0)
-    fats: int = Field(default=0, ge=0)
+    fat: int = Field(default=0, ge=0)
 
 
 class MealInfoUpdateRequest(BaseModel):
@@ -49,8 +49,8 @@ class CustomMealUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
     custom_name: Optional[str] = None
-    custom_calories: int = Field(default=0, ge=0)
-    custom_protein: int = Field(default=0, ge=0)
-    custom_carbs: int = Field(default=0, ge=0)
-    custom_fats: int = Field(default=0, ge=0)
+    custom_calories: Optional[int] = Field(default=None, ge=0)
+    custom_protein: Optional[int] = Field(default=None, ge=0)
+    custom_carbs: Optional[int] = Field(default=None, ge=0)
+    custom_fat: Optional[int] = Field(default=None, ge=0)
     status: MealStatus = Field(default=MealStatus.EATEN)

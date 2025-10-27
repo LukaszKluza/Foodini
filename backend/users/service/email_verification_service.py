@@ -63,8 +63,10 @@ class EmailVerificationService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email is required",
             )
-        await self.user_validators.ensure_user_exists_by_email(email)
-        token = await self.authorization_service.create_url_safe_token({"email": email})
+        user = await self.user_validators.ensure_user_exists_by_email(email)
+        token = await self.authorization_service.create_url_safe_token(
+            {"email": email, "language": user.language.value}
+        )
         await self.process_new_account_verification(email, token)
 
     async def _send_new_account_verification(self, email: EmailStr, token: str):

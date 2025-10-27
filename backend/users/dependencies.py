@@ -9,7 +9,7 @@ from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
 from backend.users.auth_dependencies import AuthDependency
 from backend.users.mail import MailService
-from backend.users.service.email_verification_sevice import EmailVerificationService
+from backend.users.service.email_verification_service import EmailVerificationService
 from backend.users.service.user_service import UserService
 from backend.users.service.user_validation_service import UserValidationService
 from backend.users.user_repository import UserRepository
