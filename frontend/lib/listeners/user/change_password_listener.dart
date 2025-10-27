@@ -10,16 +10,13 @@ class ChangePasswordListenerHelper {
   static void onChangePasswordListener({
     required BuildContext context,
     required ChangePasswordState state,
-    required void Function(void Function()) setState,
     required bool mounted,
     required void Function(String) setMessage,
     required void Function(TextStyle) setMessageStyle,
   }) {
     if (state is ChangePasswordSuccess) {
-      setState(() {
-        setMessage(AppLocalizations.of(context)!.passwordSuccessfullyChanged);
-        setMessageStyle(Styles.successStyle);
-      });
+      setMessage(AppLocalizations.of(context)!.passwordSuccessfullyChanged);
+      setMessageStyle(Styles.successStyle);
       Future.delayed(
         const Duration(milliseconds: Constants.redirectionDelay),
         () {
@@ -31,11 +28,9 @@ class ChangePasswordListenerHelper {
         },
       );
     } else if (state is ChangePasswordFailure) {
-      setState(() {
-        setMessage(
-          ExceptionConverter.formatErrorMessage(state.error.data, context),
-        );
-      });
+      setMessage(
+        ExceptionConverter.formatErrorMessage(state.error.data, context),
+      );
     }
   }
 }

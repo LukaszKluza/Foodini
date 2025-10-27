@@ -174,15 +174,28 @@ class AuthorizationService:
 
     async def extract_email_from_base64(self, token: str) -> str | None:
         try:
-            padding = len(token) % 4
-            if padding:
-                token += "=" * (4 - padding)
+            decoded = await self.decode_token(token)
+            email = re.search(rb"[\w.-]+@[\w.-]+", decoded)
 
-            decoded = base64.urlsafe_b64decode(token)
-            match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
-            return match.group(0).decode("utf-8")
+            return email.group(0).decode("utf-8")
         except Exception:
             return None
+
+    async def extract_language_from_base64(self, token: str) -> str | None:
+        try:
+            decoded = await self.decode_token(token)
+            language = re.search(rb'"language":"(.*?)"', decoded)
+
+            return language.group(0).decode("utf-8")['"language":"'.__len__() : -1]
+        except Exception:
+            return None
+
+    async def decode_token(self, token):
+        padding = len(token) % 4
+        if padding:
+            token += "=" * (4 - padding)
+        decoded = base64.urlsafe_b64decode(token)
+        return decoded
 
     async def get_serializer(self, salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)

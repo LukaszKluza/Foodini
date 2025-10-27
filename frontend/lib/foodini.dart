@@ -6,11 +6,11 @@ import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:provider/provider.dart';
 
@@ -40,8 +40,8 @@ class Foodini extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<ApiClient>(create: (_) => ApiClient()),
-        Provider<TokenStorageRepository>(
-          create: (_) => TokenStorageRepository(),
+        Provider<TokenStorageService>(
+          create: (_) => TokenStorageService(),
         ),
         ProxyProvider<ApiClient, UserRepository>(
           update: (_, apiClient, __) => UserRepository(apiClient),

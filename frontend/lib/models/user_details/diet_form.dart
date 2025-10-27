@@ -1,7 +1,7 @@
 import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
@@ -12,7 +12,7 @@ class DietForm {
   final double weight;
   final DateTime dateOfBirth;
   final DietType dietType;
-  final List<Allergy> allergies;
+  final List<DietaryRestriction> dietaryRestrictions;
   final double dietGoal;
   final int mealsPerDay;
   final DietIntensity dietIntensity;
@@ -29,7 +29,7 @@ class DietForm {
     required this.weight,
     required this.dateOfBirth,
     required this.dietType,
-    required this.allergies,
+    required this.dietaryRestrictions,
     required this.dietGoal,
     required this.mealsPerDay,
     required this.dietIntensity,
@@ -47,7 +47,7 @@ class DietForm {
     'weight_kg': weight,
     'date_of_birth': dateOfBirth.toIso8601String(),
     'diet_type': dietType.nameStr,
-    'allergies': allergies.map((a) => a.nameStr).toList(),
+    'dietary_restrictions': dietaryRestrictions.map((a) => a.nameStr).toList(),
     'diet_goal_kg': dietGoal,
     'meals_per_day': mealsPerDay,
     'diet_intensity': dietIntensity.nameStr,
@@ -66,9 +66,9 @@ class DietForm {
       weight: (json['weight_kg'] as num).toDouble(),
       dateOfBirth: DateTime.parse(json['date_of_birth']),
       dietType: DietType.fromJson(json['diet_type']),
-      allergies:
-          (json['allergies'] as List<dynamic>)
-              .map((e) => Allergy.fromJson(e))
+      dietaryRestrictions:
+          (json['dietary_restrictions'] as List<dynamic>)
+              .map((e) => DietaryRestriction.fromJson(e))
               .toList(),
       dietGoal: (json['diet_goal_kg'] as num).toDouble(),
       mealsPerDay: json['meals_per_day'] as int,

@@ -47,10 +47,10 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       }
     });
 
-    on<UpdateAllergies>((event, emit) {
+    on<UpdateDietaryRestrictions>((event, emit) {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
-        emit(currentState.copyWith(allergies: event.allergies));
+        emit(currentState.copyWith(allergies: event.dietaryRestrictions));
       }
     });
 
@@ -165,7 +165,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       currentState.weight,
       currentState.dateOfBirth,
       currentState.dietType,
-      currentState.allergies,
+      currentState.dietaryRestrictions,
       currentState.dietGoal,
       currentState.mealsPerDay,
       currentState.dietIntensity,
@@ -192,7 +192,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         weight: currentState.weight!,
         dateOfBirth: currentState.dateOfBirth!,
         dietType: currentState.dietType!,
-        allergies: currentState.allergies!,
+        dietaryRestrictions: currentState.dietaryRestrictions!,
         dietGoal: currentState.dietGoal!,
         mealsPerDay: currentState.mealsPerDay!,
         dietIntensity: currentState.dietIntensity!,

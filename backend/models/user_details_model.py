@@ -6,7 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
     ActivityLevel,
-    Allergies,
+    DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
@@ -37,7 +37,9 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     weight_kg: float = Field(ge=20, le=160)
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
-    allergies: List[Allergies] = Field(sa_column=Column(ARRAY(Enum(Allergies))), default=[])
+    dietary_restrictions: List[DietaryRestriction] = Field(
+        sa_column=Column(ARRAY(Enum(DietaryRestriction))), default=[]
+    )
     diet_goal_kg: float
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)

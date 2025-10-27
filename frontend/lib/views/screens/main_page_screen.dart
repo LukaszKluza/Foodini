@@ -26,9 +26,11 @@ class _LoginScreenState extends State<MainPageScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.foodini,
-            style: Styles.titleStyle,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Image.asset(
+              Constants.mainFoodiniIcon, width: 124,
+            ),
           ),
         ),
       ),

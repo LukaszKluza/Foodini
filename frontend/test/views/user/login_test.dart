@@ -26,7 +26,7 @@ late LoginBloc loginBloc;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -49,8 +49,8 @@ void main() {
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
     authRepository = UserRepository(mockApiClient);
-    mockTokenStorageRepository = MockTokenStorageRepository();
-    loginBloc = LoginBloc(authRepository, mockTokenStorageRepository);
+    mockTokenStorageService = MockTokenStorageService();
+    loginBloc = LoginBloc(authRepository, mockTokenStorageService);
     SharedPreferences.setMockInitialValues({});
 
     when(mockDio.interceptors).thenReturn(Interceptors());

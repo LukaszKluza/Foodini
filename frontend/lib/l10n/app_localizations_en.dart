@@ -30,10 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
-  String get homePage => 'Foodini Home Page';
-
-  @override
-  String get welcome => 'Welcome in Foodini';
+  String get welcome => 'Welcome';
 
   @override
   String get requiredName => 'Name is required';
@@ -180,7 +177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredDietType => 'Diet type is required';
 
   @override
-  String get allergies => 'Allergies';
+  String get dietaryRestrictions => 'Dietary restrictions';
 
   @override
   String get dietGoal => 'Diet goal';
@@ -291,40 +288,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietType_Vegetarian => 'Vegetarian';
+  String get dietaryRestriction_Gluten => 'Gluten';
 
   @override
-  String get dietType_Vegan => 'Vegan';
+  String get dietaryRestriction_Peanuts => 'Peanuts';
 
   @override
-  String get dietType_Keto => 'Keto';
+  String get dietaryRestriction_Lactose => 'Lactose';
 
   @override
-  String get allergy_Gluten => 'Gluten';
+  String get dietaryRestriction_Fish => 'Fish';
 
   @override
-  String get allergy_Peanuts => 'Peanuts';
+  String get dietaryRestriction_Soy => 'Soy';
 
   @override
-  String get allergy_Lactose => 'Lactose';
+  String get dietaryRestriction_Wheat => 'Wheat';
 
   @override
-  String get allergy_Fish => 'Fish';
+  String get dietaryRestriction_Celery => 'Celery';
 
   @override
-  String get allergy_Soy => 'Soy';
+  String get dietaryRestriction_Sulphites => 'Sulphites';
 
   @override
-  String get allergy_Wheat => 'Wheat';
+  String get dietaryRestriction_Lupin => 'Lupin';
 
   @override
-  String get allergy_Celery => 'Celery';
+  String get dietaryRestriction_Vegetarian => 'Vegetarian';
 
   @override
-  String get allergy_Sulphites => 'Sulphites';
+  String get dietaryRestriction_Vegan => 'Vegan';
 
   @override
-  String get allergy_Lupin => 'Lupin';
+  String get dietaryRestriction_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Slow';

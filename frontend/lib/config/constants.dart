@@ -10,7 +10,7 @@ class Constants {
   static const double defaultHeight = 175;
   static const int maxMealsPerDay = 6;
   static const int defaultMealsPerDay = 3;
-  static const double buttonTextHeight = 48;
+  static const String mainFoodiniIcon = 'assets/icons/icon_14.png';
 
   static const double defaultMusclePercentage = 45;
   static const double defaultWaterPercentage = 60;

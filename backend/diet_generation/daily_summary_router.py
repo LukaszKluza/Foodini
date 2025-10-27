@@ -91,5 +91,7 @@ async def add_meal_details(
 async def get_meal_details(
     meal_id: int,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
+    user_gateway: UserGateway = Depends(get_user_gateway),
 ):
+    user, _ = await user_gateway.get_current_user()
     return await daily_summary_service.get_meal_details(meal_id)

@@ -6,6 +6,7 @@ import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
@@ -22,7 +23,7 @@ late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +39,7 @@ void main() {
         .addProviders([
           Provider<LanguageCubit>.value(value: mockLanguageCubit),
           Provider<AccountBloc>.value(
-            value: AccountBloc(authRepository, mockTokenStorageRepository),
+            value: AccountBloc(authRepository, mockTokenStorageService),
           ),
         ])
         .setInitialLocation(initialLocation)
@@ -51,8 +52,9 @@ void main() {
     mockLanguageCubit = MockLanguageCubit();
     authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
     when(mockDio.interceptors).thenReturn(Interceptors());
+    when(mockLanguageCubit.state).thenReturn(Locale(Language.pl.code));
   });
 
   testWidgets('Register screen elements are displayed', (
