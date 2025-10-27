@@ -707,19 +707,19 @@ class MockMealsRepository extends _i1.Mock implements _i34.MealsRepository {
           as _i20.Future<_i14.MealIconInfo>);
 
   @override
-  _i20.Future<_i15.DailyMealsCreate> addCustomMeal(
+  _i20.Future<_i15.DailyMealsCreate> addMealDetails(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     int? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addCustomMeal, [
+            Invocation.method(#addMealDetails, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i15.DailyMealsCreate>.value(
               _FakeDailyMealsCreate_13(
                 this,
-                Invocation.method(#addCustomMeal, [
+                Invocation.method(#addMealDetails, [
                   customMealUpdateRequest,
                   userId,
                 ]),
@@ -729,19 +729,19 @@ class MockMealsRepository extends _i1.Mock implements _i34.MealsRepository {
           as _i20.Future<_i15.DailyMealsCreate>);
 
   @override
-  _i20.Future<_i15.DailyMealsCreate> updateCustomMeal(
+  _i20.Future<_i15.DailyMealsCreate> updateMealDetails(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     int? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#updateCustomMeal, [
+            Invocation.method(#updateMealDetails, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i15.DailyMealsCreate>.value(
               _FakeDailyMealsCreate_13(
                 this,
-                Invocation.method(#updateCustomMeal, [
+                Invocation.method(#updateMealDetails, [
                   customMealUpdateRequest,
                   userId,
                 ]),
@@ -1361,19 +1361,19 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i20.Future<_i17.Response<dynamic>>);
 
   @override
-  _i20.Future<_i17.Response<dynamic>> addCustomMeal(
+  _i20.Future<_i17.Response<dynamic>> addMealDetails(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     int? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addCustomMeal, [
+            Invocation.method(#addMealDetails, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i17.Response<dynamic>>.value(
               _FakeResponse_20<dynamic>(
                 this,
-                Invocation.method(#addCustomMeal, [
+                Invocation.method(#addMealDetails, [
                   customMealUpdateRequest,
                   userId,
                 ]),
@@ -1383,19 +1383,19 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i20.Future<_i17.Response<dynamic>>);
 
   @override
-  _i20.Future<_i17.Response<dynamic>> updateCustomMeal(
+  _i20.Future<_i17.Response<dynamic>> updateMealDetails(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     int? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#updateCustomMeal, [
+            Invocation.method(#updateMealDetails, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i17.Response<dynamic>>.value(
               _FakeResponse_20<dynamic>(
                 this,
-                Invocation.method(#updateCustomMeal, [
+                Invocation.method(#updateMealDetails, [
                   customMealUpdateRequest,
                   userId,
                 ]),
