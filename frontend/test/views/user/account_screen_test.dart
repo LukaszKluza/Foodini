@@ -14,6 +14,7 @@ import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/states/account_states.dart';
+import 'package:frontend/utils/cache_manager.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
 import 'package:frontend/views/screens/user/home_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ import '../../wrapper/test_wrapper_builder.dart';
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
+late MockCacheManager mockCacheManager;
 late MockLanguageCubit mockLanguageCubit;
 late MockUserDetailsRepository mockUserDetailsRepository;
 late MockTokenStorageService mockTokenStorageService;
@@ -47,6 +49,7 @@ void main() {
     return TestWrapperBuilder(child)
         .withRouter()
         .addProvider(Provider<LanguageCubit>.value(value: mockLanguageCubit))
+        .addProvider(Provider<CacheManager>.value(value: mockCacheManager))
         .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
         .addProvider(BlocProvider<MacrosChangeBloc>.value(value: macrosChangeBloc))
         .addRoutes(additionalRoutes)
@@ -57,6 +60,7 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
+    mockCacheManager = MockCacheManager();
     mockLanguageCubit = MockLanguageCubit();
     mockUserDetailsRepository = MockUserDetailsRepository();
     mockTokenStorageService = MockTokenStorageService();

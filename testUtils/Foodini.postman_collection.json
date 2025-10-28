@@ -678,13 +678,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/daily_summary/meals/2025-10-09?user_id={{userId}}",
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals/2025-10-09?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
-								"daily_summary",
+								"daily-summary",
 								"meals",
 								"2025-10-09"
 							],
@@ -723,14 +723,99 @@
 							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 2,\n      \"status\": \"toEat\"\n    },\n    \"lunch\": {\n      \"meal_id\": 1,\n      \"status\": \"toEat\"\n    },\n    \"dinner\": {\n      \"meal_id\": 3,\n      \"status\": \"toEat\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fat\": 70\n}"
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/daily_summary/meals?user_id={{userId}}",
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
-								"daily_summary",
+								"daily-summary",
 								"meals"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Daily Macros Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/macros/{{data}}?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"macros",
+								"{{data}}"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DEV] Add Daily Macros",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 0,\n  \"protein\": 0,\n  \"carbs\": 0,\n  \"fat\": 0\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/macros?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"macros"
 							],
 							"query": [
 								{
@@ -767,13 +852,13 @@
 							"raw": "{\n    \"day\": \"2025-10-09\",\n    \"meal_type\": \"lunch\",\n    \"status\": \"skipped\"\n}"
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/daily_summary/meals?user_id={{userId}}",
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
-								"daily_summary",
+								"daily-summary",
 								"meals"
 							],
 							"query": [
@@ -877,91 +962,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Daily Macros Summary",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{foodiniUrl}}/v1/daily_summary/macros/{{data}}?user_id={{userId}}",
-							"host": [
-								"{{foodiniUrl}}"
-							],
-							"path": [
-								"v1",
-								"daily_summary",
-								"macros",
-								"{{data}}"
-							],
-							"query": [
-								{
-									"key": "user_id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "[DEV] Add Daily Macros",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 0,\n  \"protein\": 0,\n  \"carbs\": 0,\n  \"fat\": 0\n}"
-						},
-						"url": {
-							"raw": "{{foodiniUrl}}/v1/daily_summary/macros?user_id={{userId}}",
-							"host": [
-								"{{foodiniUrl}}"
-							],
-							"path": [
-								"v1",
-								"daily_summary",
-								"macros"
-							],
-							"query": [
-								{
-									"key": "user_id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "[DEV] Add Meal",
 					"request": {
 						"auth": {
@@ -999,7 +999,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Meal by ID",
+					"name": "Get MealDetails by ID",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1045,6 +1045,45 @@
 			"name": "CaloriesPrediction",
 			"item": [
 				{
+					"name": "Add CaloriesPrediction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/calories-prediction?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"calories-prediction"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get CaloriesPrediction",
 					"request": {
 						"auth": {
@@ -1086,7 +1125,61 @@
 			]
 		},
 		{
-			"name": "DietPrediction",
+			"name": "DietGeneration",
+			"item": [
+				{
+					"name": "Generate Meal Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/diet-prediction/generate-meal-plan?day={{day}}&user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"diet-prediction",
+								"generate-meal-plan"
+							],
+							"query": [
+								{
+									"key": "day",
+									"value": "{{day}}",
+									"description": "2025-11-11"
+								},
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Meals",
 			"item": [
 				{
 					"name": "Get Meal Icon",
@@ -1124,6 +1217,94 @@
 					"response": []
 				},
 				{
+					"name": "Get Recipe By Recipe Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-icon"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "meal_type",
+									"value": "{{mealType}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recipes By Meal Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-icon"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "meal_type",
+									"value": "{{mealType}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Meal Icon Info",
 					"request": {
 						"auth": {
@@ -1144,13 +1325,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/diet-prediction/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
-								"diet-prediction",
+								"meals",
 								"meal-icon"
 							],
 							"query": [
@@ -1188,13 +1369,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/diet-prediction/meal-recipe/{{recipe_id}}?user_id={{userId}}&language={{language}}",
+							"raw": "{{foodiniUrl}}/v1/meals/meal-recipe/{{recipe_id}}?user_id={{userId}}&language={{language}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
-								"diet-prediction",
+								"meals",
 								"meal-recipe",
 								"{{recipe_id}}"
 							],
@@ -1213,10 +1394,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "DietGeneration",
-			"item": []
 		},
 		{
 			"name": "Health Check",
