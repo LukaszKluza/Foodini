@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import UUID, Column, DateTime, ForeignKey, func, Index, event, CheckConstraint, Numeric
+from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, Numeric, event, func
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -35,9 +35,9 @@ class UserDietPredictions(SQLModel, table=True):
     user: Optional["User"] = Relationship(
         back_populates="diet_predictions", sa_relationship_kwargs={"cascade": "all, delete"}
     )
-    protein: float = Field(sa_column=Column(Numeric(10,2), nullable=False), ge=0)
-    fat: float = Field(sa_column=Column(Numeric(10,2), nullable=False), ge=0)
-    carbs: float = Field(sa_column=Column(Numeric(10,2), nullable=False), ge=0)
+    protein: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
+    fat: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
+    carbs: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
     bmr: int = Field(ge=0)
     tdee: int = Field(ge=0)
     target_calories: int = Field(ge=0)
@@ -52,4 +52,3 @@ class UserDietPredictions(SQLModel, table=True):
 @event.listens_for(UserDietPredictions, "before_update")
 def update_timestamps(mapper, connection, target):
     target.updated_at = datetime.now()
-
