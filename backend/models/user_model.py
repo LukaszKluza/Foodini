@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import EmailStr
-from sqlalchemy import UUID, Column, DateTime, func
+from sqlalchemy import UUID, Column, DateTime, func, Index, event
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.settings import config
@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
+    __table_args__ = (
+        Index("ix_user_mail", func.lower("email"), unique=True),
+    )
 
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
@@ -42,3 +45,8 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+
+@event.listens_for(User, "before_update")
+def update_timestamps(mapper, connection, target):
+    target.updated_at = datetime.now()
