@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import Column, DateTime, func, UUID, ForeignKey
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -37,8 +37,7 @@ class Meal(SQLModel, table=True):
     __tablename__ = "meals"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)
@@ -66,11 +65,12 @@ class MealRecipe(SQLModel, table=True):
     __tablename__ = "meal_recipes"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     # Can be duplicated for the same recipe but different language
-    meal_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False, index=True))
+    meal_id: uuid.UUID = Field(
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False, index=True)
+    )
     language: Language = Field(default=Language.EN, nullable=False)
     meal_description: str = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))

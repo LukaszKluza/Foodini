@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, Column, DateTime, Enum, ForeignKey, Integer, func, UUID
+from sqlalchemy import ARRAY, UUID, Column, DateTime, Enum, ForeignKey, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
@@ -24,8 +24,7 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     __tablename__ = "user_details"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     user_id: uuid.UUID = Field(
         sa_column=Column(

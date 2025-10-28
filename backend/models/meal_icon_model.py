@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import Column, DateTime, func, UUID
+from sqlalchemy import UUID, Column, DateTime, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
@@ -15,8 +15,7 @@ class MealIcon(SQLModel, table=True):
     __tablename__ = "meal_icons"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     meal_type: MealType = Field(nullable=False, unique=True)
     icon_path: str = Field(nullable=False)

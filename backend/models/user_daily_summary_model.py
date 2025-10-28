@@ -19,15 +19,12 @@ class MealToDailySummary(SQLModel, table=True):
             UUID(as_uuid=True),
             ForeignKey("daily_meals_summaries.id", ondelete="CASCADE"),
             primary_key=True,
-            nullable=False
+            nullable=False,
         )
     )
     meal_id: uuid.UUID = Field(
         sa_column=Column(
-            UUID(as_uuid=True),
-            ForeignKey("meals.id", ondelete="CASCADE"),
-            primary_key=True,
-            nullable=False
+            UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), primary_key=True, nullable=False
         )
     )
     status: MealStatus = Field(default=MealStatus.TO_EAT, nullable=False)
@@ -44,8 +41,7 @@ class DailyMealsSummary(SQLModel, table=True):
     __tablename__ = "daily_meals_summaries"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     user_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE")))
     day: date = Field(nullable=False)
@@ -75,8 +71,7 @@ class DailyMacrosSummary(SQLModel, table=True):
     __tablename__ = "daily_macros_summaries"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     user_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE")))
     day: date = Field(nullable=False)

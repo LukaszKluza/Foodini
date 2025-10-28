@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, func, UUID
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, func
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -13,8 +13,7 @@ class UserDietPredictions(SQLModel, table=True):
     __tablename__ = "user_diet_predictions"
 
     id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
     user_id: uuid.UUID = Field(
         sa_column=Column(
