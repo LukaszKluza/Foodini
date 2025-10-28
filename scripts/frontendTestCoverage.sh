@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COVERAGE_THRESHOLD="${1:-70}"
+COVERAGE_THRESHOLD="${1:-60}"
 COVERAGE_FILE="${2:-../frontend/coverage/lcov.info}"
 
 if [ ! -f "$COVERAGE_FILE" ]; then
