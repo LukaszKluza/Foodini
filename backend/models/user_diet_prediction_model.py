@@ -1,7 +1,8 @@
+import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, func, UUID
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -11,16 +12,21 @@ if TYPE_CHECKING:
 class UserDietPredictions(SQLModel, table=True):
     __tablename__ = "user_diet_predictions"
 
-    id: int = Field(default=None, primary_key=True)
-    user_id: int = Field(
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    )
+    user_id: uuid.UUID = Field(
         sa_column=Column(
-            Integer,
+            UUID(as_uuid=True),
             ForeignKey("users.id", ondelete="CASCADE"),
             nullable=False,
             unique=True,
         )
     )
-    user: Optional["User"] = Relationship(back_populates="diet_predictions")
+    user: Optional["User"] = Relationship(
+        back_populates="diet_predictions", sa_relationship_kwargs={"cascade": "all, delete"}
+    )
     protein: int = Field(ge=0)
     fat: int = Field(ge=0)
     carbs: int = Field(ge=0)

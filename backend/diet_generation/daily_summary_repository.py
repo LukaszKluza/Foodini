@@ -7,34 +7,34 @@ from backend.diet_generation.schemas import (
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
 )
-from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMeals
+from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
 
 
 class DailySummaryRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int) -> DailyMeals:
-        user_daily_meals = DailyMeals(user_id=user_id, **daily_meals_data.model_dump())
+    async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: int) -> DailyMealsSummary:
+        user_daily_meals = DailyMealsSummary(user_id=user_id, **daily_meals_data.model_dump())
 
         self.db.add(user_daily_meals)
         await self.db.commit()
         await self.db.refresh(user_daily_meals)
         return user_daily_meals
 
-    async def get_daily_meals(self, user_id: int, day: date) -> DailyMeals | None:
-        query = select(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day)
+    async def get_daily_meals(self, user_id: int, day: date) -> DailyMealsSummary | None:
+        query = select(DailyMealsSummary).where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
     async def update_daily_meals(
         self, user_id: int, daily_meals_data: DailyMealsCreate, day: date
-    ) -> DailyMeals | None:
+    ) -> DailyMealsSummary | None:
         user_daily_meals = await self.get_daily_meals(user_id, day)
         if user_daily_meals:
             await self.db.execute(
-                update(DailyMeals)
-                .where(DailyMeals.user_id == user_id, DailyMeals.day == day)
+                update(DailyMealsSummary)
+                .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
                 .values(**daily_meals_data.model_dump())
             )
             await self.db.commit()
@@ -72,23 +72,27 @@ class DailySummaryRepository:
             return user_daily_macros
         return None
 
-    async def update_meal_status(self, user_id: int, day: date, meals: dict) -> DailyMeals | None:
+    async def update_meal_status(self, user_id: int, day: date, meals: dict) -> DailyMealsSummary | None:
         user_daily_meals = await self.get_daily_meals(user_id, day)
         if user_daily_meals:
             await self.db.execute(
-                update(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day).values(meals=meals)
+                update(DailyMealsSummary)
+                .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
+                .values(meals=meals)
             )
             await self.db.commit()
             await self.db.refresh(user_daily_meals)
             return user_daily_meals
         return None
 
-    async def add_custom_meal(self, user_id: int, day: date, meals: dict) -> DailyMeals | None:
+    async def add_custom_meal(self, user_id: int, day: date, meals: dict) -> DailyMealsSummary | None:
         user_daily_meals = await self.get_daily_meals(user_id, day)
 
         if user_daily_meals:
             await self.db.execute(
-                update(DailyMeals).where(DailyMeals.user_id == user_id, DailyMeals.day == day).values(meals=meals)
+                update(DailyMealsSummary)
+                .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
+                .values(meals=meals)
             )
             await self.db.commit()
             await self.db.refresh(user_daily_meals)

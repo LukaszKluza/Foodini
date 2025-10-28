@@ -1,7 +1,8 @@
+import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, Column, DateTime, Enum, ForeignKey, Integer, func
+from sqlalchemy import ARRAY, Column, DateTime, Enum, ForeignKey, Integer, func, UUID
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
@@ -22,16 +23,19 @@ if TYPE_CHECKING:
 class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     __tablename__ = "user_details"
 
-    id: int = Field(default=None, primary_key=True)
-    user_id: int = Field(
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    )
+    user_id: uuid.UUID = Field(
         sa_column=Column(
-            Integer,
+            UUID(as_uuid=True),
             ForeignKey("users.id", ondelete="CASCADE"),
             nullable=False,
             unique=True,
         )
     )
-    user: Optional["User"] = Relationship(back_populates="details")
+    user: Optional["User"] = Relationship(back_populates="details", sa_relationship_kwargs={"cascade": "all, delete"})
     gender: Gender = Field(nullable=False)
     height_cm: float = Field(ge=60, le=230)
     weight_kg: float = Field(ge=20, le=160)

@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from sqlalchemy import delete, func, select
 from sqlmodel import SQLModel
@@ -9,21 +10,21 @@ from backend.diet_generation.test.test_data import MEAL_RECIPES
 from backend.models import MealIcon, MealRecipe, User, UserDetails, UserDietPredictions
 
 MEAL_ICONS = [
-    {"id": 1, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
-    {"id": 2, "meal_type": MealType.MORNING_SNACK, "icon_path": "/high-angle-tasty-breakfast-bed.jpg"},
-    {"id": 3, "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.jpg"},
+    {"id": uuid.uuid4(), "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
+    {"id": uuid.uuid4(), "meal_type": MealType.MORNING_SNACK, "icon_path": "/high-angle-tasty-breakfast-bed.jpg"},
+    {"id": uuid.uuid4(), "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.jpg"},
     {
-        "id": 4,
+        "id": uuid.uuid4(),
         "meal_type": MealType.AFTERNOON_SNACK,
         "icon_path": "/top-view-tasty-salad-with-vegetables.jpg",
     },
     {
-        "id": 5,
+        "id": uuid.uuid4(),
         "meal_type": MealType.DINNER,
         "icon_path": "/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.jpg",
     },
     {
-        "id": 6,
+        "id": uuid.uuid4(),
         "meal_type": MealType.EVENING_SNACK,
         "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
     },

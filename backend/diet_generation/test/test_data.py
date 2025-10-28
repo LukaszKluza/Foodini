@@ -4,21 +4,29 @@ from backend.models import MealIcon, MealRecipe
 from backend.models.meal_recipe_model import Ingredient, Ingredients, Step
 from backend.users.enums.language import Language
 
+import uuid
+
+MEAL_ICON_ID = uuid.uuid4()
+
 MEAL_ICON = MealIcon(
-    id=1,
+    id=MEAL_ICON_ID,
     meal_type=MealType.BREAKFAST,
     icon_path="/black-coffee-fried-egg-with-toasts.jpg",
 )
 
+MEAL_ID = uuid.uuid4()
+RECIPE_EN_ID = uuid.uuid4()
+RECIPE_PL_ID = uuid.uuid4()
+
 CORNFLAKES_EN_RECIPE = MealRecipe(
-    id=1,
-    meal_id=1,
+    id=RECIPE_EN_ID,
+    meal_id=MEAL_ID,
     language=Language.EN,
     meal_name="Cornflakes with soy milk",
     meal_type=MealType.BREAKFAST,
     meal_description="Crispy cornflakes served with smooth, creamy soy milk. "
     "A light, nutritious breakfast perfect for a quick start to your day",
-    icon_id=1,
+    icon_id=MEAL_ICON_ID,
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="cornflakes"),
@@ -43,14 +51,14 @@ CORNFLAKES_EN_RECIPE = MealRecipe(
     ],
 )
 CORNFLAKES_PL_RECIPE = MealRecipe(
-    id=2,
-    meal_id=1,
+    id=RECIPE_PL_ID,
+    meal_id=MEAL_ID,
     language=Language.PL,
     meal_name="Płatki kukurydziane z mlekiem sojowym",
     meal_type=MealType.BREAKFAST,
     meal_description="Chrupiące płatki kukurydziane podawane z gładkim,"
     " kremowym mlekiem sojowym. Lekkie, pożywne śniadanie idealne na szybki start dnia.",
-    icon_id=1,
+    icon_id=MEAL_ICON_ID,
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.PL), name="płatki kukurydziane"),
