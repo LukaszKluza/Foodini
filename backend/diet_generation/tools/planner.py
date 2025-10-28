@@ -14,7 +14,13 @@ from backend.settings import config
 
 class PlannerTool:
     def __init__(self):
-        self.llm: Runnable = OllamaLLM(model=config.MODEL_NAME)
+        client_kwargs = {}
+        if config.OLLAMA_API_KEY:
+            client_kwargs = {"headers": {"Authorization": f"Bearer {config.OLLAMA_API_KEY}"}}
+
+        self.llm: Runnable = OllamaLLM(
+            model=config.MODEL_NAME, base_url=config.OLLAMA_API_BASE_URL, client_kwargs=client_kwargs
+        )
         self.parser = JsonOutputParser(pydantic_object=Output)
 
         self.system_instruction = (
@@ -27,7 +33,7 @@ class PlannerTool:
             f"{self.parser.get_format_instructions()}\n"
             "2. Do not include any text outside the JSON block.\n"
             "3. Each meal must have a **clear, realistic human meal name** that matches its type:\n"
-            "   - Examples: 'Oatmeal with Berries' (Breakfast), 'Grilled Chicken Salad' (Lunch), 'Salmon with Rice' (Dinner).\n"
+            "- Examples: 'Oatmeal with Berries' (Breakfast), 'Grilled Chicken' (Lunch), 'Salmon with Rice' (Dinner).\n"
             "   - Avoid nonsense names, typos, or repetition like 'brreakfast', 'Meal 1', or 'Protein Plate #1'.\n"
             "4. Every meal except of correct structure must have:\n"
             "   - Ingredients that make nutritional sense.\n"
@@ -50,13 +56,11 @@ class PlannerTool:
 
         return f"""
         # TASK: Correct Meal Plan — Apply Provided Per-Meal Targets Exactly
-        
         You will receive:
         1) The previously generated meal plan (JSON).
         2) A validator report that includes a machine-readable JSON block named "per_meal_targets".
            That block gives EXACT numeric targets for calories, protein (g), carbs (g), and fat (g)
            for each meal (identified by meal_index).
-        
         ***INSTRUCTIONS (must be followed exactly):***
         1. Parse the "per_meal_targets" JSON from the validator report and apply the numeric targets for each meal.
         2. You MUST modify ONLY ingredient quantities (and meal macro/calorie numbers) so that each meal's
@@ -68,10 +72,8 @@ class PlannerTool:
            - Sum of all meal calories equals global target calories.
            - Sum of all macros equals global target macros.
         7. OUTPUT: Return the full corrected meal plan as JSON ONLY — it must conform to the schema.
-        
         PREVIOUS PLAN:
         {previous_json}
-        
         VALIDATOR REPORT (includes per_meal_targets machine block):
         {state.validation_report}
         """
@@ -90,13 +92,10 @@ class PlannerTool:
         - Carbohydrates: {targets.carbs}g
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
-        
         ---
-        
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.
         Follow these steps (think silently; do not print reasoning):
-        
         1. Divide total calories and macros evenly and logically between the meals:
            - Breakfast ≈ 25–30% of totals
            - Lunch ≈ 30–35%
@@ -108,9 +107,7 @@ class PlannerTool:
         4. Recalculate each meal’s calories from macros using:
            - Calories = 4 × (Protein + Carbs) + 9 × Fat
            Adjust slightly if needed to make the totals exact.
-        
         ---
-        
         ## MEAL CREATION RULES
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
@@ -119,16 +116,13 @@ class PlannerTool:
         - Avoid using any of the user’s previous meals: {targets.previous_meals or "None"}.
         - Meal types must match the following: {targets.meal_types}.
         - Each meal must include: name, type, ingredients, calories, protein, carbs, and fat.
-        
         ---
-        
         ## VALIDATION REQUIREMENT
         Double-check **before finalizing**:
-        - The sum of all calories == {targets.calories}  
-        - The sum of all macros == {targets.protein}/{targets.carbs}/{targets.fat} grams (±1g allowed)  
-        - Meal names are realistic and type-consistent  
+        - The sum of all calories == {targets.calories}
+        - The sum of all macros == {targets.protein}/{targets.carbs}/{targets.fat} grams (±1g allowed)
+        - Meal names are realistic and type-consistent
         - JSON is strictly valid and matches schema.
-        
         ---
 
         ## OUTPUT
