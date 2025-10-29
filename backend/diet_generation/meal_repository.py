@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +28,7 @@ class MealRepository:
             return meal
         return None
 
-    async def get_meal_by_id(self, meal_id: int) -> Meal | None:
+    async def get_meal_by_id(self, meal_id: UUID) -> Meal | None:
         query = select(Meal).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
@@ -36,22 +38,22 @@ class MealRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_calories_by_id(self, meal_id: int) -> int | None:
+    async def get_meal_calories_by_id(self, meal_id: UUID) -> int | None:
         query = select(Meal.calories).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_protein_by_id(self, meal_id: int) -> int | None:
+    async def get_meal_protein_by_id(self, meal_id: UUID) -> int | None:
         query = select(Meal.protein).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_carbs_by_id(self, meal_id: int) -> int | None:
+    async def get_meal_carbs_by_id(self, meal_id: UUID) -> int | None:
         query = select(Meal.carbs).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_fat_by_id(self, meal_id: int) -> int | None:
+    async def get_meal_fat_by_id(self, meal_id: UUID) -> int | None:
         query = select(Meal.fat).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()

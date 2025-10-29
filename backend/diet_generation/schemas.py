@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Dict, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +10,7 @@ from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
 
 
 class MealInfo(MealInfoMixin, BaseModel):
-    meal_id: Optional[int] = None
+    meal_id: Optional[UUID] = None
     status: MealStatus = Field(default=MealStatus.TO_EAT)
     custom_name: Optional[str] = None
     custom_calories: Optional[int] = None
