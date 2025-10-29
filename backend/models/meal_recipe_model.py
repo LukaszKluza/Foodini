@@ -20,7 +20,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from backend.diet_generation.enums.meal_type import MealType
 from backend.users.enums.language import Language
 
-from .user_daily_summary_model import MealToDailySummary
+from .user_daily_summary_model import MealDailySummary
 
 if TYPE_CHECKING:
     from .meal_icon_model import MealIcon
@@ -70,10 +70,10 @@ class Meal(SQLModel, table=True):
 
     recipes: List["MealRecipe"] = Relationship(back_populates="meal", cascade_delete=True)
     icon: Optional["MealIcon"] = Relationship(back_populates="meals", sa_relationship_kwargs={"cascade": "save-update"})
-    daily_meals: List["MealToDailySummary"] = Relationship(back_populates="meal", cascade_delete=True)
+    daily_meals: List["MealDailySummary"] = Relationship(back_populates="meal", cascade_delete=True)
     daily_summary: List["DailyMealsSummary"] = Relationship(
         back_populates="meals",
-        link_model=MealToDailySummary,
+        link_model=MealDailySummary,
         sa_relationship_kwargs={"overlaps": "daily_meals,daily_summary"},
     )
 
@@ -102,7 +102,7 @@ class MealRecipe(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
-    meal: Optional["Meal"] = Relationship(back_populates="recipes", sa_relationship_kwargs={"cascade": "all, delete"})
+    meal: "Meal" = Relationship(back_populates="recipes", sa_relationship_kwargs={"cascade": "all, delete"})
 
 
 def update_timestamps(mapper, connection, target):

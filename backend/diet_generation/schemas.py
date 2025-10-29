@@ -14,9 +14,9 @@ class MealInfo(MealInfoMixin, BaseModel):
     status: MealStatus = Field(default=MealStatus.TO_EAT)
     custom_name: Optional[str] = None
     custom_calories: Optional[int] = None
-    custom_protein: Optional[int] = None
-    custom_carbs: Optional[int] = None
-    custom_fat: Optional[int] = None
+    custom_protein: Optional[float] = None
+    custom_carbs: Optional[float] = None
+    custom_fat: Optional[float] = None
 
     model_config = {"use_enum_values": True}
 
@@ -25,9 +25,9 @@ class DailyMealsCreate(BaseModel):
     day: date
     meals: Dict[MealType, MealInfo]
     target_calories: int
-    target_protein: int
-    target_carbs: int
-    target_fat: int
+    target_protein: float
+    target_carbs: float
+    target_fat: float
 
     model_config = {"use_enum_values": True}
 
@@ -42,7 +42,7 @@ class DailyMacrosSummaryCreate(BaseModel):
 
 class MealInfoUpdateRequest(BaseModel):
     day: date
-    meal_type: MealType
+    meal_id: UUID
     status: MealStatus
 
 
@@ -51,17 +51,16 @@ class CustomMealUpdateRequest(BaseModel):
     meal_type: MealType
     custom_name: Optional[str] = None
     custom_calories: Optional[int] = Field(default=None, ge=0)
-    custom_protein: Optional[int] = Field(default=None, ge=0)
-    custom_carbs: Optional[int] = Field(default=None, ge=0)
-    custom_fat: Optional[int] = Field(default=None, ge=0)
+    custom_protein: Optional[float] = Field(default=None, ge=0)
+    custom_carbs: Optional[float] = Field(default=None, ge=0)
+    custom_fat: Optional[float] = Field(default=None, ge=0)
     status: MealStatus = Field(default=MealStatus.EATEN)
 
 
 class MealCreate(BaseModel):
-    meal_name: str = Field(min_length=1)
     meal_type: MealType
-    icon_id: int
+    icon_id: UUID
     calories: int = Field(default=0, ge=0)
-    protein: int = Field(default=0, ge=0)
-    fat: int = Field(default=0, ge=0)
-    carbs: int = Field(default=0, ge=0)
+    protein: float = Field(default=0, ge=0)
+    fat: float = Field(default=0, ge=0)
+    carbs: float = Field(default=0, ge=0)
