@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -22,7 +24,7 @@ class Meal {
 }
 
 class DailySummaryScreen extends StatefulWidget {
-  const DailySummaryScreen({Key? key}) : super(key: key);
+  const DailySummaryScreen({super.key});
 
   @override
   State<DailySummaryScreen> createState() => _DailyNutritionScreenState();
@@ -80,7 +82,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              _buildCaloriesSummary(),
+              _buildCaloriesSummary(context),
 
               const SizedBox(height: 16),
 
@@ -91,8 +93,6 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
               _buildActiveMealCard(),
 
               const SizedBox(height: 16),
-
-              _buildNutritionRings(),
             ],
           ),
         ),
@@ -100,36 +100,92 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     );
   }
 
-  Widget _buildCaloriesSummary() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.amber[100],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Text(
-            '$eatenCalories / $dailyGoal',
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              4,
-              (index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(Icons.circle, color: Colors.grey[400], size: 16),
+  Widget _buildCaloriesSummary(BuildContext context) {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
+        final widgetHeight = min(40 + screenWidth * 0.25, screenWidth * 0.40);
+
+        final double baseFontSize = widgetHeight * 0.18;
+        final double nutritionWidgetSize = screenWidth * 0.40;
+
+        return Container(
+          width: screenWidth,
+          height: widgetHeight,
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.orange[50],
+            borderRadius: BorderRadius.circular(screenWidth * 0.05),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.deepOrangeAccent.withAlpha(70),
+                offset: Offset(0, 8),
+                blurRadius: 20,
+                spreadRadius: 1,
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+          child: Column(
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: eatenCalories.toDouble()),
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, _) {
+                  final displayedValue = value.toInt();
+                  return ShaderMask(
+                    shaderCallback:
+                        (bounds) => LinearGradient(
+                          colors: [Colors.orangeAccent, Colors.deepOrange],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ).createShader(
+                          Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                        ),
+                    child: Text(
+                      '$displayedValue of $dailyGoal kcal',
+                      style: TextStyle(
+                        fontSize: baseFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildNutritionRings(nutritionWidgetSize, 1.3, [
+                    Color(0xFFFFD54F),
+                    Color(0xFFFFCA28),
+                    Color(0xFFFFB74D),
+                  ],Icons.bubble_chart),
+                  SizedBox(width: screenWidth * 0.05),
+                  _buildNutritionRings(nutritionWidgetSize, 0.9, [
+                    Color(0xFF92CEFF),
+                    Color(0xFF0687F6),
+                    Color(0xFF068AF3),
+                  ], Icons.opacity),
+                  SizedBox(width: screenWidth * 0.05),
+                  _buildNutritionRings(nutritionWidgetSize, 0.6, [
+                    Color(0xFF97FF9A),
+                    Color(0xFF66F86D),
+                    Color(0xFF3DAF43),
+                  ],Icons.fitness_center),
+                  SizedBox(width: screenWidth * 0.05),
+                  _buildNutritionRings(nutritionWidgetSize, 0.3, [
+                    Color(0xFFCE93D8),
+                    Color(0xFFBA68C8),
+                    Color(0xFFAB47BC),
+                  ], Icons.local_fire_department),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -225,24 +281,50 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     }
   }
 
-  Widget _buildNutritionRings() {
+  Widget _buildNutritionRings(double ringSize, double percent, defaultColors, IconData icon) {
+    var exceededThresholdColors = [Color(0xFFF84300), Color(0xFFD50000)];
+    var backgroundColor1 = Colors.grey.shade300;
+    var backgroundColor2 = defaultColors[0];
+
+    int integer = percent.floor();
+    double fraction = percent - integer;
+
     return Center(
-      child: CircularPercentIndicator(
-        radius: 120,
-        lineWidth: 14,
-        animation: true,
-        percent: eatenCalories / dailyGoal,
-        center: const Icon(Icons.track_changes, size: 50, color: Colors.white),
-        backgroundColor: Colors.grey[300]!,
-        progressColor: Colors.deepOrangeAccent,
-        circularStrokeCap: CircularStrokeCap.round,
-        footer: const Padding(
-          padding: EdgeInsets.only(top: 12.0),
-          child: Text(
-            'Daily Progress',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-        ),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: fraction),
+        duration: const Duration(seconds: 2),
+        curve: Curves.easeOutCubic,
+        builder: (context, animatedValue, _) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularPercentIndicator(
+                radius: ringSize * 0.20,
+                lineWidth: ringSize * 0.08,
+                animation: false,
+                percent: animatedValue,
+                circularStrokeCap: CircularStrokeCap.round,
+                backgroundColor:
+                    integer < 1 ? backgroundColor1 : backgroundColor2,
+                linearGradient: LinearGradient(
+                  colors: integer < 1 ? defaultColors : exceededThresholdColors,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                center: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      icon,
+                      size: ringSize * 0.15,
+                      color: defaultColors[2],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
