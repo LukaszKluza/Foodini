@@ -30,11 +30,11 @@ class CompleteMeal(BaseModel):
     steps: List[StepCreate]
 
 
-class Output(BaseModel):
+class DietGenerationOutput(BaseModel):
     meals: List[CompleteMeal]
 
 
-class Input(BaseModel):
+class DietGenerationInput(BaseModel):
     dietary_restriction: List[DietaryRestriction]
     meals_per_day: int = Field(default=1, ge=1)
     meal_types: List[str] = Field(min_length=1)
@@ -45,8 +45,15 @@ class Input(BaseModel):
     previous_meals: Optional[List[str]] = Field(None, description="Optional list of previously generated meals.")
 
 
+class MealRecipeTranslation(BaseModel):
+    meal_name: str = Field(min_length=1)
+    meal_description: str = Field(min_length=1)
+    ingredients_list: List[IngredientCreate]
+    steps: List[StepCreate]
+
+
 class AgentState(BaseModel):
-    targets: Input
+    targets: DietGenerationInput
     current_plan: Optional[List[CompleteMeal]] = None
     validation_report: Optional[str] = None
     correction_count: int = 0
@@ -56,5 +63,5 @@ def agent_state_to_dict(state: AgentState) -> Dict[str, Any]:
     return state.model_dump()
 
 
-def create_agent_state(targets: Input) -> AgentState:
+def create_agent_state(targets: DietGenerationInput) -> AgentState:
     return AgentState(targets=targets).model_dump()

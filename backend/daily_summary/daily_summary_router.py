@@ -76,15 +76,6 @@ async def add_custom_meal(
     return await daily_summary_service.add_custom_meal(user.id, custom_meal)
 
 
-# Only for test purposes, to delete
-@daily_summary_router.post("/meal", status_code=status.HTTP_201_CREATED, response_model=MealCreate)
-async def add_meal_details(
-    meal: MealCreate,
-    daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
-):
-    return await daily_summary_service.add_meal_details(meal)
-
-
 @daily_summary_router.get("/meal/{meal_id}", response_model=MealCreate)
 async def get_meal_details(
     meal_id: int,

@@ -1,18 +1,22 @@
 from datetime import date
 from typing import List
 
+
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import DailyMealsCreate, MealInfo
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
-from backend.diet_generation.mappers import complete_meal_to_meal, complete_meal_to_recipe
-from backend.diet_generation.schemas import CompleteMeal, Input, create_agent_state
+from backend.diet_generation.mappers import complete_meal_to_meal, complete_meal_to_recipe, \
+    meal_recipe_translation_to_recipe, recipe_to_meal_recipe_translation
+from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, create_agent_state
+from backend.diet_generation.tools.translator import TranslatorTool
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
 from backend.models import Meal, User, UserDetails, UserDietPredictions
+from backend.users.enums.language import Language
 from backend.user_details.user_details_gateway import UserDetailsGateway
 
 
-class PromptService:
+class DailyMealsGeneratorService:
     def __init__(
         self,
         meal_gateway: MealGateway,
@@ -22,10 +26,11 @@ class PromptService:
         self.meal_gateway = meal_gateway
         self.daily_summary_gateway = daily_summary_gateway
         self.user_details_gateway = user_details_gateway
+        self.translator = TranslatorTool()
 
     @staticmethod
-    def _prepare_input(details: UserDetails, predictions: UserDietPredictions, previous_meals: List[str]) -> Input:
-        return Input(
+    def _prepare_input(details: UserDetails, predictions: UserDietPredictions, previous_meals: List[str]) -> DietGenerationInput:
+        return DietGenerationInput(
             dietary_restriction=[restriction for restriction in details.dietary_restrictions],
             meals_per_day=details.meals_per_day,
             meal_types=MealType.daily_meals(details.meals_per_day),
@@ -76,7 +81,15 @@ class PromptService:
 
         for complete_meal in daily_diet:
             saved_meal = await self.meal_gateway.add_meal(complete_meal_to_meal(complete_meal))
-            await self.meal_gateway.add_meal_recipe(complete_meal_to_recipe(complete_meal, saved_meal.id))
+            meal_recipe = await self.meal_gateway.add_meal_recipe(complete_meal_to_recipe(complete_meal, saved_meal.id, Language.EN))
+
+            try:
+                translated_recipe = self.translator.translate_meal_recipe_to_polish(recipe_to_meal_recipe_translation(meal_recipe))
+                await self.meal_gateway.add_meal_recipe(meal_recipe_translation_to_recipe(translated_recipe, saved_meal.id))
+            #Error suppression in case of failed translation
+            except Exception as e:
+                print(f"{e}")
+                pass
 
             saved_meals.append(saved_meal)
             meals_type_map[saved_meal.meal_type.value] = MealInfo(meal_id=saved_meal.id)

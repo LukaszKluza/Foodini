@@ -6,7 +6,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_ollama import OllamaLLM
 
-from backend.diet_generation.schemas import AgentState, CompleteMeal, Output
+from backend.diet_generation.schemas import AgentState, CompleteMeal, DietGenerationOutput
 from backend.settings import config
 
 """Tool used for generating and correcting output"""
@@ -21,7 +21,7 @@ class PlannerTool:
         self.llm: Runnable = OllamaLLM(
             model=config.MODEL_NAME, base_url=config.OLLAMA_API_BASE_URL, client_kwargs=client_kwargs
         )
-        self.parser = JsonOutputParser(pydantic_object=Output)
+        self.parser = JsonOutputParser(pydantic_object=DietGenerationOutput)
 
         self.system_instruction = (
             "You are an **AI Registered Dietitian Expert** specializing in balanced daily meal plans.\n\n"
@@ -49,7 +49,8 @@ class PlannerTool:
 
     """Used to add to prompt eventual correction instructions"""
 
-    def _build_correction_prompt(self, state: AgentState) -> str:
+    @staticmethod
+    def _build_correction_prompt(state: AgentState) -> str:
         previous_json = json.dumps(
             [m.model_dump() if isinstance(m, CompleteMeal) else m for m in state.current_plan], indent=2
         )
@@ -80,7 +81,8 @@ class PlannerTool:
 
     """Used to build initial prompt"""
 
-    def _build_initial_prompt(self, targets) -> str:
+    @staticmethod
+    def _build_initial_prompt(targets) -> str:
         return f"""
         # TASK: Initial Meal Plan Generation
 
@@ -139,7 +141,7 @@ class PlannerTool:
 
         try:
             response_dict = self.generation_chain.invoke({"prompt_content": full_prompt})
-            response_plan = Output.model_validate(response_dict)
+            response_plan = DietGenerationOutput.model_validate(response_dict)
 
             return {
                 "current_plan": response_plan.meals,

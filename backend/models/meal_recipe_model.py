@@ -30,7 +30,6 @@ class Meal(SQLModel, table=True):
     __tablename__ = "meal"
 
     id: int = Field(default=None, primary_key=True)
-    meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)
     icon_id: int = Field(nullable=False)
     calories: int = Field(nullable=False, ge=0)
@@ -49,6 +48,7 @@ class MealRecipe(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     # Can be duplicated for the same recipe but different language
     meal_id: int = Field(nullable=False, index=True)
+    meal_name: str = Field(nullable=False)
     language: Language = Field(default=Language.EN, nullable=False)
     meal_description: str = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))

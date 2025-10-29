@@ -46,10 +46,12 @@ class ValidatorTool:
         report_text = self._format_report(errors, suggestions, machine_block)
         return {"validation_report": report_text}
 
-    def _ensure_complete_meals(self, plan_meals: List[CompleteMeal]) -> List[CompleteMeal]:
+    @staticmethod
+    def _ensure_complete_meals(plan_meals: List[CompleteMeal]) -> List[CompleteMeal]:
         return [m if isinstance(m, CompleteMeal) else CompleteMeal(**m) for m in plan_meals]
 
-    def _compute_totals(self, plan_meals: List[CompleteMeal], targets):
+    @staticmethod
+    def _compute_totals(plan_meals: List[CompleteMeal], targets):
         actual = {
             "calories": sum(m.calories for m in plan_meals),
             "protein": sum(m.protein for m in plan_meals),
