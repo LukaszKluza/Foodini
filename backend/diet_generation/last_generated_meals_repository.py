@@ -5,7 +5,7 @@ from sqlalchemy import UUID, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import MealRecipe
-from backend.models.user_daily_summary_model import DailyMealsSummary, MealToDailySummary
+from backend.models.user_daily_summary_model import DailyMealsSummary, MealDailySummary
 
 
 class LastGeneratedMealsRepository:
@@ -14,7 +14,7 @@ class LastGeneratedMealsRepository:
 
     async def get_last_generated_meals(self, user_id: UUID, from_date: date, to_date: date) -> List[str]:
         dms = DailyMealsSummary
-        mt = MealToDailySummary
+        mt = MealDailySummary
         mr = MealRecipe
 
         query = (
