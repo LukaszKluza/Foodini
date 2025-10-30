@@ -14,7 +14,7 @@ from backend.diet_generation.schemas import (
     MealInfo,
     MealInfoUpdateRequest,
 )
-from backend.models import DailyMealsSummary, Meal
+from backend.models import DailyMealsSummary
 
 
 class DailySummaryService:
