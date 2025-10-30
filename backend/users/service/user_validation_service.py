@@ -23,7 +23,7 @@ class UserValidationService:
         return user
 
     def check_user_permission(self, user_param_from_token, user_param_from_request):
-        if user_param_from_token != user_param_from_request:
+        if str(user_param_from_token) != str(user_param_from_request):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid token",

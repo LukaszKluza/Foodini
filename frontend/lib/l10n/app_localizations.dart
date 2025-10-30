@@ -149,11 +149,23 @@ abstract class AppLocalizations {
   /// **'Name is required'**
   String get requiredName;
 
+  /// No description provided for @requiredLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Lastname is required'**
+  String get requiredLastname;
+
   /// No description provided for @provideCorrectName.
   ///
   /// In en, this message translates to:
   /// **'Provide correct name'**
   String get provideCorrectName;
+
+  /// No description provided for @provideCorrectLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide correct lastname'**
+  String get provideCorrectLastname;
 
   /// No description provided for @requiredCountry.
   ///

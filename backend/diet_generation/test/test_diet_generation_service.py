@@ -5,7 +5,12 @@ import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.test.test_data import CORNFLAKES_EN_RECIPE, CORNFLAKES_PL_RECIPE, MEAL_ICON, MEAL_RECIPES
+from backend.diet_generation.test.test_data import (
+    BREAKFAST_MEAL_ICON,
+    CORNFLAKES_EN_RECIPE,
+    CORNFLAKES_PL_RECIPE,
+    MEAL_RECIPES,
+)
 from backend.models import User
 from backend.users.enums.language import Language
 
@@ -56,13 +61,13 @@ async def test_get_get_meal_icon_info_when_exist(
     mock_meal_icons_repository,
 ):
     # Given
-    mock_meal_icons_repository.get_meal_icon_by_type.return_value = MEAL_ICON
+    mock_meal_icons_repository.get_meal_icon_by_type.return_value = BREAKFAST_MEAL_ICON
 
     # When
     response = await diet_generation_service.get_meal_icon(MealType.BREAKFAST)
 
     # Then
-    assert response == MEAL_ICON
+    assert response == BREAKFAST_MEAL_ICON
 
 
 @pytest.mark.asyncio

@@ -1,7 +1,8 @@
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:uuid/uuid_value.dart';
 
 class MealIconInfo {
-  final int id;
+  final UuidValue id;
   final MealType mealType;
   final String iconPath;
 
@@ -12,16 +13,16 @@ class MealIconInfo {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
+    'id': id.uuid,
     'meal_type': mealType.toJson(),
     'icon_path': iconPath,
   };
 
   factory MealIconInfo.fromJson(Map<String, dynamic> json) {
     return MealIconInfo(
-      id: json['id'] as int,
+      id: UuidValue.fromString(json['id']),
       mealType: MealType.fromJson(json['meal_type']),
-      iconPath: json['icon_path']
+      iconPath: json['icon_path'],
     );
   }
 }

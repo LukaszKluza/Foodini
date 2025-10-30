@@ -6,17 +6,48 @@ from backend.models import MealIcon, MealRecipe
 from backend.models.meal_recipe_model import Ingredient, Ingredients, Step
 from backend.users.enums.language import Language
 
-MEAL_ICON_ID = uuid.uuid4()
+MEAL_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal-icon")
+MEAL_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal")
+RECIPE_EN_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal-recipe-en")
+RECIPE_PL_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal-recipe-pl")
 
-MEAL_ICON = MealIcon(
-    id=MEAL_ICON_ID,
+BREAKFAST_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "breakfast-icon")
+MORNING_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "morning-snack-icon")
+LUNCH_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "lunch-icon")
+AFTERNOON_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "afternoon-snack-icon")
+DINNER_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "dinner-icon")
+EVENING_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "evening-snack-icon")
+
+BREAKFAST_MEAL_ICON = MealIcon(
+    id=BREAKFAST_ICON_ID,
     meal_type=MealType.BREAKFAST,
     icon_path="/black-coffee-fried-egg-with-toasts.jpg",
 )
 
-MEAL_ID = uuid.uuid4()
-RECIPE_EN_ID = uuid.uuid4()
-RECIPE_PL_ID = uuid.uuid4()
+MEAL_ICONS = [
+    {"id": BREAKFAST_ICON_ID, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
+    {
+        "id": MORNING_SNACK_ICON_ID,
+        "meal_type": MealType.MORNING_SNACK,
+        "icon_path": "/high-angle-tasty-breakfast-bed.jpg",
+    },
+    {"id": LUNCH_ICON_ID, "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.jpg"},
+    {
+        "id": AFTERNOON_SNACK_ICON_ID,
+        "meal_type": MealType.AFTERNOON_SNACK,
+        "icon_path": "/top-view-tasty-salad-with-vegetables.jpg",
+    },
+    {
+        "id": DINNER_ICON_ID,
+        "meal_type": MealType.DINNER,
+        "icon_path": "/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.jpg",
+    },
+    {
+        "id": EVENING_SNACK_ICON_ID,
+        "meal_type": MealType.EVENING_SNACK,
+        "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
+    },
+]
 
 CORNFLAKES_EN_RECIPE = MealRecipe(
     id=RECIPE_EN_ID,
@@ -26,7 +57,6 @@ CORNFLAKES_EN_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Crispy cornflakes served with smooth, creamy soy milk. "
     "A light, nutritious breakfast perfect for a quick start to your day",
-    icon_id=MEAL_ICON_ID,
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="cornflakes"),
@@ -58,7 +88,6 @@ CORNFLAKES_PL_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Chrupiące płatki kukurydziane podawane z gładkim,"
     " kremowym mlekiem sojowym. Lekkie, pożywne śniadanie idealne na szybki start dnia.",
-    icon_id=MEAL_ICON_ID,
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.PL), name="płatki kukurydziane"),

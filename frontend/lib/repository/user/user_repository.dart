@@ -10,13 +10,14 @@ import 'package:frontend/models/user/refreshed_tokens_response.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/repository/api_client.dart';
+import 'package:uuid/uuid_value.dart';
 
 class UserRepository {
   final ApiClient apiClient;
 
   UserRepository(this.apiClient);
 
-  Future<UserResponse> getUser(int userId) async {
+  Future<UserResponse> getUser(UuidValue userId) async {
     try {
       final response = await apiClient.getUser(userId);
       return UserResponse.fromJson(response.data);
@@ -38,7 +39,7 @@ class UserRepository {
     }
   }
 
-  Future<void> logout(int userId) async {
+  Future<void> logout(UuidValue userId) async {
     try {
       await apiClient.logout(userId);
     } on DioException catch (e) {
@@ -58,7 +59,7 @@ class UserRepository {
     }
   }
 
-  Future<void> delete(int userId) async {
+  Future<void> delete(UuidValue userId) async {
     try {
       await apiClient.delete(userId);
     } on DioException catch (e) {
@@ -103,7 +104,7 @@ class UserRepository {
 
   Future<DefaultResponse> changeLanguage(
     ChangeLanguageRequest request,
-    int userId,
+    UuidValue userId,
   ) async {
     try {
       final response = await apiClient.changeLanguage(request, userId);
@@ -115,7 +116,7 @@ class UserRepository {
     }
   }
 
-  Future<RefreshedTokensResponse> refreshTokens(int userId) async {
+  Future<RefreshedTokensResponse> refreshTokens(UuidValue userId) async {
     try {
       final response = await apiClient.refreshTokens(userId);
       return RefreshedTokensResponse.fromJson(response.data);

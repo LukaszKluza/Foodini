@@ -3,11 +3,13 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import EmailStr
-from sqlalchemy import UUID, Column, DateTime, Index, event, func
+from sqlalchemy import UUID, Column, DateTime, Index, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.settings import config
 from backend.users.enums.language import Language
+
+from ..core.db_listeners import register_timestamp_listeners
 
 if TYPE_CHECKING:
     from .user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
@@ -45,6 +47,4 @@ class User(SQLModel, table=True):
     )
 
 
-@event.listens_for(User, "before_update")
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
+register_timestamp_listeners([User])

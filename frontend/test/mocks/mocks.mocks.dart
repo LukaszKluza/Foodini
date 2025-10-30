@@ -8,37 +8,38 @@ import 'dart:ui' as _i16;
 
 import 'package:dio/dio.dart' as _i14;
 import 'package:dio/src/dio_mixin.dart' as _i15;
-import 'package:flutter/foundation.dart' as _i32;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i25;
+import 'package:flutter/foundation.dart' as _i33;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i26;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i13;
-import 'package:frontend/blocs/user/register_bloc.dart' as _i23;
-import 'package:frontend/events/user/register_events.dart' as _i24;
-import 'package:frontend/foodini.dart' as _i33;
+import 'package:frontend/blocs/user/register_bloc.dart' as _i24;
+import 'package:frontend/events/user/register_events.dart' as _i25;
+import 'package:frontend/foodini.dart' as _i34;
 import 'package:frontend/models/diet_generation/meal_icon_info.dart' as _i12;
 import 'package:frontend/models/diet_generation/meal_recipe.dart' as _i11;
-import 'package:frontend/models/diet_generation/meal_type.dart' as _i31;
-import 'package:frontend/models/user/change_language_request.dart' as _i22;
-import 'package:frontend/models/user/change_password_request.dart' as _i21;
+import 'package:frontend/models/diet_generation/meal_type.dart' as _i32;
+import 'package:frontend/models/user/change_language_request.dart' as _i23;
+import 'package:frontend/models/user/change_password_request.dart' as _i22;
 import 'package:frontend/models/user/default_response.dart' as _i5;
-import 'package:frontend/models/user/language.dart' as _i30;
+import 'package:frontend/models/user/language.dart' as _i31;
 import 'package:frontend/models/user/logged_user.dart' as _i4;
-import 'package:frontend/models/user/login_request.dart' as _i18;
-import 'package:frontend/models/user/provide_email_request.dart' as _i20;
+import 'package:frontend/models/user/login_request.dart' as _i19;
+import 'package:frontend/models/user/provide_email_request.dart' as _i21;
 import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i6;
-import 'package:frontend/models/user/register_request.dart' as _i19;
+import 'package:frontend/models/user/register_request.dart' as _i20;
 import 'package:frontend/models/user/user_response.dart' as _i3;
 import 'package:frontend/models/user_details/diet_form.dart' as _i9;
-import 'package:frontend/models/user_details/macros.dart' as _i28;
+import 'package:frontend/models/user_details/macros.dart' as _i29;
 import 'package:frontend/models/user_details/predicted_calories.dart' as _i10;
 import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart'
-    as _i29;
+    as _i30;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
 import 'package:frontend/repository/user_details/user_details_repository.dart'
-    as _i27;
-import 'package:frontend/services/token_storage_service.dart' as _i26;
+    as _i28;
+import 'package:frontend/services/token_storage_service.dart' as _i27;
 import 'package:frontend/states/register_states.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:uuid/uuid_value.dart' as _i18;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -204,7 +205,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i2.ApiClient);
 
   @override
-  _i17.Future<_i3.UserResponse> getUser(int? userId) =>
+  _i17.Future<_i3.UserResponse> getUser(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [userId]),
             returnValue: _i17.Future<_i3.UserResponse>.value(
@@ -214,7 +215,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i17.Future<_i3.UserResponse>);
 
   @override
-  _i17.Future<_i4.LoggedUser> login(_i18.LoginRequest? request) =>
+  _i17.Future<_i4.LoggedUser> login(_i19.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
             returnValue: _i17.Future<_i4.LoggedUser>.value(
@@ -224,7 +225,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i17.Future<_i4.LoggedUser>);
 
   @override
-  _i17.Future<void> logout(int? userId) =>
+  _i17.Future<void> logout(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#logout, [userId]),
             returnValue: _i17.Future<void>.value(),
@@ -242,7 +243,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i17.Future<void>);
 
   @override
-  _i17.Future<void> delete(int? userId) =>
+  _i17.Future<void> delete(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
             returnValue: _i17.Future<void>.value(),
@@ -251,7 +252,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i17.Future<void>);
 
   @override
-  _i17.Future<_i5.DefaultResponse?> register(_i19.RegisterRequest? request) =>
+  _i17.Future<_i5.DefaultResponse?> register(_i20.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
             returnValue: _i17.Future<_i5.DefaultResponse?>.value(),
@@ -260,7 +261,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i17.Future<_i5.DefaultResponse> provideEmail(
-    _i20.ProvideEmailRequest? request,
+    _i21.ProvideEmailRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#provideEmail, [request]),
@@ -275,7 +276,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i17.Future<_i5.DefaultResponse> changePassword(
-    _i21.ChangePasswordRequest? request,
+    _i22.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
@@ -290,8 +291,8 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i17.Future<_i5.DefaultResponse> changeLanguage(
-    _i22.ChangeLanguageRequest? request,
-    int? userId,
+    _i23.ChangeLanguageRequest? request,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changeLanguage, [request, userId]),
@@ -305,7 +306,9 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i17.Future<_i5.DefaultResponse>);
 
   @override
-  _i17.Future<_i6.RefreshedTokensResponse> refreshTokens(int? userId) =>
+  _i17.Future<_i6.RefreshedTokensResponse> refreshTokens(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#refreshTokens, [userId]),
             returnValue: _i17.Future<_i6.RefreshedTokensResponse>.value(
@@ -321,7 +324,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 /// A class which mocks [RegisterBloc].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
+class MockRegisterBloc extends _i1.Mock implements _i24.RegisterBloc {
   MockRegisterBloc() {
     _i1.throwOnMissingStub(this);
   }
@@ -359,13 +362,13 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
           as bool);
 
   @override
-  void add(_i24.RegisterEvent? event) => super.noSuchMethod(
+  void add(_i25.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#add, [event]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void onEvent(_i24.RegisterEvent? event) => super.noSuchMethod(
+  void onEvent(_i25.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#onEvent, [event]),
     returnValueForMissingStub: null,
   );
@@ -377,9 +380,9 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
   );
 
   @override
-  void on<E extends _i24.RegisterEvent?>(
-    _i25.EventHandler<E, _i8.RegisterState>? handler, {
-    _i25.EventTransformer<E>? transformer,
+  void on<E extends _i25.RegisterEvent?>(
+    _i26.EventHandler<E, _i8.RegisterState>? handler, {
+    _i26.EventTransformer<E>? transformer,
   }) => super.noSuchMethod(
     Invocation.method(#on, [handler], {#transformer: transformer}),
     returnValueForMissingStub: null,
@@ -387,7 +390,7 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
 
   @override
   void onTransition(
-    _i25.Transition<_i24.RegisterEvent?, _i8.RegisterState>? transition,
+    _i26.Transition<_i25.RegisterEvent?, _i8.RegisterState>? transition,
   ) => super.noSuchMethod(
     Invocation.method(#onTransition, [transition]),
     returnValueForMissingStub: null,
@@ -403,7 +406,7 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
           as _i17.Future<void>);
 
   @override
-  void onChange(_i25.Change<_i8.RegisterState>? change) => super.noSuchMethod(
+  void onChange(_i26.Change<_i8.RegisterState>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );
@@ -425,7 +428,7 @@ class MockRegisterBloc extends _i1.Mock implements _i23.RegisterBloc {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageService extends _i1.Mock
-    implements _i26.TokenStorageService {
+    implements _i27.TokenStorageService {
   MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }
@@ -487,7 +490,7 @@ class MockTokenStorageService extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserDetailsRepository extends _i1.Mock
-    implements _i27.UserDetailsRepository {
+    implements _i28.UserDetailsRepository {
   MockUserDetailsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -501,7 +504,7 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i2.ApiClient);
 
   @override
-  _i17.Future<_i9.DietForm> getDietPreferences(int? userId) =>
+  _i17.Future<_i9.DietForm> getDietPreferences(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getDietPreferences, [userId]),
             returnValue: _i17.Future<_i9.DietForm>.value(
@@ -514,7 +517,10 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i17.Future<_i9.DietForm>);
 
   @override
-  _i17.Future<void> submitDietForm(_i9.DietForm? request, int? userId) =>
+  _i17.Future<void> submitDietForm(
+    _i9.DietForm? request,
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#submitDietForm, [request, userId]),
             returnValue: _i17.Future<void>.value(),
@@ -524,8 +530,8 @@ class MockUserDetailsRepository extends _i1.Mock
 
   @override
   _i17.Future<_i10.PredictedCalories> submitMacrosChange(
-    _i28.Macros? request,
-    int? userId,
+    _i29.Macros? request,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitMacrosChange, [request, userId]),
@@ -539,7 +545,9 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i17.Future<_i10.PredictedCalories>);
 
   @override
-  _i17.Future<_i10.PredictedCalories> addCaloriesPrediction(int? userId) =>
+  _i17.Future<_i10.PredictedCalories> addCaloriesPrediction(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#addCaloriesPrediction, [userId]),
             returnValue: _i17.Future<_i10.PredictedCalories>.value(
@@ -552,7 +560,9 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i17.Future<_i10.PredictedCalories>);
 
   @override
-  _i17.Future<_i10.PredictedCalories> getCaloriesPrediction(int? userId) =>
+  _i17.Future<_i10.PredictedCalories> getCaloriesPrediction(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#getCaloriesPrediction, [userId]),
             returnValue: _i17.Future<_i10.PredictedCalories>.value(
@@ -569,7 +579,7 @@ class MockUserDetailsRepository extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockMealRecipeRepository extends _i1.Mock
-    implements _i29.MealRecipeRepository {
+    implements _i30.MealRecipeRepository {
   MockMealRecipeRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -584,9 +594,9 @@ class MockMealRecipeRepository extends _i1.Mock
 
   @override
   _i17.Future<_i11.MealRecipe> getMealRecipe(
-    int? userId,
-    int? mealRecipeId,
-    _i30.Language? language,
+    _i18.UuidValue? userId,
+    _i18.UuidValue? mealRecipeId,
+    _i31.Language? language,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealRecipe, [userId, mealRecipeId, language]),
@@ -605,8 +615,8 @@ class MockMealRecipeRepository extends _i1.Mock
 
   @override
   _i17.Future<_i12.MealIconInfo> getMealIconInfo(
-    int? userId,
-    _i31.MealType? mealType,
+    _i18.UuidValue? userId,
+    _i32.MealType? mealType,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealIconInfo, [userId, mealType]),
@@ -695,7 +705,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void registerListener({
     required String? key,
-    required _i32.ValueChanged<String?>? listener,
+    required _i33.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -704,7 +714,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i32.ValueChanged<String?>? listener,
+    required _i33.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -891,7 +901,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   }
 
   @override
-  _i17.Future<_i14.Response<dynamic>> getUser(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> getUser(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -904,7 +914,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> register(_i19.RegisterRequest? request) =>
+  _i17.Future<_i14.Response<dynamic>> register(_i20.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -917,7 +927,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> login(_i18.LoginRequest? request) =>
+  _i17.Future<_i14.Response<dynamic>> login(_i19.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -931,7 +941,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> provideEmail(
-    _i20.ProvideEmailRequest? request,
+    _i21.ProvideEmailRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#provideEmail, [request]),
@@ -946,7 +956,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> changePassword(
-    _i21.ChangePasswordRequest? request,
+    _i22.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
@@ -961,8 +971,8 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> changeLanguage(
-    _i22.ChangeLanguageRequest? request,
-    int? userId,
+    _i23.ChangeLanguageRequest? request,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changeLanguage, [request, userId]),
@@ -976,7 +986,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> refreshTokens(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> refreshTokens(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#refreshTokens, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -989,7 +999,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> logout(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> logout(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#logout, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -1015,7 +1025,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> delete(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> delete(_i18.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -1043,7 +1053,9 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> getDietPreferences(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> getDietPreferences(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#getDietPreferences, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -1058,7 +1070,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   @override
   _i17.Future<_i14.Response<dynamic>> submitDietForm(
     _i9.DietForm? request,
-    int? userId,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitDietForm, [request, userId]),
@@ -1073,9 +1085,9 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> getMealRecipe(
-    int? recipeId,
-    _i30.Language? language,
-    int? userId,
+    _i18.UuidValue? recipeId,
+    _i31.Language? language,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealRecipe, [recipeId, language, userId]),
@@ -1090,8 +1102,8 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> getMealIconInfo(
-    _i31.MealType? mealType,
-    int? userId,
+    _i32.MealType? mealType,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealIconInfo, [mealType, userId]),
@@ -1106,8 +1118,8 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i17.Future<_i14.Response<dynamic>> submitMacrosChange(
-    _i28.Macros? request,
-    int? userId,
+    _i29.Macros? request,
+    _i18.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitMacrosChange, [request, userId]),
@@ -1121,7 +1133,9 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> addCaloriesPrediction(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> addCaloriesPrediction(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#addCaloriesPrediction, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -1134,7 +1148,9 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i17.Future<_i14.Response<dynamic>>);
 
   @override
-  _i17.Future<_i14.Response<dynamic>> getCaloriesPrediction(int? userId) =>
+  _i17.Future<_i14.Response<dynamic>> getCaloriesPrediction(
+    _i18.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#getCaloriesPrediction, [userId]),
             returnValue: _i17.Future<_i14.Response<dynamic>>.value(
@@ -1196,7 +1212,7 @@ class MockErrorInterceptorHandler extends _i1.Mock
 /// A class which mocks [LanguageCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLanguageCubit extends _i1.Mock implements _i33.LanguageCubit {
+class MockLanguageCubit extends _i1.Mock implements _i34.LanguageCubit {
   MockLanguageCubit() {
     _i1.throwOnMissingStub(this);
   }
@@ -1223,7 +1239,7 @@ class MockLanguageCubit extends _i1.Mock implements _i33.LanguageCubit {
           as bool);
 
   @override
-  _i17.Future<void> change(_i30.Language? language) =>
+  _i17.Future<void> change(_i31.Language? language) =>
       (super.noSuchMethod(
             Invocation.method(#change, [language]),
             returnValue: _i17.Future<void>.value(),
@@ -1238,7 +1254,7 @@ class MockLanguageCubit extends _i1.Mock implements _i33.LanguageCubit {
   );
 
   @override
-  void onChange(_i25.Change<_i16.Locale>? change) => super.noSuchMethod(
+  void onChange(_i26.Change<_i16.Locale>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );

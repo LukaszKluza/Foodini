@@ -2,10 +2,12 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import UUID, Column, DateTime, event, func
+from sqlalchemy import UUID, Column, DateTime, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
+
+from ..core.db_listeners import register_timestamp_listeners
 
 if TYPE_CHECKING:
     from .meal_recipe_model import Meal
@@ -27,6 +29,4 @@ class MealIcon(SQLModel, table=True):
     meals: List["Meal"] = Relationship(back_populates="icon", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
 
 
-@event.listens_for(MealIcon, "before_update")
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
+register_timestamp_listeners([MealIcon])
