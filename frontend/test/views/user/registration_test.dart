@@ -143,7 +143,8 @@ void main() {
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Name is required'), findsNWidgets(2));
+    expect(find.text('Name is required'), findsOneWidget);
+    expect(find.text('Lastname is required'), findsOneWidget);
     expect(find.text('E-mail is required'), findsOneWidget);
     expect(find.text('Password is required'), findsOneWidget);
     expect(find.text('Select your country'), findsOneWidget);
