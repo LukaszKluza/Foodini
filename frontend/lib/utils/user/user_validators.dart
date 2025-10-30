@@ -22,6 +22,18 @@ String? validateName(String? value, BuildContext context) {
   return null;
 }
 
+String? validateLastname(String? value, BuildContext context) {
+  if (value == null || value.isEmpty) {
+    return AppLocalizations.of(context)!.requiredLastname;
+  }
+  if (value.length < 2 ||
+      value.length > 50 ||
+      !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+    return AppLocalizations.of(context)!.provideCorrectLastname;
+  }
+  return null;
+}
+
 String? validateEmail(String? value, BuildContext context) {
   if (value == null || value.isEmpty) {
     return AppLocalizations.of(context)!.requiredEmail;

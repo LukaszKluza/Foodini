@@ -63,7 +63,7 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
         sa_column=Column(ARRAY(Enum(DietaryRestriction))), default=[]
     )
     diet_goal_kg: float
-    meals_per_day: int = Field(ge=1, le=6)
+    meals_per_day: int = Field(ge=3, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
