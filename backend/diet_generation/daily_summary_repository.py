@@ -10,7 +10,7 @@ from backend.diet_generation.schemas import (
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
 )
-from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary, MealToDailySummary
+from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary, MealDailySummary
 
 
 class DailySummaryRepository:
@@ -25,7 +25,7 @@ class DailySummaryRepository:
 
         for meal_info in daily_meals_data.meals.values():
             if meal_info.meal_id is not None:
-                link = MealToDailySummary(
+                link = MealDailySummary(
                     meal_id=meal_info.meal_id,
                     daily_summary_id=user_daily_meals.id,
                     status=meal_info.status,
@@ -40,19 +40,15 @@ class DailySummaryRepository:
         query = (
             select(DailyMealsSummary)
             .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
-            .options(
-                selectinload(DailyMealsSummary.daily_meals)
-                .selectinload(MealToDailySummary.meal)
-                .selectinload(MealToDailySummary.meal)
-            )
+            .options(selectinload(DailyMealsSummary.daily_meals).selectinload(MealDailySummary.meal))
         )
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_to_daily_summary(self, daily_summary_id: UUID, meal_id: UUID) -> MealToDailySummary | None:
-        query = select(MealToDailySummary).where(
-            MealToDailySummary.daily_summary_id == daily_summary_id,
-            MealToDailySummary.meal_id == meal_id,
+    async def get_meal_daily_summary(self, daily_summary_id: UUID, meal_id: UUID) -> MealDailySummary | None:
+        query = select(MealDailySummary).where(
+            MealDailySummary.daily_summary_id == daily_summary_id,
+            MealDailySummary.meal_id == meal_id,
         )
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
@@ -69,12 +65,12 @@ class DailySummaryRepository:
             )
 
             await self.db.execute(
-                delete(MealToDailySummary).where(MealToDailySummary.daily_summary_id == user_daily_meals_summary.id)
+                delete(MealDailySummary).where(MealDailySummary.daily_summary_id == user_daily_meals_summary.id)
             )
 
             for meal_info in daily_meals_data.meals.values():
                 if meal_info.meal_id is not None:
-                    link = MealToDailySummary(
+                    link = MealDailySummary(
                         meal_id=meal_info.meal_id,
                         daily_summary_id=user_daily_meals_summary.id,
                         status=meal_info.status,
@@ -122,10 +118,10 @@ class DailySummaryRepository:
         if user_daily_meals_summary:
             summary_id = user_daily_meals_summary.id
             await self.db.execute(
-                update(MealToDailySummary)
+                update(MealDailySummary)
                 .where(
-                    MealToDailySummary.daily_summary_id == summary_id,
-                    MealToDailySummary.meal_id == meal_id,
+                    MealDailySummary.daily_summary_id == summary_id,
+                    MealDailySummary.meal_id == meal_id,
                 )
                 .values(status=new_status)
                 .execution_options(synchronize_session="fetch")
@@ -140,12 +136,13 @@ class DailySummaryRepository:
 
         if user_daily_meals_summary:
             for meal_info in meals.values():
-                if meal_info.meal_id is None:
-                    continue
-                link = MealToDailySummary(
-                    daily_summary_id=user_daily_meals_summary.id, meal_id=meal_info.meal_id, status=meal_info.status
-                )
-                self.db.add(link)
+                if meal_info.meal_id is not None:
+                    link = MealDailySummary(
+                        daily_summary_id=user_daily_meals_summary.id,
+                        meal_id=meal_info.meal_id,
+                        status=meal_info.status,
+                    )
+                    self.db.add(link)
             await self.db.commit()
             await self.db.refresh(user_daily_meals_summary)
             return user_daily_meals_summary
