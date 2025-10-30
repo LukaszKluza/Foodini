@@ -19,6 +19,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -30,6 +31,8 @@ late MockLanguageCubit mockLanguageCubit;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   late DietFormBloc dietFormBloc;
+  late UuidValue uuidUserId;
+  late UuidValue uuidDietPreferencesId;
 
   Widget buildTestWidget(
     Widget child, {
@@ -51,11 +54,13 @@ void main() {
     mockApiClient = MockApiClient();
     mockLanguageCubit = MockLanguageCubit();
     userDetailsRepository = UserDetailsRepository(mockApiClient);
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+    uuidDietPreferencesId = UuidValue.fromString('diet78c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     dietFormBloc = DietFormBloc(userDetailsRepository);
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -65,7 +70,21 @@ void main() {
   });
 
   tearDown(() {
-    dietFormBloc.close();
+    if (!dietFormBloc.isClosed) {
+      dietFormBloc.close().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () => debugPrint('Bloc.close() timed out'),
+      );
+    }
+  });
+
+  tearDownAll(() {
+    if (!dietFormBloc.isClosed) {
+      dietFormBloc.close().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () => debugPrint('Bloc.close() timed out'),
+      );
+    }
   });
 
   testWidgets('Profile details screen elements and navbar are displayed', (
@@ -87,7 +106,7 @@ void main() {
     'Correctly render Profile details screen elements when user have no filled profile details',
     (tester) async {
       // Given
-      when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
+      when(mockApiClient.getDietPreferences(uuidUserId)).thenAnswer((_) async {
         throw DioException(
           requestOptions: RequestOptions(path: Endpoints.dietPreferences),
           response: Response(
@@ -142,7 +161,7 @@ void main() {
     'Correctly render Profile details screen elements when user have filled profile details',
     (WidgetTester tester) async {
       // Given
-      when(mockApiClient.getDietPreferences(1)).thenAnswer((_) async {
+      when(mockApiClient.getDietPreferences(uuidUserId)).thenAnswer((_) async {
         return Response(
           data: {
             'weight_kg': 48.0,
@@ -153,10 +172,10 @@ void main() {
             'muscle_percentage': null,
             'dietary_restrictions': [],
             'water_percentage': null,
-            'user_id': 1,
+            'user_id': uuidUserId.uuid,
             'diet_goal_kg': 53.0,
             'fat_percentage': null,
-            'id': 1,
+            'id': uuidDietPreferencesId.uuid,
             'meals_per_day': 4,
             'created_at': '2025-09-01T18:26:45.241412Z',
             'gender': 'female',

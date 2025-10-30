@@ -18,6 +18,7 @@ import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
@@ -28,7 +29,10 @@ void main() {
   late MealRecipe mealRecipe;
   late MealIconInfo mealIconInfo;
   late LanguageCubit languageCubit;
-
+  late UuidValue uuidUserId;
+  late UuidValue uuidMealId;
+  late UuidValue uuidMealRecipeId;
+  late UuidValue uuidMealInfoId;
 
   Widget buildTestWidget(
     Widget child, {
@@ -49,15 +53,19 @@ void main() {
     languageCubit = LanguageCubit();
     SharedPreferences.setMockInitialValues({});
     mealRecipeBloc = MealRecipeBloc(mockMealRecipeRepository);
+    uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+    uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
+    uuidMealRecipeId = UuidValue.fromString('recipe13-bb44-5b37-90d9-5b0c9a4f1b87');
+    uuidMealInfoId = UuidValue.fromString('info678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     mealRecipe = MealRecipe(
-      id: 1,
-      mealRecipeId: 1,
+      id: uuidUserId,
+      mealRecipeId: uuidMealRecipeId,
       language: Language.en,
       mealName: 'Cornflakes with soy milk',
       mealType: MealType.breakfast,
       mealDescription: 'Cornflakes with soy milk; Meal description',
-      iconId: 1,
+      iconId: uuidMealInfoId,
       ingredients: Ingredients(
         ingredients: [
           Ingredient(
@@ -96,14 +104,14 @@ void main() {
     );
 
     mealIconInfo = MealIconInfo(
-      id: 1,
+      id: uuidMealInfoId,
       mealType: MealType.breakfast,
       iconPath: '/black-coffee-fried-egg-with-toasts.jpg',
     );
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -120,20 +128,20 @@ void main() {
   ) async {
     // Given
     when(
-      mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
+      mockMealRecipeRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
     ).thenAnswer((_) async => mealRecipe);
 
     when(
-      mockMealRecipeRepository.getMealIconInfo(1, MealType.breakfast),
+      mockMealRecipeRepository.getMealIconInfo(uuidUserId, MealType.breakfast),
     ).thenAnswer((_) async => mealIconInfo);
 
     // When
-    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
     await tester.pump(const Duration(milliseconds: 100));
 
     // Then
-    expect(find.byKey(const Key('bloc_1_EN')), findsOneWidget);
-    expect(find.byKey(const Key('body_1_EN')), findsOneWidget);
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
     expect(find.text('Cornflakes with soy milk'), findsOneWidget);
     expect(find.text('Meal description'), findsOneWidget);
     expect(
@@ -171,16 +179,16 @@ void main() {
   testWidgets('Meal recipe screen, server error', (WidgetTester tester) async {
     // Given
     when(
-      mockMealRecipeRepository.getMealRecipe(1, 1, Language.en),
+      mockMealRecipeRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
     ).thenThrow(ApiException({'detail': 'Server error'}, statusCode: 500));
 
     // When
-    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(const Key('bloc_1_EN')), findsOneWidget);
-    expect(find.byKey(const Key('body_1_EN')), findsOneWidget);
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
     expect(find.byKey(const Key('refresh_request_button')), findsOneWidget);
 
     expect(find.text('Cornflakes with soy milk'), findsNothing);
@@ -217,17 +225,17 @@ void main() {
 
   testWidgets('Meal recipe screen, 404 error', (WidgetTester tester) async {
     // Given
-    when(mockMealRecipeRepository.getMealRecipe(1, 1, Language.en)).thenThrow(
+    when(mockMealRecipeRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en)).thenThrow(
       ApiException({'detail': 'Meal recipe not found'}, statusCode: 404),
     );
 
     // When
-    await tester.pumpWidget(buildTestWidget(const MealRecipeScreen(mealId: 1)));
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.byKey(const Key('bloc_1_EN')), findsOneWidget);
-    expect(find.byKey(const Key('body_1_EN')), findsOneWidget);
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
     expect(
       find.byKey(const Key('redirect_to_main_page_button')),
       findsOneWidget,

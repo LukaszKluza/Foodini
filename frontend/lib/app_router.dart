@@ -13,6 +13,7 @@ import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart
 import 'package:frontend/views/screens/user_details/prediction_results_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid_value.dart';
 
 final TokenStorageService _storage = TokenStorageService();
 
@@ -56,7 +57,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/meal-recipe/:id',
       builder: (context, state) {
-        final id = int.parse(state.pathParameters['id']!);
+        final id = UuidValue.fromString(state.pathParameters['id']!);
         return MealRecipeScreen(mealId: id);
       },
       redirect: (context, state) {

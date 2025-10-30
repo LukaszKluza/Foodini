@@ -17,9 +17,12 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
+
+late UuidValue uuidUserId;
 
 late MockDio mockDio;
 late LoginBloc loginBloc;
@@ -53,6 +56,8 @@ void main() {
     loginBloc = LoginBloc(authRepository, mockTokenStorageService);
     SharedPreferences.setMockInitialValues({});
 
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+
     when(mockDio.interceptors).thenReturn(Interceptors());
     when(mockLanguageCubit.state).thenReturn(Locale(Language.en.code));
   });
@@ -77,7 +82,7 @@ void main() {
     // Given
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -87,7 +92,7 @@ void main() {
     when(mockApiClient.login(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'jan4@example.com',
           'access_token': 'access_token',
           'refresh_token': 'refresh_token',
@@ -97,10 +102,10 @@ void main() {
       ),
     );
 
-    when(mockApiClient.getUser(1)).thenAnswer(
+    when(mockApiClient.getUser(uuidUserId)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'jan4@example.com',
           'name': 'Jan',
           'language': 'pl',
@@ -143,7 +148,7 @@ void main() {
 
     var loggedUser = UserStorage().getUser;
     expect(loggedUser, isNotNull);
-    expect(loggedUser?.id, 1);
+    expect(loggedUser?.id, uuidUserId);
     expect(loggedUser?.email, 'jan4@example.com');
   });
 

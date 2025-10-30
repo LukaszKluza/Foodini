@@ -45,14 +45,6 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_meal_daily_summary(self, daily_summary_id: UUID, meal_id: UUID) -> MealDailySummary | None:
-        query = select(MealDailySummary).where(
-            MealDailySummary.daily_summary_id == daily_summary_id,
-            MealDailySummary.meal_id == meal_id,
-        )
-        result = await self.db.execute(query)
-        return result.scalar_one_or_none()
-
     async def update_daily_meals(
         self, user_id: UUID, daily_meals_data: DailyMealsCreate, day: date
     ) -> DailyMealsSummary | None:
