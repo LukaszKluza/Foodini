@@ -40,7 +40,11 @@ class UserStorage {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
     if (userJson != null) {
-      _user = UserResponse.fromJson(jsonDecode(userJson));
+      try {
+        _user = UserResponse.fromJson(jsonDecode(userJson));
+      } catch (_) {
+        removeUser();
+      }
     }
   }
 

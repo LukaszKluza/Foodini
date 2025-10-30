@@ -62,7 +62,7 @@ final GoRouter router = GoRouter(
       },
       redirect: (context, state) {
         try {
-          int.parse(state.pathParameters['id']!);
+          UuidValue.fromString(state.pathParameters['id']!);
           return _redirectIfUnauthenticated(context);
         } catch (_) {
           return '/.../meal-recipe/${state.pathParameters['id']}';

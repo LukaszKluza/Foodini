@@ -22,16 +22,11 @@ class LoginListenerHelper {
       var newLanguage = state.userResponse.language;
       context.read<LanguageCubit>().change(newLanguage);
 
-      Future.delayed(
-        const Duration(milliseconds: Constants.redirectionDelay),
-        () {
-          if (mounted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/main-page');
-            });
-          }
-        },
-      );
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.go('/main-page');
+        });
+      }
     } else if (state is AccountSuccessVerification ||
         state is ResendAccountVerificationSuccess) {
       setMessage(state.getMessage!(context));
