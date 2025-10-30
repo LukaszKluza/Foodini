@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/diet_generation/meal_status.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
-enum MealType { breakfast, lunch, dinner, snack }
 
 class Meal {
   final MealType type;
@@ -12,6 +12,7 @@ class Meal {
   final int carbs;
   final int fat;
   final int calories;
+  MealStatus mealStatus;
 
   Meal({
     required this.type,
@@ -20,7 +21,13 @@ class Meal {
     required this.carbs,
     required this.fat,
     required this.calories,
+    required this.mealStatus,
   });
+
+  @override
+  String toString() {
+    return '${type.nameStr} -> ${mealStatus.nameStr}';
+  }
 }
 
 class DailySummaryScreen extends StatefulWidget {
@@ -44,75 +51,112 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
       carbs: 6,
       fat: 5,
       calories: 350,
+      mealStatus: MealStatus.eaten,
     ),
     Meal(
-      type: MealType.lunch,
+      type: MealType.morningSnack,
       name: 'Grilled chicken salad',
       protein: 35,
       carbs: 10,
       fat: 8,
       calories: 420,
+      mealStatus: MealStatus.skipped,
     ),
     Meal(
-      type: MealType.dinner,
+      type: MealType.lunch,
       name: 'Pasta with tomato sauce',
       protein: 18,
       carbs: 60,
       fat: 9,
       calories: 550,
+      mealStatus: MealStatus.pending,
     ),
     Meal(
-      type: MealType.snack,
+      type: MealType.afternoonSnack,
       name: 'Protein bar',
       protein: 10,
       carbs: 15,
       fat: 5,
       calories: 200,
+      mealStatus: MealStatus.skipped,
     ),
+    Meal(
+      type: MealType.dinner,
+      name: 'Protein bar',
+      protein: 10,
+      carbs: 15,
+      fat: 5,
+      calories: 200,
+      mealStatus: MealStatus.toEat,
+    ),
+    // Meal(
+    //   type: MealType.eveningSnack,
+    //   name: 'Protein bar',
+    //   protein: 10,
+    //   carbs: 15,
+    //   fat: 5,
+    //   calories: 200,
+    // ),
   ];
+
+  void printMealsStatus() {
+    print('------------------------');
+    for (var meal in meals) {
+      print('${meal.type.nameStr} -> ${meal.mealStatus.nameStr}');
+    }
+  }
 
   Meal get activeMeal => meals.firstWhere((meal) => meal.type == selectedMeal);
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildCaloriesSummary(context),
+          child: Center(
+            child: Column(
+              children: [
+                _buildCaloriesSummary(context, screenWidth),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              _buildMealSelector(),
+                _buildMealSelector(context, screenWidth),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              _buildActiveMealCard(),
+                _buildActiveMealCard(context, screenWidth),
 
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildCaloriesSummary(BuildContext context) {
+  Widget _buildCaloriesSummary(BuildContext context, double screenWidth) {
     return OrientationBuilder(
       builder: (context, orientation) {
-        final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
-        final widgetHeight = min(40 + screenWidth * 0.25, screenWidth * 0.40);
+        final widgetHeight = min(
+          min(40 + screenWidth * 0.25, screenWidth * 0.40),
+          360.0,
+        );
 
         final double baseFontSize = widgetHeight * 0.18;
-        final double nutritionWidgetSize = screenWidth * 0.40;
+        final double nutritionWidgetSize = min(screenWidth * 0.40, 500);
 
         return Container(
           width: screenWidth,
           height: widgetHeight,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          padding: EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: max(10, screenWidth / 30),
+          ),
           decoration: BoxDecoration(
             color: Colors.orange[50],
             borderRadius: BorderRadius.circular(screenWidth * 0.05),
@@ -155,26 +199,23 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
               ),
               SizedBox(height: 8),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildNutritionRings(nutritionWidgetSize, 1.3, [
                     Color(0xFFFFD54F),
                     Color(0xFFFFCA28),
                     Color(0xFFFFB74D),
-                  ],Icons.bubble_chart),
-                  SizedBox(width: screenWidth * 0.05),
+                  ], Icons.bubble_chart),
                   _buildNutritionRings(nutritionWidgetSize, 0.9, [
                     Color(0xFF92CEFF),
                     Color(0xFF0687F6),
                     Color(0xFF068AF3),
                   ], Icons.opacity),
-                  SizedBox(width: screenWidth * 0.05),
                   _buildNutritionRings(nutritionWidgetSize, 0.6, [
                     Color(0xFF97FF9A),
                     Color(0xFF66F86D),
                     Color(0xFF3DAF43),
-                  ],Icons.fitness_center),
-                  SizedBox(width: screenWidth * 0.05),
+                  ], Icons.fitness_center),
                   _buildNutritionRings(nutritionWidgetSize, 0.3, [
                     Color(0xFFCE93D8),
                     Color(0xFFBA68C8),
@@ -189,34 +230,23 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     );
   }
 
-  Widget _buildMealSelector() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children:
-          MealType.values.map((mealType) {
-            final isSelected = mealType == selectedMeal;
-            IconData icon;
-            switch (mealType) {
-              case MealType.breakfast:
-                icon = Icons.free_breakfast;
-                break;
-              case MealType.lunch:
-                icon = Icons.rice_bowl;
-                break;
-              case MealType.dinner:
-                icon = Icons.dinner_dining;
-                break;
-              case MealType.snack:
-                icon = Icons.local_pizza;
-                break;
-            }
-
-            return GestureDetector(
-              onTap: () => setState(() => selectedMeal = mealType),
+  Widget _buildMealSelector(BuildContext context, double widgetWidth) {
+    return Container(
+      width: widgetWidth,
+      padding: EdgeInsets.symmetric(horizontal: max(10, widgetWidth / 30)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          for (var i = 0; i < meals.length; i++) ...[
+            GestureDetector(
+              onTap: () => setState(() => selectedMeal = meals[i].type),
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(widgetWidth / 60),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.orange[200] : Colors.white,
+                  color:
+                      meals[i].type == selectedMeal
+                          ? Colors.orange[200]
+                          : Colors.white,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -227,61 +257,153 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                   ],
                 ),
                 child: Icon(
-                  icon,
-                  color: isSelected ? Colors.deepOrange : Colors.grey,
-                  size: 32,
+                  meals[i].type.toIcon(),
+                  color:
+                      meals[i].type == selectedMeal
+                          ? Colors.deepOrange
+                          : Colors.grey,
+                  size: min(
+                    MealType.values.length * widgetWidth / (12 * meals.length),
+                    150,
+                  ),
                 ),
               ),
-            );
-          }).toList(),
-    );
-  }
-
-  Widget _buildActiveMealCard() {
-    final meal = activeMeal;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange[200],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _mealTypeToString(meal.type),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            meal.name,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          Text('P: ${meal.protein}g   C: ${meal.carbs}g   F: ${meal.fat}g'),
-          const SizedBox(height: 8),
-          Text('Calories: ${meal.calories} kcal'),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  String _mealTypeToString(MealType type) {
-    switch (type) {
-      case MealType.breakfast:
-        return 'Breakfast 9:00 - 10:30';
-      case MealType.lunch:
-        return 'Lunch 12:00 - 14:00';
-      case MealType.dinner:
-        return 'Dinner 18:00 - 20:00';
-      case MealType.snack:
-        return 'Snack';
-    }
+  // Chip makroskładnika
+  Widget _macroChip(String label, num value, String unitName, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        '$label: $value $unitName',
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 
-  Widget _buildNutritionRings(double ringSize, double percent, defaultColors, IconData icon) {
+  Widget _buildActiveMealCard(BuildContext context, double widgetWidth) {
+    final meal = activeMeal;
+
+    return Container(
+      width: widgetWidth,
+      padding: EdgeInsets.symmetric(
+        vertical: 15,
+        horizontal: max(10, widgetWidth / 30),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orange.shade300, Colors.deepOrange.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                meal.type.nameStr,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    meal.mealStatus = MealStatus.getNextStatus(meal, meals);
+                  });
+
+                  printMealsStatus();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${meal.name} oznaczony jako ${meal.mealStatus.name}!'),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.check_circle_outline),
+                label: Text(meal.mealStatus.name),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade400,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                meal.name,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white70,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => Container()),
+                  );
+                },
+                icon: const Icon(Icons.edit, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
+              const SizedBox(width: 8),
+              _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
+              const SizedBox(width: 8),
+              _macroChip('F', meal.fat, 'g', Colors.red.shade300),
+              const SizedBox(width: 8),
+              _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionRings(
+    double ringSize,
+    double percent,
+    defaultColors,
+    IconData icon,
+  ) {
     var exceededThresholdColors = [Color(0xFFF84300), Color(0xFFD50000)];
     var backgroundColor1 = Colors.grey.shade300;
     var backgroundColor2 = defaultColors[0];
@@ -314,11 +436,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                 center: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      icon,
-                      size: ringSize * 0.15,
-                      color: defaultColors[2],
-                    ),
+                    Icon(icon, size: ringSize * 0.15, color: defaultColors[2]),
                   ],
                 ),
               ),
