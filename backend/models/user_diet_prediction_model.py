@@ -2,11 +2,11 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, Numeric, func
+from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, func
 from sqlmodel import Field, Relationship, SQLModel
 
-from .types import FloatAsNumeric
 from ..core.db_listeners import register_timestamp_listeners
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .user_model import User

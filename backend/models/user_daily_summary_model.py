@@ -2,12 +2,12 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, Numeric, UniqueConstraint
+from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, UniqueConstraint
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
-from .types import FloatAsNumeric
 from ..core.db_listeners import register_timestamp_listeners
 from ..diet_generation.enums.meal_status import MealStatus
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .meal_recipe_model import Meal

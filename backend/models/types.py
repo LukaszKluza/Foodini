@@ -1,5 +1,7 @@
-from sqlalchemy.types import TypeDecorator, Numeric
 from decimal import Decimal
+
+from sqlalchemy.types import Numeric, TypeDecorator
+
 
 class FloatAsNumeric(TypeDecorator):
     impl = Numeric(10, 2)

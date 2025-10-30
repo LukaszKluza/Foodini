@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, UUID, CheckConstraint, Column, DateTime, Enum, ForeignKey, Numeric, func
+from sqlalchemy import ARRAY, UUID, CheckConstraint, Column, DateTime, Enum, ForeignKey, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
@@ -15,9 +15,9 @@ from backend.user_details.enums import (
     StressLevel,
 )
 from backend.user_details.mixins import DietGoalValidationMixin
-from .types import FloatAsNumeric
 
 from ..core.db_listeners import register_timestamp_listeners
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .user_model import User

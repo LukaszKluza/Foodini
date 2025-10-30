@@ -9,7 +9,6 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Index,
-    Numeric,
     UniqueConstraint,
     func,
 )
@@ -18,9 +17,9 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
 from backend.users.enums.language import Language
-from .types import FloatAsNumeric
 
 from ..core.db_listeners import register_timestamp_listeners
+from .types import FloatAsNumeric
 from .user_daily_summary_model import MealDailySummary
 
 if TYPE_CHECKING:
