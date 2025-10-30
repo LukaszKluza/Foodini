@@ -18,6 +18,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from backend.diet_generation.enums.meal_type import MealType
 from backend.users.enums.language import Language
+from .types import FloatAsNumeric
 
 from ..core.db_listeners import register_timestamp_listeners
 from .user_daily_summary_model import MealDailySummary
@@ -60,9 +61,9 @@ class Meal(SQLModel, table=True):
     meal_type: MealType = Field(nullable=False)
     icon_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meal_icons.id"), nullable=False))
     calories: int = Field(nullable=False, ge=0)
-    protein: float = Field(sa_column=Column(Numeric(10, 2)), ge=0)
-    fat: float = Field(sa_column=Column(Numeric(10, 2)), ge=0)
-    carbs: float = Field(sa_column=Column(Numeric(10, 2)), ge=0)
+    protein: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    carbs: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

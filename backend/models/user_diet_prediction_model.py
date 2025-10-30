@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, Numeric, func
 from sqlmodel import Field, Relationship, SQLModel
 
+from .types import FloatAsNumeric
 from ..core.db_listeners import register_timestamp_listeners
 
 if TYPE_CHECKING:
@@ -37,9 +38,9 @@ class UserDietPredictions(SQLModel, table=True):
     user: Optional["User"] = Relationship(
         back_populates="diet_predictions", sa_relationship_kwargs={"cascade": "all, delete"}
     )
-    protein: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
-    fat: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
-    carbs: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
+    protein: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
+    fat: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
+    carbs: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
     bmr: int = Field(ge=0)
     tdee: int = Field(ge=0)
     target_calories: int = Field(ge=0)

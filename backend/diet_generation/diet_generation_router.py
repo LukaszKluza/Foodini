@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 
@@ -27,7 +28,7 @@ async def get_meal_icon_info(
 
 @diet_generation_router.get("/meal-recipe/{meal_id}", response_model=MealRecipe | List[MealRecipe])
 async def get_meal_recipe_by_meal_id(
-    meal_id: int,
+    meal_id: UUID,
     language: Optional[Language] = Query(None),
     meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -40,7 +41,7 @@ async def get_meal_recipe_by_meal_id(
 
 @diet_generation_router.get("/meal-recipe", response_model=MealRecipe)
 async def get_meal_recipe_by_id(
-    recipe_id: int,
+    recipe_id: UUID,
     meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
