@@ -42,6 +42,8 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
   int eatenCalories = 350;
 
   MealType selectedMeal = MealType.breakfast;
+  final now = DateTime.now();
+  final other = DateTime(2025, 10, 31);
 
   final List<Meal> meals = [
     Meal(
@@ -64,7 +66,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     ),
     Meal(
       type: MealType.lunch,
-      name: 'Pasta with tomato sauce',
+      name: 'Pasta with very spicy tomato sauce',
       protein: 18,
       carbs: 60,
       fat: 9,
@@ -111,6 +113,11 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
+    final isActive =
+        (other.isAfter(now) ||
+            (now.year == other.year &&
+                now.month == other.month &&
+                now.day == other.day));
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -128,7 +135,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
 
                 const SizedBox(height: 16),
 
-                _buildActiveMealCard(context, screenWidth),
+                _buildActiveMealCard(context, screenWidth, isActive),
 
                 const SizedBox(height: 16),
               ],
@@ -275,12 +282,18 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     );
   }
 
-  // Chip makroskładnika
-  Widget _macroChip(String label, num value, String unitName, Color color) {
+  Widget _macroChip(
+    String label,
+    num value,
+    String unitName,
+    Color color, {
+    double? width,
+  }) {
     return Container(
+      width: width,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.8),
+        color: color.withAlpha(200),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
@@ -293,7 +306,11 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     );
   }
 
-  Widget _buildActiveMealCard(BuildContext context, double widgetWidth) {
+  Widget _buildActiveMealCard(
+    BuildContext context,
+    double widgetWidth,
+    bool isActive,
+  ) {
     final meal = activeMeal;
 
     return Container(
@@ -331,28 +348,83 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                   color: Colors.white,
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    meal.mealStatus = MealStatus.getNextStatus(meal, meals);
-                  });
+              Builder(
+                builder:
+                    (ctx) => ElevatedButton.icon(
+                      onPressed: () {
+                        if (isActive) {
+                          setState(() {
+                            meal.mealStatus = MealStatus.getNextStatus(
+                              meal,
+                              meals,
+                            );
+                          });
+                          ScaffoldMessenger.of(ctx).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${meal.name} oznaczony jako ${meal.mealStatus.name}!',
+                              ),
+                            ),
+                          );
+                        } else {
+                          final overlay = Overlay.of(ctx);
+                          final renderBox = ctx.findRenderObject() as RenderBox;
+                          final position = renderBox.localToGlobal(Offset.zero);
 
-                  printMealsStatus();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${meal.name} oznaczony jako ${meal.mealStatus.name}!'),
+                          OverlayEntry entry = OverlayEntry(
+                            builder:
+                                (_) => Positioned(
+                                  left:
+                                      position.dx - renderBox.size.width * 0.2,
+                                  top: position.dy - 60,
+                                  width: renderBox.size.width * 1.4,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        4,
+                                        8,
+                                        4,
+                                        8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        'Cannot edit past meals',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          );
+
+                          overlay.insert(entry);
+                          Future.delayed(
+                            const Duration(milliseconds: 800),
+                            () => entry.remove(),
+                          );
+                        }
+                      },
+                      icon:
+                          meal.mealStatus == MealStatus.eaten
+                              ? const Icon(Icons.check_circle_outline)
+                              : null,
+                      label: Text(meal.mealStatus.name),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isActive ? Colors.green.shade400 : Colors.grey,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
-                  );
-                },
-                icon: const Icon(Icons.check_circle_outline),
-                label: Text(meal.mealStatus.name),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade400,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
               ),
             ],
           ),
@@ -360,38 +432,71 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                meal.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white70,
+              Expanded(
+                child: Text(
+                  meal.name,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white70,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => Container()),
-                  );
-                },
-                icon: const Icon(Icons.edit, color: Colors.white),
-              ),
+              if (meal.mealStatus != MealStatus.skipped && isActive)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Container()),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 12),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
-              const SizedBox(width: 8),
-              _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
-              const SizedBox(width: 8),
-              _macroChip('F', meal.fat, 'g', Colors.red.shade300),
-              const SizedBox(width: 8),
-              _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth >= 320) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
+                        const SizedBox(width: 8),
+                        _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
+                        const SizedBox(width: 8),
+                        _macroChip('F', meal.fat, 'g', Colors.red.shade300),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300),
+                      ],
+                    ),
+                  ],
+                );
+              } else {
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
+                    _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
+                    _macroChip('F', meal.fat, 'g', Colors.red.shade300),
+                    _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300, width: double.infinity),
+                  ],
+                );
+              }
+            },
           ),
         ],
       ),
