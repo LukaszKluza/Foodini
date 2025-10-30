@@ -11,7 +11,6 @@ from sqlalchemy import (
     Index,
     Numeric,
     UniqueConstraint,
-    event,
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -20,6 +19,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from backend.diet_generation.enums.meal_type import MealType
 from backend.users.enums.language import Language
 
+from ..core.db_listeners import register_timestamp_listeners
 from .user_daily_summary_model import MealDailySummary
 
 if TYPE_CHECKING:
@@ -105,9 +105,4 @@ class MealRecipe(SQLModel, table=True):
     meal: "Meal" = Relationship(back_populates="recipes", sa_relationship_kwargs={"cascade": "all, delete"})
 
 
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
-
-
-event.listen(Meal, "before_update", update_timestamps)
-event.listen(MealRecipe, "before_update", update_timestamps)
+register_timestamp_listeners([Meal, MealRecipe])

@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, UUID, CheckConstraint, Column, DateTime, Enum, ForeignKey, Numeric, event, func
+from sqlalchemy import ARRAY, UUID, CheckConstraint, Column, DateTime, Enum, ForeignKey, Numeric, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
@@ -15,6 +15,8 @@ from backend.user_details.enums import (
     StressLevel,
 )
 from backend.user_details.mixins import DietGoalValidationMixin
+
+from ..core.db_listeners import register_timestamp_listeners
 
 if TYPE_CHECKING:
     from .user_model import User
@@ -83,6 +85,4 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
         return age
 
 
-@event.listens_for(UserDetails, "before_update")
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
+register_timestamp_listeners([UserDetails])

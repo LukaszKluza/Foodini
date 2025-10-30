@@ -2,8 +2,10 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, Numeric, event, func
+from sqlalchemy import UUID, CheckConstraint, Column, DateTime, ForeignKey, Index, Numeric, func
 from sqlmodel import Field, Relationship, SQLModel
+
+from ..core.db_listeners import register_timestamp_listeners
 
 if TYPE_CHECKING:
     from .user_model import User
@@ -49,6 +51,4 @@ class UserDietPredictions(SQLModel, table=True):
     )
 
 
-@event.listens_for(UserDietPredictions, "before_update")
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
+register_timestamp_listeners([UserDietPredictions])

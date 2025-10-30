@@ -2,9 +2,10 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, Numeric, UniqueConstraint, event
+from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, Numeric, UniqueConstraint
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
+from ..core.db_listeners import register_timestamp_listeners
 from ..diet_generation.enums.meal_status import MealStatus
 
 if TYPE_CHECKING:
@@ -107,9 +108,4 @@ class DailyMacrosSummary(SQLModel, table=True):
     )
 
 
-def update_timestamps(mapper, connection, target):
-    target.updated_at = datetime.now()
-
-
-event.listen(DailyMealsSummary, "before_update", update_timestamps)
-event.listen(DailyMacrosSummary, "before_update", update_timestamps)
+register_timestamp_listeners([DailyMealsSummary, DailyMacrosSummary])
