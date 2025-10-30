@@ -1,4 +1,5 @@
 from datetime import datetime
+from uuid import UUID
 
 from fastapi import HTTPException, status
 from pydantic import EmailStr
@@ -45,7 +46,7 @@ class UserValidationService:
 
         return user
 
-    async def ensure_user_exists_by_id(self, user_id: int) -> User:
+    async def ensure_user_exists_by_id(self, user_id: UUID) -> User:
         user = await self.user_repository.get_user_by_id(user_id)
         if not user:
             raise NotFoundInDatabaseException("User not found")

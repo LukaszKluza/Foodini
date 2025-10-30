@@ -2,11 +2,12 @@ import uuid
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, Numeric, UniqueConstraint
+from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, UniqueConstraint
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
 from ..core.db_listeners import register_timestamp_listeners
 from ..diet_generation.enums.meal_status import MealStatus
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .meal_recipe_model import Meal
@@ -56,9 +57,9 @@ class DailyMealsSummary(SQLModel, table=True):
     day: date = Field(nullable=False)
 
     target_calories: int = Field(nullable=False, ge=0)
-    target_protein: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
-    target_carbs: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
-    target_fat: float = Field(sa_column=Column(Numeric(10, 2), nullable=False), ge=0)
+    target_protein: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
+    target_carbs: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
+    target_fat: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
@@ -94,9 +95,9 @@ class DailyMacrosSummary(SQLModel, table=True):
     day: date = Field(nullable=False)
 
     calories: int = Field(default=0, nullable=False, ge=0)
-    protein: float = Field(sa_column=Column(Numeric(10, 2), default=0, nullable=False), ge=0)
-    carbs: float = Field(sa_column=Column(Numeric(10, 2), default=0, nullable=False), ge=0)
-    fat: float = Field(sa_column=Column(Numeric(10, 2), default=0, nullable=False), ge=0)
+    protein: float = Field(sa_column=Column(FloatAsNumeric, default=0, nullable=False), ge=0)
+    carbs: float = Field(sa_column=Column(FloatAsNumeric, default=0, nullable=False), ge=0)
+    fat: float = Field(sa_column=Column(FloatAsNumeric, default=0, nullable=False), ge=0)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
