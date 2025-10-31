@@ -2,15 +2,11 @@ from typing import List
 from uuid import UUID
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.meal_icons_repository import MealIconsRepository
-from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.diet_generation.meal_repository import MealRepository
-from backend.diet_generation.schemas import MealRecipeResponse
-from backend.models import MealIcon, MealRecipe
 from backend.meals.enums.meal_type import MealType
 from backend.meals.repositories.meal_icons_repository import MealIconsRepository
 from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
+from backend.meals.repositories.meal_repository import MealRepository
+from backend.meals.schemas import MealRecipeResponse
 from backend.models import Meal, MealIcon, MealRecipe
 from backend.users.enums.language import Language
 

@@ -4,7 +4,7 @@ from sqlalchemy import delete, func, select
 from sqlmodel import SQLModel
 
 from backend.core.database import engine, get_db
-from backend.diet_generation.test.test_data import MEAL_ICONS, MEAL_RECIPES
+from backend.meals.test.test_data import MEAL_ICONS, MEAL_RECIPES
 from backend.models import MealIcon, MealRecipe
 
 

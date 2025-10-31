@@ -13,9 +13,9 @@ from backend.daily_summary.schemas import (
     DailyMealsCreate,
     MealInfoUpdateRequest,
 )
-from backend.diet_generation.test.test_data import MEAL_ICON_ID, MEAL_ID
 from backend.meals.enums.meal_type import MealType
 from backend.meals.schemas import MealCreate
+from backend.meals.test.test_data import MEAL_ID, MEAL_ICON_ID
 
 with patch.dict(sys.modules, {"backend.diet_generation.daily_summary_repository": MagicMock()}):
     from backend.daily_summary.daily_summary_service import DailySummaryService

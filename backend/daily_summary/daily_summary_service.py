@@ -1,4 +1,5 @@
 from datetime import date
+from typing import List
 from uuid import UUID
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
