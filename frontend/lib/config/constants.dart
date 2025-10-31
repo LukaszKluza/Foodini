@@ -8,8 +8,9 @@ class Constants {
   static const double minHeight = 60;
   static const double maxHeight = 230;
   static const double defaultHeight = 175;
+  static const int minMealsPerDay = 3;
   static const int maxMealsPerDay = 6;
-  static const int defaultMealsPerDay = 3;
+  static const int defaultMealsPerDay = 4;
   static const String mainFoodiniIcon = 'assets/icons/icon_14.png';
 
   static const double defaultMusclePercentage = 45;

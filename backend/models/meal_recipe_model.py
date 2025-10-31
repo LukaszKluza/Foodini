@@ -1,12 +1,30 @@
+import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import Column, DateTime, func
+from sqlalchemy import (
+    UUID,
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    Index,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from backend.meals.enums.meal_type import MealType
 from backend.users.enums.language import Language
+
+from ..core.db_listeners import register_timestamp_listeners
+from .types import FloatAsNumeric
+from .user_daily_summary_model import MealDailySummary
+
+if TYPE_CHECKING:
+    from .meal_icon_model import MealIcon
+    from .user_daily_summary_model import DailyMealsSummary
 
 
 class Ingredient(SQLModel):
@@ -27,29 +45,55 @@ class Step(SQLModel):
 
 
 class Meal(SQLModel, table=True):
-    __tablename__ = "meal"
+    __tablename__ = "meals"
+    __table_args__ = (
+        Index("ix_meal_type", "meal_type"),
+        CheckConstraint("calories >= 0", name="ck_calories_nonnegative"),
+        CheckConstraint("protein >= 0", name="ck_protein_nonnegative"),
+        CheckConstraint("carbs >= 0", name="ck_carbs_nonnegative"),
+        CheckConstraint("fat >= 0", name="ck_fat_nonnegative"),
+    )
 
-    id: int = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    )
     meal_type: MealType = Field(nullable=False)
-    icon_id: int = Field(nullable=False)
+    icon_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meal_icons.id"), nullable=False))
     calories: int = Field(nullable=False, ge=0)
-    protein: int = Field(ge=0)
-    fat: int = Field(ge=0)
-    carbs: int = Field(ge=0)
+    protein: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    carbs: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
+    recipes: List["MealRecipe"] = Relationship(back_populates="meal", cascade_delete=True)
+    icon: Optional["MealIcon"] = Relationship(back_populates="meals", sa_relationship_kwargs={"cascade": "save-update"})
+    daily_meals: List["MealDailySummary"] = Relationship(back_populates="meal", cascade_delete=True)
+    daily_summary: List["DailyMealsSummary"] = Relationship(
+        back_populates="meals",
+        link_model=MealDailySummary,
+        sa_relationship_kwargs={"overlaps": "daily_meals,daily_summary"},
+    )
+
 
 class MealRecipe(SQLModel, table=True):
     __tablename__ = "meal_recipes"
+    __table_args__ = (
+        UniqueConstraint("meal_id", "language", name="uq_recipe_meal_language"),
+        Index("ix_meal_recipe_meal_id", "meal_id"),
+    )
 
-    id: int = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    )
     # Can be duplicated for the same recipe but different language
-    meal_id: int = Field(nullable=False, index=True)
-    meal_name: str = Field(nullable=False)
+    meal_id: uuid.UUID = Field(
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False)
+    )
     language: Language = Field(default=Language.EN, nullable=False)
+    meal_name: str = Field(nullable=False)
     meal_description: str = Field(nullable=False)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
     steps: List[Step] = Field(sa_column=Column(JSONB, nullable=False))
@@ -57,3 +101,8 @@ class MealRecipe(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    meal: "Meal" = Relationship(back_populates="recipes", sa_relationship_kwargs={"cascade": "all, delete"})
+
+
+register_timestamp_listeners([Meal, MealRecipe])

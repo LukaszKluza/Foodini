@@ -1,4 +1,5 @@
 from typing import Any, Sequence
+from uuid import UUID
 
 from sqlalchemy import Row, RowMapping, select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -12,11 +13,7 @@ class MealRecipesRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_meal_recipe_by_recipe_id(self, recipe_id: int) -> MealRecipe | None:
-        result = await self.db.get(MealRecipe, recipe_id)
-        return result
-
-    async def get_meal_recipes_by_meal_id(self, meal_id: int) -> Sequence[Row[Any] | RowMapping | Any]:
+    async def get_meal_recipes_by_meal_id(self, meal_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
         query = select(MealRecipe).where(MealRecipe.meal_id == meal_id)
         result = await self.db.execute(query)
 
@@ -25,13 +22,13 @@ class MealRecipesRepository:
             await self._map_meal_recipe(row)
         return rows
 
-    async def get_meal_recipe_by_meal_id_and_language(self, meal_id: int, language: Language) -> MealRecipe | None:
+    async def get_meal_recipe_by_meal_id_and_language(self, meal_id: UUID, language: Language) -> MealRecipe | None:
         query = select(MealRecipe).where((MealRecipe.meal_id == meal_id) & (MealRecipe.language == language))
         result = await self.db.execute(query)
 
         return await self._map_meal_recipe(result.scalars().one_or_none())
 
-    async def get_meal_by_id(self, meal_id: int) -> Meal | None:
+    async def get_meal_by_id(self, meal_id: UUID) -> Meal | None:
         result = await self.db.get(Meal, meal_id)
         return result
 

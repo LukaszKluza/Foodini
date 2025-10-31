@@ -1,4 +1,5 @@
 from datetime import date
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 
@@ -78,7 +79,7 @@ async def add_custom_meal(
 
 @daily_summary_router.get("/meal/{meal_id}", response_model=MealCreate)
 async def get_meal_details(
-    meal_id: int,
+    meal_id: UUID,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):

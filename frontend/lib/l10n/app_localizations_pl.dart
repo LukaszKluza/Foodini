@@ -36,7 +36,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredName => 'Imię jest wymagane';
 
   @override
+  String get requiredLastname => 'Nazwisko jest wymagane';
+
+  @override
   String get provideCorrectName => 'Podaj poprawne imię';
+
+  @override
+  String get provideCorrectLastname => 'Podaj poprawne nazwisko';
 
   @override
   String get requiredCountry => 'Wybierz kraj';

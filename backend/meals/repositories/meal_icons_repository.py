@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -9,7 +11,7 @@ class MealIconsRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_meal_icon_by_id(self, meal_icon_id: int) -> MealIcon | None:
+    async def get_meal_icon_by_id(self, meal_icon_id: UUID) -> MealIcon | None:
         return await self.db.get(MealIcon, meal_icon_id)
 
     async def get_meal_icon_by_type(self, meal_type: MealType) -> MealIcon | None:

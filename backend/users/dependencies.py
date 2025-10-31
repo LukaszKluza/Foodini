@@ -1,3 +1,5 @@
+from uuid import UUID
+
 import redis.asyncio as aioredis
 from fastapi import Depends, Query, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -74,7 +76,7 @@ async def get_token_payload(
 
 
 async def get_auth_dependency(
-    user_id: int = Query(...),
+    user_id: UUID = Query(...),
     credentials: HTTPAuthorizationCredentials = Security(security),
     user_validators: UserValidationService = Depends(get_user_validators),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
