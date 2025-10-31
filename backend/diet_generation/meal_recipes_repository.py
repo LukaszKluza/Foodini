@@ -14,6 +14,7 @@ class MealRecipesRepository:
         self.db = db
 
     async def get_meal_recipe_by_recipe_id(self, recipe_id: UUID) -> MealRecipe | None:
+        print(recipe_id)
         result = await self.db.get(MealRecipe, recipe_id)
         return result
 
