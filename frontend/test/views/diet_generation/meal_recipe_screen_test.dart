@@ -6,7 +6,6 @@ import 'package:frontend/blocs/diet_generation/meal_recipe_bloc.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
-import 'package:frontend/models/diet_generation/meal_icon_info.dart';
 import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/step.dart';
@@ -27,12 +26,10 @@ MockMealRecipeRepository mockMealRecipeRepository = MockMealRecipeRepository();
 void main() {
   late MealRecipeBloc mealRecipeBloc;
   late MealRecipe mealRecipe;
-  late MealIconInfo mealIconInfo;
   late LanguageCubit languageCubit;
   late UuidValue uuidUserId;
   late UuidValue uuidMealId;
   late UuidValue uuidMealRecipeId;
-  late UuidValue uuidMealInfoId;
 
   Widget buildTestWidget(
     Widget child, {
@@ -56,16 +53,15 @@ void main() {
     uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealRecipeId = UuidValue.fromString('recipe13-bb44-5b37-90d9-5b0c9a4f1b87');
-    uuidMealInfoId = UuidValue.fromString('info678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     mealRecipe = MealRecipe(
       id: uuidUserId,
       mealRecipeId: uuidMealRecipeId,
       language: Language.en,
       mealName: 'Cornflakes with soy milk',
+      iconPath: '/black-coffee-fried-egg-with-toasts.jpg',
       mealType: MealType.breakfast,
       mealDescription: 'Cornflakes with soy milk; Meal description',
-      iconId: uuidMealInfoId,
       ingredients: Ingredients(
         ingredients: [
           Ingredient(
@@ -103,12 +99,6 @@ void main() {
       ],
     );
 
-    mealIconInfo = MealIconInfo(
-      id: uuidMealInfoId,
-      mealType: MealType.breakfast,
-      iconPath: '/black-coffee-fried-egg-with-toasts.jpg',
-    );
-
     UserStorage().setUser(
       UserResponse(
         id: uuidUserId,
@@ -130,10 +120,6 @@ void main() {
     when(
       mockMealRecipeRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
     ).thenAnswer((_) async => mealRecipe);
-
-    when(
-      mockMealRecipeRepository.getMealIconInfo(uuidUserId, MealType.breakfast),
-    ).thenAnswer((_) async => mealIconInfo);
 
     // When
     await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
