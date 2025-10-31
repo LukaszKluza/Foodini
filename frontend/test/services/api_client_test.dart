@@ -9,6 +9,7 @@ import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -16,10 +17,13 @@ void main() {
   late MockDio mockDio;
   late MockTokenStorageService mockTokenStorage;
   late ApiClient apiClient;
+  late UuidValue uuidUserId;
 
   setUp(() {
     mockDio = MockDio();
     mockTokenStorage = MockTokenStorageService();
+
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     apiClient = ApiClient(mockDio, mockTokenStorage);
@@ -65,7 +69,6 @@ void main() {
   });
 
   test('should call logout endpoint with correct user id', () async {
-    const userId = 2;
     final url = Endpoints.logout;
 
     final expectedResponse = Response(
@@ -77,32 +80,31 @@ void main() {
     when(
       mockDio.get(
         url,
-        queryParameters: {'user_id': userId},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.logout(userId);
+    final response = await apiClient.logout(uuidUserId);
 
     expect(response.statusCode, 204);
 
     verify(
       mockDio.get(
         url,
-        queryParameters: {'user_id': userId},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
   });
 
   test('should throw if logout returns error status code', () async {
-    const userId = 2;
     final url = Endpoints.logout;
 
     when(
       mockDio.get(
         url,
-        queryParameters: {'user_id': userId},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenThrow(
@@ -118,7 +120,7 @@ void main() {
     );
 
     expect(
-      () async => await apiClient.logout(userId),
+      () async => await apiClient.logout(uuidUserId),
       throwsA(isA<DioException>()),
     );
   });
@@ -128,7 +130,7 @@ void main() {
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -151,12 +153,12 @@ void main() {
     when(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.refreshTokens(1);
+    final response = await apiClient.refreshTokens(uuidUserId);
 
     expect(response.statusCode, 200);
     expect(response.data['access_token'], 'new-access-token');
@@ -164,7 +166,7 @@ void main() {
     verify(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: argThat(
           predicate<Options>(
             (opt) =>
@@ -179,19 +181,19 @@ void main() {
   test('should call getUser with requiresAuth set to true', () async {
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: Endpoints.users),
-      data: {'id': 1, 'name': 'Jane', 'email': 'jane@example.com'},
+      data: {'id': uuidUserId.uuid, 'name': 'Jane', 'email': 'jane@example.com'},
       statusCode: 200,
     );
 
     when(
       mockDio.get(
         Endpoints.users,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.getUser(1);
+    final response = await apiClient.getUser(uuidUserId);
 
     expect(response.statusCode, 200);
     expect(response.data['email'], 'jane@example.com');
@@ -199,7 +201,7 @@ void main() {
     verify(
       mockDio.get(
         Endpoints.users,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: argThat(
           predicate<Options>((opt) => opt.extra?['requiresAuth'] == true),
           named: 'options',
@@ -271,8 +273,6 @@ void main() {
   });
 
   test('should call delete endpoint with correct user id', () async {
-    const userId = 42;
-
     final expectedResponse = Response(
       requestOptions: RequestOptions(path: Endpoints.users),
       statusCode: 204,
@@ -281,19 +281,19 @@ void main() {
     when(
       mockDio.delete(
         Endpoints.users,
-        queryParameters: {'user_id': userId},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer((_) async => expectedResponse);
 
-    final response = await apiClient.delete(userId);
+    final response = await apiClient.delete(uuidUserId);
 
     expect(response.statusCode, 204);
 
     verify(
       mockDio.delete(
         Endpoints.users,
-        queryParameters: {'user_id': userId},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);

@@ -1,4 +1,5 @@
 import datetime
+from uuid import UUID
 
 from pydantic import EmailStr
 from sqlalchemy.future import select
@@ -20,7 +21,7 @@ class UserRepository:
         await self.db.refresh(user)
         return user
 
-    async def get_user_by_id(self, user_id: int) -> User | None:
+    async def get_user_by_id(self, user_id: UUID) -> User | None:
         return await self.db.get(User, user_id)
 
     async def get_user_by_email(self, email: EmailStr) -> User:
@@ -28,7 +29,7 @@ class UserRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def update_user(self, user_id: int, user_data: UserUpdate) -> User | None:
+    async def update_user(self, user_id: UUID, user_data: UserUpdate) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             update_fields = user_data.model_dump(exclude_unset=True)
@@ -39,7 +40,7 @@ class UserRepository:
             return user
         return None
 
-    async def change_language(self, user_id: int, language: Language) -> User | None:
+    async def change_language(self, user_id: UUID, language: Language) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.language = language.value
@@ -49,7 +50,7 @@ class UserRepository:
             return updated_user
         return None
 
-    async def update_password(self, user_id: int, new_password: str, current_datetime: datetime) -> User | None:
+    async def update_password(self, user_id: UUID, new_password: str, current_datetime: datetime) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             user.password = new_password
@@ -59,7 +60,7 @@ class UserRepository:
             return user
         return None
 
-    async def delete_user(self, user_id: int) -> User | None:
+    async def delete_user(self, user_id: UUID) -> User | None:
         user = await self.get_user_by_id(user_id)
         if user:
             await self.db.delete(user)

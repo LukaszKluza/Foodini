@@ -9,8 +9,6 @@ class MealInfoMixin:
         meal_id = values.meal_id
         custom_name = values.custom_name
 
-        if meal_id is not None and custom_name is not None:
-            raise ValueErrorException("You cannot set both 'meal_id' and 'custom_name' at the same time.")
         if meal_id is None and custom_name is None:
             raise ValueErrorException("You must set either 'meal_id' or 'custom_name'.")
         return values

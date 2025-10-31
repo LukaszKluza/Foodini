@@ -1,8 +1,10 @@
+import 'package:uuid/uuid_value.dart';
+
 class ChangePasswordRequest {
   final String email;
   final String newPassword;
   final String token;
-  final int? id;
+  final UuidValue? id;
 
   ChangePasswordRequest({
     required this.email,
@@ -15,6 +17,6 @@ class ChangePasswordRequest {
     'email': email,
     'password': newPassword,
     'token': token,
-    'id': id,
+    'id': id?.uuid,
   };
 }

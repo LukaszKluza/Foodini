@@ -122,7 +122,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
                 ),
-                validator: (value) => validateName(value, context),
+                validator: (value) => validateLastname(value, context),
               ),
               TextFormField(
                 key: Key('country'),

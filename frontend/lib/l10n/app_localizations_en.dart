@@ -36,7 +36,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredName => 'Name is required';
 
   @override
+  String get requiredLastname => 'Lastname is required';
+
+  @override
   String get provideCorrectName => 'Provide correct name';
+
+  @override
+  String get provideCorrectLastname => 'Provide correct lastname';
 
   @override
   String get requiredCountry => 'Select your country';

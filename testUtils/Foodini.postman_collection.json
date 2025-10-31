@@ -720,7 +720,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 2,\n      \"status\": \"toEat\"\n    },\n    \"lunch\": {\n      \"meal_id\": 1,\n      \"status\": \"toEat\"\n    },\n    \"dinner\": {\n      \"meal_id\": 3,\n      \"status\": \"toEat\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fat\": 70\n}"
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 2,\n      \"status\": \"to_eat\"\n    },\n    \"lunch\": {\n      \"meal_id\": 1,\n      \"status\": \"toEat\"\n    },\n    \"dinner\": {\n      \"meal_id\": 3,\n      \"status\": \"toEat\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fat\": 70\n}"
 						},
 						"url": {
 							"raw": "{{foodiniUrl}}/v1/daily_summary/meals?user_id={{userId}}",

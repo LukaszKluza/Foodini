@@ -12,6 +12,7 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -20,6 +21,7 @@ late AccountBloc accountBloc;
 late ApiClient apiClient;
 late UserRepository authRepository;
 late MockTokenStorageService mockTokenStorageService;
+late UuidValue uuidUserId;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
@@ -41,6 +43,8 @@ void main() {
 
     authRepository = UserRepository(apiClient);
     accountBloc = AccountBloc(authRepository, mockTokenStorageService);
+
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
   });
 
   testWidgets('Should retry when access token revoke', (
@@ -48,7 +52,7 @@ void main() {
   ) async {
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -58,7 +62,7 @@ void main() {
     when(
       mockDio.get(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenThrow(
@@ -67,7 +71,7 @@ void main() {
         response: Response(
           requestOptions: RequestOptions(
             path: Endpoints.logout,
-            queryParameters: {'user_id': 1},
+            queryParameters: {'user_id': uuidUserId.uuid},
           ),
           statusCode: 401,
           data: 'Unauthorized',
@@ -83,7 +87,7 @@ void main() {
     when(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer(
@@ -100,7 +104,7 @@ void main() {
     when(
       mockDio.request(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer(
@@ -112,7 +116,7 @@ void main() {
 
     // When
     try {
-      await apiClient.logout(1);
+      await apiClient.logout(uuidUserId);
     } catch (e) {
       expect(e, isA<DioException>());
       final handler = MockErrorInterceptorHandler();
@@ -127,7 +131,7 @@ void main() {
     verify(
       mockDio.get(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
@@ -135,7 +139,7 @@ void main() {
     verify(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
@@ -143,7 +147,7 @@ void main() {
     verify(
       mockDio.request(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);

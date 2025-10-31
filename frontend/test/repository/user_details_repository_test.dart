@@ -12,6 +12,7 @@ import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:mockito/mockito.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -21,7 +22,7 @@ void main() {
   late DietForm testDietForm;
   late Macros testMacros;
   late PredictedCalories testCalories;
-  const testUserId = 1;
+  late UuidValue uuidUserId;
 
   setUp(() {
     mockApiClient = MockApiClient();
@@ -54,6 +55,8 @@ void main() {
       dietDurationDays: 30,
       predictedMacros: testMacros,
     );
+
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
   });
 
   group('submitDietForm', () {
@@ -68,10 +71,10 @@ void main() {
           ),
         );
 
-        await repository.submitDietForm(testDietForm, testUserId);
+        await repository.submitDietForm(testDietForm, uuidUserId);
 
         verify(
-          mockApiClient.submitDietForm(testDietForm, testUserId),
+          mockApiClient.submitDietForm(testDietForm, uuidUserId),
         ).called(1);
       },
     );
@@ -89,7 +92,7 @@ void main() {
       when(mockApiClient.submitDietForm(any, any)).thenThrow(dioError);
 
       expect(
-        () => repository.submitDietForm(testDietForm, testUserId),
+        () => repository.submitDietForm(testDietForm, uuidUserId),
         throwsA(isA<ApiException>()),
       );
     });
@@ -100,7 +103,7 @@ void main() {
       ).thenThrow(Exception('Network error'));
 
       expect(
-        () => repository.submitDietForm(testDietForm, testUserId),
+        () => repository.submitDietForm(testDietForm, uuidUserId),
         throwsA(isA<Exception>()),
       );
     });
@@ -116,11 +119,11 @@ void main() {
         ),
       );
 
-      final result = await repository.getDietPreferences(testUserId);
+      final result = await repository.getDietPreferences(uuidUserId);
 
       expect(result.gender, equals(testDietForm.gender));
       expect(result.height, equals(testDietForm.height));
-      verify(mockApiClient.getDietPreferences(testUserId)).called(1);
+      verify(mockApiClient.getDietPreferences(uuidUserId)).called(1);
     });
 
     test('should throw ApiException on DioException', () async {
@@ -136,7 +139,7 @@ void main() {
       when(mockApiClient.getDietPreferences(any)).thenThrow(dioError);
 
       expect(
-        () => repository.getDietPreferences(testUserId),
+        () => repository.getDietPreferences(uuidUserId),
         throwsA(isA<ApiException>()),
       );
     });
@@ -154,10 +157,10 @@ void main() {
           ),
         );
 
-        await repository.submitMacrosChange(testMacros, testUserId);
+        await repository.submitMacrosChange(testMacros, uuidUserId);
 
         verify(
-          mockApiClient.submitMacrosChange(testMacros, testUserId),
+          mockApiClient.submitMacrosChange(testMacros, uuidUserId),
         ).called(1);
       },
     );
@@ -176,7 +179,7 @@ void main() {
       when(mockApiClient.submitMacrosChange(any, any)).thenThrow(dioError);
 
       expect(
-        () => repository.submitMacrosChange(testMacros, testUserId),
+        () => repository.submitMacrosChange(testMacros, uuidUserId),
         throwsA(isA<ApiException>()),
       );
     });
@@ -194,14 +197,14 @@ void main() {
           ),
         );
 
-        final result = await repository.addCaloriesPrediction(testUserId);
+        final result = await repository.addCaloriesPrediction(uuidUserId);
 
         expect(result.bmr, equals(testCalories.bmr));
         expect(
           result.predictedMacros.protein,
           equals(testCalories.predictedMacros.protein),
         );
-        verify(mockApiClient.addCaloriesPrediction(testUserId)).called(1);
+        verify(mockApiClient.addCaloriesPrediction(uuidUserId)).called(1);
       },
     );
 
@@ -219,7 +222,7 @@ void main() {
       when(mockApiClient.addCaloriesPrediction(any)).thenThrow(dioError);
 
       expect(
-        () => repository.addCaloriesPrediction(testUserId),
+        () => repository.addCaloriesPrediction(uuidUserId),
         throwsA(isA<ApiException>()),
       );
     });
@@ -237,11 +240,11 @@ void main() {
           ),
         );
 
-        final result = await repository.getCaloriesPrediction(testUserId);
+        final result = await repository.getCaloriesPrediction(uuidUserId);
 
         expect(result.tdee, equals(testCalories.tdee));
         expect(result.targetCalories, equals(testCalories.targetCalories));
-        verify(mockApiClient.getCaloriesPrediction(testUserId)).called(1);
+        verify(mockApiClient.getCaloriesPrediction(uuidUserId)).called(1);
       },
     );
 
@@ -259,7 +262,7 @@ void main() {
       when(mockApiClient.getCaloriesPrediction(any)).thenThrow(dioError);
 
       expect(
-        () => repository.getCaloriesPrediction(testUserId),
+        () => repository.getCaloriesPrediction(uuidUserId),
         throwsA(isA<ApiException>()),
       );
     });

@@ -113,7 +113,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final allRequiredFilled =
         _selectedDietType != null &&
         _selectedDietIntensity != null &&
-        _selectedMealsPerDay > 0;
+        _selectedMealsPerDay >= Constants.minMealsPerDay &&
+          _selectedMealsPerDay <= Constants.maxMealsPerDay;
 
     final error = validateDietGoal(
       _selectedDietGoal.toString(),
@@ -256,7 +257,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
                       EdgeInsets.symmetric(horizontal: 0, vertical: 0))
               ),
               segments: [
-                for (var i = 1; i <= Constants.maxMealsPerDay; i++)
+                for (var i = Constants.minMealsPerDay; i <= Constants.maxMealsPerDay; i++)
                   ButtonSegment(
                       value: i,
                       label: Text('$i', style: TextStyle(

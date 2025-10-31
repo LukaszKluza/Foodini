@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 class UserStorage {
   static final UserStorage _instance = UserStorage._internal();
@@ -19,7 +20,7 @@ class UserStorage {
 
   UserResponse? get getUser => _user;
 
-  int? get getUserId => _user?.id;
+  UuidValue? get getUserId => _user?.id;
 
   String? get getName => _user?.name;
 
@@ -39,7 +40,11 @@ class UserStorage {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
     if (userJson != null) {
-      _user = UserResponse.fromJson(jsonDecode(userJson));
+      try {
+        _user = UserResponse.fromJson(jsonDecode(userJson));
+      } catch (_) {
+        removeUser();
+      }
     }
   }
 
