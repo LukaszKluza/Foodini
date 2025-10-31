@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 
@@ -9,8 +10,17 @@ class CacheManager {
   late CacheStore cacheStore;
   late CacheOptions cacheOptions;
 
-  CacheManager(ApiClient apiclient, Directory apiDir) {
-    cacheStore = HiveCacheStore(apiDir.path);
+  CacheManager(ApiClient apiclient, Directory? apiDir) {
+
+    if (kIsWeb) {
+      cacheStore = HiveCacheStore(null);
+    } else {
+      if (apiDir == null) {
+        throw ArgumentError('apiDir cannot be null on mobile/desktop');
+      }
+      cacheStore = HiveCacheStore(apiDir.path);
+    }
+
     cacheOptions = CacheOptions(
       store: cacheStore,
       policy: CachePolicy.request,

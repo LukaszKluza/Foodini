@@ -38,7 +38,7 @@ class LanguageCubit extends Cubit<Locale> {
 }
 
 class Foodini extends StatelessWidget {
-  final Directory appDir;
+  final Directory? appDir;
 
   const Foodini(this.appDir, {super.key});
 
