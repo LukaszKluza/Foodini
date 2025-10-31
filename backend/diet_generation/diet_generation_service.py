@@ -29,12 +29,6 @@ class DietGenerationService:
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)
 
-    async def get_meal_recipe_by_recipe_id(self, recipe_id: UUID) -> MealRecipeResponse:
-        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_recipe_id(recipe_id)
-        meal_recipe = await self.validate_response(meal_recipe)
-
-        return await self._enhance_meal_response_by_icon(meal_recipe)
-
     async def get_meal_recipes_by_meal_recipe_id(self, meal_id: UUID) -> List[MealRecipeResponse]:
         meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_meal_id(meal_id)
         meal_recipes = await self.validate_response(meal_recipes, "Meal recipes not found")

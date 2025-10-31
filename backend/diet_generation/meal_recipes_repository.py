@@ -13,11 +13,6 @@ class MealRecipesRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_meal_recipe_by_recipe_id(self, recipe_id: UUID) -> MealRecipe | None:
-        print(recipe_id)
-        result = await self.db.get(MealRecipe, recipe_id)
-        return result
-
     async def get_meal_recipes_by_meal_id(self, meal_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
         query = select(MealRecipe).where(MealRecipe.meal_id == meal_id)
         result = await self.db.execute(query)
