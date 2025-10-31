@@ -35,15 +35,10 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
         event.language,
       );
 
-      final mealIconInfo = await mealRecipeRepository.getMealIconInfo(
-        userId,
-        mealRecipe.mealType,
-      );
-
       emit(
         state.copyWith(
           mealRecipe: mealRecipe,
-          iconUrl: mealIconInfo.iconPath,
+          iconUrl: mealRecipe.iconPath,
           processingStatus: ProcessingStatus.gettingSuccess,
         ),
       );
