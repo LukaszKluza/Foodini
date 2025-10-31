@@ -15,10 +15,10 @@ class UserDetailsGateway:
         self.user_details_service = user_details_service
         self.calories_prediction_service = calories_prediction_service
 
-    async def get_user_details(self, user: User) -> Type[UserDetails]:
+    async def get_user_details(self, user: Type[User]) -> Type[UserDetails]:
         return await self.user_details_service.get_user_details_by_user(user)
 
-    async def get_user_diet_predictions(self, user: User) -> Type[UserDietPredictions]:
+    async def get_user_diet_predictions(self, user: Type[User]) -> Type[UserDietPredictions]:
         return await self.calories_prediction_service.get_calories_prediction_by_user_id(user.id)
 
 

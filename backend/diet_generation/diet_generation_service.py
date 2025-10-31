@@ -33,6 +33,27 @@ class DietGenerationService:
         meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_recipe_id(recipe_id)
         meal_recipe = await self.validate_response(meal_recipe)
 
+        return await self._enhance_meal_response_by_icon(meal_recipe)
+
+    async def get_meal_recipes_by_meal_recipe_id(self, meal_id: UUID) -> List[MealRecipeResponse]:
+        meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_meal_id(meal_id)
+        meal_recipes = await self.validate_response(meal_recipes, "Meal recipes not found")
+        meal_recipes_response = []
+
+        for meal_recipe in meal_recipes:
+            meal_recipes_response.append(await self._enhance_meal_response_by_icon(meal_recipe))
+
+        return meal_recipes_response
+
+    async def get_meal_recipe_by_meal_recipe_id_and_language(
+        self, meal_id: UUID, language: Language
+    ) -> MealRecipeResponse:
+        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_meal_id_and_language(meal_id, language)
+        meal_recipe = await self.validate_response(meal_recipe)
+
+        return await self._enhance_meal_response_by_icon(meal_recipe)
+
+    async def _enhance_meal_response_by_icon(self, meal_recipe: MealRecipe) -> MealRecipeResponse:
         meal = await self.meal_repository.get_meal_by_id(meal_recipe.meal_id)
         if not meal:
             raise ValueError(f"Meal with id {meal_recipe.meal_id} not found")
@@ -52,14 +73,6 @@ class DietGenerationService:
             meal_type=meal.meal_type,
             icon_path=icon.icon_path,
         )
-
-    async def get_meal_recipes_by_meal_recipe_id(self, meal_id: UUID) -> List[MealRecipe]:
-        meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_meal_id(meal_id)
-        return await self.validate_response(meal_recipes, "Meal recipes not found")
-
-    async def get_meal_recipe_by_meal_recipe_id_and_language(self, meal_id: UUID, language: Language) -> MealRecipe:
-        meal_recipe = await self.meal_recipes_repository.get_meal_recipe_by_meal_id_and_language(meal_id, language)
-        return await self.validate_response(meal_recipe)
 
     @classmethod
     async def validate_response(cls, response, message: str = "Meal recipe not found"):

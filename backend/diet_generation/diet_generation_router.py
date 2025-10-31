@@ -27,7 +27,7 @@ async def get_meal_icon_info(
     return await meal_prediction_service.get_meal_icon(meal_type)
 
 
-@diet_generation_router.get("/meal-recipes/{meal_id}", response_model=MealRecipe | List[MealRecipe])
+@diet_generation_router.get("/meal-recipes/{meal_id}", response_model=MealRecipeResponse | List[MealRecipeResponse])
 async def get_meal_recipe_by_meal_id(
     meal_id: UUID,
     language: Optional[Language] = Query(None),
