@@ -113,7 +113,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final allRequiredFilled =
         _selectedDietType != null &&
         _selectedDietIntensity != null &&
-        _selectedMealsPerDay > 0;
+        _selectedMealsPerDay >= Constants.minMealsPerDay &&
+          _selectedMealsPerDay <= Constants.maxMealsPerDay;
 
     final error = validateDietGoal(
       _selectedDietGoal.toString(),
