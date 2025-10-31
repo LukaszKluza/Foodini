@@ -7,6 +7,7 @@ from backend.diet_generation.daily_meals_generator_service import PromptService
 from backend.diet_generation.dependencies import get_diet_generation_service, get_prompt_service
 from backend.diet_generation.diet_generation_service import DietGenerationService
 from backend.diet_generation.enums.meal_type import MealType
+from backend.diet_generation.schemas import MealRecipeResponse
 from backend.models import MealRecipe
 from backend.models.meal_icon_model import MealIcon
 from backend.user_details.user_details_gateway import UserDetailsGateway, get_user_details_gateway
@@ -39,7 +40,7 @@ async def get_meal_recipe_by_meal_id(
     return await meal_prediction_service.get_meal_recipes_by_meal_recipe_id(meal_id)
 
 
-@diet_generation_router.get("/meal-recipe", response_model=MealRecipe)
+@diet_generation_router.get("/meal-recipe", response_model=MealRecipeResponse)
 async def get_meal_recipe_by_id(
     recipe_id: UUID,
     meal_prediction_service: DietGenerationService = Depends(get_diet_generation_service),

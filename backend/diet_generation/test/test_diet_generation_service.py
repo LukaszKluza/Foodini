@@ -9,6 +9,7 @@ from backend.diet_generation.test.test_data import (
     BREAKFAST_MEAL_ICON,
     CORNFLAKES_EN_RECIPE,
     CORNFLAKES_PL_RECIPE,
+    MEAL_ICON_ID,
     MEAL_RECIPES,
 )
 from backend.models import User
@@ -19,6 +20,7 @@ with patch.dict(
     {
         "backend.diet_generation.meal_recipe_repository": MagicMock(),
         "backend.diet_generation.icons_repository": MagicMock(),
+        "backend.diet_generation.meal_repository": MagicMock(),
     },
 ):
     from backend.diet_generation.diet_generation_service import DietGenerationService
@@ -43,9 +45,19 @@ def mock_meal_recipes_repository():
 
 
 @pytest.fixture
-def diet_generation_service(mock_meal_icons_repository, mock_meal_recipes_repository):
+def mock_meal_repository():
+    repo = AsyncMock()
+    repo.get_meal_by_id = AsyncMock()
+    repo.get_meal_by_type = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def diet_generation_service(mock_meal_icons_repository, mock_meal_repository, mock_meal_recipes_repository):
     return DietGenerationService(
-        meal_icons_repository=mock_meal_icons_repository, meal_recipes_repository=mock_meal_recipes_repository
+        meal_icons_repository=mock_meal_icons_repository,
+        meal_repository=mock_meal_repository,
+        meal_recipes_repository=mock_meal_recipes_repository,
     )
 
 
@@ -90,15 +102,35 @@ async def test_get_get_meal_icon_info_when_info_not_exist(
 async def test_get_meal_recipe_by_recipe_id_when_exist(
     diet_generation_service,
     mock_meal_recipes_repository,
+    mock_meal_repository,
+    mock_meal_icons_repository,
 ):
     # Given
     mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = CORNFLAKES_EN_RECIPE
+
+    # Mock meal zwracany z meal_repository
+    mock_meal = MagicMock()
+    mock_meal.meal_type = MealType.BREAKFAST
+    mock_meal.icon_id = MEAL_ICON_ID
+    mock_meal_repository.get_meal_by_id.return_value = mock_meal
+
+    # Mock icon zwracany z meal_icons_repository
+    mock_icon = MagicMock()
+    mock_icon.icon_path = "icons/breakfast.png"
+    mock_meal_icons_repository.get_meal_icon_by_id.return_value = mock_icon
 
     # When
     response = await diet_generation_service.get_meal_recipe_by_recipe_id(1)
 
     # Then
-    assert response == CORNFLAKES_EN_RECIPE
+    assert response.id == CORNFLAKES_EN_RECIPE.id
+    assert response.meal_id == CORNFLAKES_EN_RECIPE.meal_id
+    assert response.meal_type == MealType.BREAKFAST
+    assert response.icon_path == "icons/breakfast.png"
+
+    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.assert_awaited_once_with(1)
+    mock_meal_repository.get_meal_by_id.assert_awaited_once_with(CORNFLAKES_EN_RECIPE.meal_id)
+    mock_meal_icons_repository.get_meal_icon_by_id.assert_awaited_once_with(mock_meal.icon_id)
 
 
 @pytest.mark.asyncio
@@ -123,7 +155,7 @@ async def test_get_meal_recipe_by_meal_id_when_exist(
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = MEAL_RECIPES
+    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = MEAL_RECIPES
 
     # When
     response = await diet_generation_service.get_meal_recipes_by_meal_recipe_id(1)
@@ -138,7 +170,7 @@ async def test_get_meal_recipe_by_meal_id_when_not_exist(
     mock_meal_recipes_repository,
 ):
     # Given
-    mock_meal_recipes_repository.get_meal_recipe_by_recipe_id.return_value = None
+    mock_meal_recipes_repository.get_meal_recipes_by_meal_id.return_value = None
 
     # When
     with pytest.raises(NotFoundInDatabaseException) as exc_info:

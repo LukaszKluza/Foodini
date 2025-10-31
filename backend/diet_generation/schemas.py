@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 from backend.diet_generation.enums.meal_status import MealStatus
 from backend.diet_generation.enums.meal_type import MealType
 from backend.diet_generation.mixins.meal_info_mixin import MealInfoMixin
+from backend.models import Ingredients, Step
+from backend.users.enums.language import Language
 
 
 class MealInfo(MealInfoMixin, BaseModel):
@@ -64,3 +66,15 @@ class MealCreate(BaseModel):
     protein: float = Field(default=0, ge=0)
     fat: float = Field(default=0, ge=0)
     carbs: float = Field(default=0, ge=0)
+
+
+class MealRecipeResponse(BaseModel):
+    id: UUID
+    meal_id: UUID
+    language: Language
+    meal_name: str
+    meal_description: str
+    ingredients: Ingredients
+    steps: List[Step]
+    meal_type: MealType
+    icon_path: str
