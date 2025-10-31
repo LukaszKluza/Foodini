@@ -1036,6 +1036,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional'**
   String get optional;
+
+  /// No description provided for @breakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get breakfast;
+
+  /// No description provided for @morningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning snack'**
+  String get morningSnack;
+
+  /// No description provided for @lunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get lunch;
+
+  /// No description provided for @afternoonSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon snack'**
+  String get afternoonSnack;
+
+  /// No description provided for @dinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dinner;
+
+  /// No description provided for @eveningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening snack'**
+  String get eveningSnack;
+
+  /// No description provided for @toEat.
+  ///
+  /// In en, this message translates to:
+  /// **'To eat'**
+  String get toEat;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @eaten.
+  ///
+  /// In en, this message translates to:
+  /// **'Eaten'**
+  String get eaten;
+
+  /// No description provided for @skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get skipped;
+
+  /// No description provided for @f_fat.
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get f_fat;
+
+  /// No description provided for @p_protein.
+  ///
+  /// In en, this message translates to:
+  /// **'P'**
+  String get p_protein;
+
+  /// No description provided for @c_carbs.
+  ///
+  /// In en, this message translates to:
+  /// **'C'**
+  String get c_carbs;
+
+  /// No description provided for @g_grams.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get g_grams;
+
+  /// No description provided for @cal_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Cal'**
+  String get cal_calories;
+
+  /// No description provided for @of_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get of_calories;
+
+  /// No description provided for @cannotEditPastMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit past meals'**
+  String get cannotEditPastMeals;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

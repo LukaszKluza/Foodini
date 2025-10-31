@@ -170,5 +170,26 @@
   "mealDescriptions": "Opis posiłku",
   "groceries": "Produkty spożywcze",
   "recipe": "Przepis",
-  "optional": "Opcjonalnie"
+  "optional": "Opcjonalnie",
+
+  "breakfast": "Śniadanie",
+  "morningSnack": "Przekąska poranna",
+  "lunch": "Obiad",
+  "afternoonSnack": "Przekąska popołudniowa",
+  "dinner": "Kolacja",
+  "eveningSnack": "Przekąska wieczorna",
+
+  "toEat": "Do zjedzenia",
+  "pending": "Oczekujący",
+  "eaten": "Zjedzony",
+  "skipped": "Pominięty",
+
+  "f_fat": "T",
+  "p_protein": "B",
+  "c_carbs": "W",
+  "g_grams": "g",
+  "cal_calories": "Kal",
+  "of_calories": "z",
+
+  "cannotEditPastMeals": "Nie można edytować posiłków z przeszłości"
 }

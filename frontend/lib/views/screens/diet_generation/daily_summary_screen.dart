@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -66,7 +68,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     ),
     Meal(
       type: MealType.lunch,
-      name: 'Pasta with very spicy tomato sauce',
+      name: 'Pasta with very, very spicy tomato sauce',
       protein: 18,
       carbs: 60,
       fat: 9,
@@ -194,7 +196,7 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                           Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                         ),
                     child: Text(
-                      '$displayedValue of $dailyGoal kcal',
+                      '$displayedValue ${AppLocalizations.of(context)?.of_calories} $dailyGoal ${AppLocalizations.of(context)?.kcal}',
                       style: TextStyle(
                         fontSize: baseFontSize,
                         fontWeight: FontWeight.bold,
@@ -312,6 +314,8 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
     bool isActive,
   ) {
     final meal = activeMeal;
+    final bool isEaten = meal.mealStatus ==MealStatus.eaten;
+    final bool isSkipped = meal.mealStatus ==MealStatus.skipped;
 
     return Container(
       width: widgetWidth,
@@ -341,11 +345,11 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                meal.type.nameStr,
-                style: const TextStyle(
+                AppConfig.mealTypeLabels(context)[meal.type]!,
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.white,
+                  color: Colors.grey[600],
                 ),
               ),
               Builder(
@@ -391,8 +395,8 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                                         color: Colors.black,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: const Text(
-                                        'Cannot edit past meals',
+                                      child: Text(
+                                        AppLocalizations.of(context)!.cannotEditPastMeals,
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ),
@@ -407,14 +411,11 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                           );
                         }
                       },
-                      icon:
-                          meal.mealStatus == MealStatus.eaten
-                              ? const Icon(Icons.check_circle_outline)
-                              : null,
-                      label: Text(meal.mealStatus.name),
+                      icon: isEaten ? const Icon(Icons.check_circle_outline) : null,
+                      label: Text(AppConfig.mealStatusLabels(context)[meal.mealStatus]!),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            isActive ? Colors.green.shade400 : Colors.grey,
+                            isActive ? Colors.amber.shade600 : Colors.grey,
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 18,
@@ -438,13 +439,13 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white70,
+                    color: Colors.black87,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
               ),
-              if (meal.mealStatus != MealStatus.skipped && isActive)
+              if (!isSkipped && isActive)
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -470,16 +471,16 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                   children: [
                     Row(
                       children: [
-                        _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
+                        _macroChip(AppLocalizations.of(context)!.f_fat, meal.fat,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28)),
                         const SizedBox(width: 8),
-                        _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
+                        _macroChip(AppLocalizations.of(context)!.p_protein, meal.protein, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6)),
                         const SizedBox(width: 8),
-                        _macroChip('F', meal.fat, 'g', Colors.red.shade300),
+                        _macroChip(AppLocalizations.of(context)!.c_carbs, meal.carbs, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43)),
                       ],
                     ),
                     Row(
                       children: [
-                        _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300),
+                        _macroChip(AppLocalizations.of(context)!.cal_calories, meal.calories, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8)),
                       ],
                     ),
                   ],
@@ -489,10 +490,10 @@ class _DailyNutritionScreenState extends State<DailySummaryScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _macroChip('P', meal.protein, 'g', Colors.blue.shade300),
-                    _macroChip('C', meal.carbs, 'g', Colors.green.shade300),
-                    _macroChip('F', meal.fat, 'g', Colors.red.shade300),
-                    _macroChip('Cal', meal.calories, 'kcal', Colors.red.shade300, width: double.infinity),
+                    _macroChip(AppLocalizations.of(context)!.f_fat, meal.fat,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28)),
+                    _macroChip(AppLocalizations.of(context)!.p_protein, meal.protein, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6)),
+                    _macroChip(AppLocalizations.of(context)!.c_carbs, meal.carbs, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43)),
+              _macroChip(AppLocalizations.of(context)!.cal_calories, meal.calories, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8), width: double.infinity),
                   ],
                 );
               }
