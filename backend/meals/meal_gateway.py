@@ -1,6 +1,9 @@
+from uuid import UUID
+
 from fastapi import Depends
 
 from backend.meals.dependencies import get_meal_service
+from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_service import MealService
 from backend.models import Meal, MealRecipe
 
@@ -17,6 +20,9 @@ class MealGateway:
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_service.add_meal_recipe(meal_recipe)
+
+    async def get_meal_icon_id(self, meal_type: MealType) -> UUID:
+        return await self.meal_service.get_meal_icon_id(meal_type)
 
 
 def get_meal_gateway(

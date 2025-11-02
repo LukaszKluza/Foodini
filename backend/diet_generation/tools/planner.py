@@ -104,9 +104,12 @@ class PlannerTool:
            - Dinner ≈ 25–30%
            - Snacks (if any) ≈ remaining %
         2. For each meal, derive approximate calories and macros (that sum up perfectly to the targets).
-        3. Ensure all meal macros and calorie totals **add up exactly** to the input targets.
+        3. Ensure all generated meals are completely different to this previous meals: {
+            targets.previous_meals or "None"
+        }.
+        4. Ensure all meal macros and calorie totals **add up exactly** to the input targets.
            - Example check: sum of all meal calories == {targets.calories} ±1 kcal
-        4. Recalculate each meal’s calories from macros using:
+        5. Recalculate each meal’s calories from macros using:
            - Calories = 4 × (Protein + Carbs) + 9 × Fat
            Adjust slightly if needed to make the totals exact.
         ---
@@ -115,7 +118,9 @@ class PlannerTool:
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
         - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
-        - Avoid using any of the user’s previous meals: {targets.previous_meals or "None"}.
+        - Avoid using any of the user’s previous meals, new meals must be completely different: {
+            targets.previous_meals or "None"
+        }.
         - Meal types must match the following: {targets.meal_types}.
         - Each meal must include: name, type, ingredients, calories, protein, carbs, and fat.
         ---

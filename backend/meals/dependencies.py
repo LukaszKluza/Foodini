@@ -29,5 +29,6 @@ async def get_meal_repository(
 async def get_meal_service(
     meal_icons_repository: MealIconsRepository = Depends(get_meal_icons_repository),
     meal_recipes_repository: MealRecipesRepository = Depends(get_meal_recipes_repository),
+    meal_repository: MealRepository = Depends(get_meal_repository),
 ) -> MealService:
-    return MealService(meal_icons_repository, meal_recipes_repository)
+    return MealService(meal_recipes_repository, meal_repository, meal_icons_repository)

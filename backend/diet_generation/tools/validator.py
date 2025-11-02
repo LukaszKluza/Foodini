@@ -136,6 +136,7 @@ class ValidatorTool:
         if set(plan_meal_types) != set(MealType.daily_meals(meals_per_day)):
             errors.append("Meal types mismatch")
             suggestions.append(
-                f"Try changing meals so there is exactly one meal of each of this types: {MealType.daily_meals(meals_per_day)}"
+                f"Try changing meals so there is exactly one meal of each of this types:"
+                f" {MealType.daily_meals(meals_per_day)}"
             )
         return errors, suggestions

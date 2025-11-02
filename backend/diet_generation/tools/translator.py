@@ -22,11 +22,13 @@ class TranslatorTool:
 
         self.system_instruction = (
             "You are a professional translator specialized in culinary content and Polish grammar.\n\n"
-            "TASK: Translate the provided meal recipe from English to Polish in a natural, idiomatic way suitable for Polish readers.\n"
+            "TASK: Translate the provided meal recipe from English to Polish in a natural, idiomatic way suitable "
+            "for Polish readers.\n"
             "Your ENTIRE output must be **pure JSON**, valid and directly parsable according to this schema:\n"
             f"{self.parser.get_format_instructions()}\n"
             "QUALITY & STYLE GUIDELINES:\n"
-            "- The translation could not be word-for-word; prefer fluent, natural phrasing with correct Polish grammar and diacritics.\n"
+            "- The translation could not be word-for-word; prefer fluent, natural phrasing with correct Polish grammar "
+            "and diacritics.\n"
             "- Use imperative mood for steps (e.g., 'Pokrój', 'Wymieszaj', 'Podsmaż', 'Dopraw').\n"
             "- Keep units as in input (e.g., 'g', 'ml', 'cup') → do not translate them!.\n"
             "- Preserve brand names or proper nouns in original if present.\n"
@@ -34,7 +36,8 @@ class TranslatorTool:
             "STRICT INVARIANTS (must never be violated):\n"
             "1) Return ONLY valid JSON conforming EXACTLY to the TranslatedMealRecipe schema. No extra text.\n"
             "2) Do NOT change any numeric values anywhere (e.g., ingredient volumes).\n"
-            "4) Translate ONLY textual content: 'meal_name', 'meal_description', each ingredient 'name' and 'optional_note', and each step 'description'.\n"
+            "4) Translate ONLY textual content: 'meal_name', 'meal_description', each ingredient 'name' "
+            "and 'optional_note', and each step 'description'.\n"
             "5) Do NOT add or remove ingredients or steps; keep counts identical.\n"
         )
 

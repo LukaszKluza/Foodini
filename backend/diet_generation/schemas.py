@@ -22,9 +22,9 @@ class CompleteMeal(BaseModel):
     meal_type: str = Field(min_length=1)
     meal_description: str = Field(min_length=1)
     calories: int = Field(default=0, ge=0)
-    protein: int = Field(default=0, ge=0)
-    fat: int = Field(default=0, ge=0)
-    carbs: int = Field(default=0, ge=0)
+    protein: float = Field(default=0, ge=0)
+    carbs: float = Field(default=0, ge=0)
+    fat: float = Field(default=0, ge=0)
 
     ingredients_list: List[IngredientCreate]
     steps: List[StepCreate]
@@ -38,6 +38,11 @@ class DietGenerationInput(BaseModel):
     dietary_restriction: List[DietaryRestriction]
     meals_per_day: int = Field(default=1, ge=1)
     meal_types: List[str] = Field(min_length=1)
+    calories: int = Field(default=0, ge=0)
+    protein: float = Field(default=0, ge=0)
+    carbs: float = Field(default=0, ge=0)
+    fat: float = Field(default=0, ge=0)
+    previous_meals: List[str] = ([],)
 
 
 class MealRecipeTranslation(BaseModel):

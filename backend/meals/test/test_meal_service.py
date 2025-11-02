@@ -5,7 +5,7 @@ import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.meals.enums.meal_type import MealType
-from backend.meals.test.test_data import BREAKFAST_MEAL_ICON, MEAL_RECIPES, MEAL_ICON_ID
+from backend.meals.test.test_data import BREAKFAST_MEAL_ICON, MEAL_ICON_ID, MEAL_RECIPES
 from backend.models import User
 from backend.users.enums.language import Language
 

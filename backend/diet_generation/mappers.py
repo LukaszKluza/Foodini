@@ -1,13 +1,18 @@
-from backend.diet_generation.schemas import CompleteMeal, MealRecipeTranslation, IngredientCreate, StepCreate
+from datetime import date
+from typing import Dict
+from uuid import UUID
+
+from backend.daily_summary.schemas import DailyMealsCreate, MealInfo
+from backend.diet_generation.schemas import CompleteMeal, IngredientCreate, MealRecipeTranslation, StepCreate
 from backend.meals.enums.meal_type import MealType
-from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step
+from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDietPredictions
 from backend.users.enums.language import Language
 
 
-def complete_meal_to_meal(meal_data: CompleteMeal) -> Meal:
+def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
     return Meal(
         meal_type=MealType(meal_data.meal_type),
-        icon_id=MealType(meal_data.meal_type).order,
+        icon_id=icon_id,
         calories=meal_data.calories,
         protein=meal_data.protein,
         fat=meal_data.fat,
@@ -15,7 +20,7 @@ def complete_meal_to_meal(meal_data: CompleteMeal) -> Meal:
     )
 
 
-def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: int, language: Language = Language.EN) -> MealRecipe:
+def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: UUID, language: Language = Language.EN) -> MealRecipe:
     return MealRecipe(
         meal_id=meal_id,
         meal_name=meal_data.meal_name,
@@ -27,7 +32,10 @@ def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: int, language: Lan
         steps=[Step(**s.model_dump()).model_dump() for s in meal_data.steps],
     )
 
-def meal_recipe_translation_to_recipe(translated_recipe: MealRecipeTranslation, meal_id: int, language: Language = Language.PL) -> MealRecipe:
+
+def meal_recipe_translation_to_recipe(
+    translated_recipe: MealRecipeTranslation, meal_id: UUID, language: Language = Language.PL
+) -> MealRecipe:
     return MealRecipe(
         meal_id=meal_id,
         meal_name=translated_recipe.meal_name,
@@ -39,10 +47,24 @@ def meal_recipe_translation_to_recipe(translated_recipe: MealRecipeTranslation, 
         steps=[Step(**s.model_dump()).model_dump() for s in translated_recipe.steps],
     )
 
+
 def recipe_to_meal_recipe_translation(recipe: MealRecipe) -> MealRecipeTranslation:
-    return MealRecipeTranslation (
+    return MealRecipeTranslation(
         meal_name=recipe.meal_name,
         meal_description=recipe.meal_description,
         ingredients_list=[IngredientCreate(**ingredient) for ingredient in recipe.ingredients["ingredients"]],
         steps=[StepCreate(**step) for step in recipe.steps],
+    )
+
+
+def to_daily_meals_create(
+    day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, MealInfo]
+) -> DailyMealsCreate:
+    return DailyMealsCreate(
+        day=day,
+        meals=meals_type_map,
+        target_calories=user_diet_predictions.target_calories,
+        target_protein=user_diet_predictions.protein,
+        target_fat=user_diet_predictions.fat,
+        target_carbs=user_diet_predictions.carbs,
     )

@@ -6,9 +6,8 @@ from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.models.user_daily_summary_model import DailyMealsSummary, MealDailySummary
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
-from backend.models.user_daily_summary_model import DailyMacrosSummary
+from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary, MealDailySummary
 
 
 class DailySummaryRepository:

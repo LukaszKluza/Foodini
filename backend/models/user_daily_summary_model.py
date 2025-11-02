@@ -6,8 +6,8 @@ from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, UniqueConstrain
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
 from ..core.db_listeners import register_timestamp_listeners
-from .types import FloatAsNumeric
 from ..daily_summary.enums.meal_status import MealStatus
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .meal_recipe_model import Meal

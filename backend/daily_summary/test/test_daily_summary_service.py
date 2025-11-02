@@ -15,7 +15,7 @@ from backend.daily_summary.schemas import (
 )
 from backend.meals.enums.meal_type import MealType
 from backend.meals.schemas import MealCreate
-from backend.meals.test.test_data import MEAL_ID, MEAL_ICON_ID
+from backend.meals.test.test_data import MEAL_ICON_ID, MEAL_ID
 
 with patch.dict(sys.modules, {"backend.diet_generation.daily_summary_repository": MagicMock()}):
     from backend.daily_summary.daily_summary_service import DailySummaryService
@@ -77,8 +77,17 @@ def mock_meal_repository():
 
 
 @pytest.fixture
-def daily_summary_service(mock_daily_summary_repository, mock_meal_repository):
-    return DailySummaryService(mock_daily_summary_repository, mock_meal_repository)
+def mock_last_generated_meals_repository():
+    repo = AsyncMock()
+    repo.get_last_generated_meals = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def daily_summary_service(mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository):
+    return DailySummaryService(
+        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository
+    )
 
 
 @pytest.mark.asyncio

@@ -3,8 +3,9 @@ from typing import List
 from uuid import UUID
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.daily_summary.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.enums.meal_status import MealStatus
+from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
+from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
@@ -12,16 +13,22 @@ from backend.daily_summary.schemas import (
     MealInfo,
     MealInfoUpdateRequest,
 )
-from backend.models import DailyMealsSummary
 from backend.meals.enums.meal_type import MealType
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
+from backend.models import DailyMealsSummary
 
 
 class DailySummaryService:
-    def __init__(self, summary_repo: DailySummaryRepository, meal_repo: MealRepository):
+    def __init__(
+        self,
+        summary_repo: DailySummaryRepository,
+        meal_repo: MealRepository,
+        last_generated_meals_repo: LastGeneratedMealsRepository,
+    ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
+        self.last_generated_meals_repo = last_generated_meals_repo
 
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
         daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, daily_meals_data.day)
@@ -95,9 +102,8 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
 
-    # TODO: implement after database consolidation
-    async def get_user_latest_meal_names(self, user_id: int, day: date) -> List[str]:
-        return []
+    async def get_last_generated_meals(self, user_id: UUID, from_date: date, to_date: date) -> List[str]:
+        return await self.last_generated_meals_repo.get_last_generated_meals(user_id, from_date, to_date)
 
     async def update_meal_status(self, user_id: UUID, update_meal_data: MealInfoUpdateRequest):
         day = update_meal_data.day
