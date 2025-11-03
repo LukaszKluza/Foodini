@@ -1,5 +1,4 @@
 import 'package:frontend/models/diet_generation/meal_status.dart';
-import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:uuid/uuid_value.dart';
 
 class MealInfoUpdateRequest {
