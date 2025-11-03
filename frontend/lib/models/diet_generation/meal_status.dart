@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:frontend/views/screens/diet_generation/daily_summary_screen.dart';
 
 enum MealStatus {
@@ -31,42 +32,21 @@ enum MealStatus {
     ];
     MealStatus current = currentMeal.mealStatus;
 
-    print(all);
+    final currentIndex = all.indexWhere((m) => m.type == currentMeal.type);
 
-    bool noEatenFutureMeal(){
-      for (int i = all.length - 1; i >= 0; --i) {
-        if (all[i].mealStatus == MealStatus.eaten) {
-          return false;
-        }
-        if (all[i].type == currentMeal.type) {
-          return true;
-        }
-      }
-      return false;
+    bool noEatenFutureMeal() {
+      final futureMeals = all.skip(currentIndex + 1);
+      return !futureMeals.any((m) => m.mealStatus == MealStatus.eaten);
     }
 
-    bool noPendingFutureMeal(){
-      for (int i = all.length - 1; i >= 0; --i) {
-        if (all[i].mealStatus == MealStatus.pending) {
-          return false;
-        }
-        if (all[i].type == currentMeal.type) {
-          return true;
-        }
-      }
-      return true;
+     bool noPendingFutureMeal() {
+      final futureMeals = all.skip(currentIndex + 1);
+      return !futureMeals.any((m) => m.mealStatus == MealStatus.pending);
     }
 
-    bool noPendingPreviousMeal(){
-      for (int i = 0; i < all.length; ++i) {
-        if (all[i].type == currentMeal.type) {
-          return true;
-        }
-        if (all[i].mealStatus == MealStatus.pending) {
-          return false;
-        }
-      }
-      return true;
+    bool noPendingPreviousMeal() {
+      final previousMeals = all.take(currentIndex);
+      return !previousMeals.any((m) => m.mealStatus == MealStatus.pending);
     }
 
     bool condition(MealStatus status, MealStatus current) {
@@ -82,43 +62,23 @@ enum MealStatus {
       }
     }
 
-    var next = current;
+    final next = order
+        .skipWhile((s) => s != current)
+        .skip(1)
+        .followedBy(order)
+        .firstWhere((s) => condition(s, current), orElse: () => current);
 
-    int index = order.indexOf(current);
-    for (int i = 1; i <= order.length; i++) {
-      final nextIndex = (index + i) % order.length;
-      final nextStatus = order[nextIndex];
-      if (condition(nextStatus, current)) {
-        next = nextStatus;
-        break;
-      }
+    Meal? findNextMeal(bool Function(Meal m) test) =>
+      all.skip(currentIndex + 1).firstWhereOrNull(test);
+
+    if (current == MealStatus.pending) {
+      final nextToEat = findNextMeal((m) => m.mealStatus == MealStatus.toEat);
+      if (nextToEat != null) nextToEat.mealStatus = MealStatus.pending;
     }
 
-    int getId(){
-      for (int i = 0; i < all.length; ++i) {
-        if (all[i].type == currentMeal.type) {
-          return i;
-        }
-      }
-      return -1;
-    }
-
-    if (current == MealStatus.pending){
-      for (int i = getId()+1; i < all.length; ++i) {
-        if (all[i].mealStatus == MealStatus.toEat) {
-          all[i].mealStatus = MealStatus.pending;
-          break;
-        }
-      }
-    }
-
-    if (next == MealStatus.pending){
-      for (int i = getId()+1; i < all.length; ++i) {
-        if (all[i].mealStatus == MealStatus.pending) {
-          all[i].mealStatus = MealStatus.toEat;
-          break;
-        }
-      }
+    if (next == MealStatus.pending) {
+      final nextPending = findNextMeal((m) => m.mealStatus == MealStatus.pending);
+      if (nextPending != null) nextPending.mealStatus = MealStatus.toEat;
     }
 
     return next;
