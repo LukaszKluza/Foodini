@@ -45,6 +45,7 @@ void main() {
     authRepository = UserRepository(mockApiClient);
     provideEmailBloc = ProvideEmailBloc(
       authRepository,
+      apiClient: mockApiClient,
       tokenStorageService: mockTokenStorageService,
     );
 

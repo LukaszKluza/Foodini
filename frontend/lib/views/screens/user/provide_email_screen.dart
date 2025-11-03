@@ -6,6 +6,7 @@ import 'package:frontend/events/user/provide_email_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/provide_email_listener.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
@@ -31,6 +32,7 @@ class ProvideEmailScreen extends StatelessWidget {
           create:
               (_) => ProvideEmailBloc(
                 Provider.of<UserRepository>(context, listen: false),
+                apiClient: Provider.of<ApiClient>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );

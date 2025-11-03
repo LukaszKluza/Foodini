@@ -11,7 +11,8 @@ import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
 import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
-import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/states/diet_generation/meal_recipe.dart';
 import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -32,7 +33,8 @@ class MealRecipeScreen extends StatelessWidget {
       key: ValueKey('bloc_${mealId.uuid}_${language.code}'),
       create: (_) {
         final bloc = MealRecipeBloc(
-          Provider.of<MealRecipeRepository>(context, listen: false),
+          Provider.of<DietPredictionRepository>(context, listen: false),
+          Provider.of<MealsRepository>(context, listen: false),
         );
         bloc.add(MealRecipeInit(mealId, language));
         return bloc;
