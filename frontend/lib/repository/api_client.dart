@@ -14,6 +14,7 @@ import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
+import 'package:uuid/uuid_value.dart';
 
 class ApiClient {
   final Dio _client;
@@ -42,10 +43,10 @@ class ApiClient {
 
   get dio => _client;
 
-  Future<Response> getUser(int userId) {
+  Future<Response> getUser(UuidValue userId) {
     return _client.get(
       Endpoints.users,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
@@ -82,28 +83,28 @@ class ApiClient {
     );
   }
 
-  Future<Response> changeLanguage(ChangeLanguageRequest request, int userId) {
+  Future<Response> changeLanguage(ChangeLanguageRequest request, UuidValue userId) {
     return _client.patch(
       Endpoints.changeLanguage,
       data: request.toJson(),
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
 
-  Future<Response> refreshTokens(int userId) async {
+  Future<Response> refreshTokens(UuidValue userId) async {
     final refreshToken = await _tokenStorage.getRefreshToken();
     return _client.post(
       Endpoints.refreshTokens,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
     );
   }
 
-  Future<Response> logout(int userId) {
+  Future<Response> logout(UuidValue userId) {
     return _client.get(
       Endpoints.logout,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
@@ -116,10 +117,10 @@ class ApiClient {
     );
   }
 
-  Future<Response> delete(int userId) {
+  Future<Response> delete(UuidValue userId) {
     return _client.delete(
       Endpoints.users,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
@@ -138,131 +139,131 @@ class ApiClient {
   }
 
   // user details
-  Future<Response> getDietPreferences(int userId) {
+  Future<Response> getDietPreferences(UuidValue userId) {
     return _client.get(
       Endpoints.dietPreferences,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
 
-  Future<Response> submitDietForm(DietForm request, int userId) {
+  Future<Response> submitDietForm(DietForm request, UuidValue userId) {
     return _client.post(
       Endpoints.dietPreferences,
       data: request.toJson(),
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
-  Future<Response> submitMacrosChange(Macros request, int userId) {
+  Future<Response> submitMacrosChange(Macros request, UuidValue userId) {
     return _client.patch(
       Endpoints.userCaloriesPrediction,
       data: request.toJson(),
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
 
-  Future<Response> addCaloriesPrediction(int userId) {
+  Future<Response> addCaloriesPrediction(UuidValue userId) {
     return _client.post(
       Endpoints.userCaloriesPrediction,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
-  Future<Response> getCaloriesPrediction(int userId) {
+  Future<Response> getCaloriesPrediction(UuidValue userId) {
     return _client.get(
       Endpoints.userCaloriesPrediction,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true, 'cache': false}),
     );
   }
 
   // diet prediction
-  Future<Response> getMealRecipe(int recipeId, Language language, int userId) {
+  Future<Response> getMealRecipe(UuidValue mealId, Language language, UuidValue userId) {
     return _client.get(
-      '${Endpoints.mealRecipe}/$recipeId',
-      queryParameters: {'user_id': userId, 'language': language.toJson()},
+      '${Endpoints.mealRecipe}/${mealId.uuid}',
+      queryParameters: {'user_id': userId.uuid, 'language': language.toJson()},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
-  Future<Response> generateMealPlan(int userId) {
+  Future<Response> generateMealPlan(UuidValue userId) {
     return _client.post(
       Endpoints.generateMealPlan,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   // diet-generation
-  Future<Response> getDailySummaryMeals(DateTime day, int userId) {
+  Future<Response> getDailySummaryMeals(DateTime day, UuidValue userId) {
     return _client.get(
       '${Endpoints.dailySummaryMeals}/$day',
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> updateDailySummaryMeals(
     MealInfoUpdateRequest mealInfoUpdateRequest,
-    int userId,
+    UuidValue userId,
   ) {
     return _client.patch(
       Endpoints.dailySummaryMeals,
       data: mealInfoUpdateRequest.toJson,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
-  Future<Response> getDailySummaryMacros(DateTime day, int userId) {
+  Future<Response> getDailySummaryMacros(DateTime day, UuidValue userId) {
     return _client.get(
       '${Endpoints.dailySummaryMacros}/$day',
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   // meals
-  Future<Response> getMealDetails(int mealId, int userId) {
+  Future<Response> getMealDetails(UuidValue mealId, UuidValue userId) {
     return _client.get(
-      '${Endpoints.meal}/$mealId',
-      queryParameters: {'user_id': userId},
+      '${Endpoints.meal}/${mealId.uuid}',
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
-  Future<Response> getMealIconInfo(MealType mealType, int userId) {
+  Future<Response> getMealIconInfo(MealType mealType, UuidValue userId) {
     return _client.get(
       Endpoints.mealIconInfo,
-      queryParameters: {'user_id': userId, 'meal_type': mealType.toJson()},
+      queryParameters: {'user_id': userId.uuid, 'meal_type': mealType.toJson()},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> addMealDetails(
       CustomMealUpdateRequest customMealUpdateRequest,
-      int userId,
+      UuidValue userId,
   ) {
     return _client.post(
       Endpoints.meal,
       data: customMealUpdateRequest.toJson,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> updateMealDetails(
       CustomMealUpdateRequest customMealUpdateRequest,
-      int userId,
+      UuidValue userId,
   ) {
     return _client.patch(
       Endpoints.meal,
       data: customMealUpdateRequest.toJson,
-      queryParameters: {'user_id': userId},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }

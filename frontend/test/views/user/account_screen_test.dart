@@ -22,6 +22,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -37,6 +38,7 @@ late AccountBloc accountBloc;
 late DietFormBloc dietFormBloc;
 late MacrosChangeBloc macrosChangeBloc;
 late UserRepository authRepository;
+late UuidValue uuidUserId;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +72,8 @@ void main() {
     macrosChangeBloc = MacrosChangeBloc(mockUserDetailsRepository);
     accountBloc = AccountBloc(authRepository, mockTokenStorageService);
 
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+
     when(mockDio.interceptors).thenReturn(Interceptors());
     SharedPreferences.setMockInitialValues({});
   });
@@ -84,7 +88,7 @@ void main() {
     // Given, When
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -105,7 +109,7 @@ void main() {
     // Given, When
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -133,7 +137,7 @@ void main() {
 
   testWidgets('User can log out successfully', (WidgetTester tester) async {
     // Given
-    when(mockApiClient.logout(1)).thenAnswer(
+    when(mockApiClient.logout(uuidUserId)).thenAnswer(
       (_) async => Response<dynamic>(
         statusCode: 204,
         requestOptions: RequestOptions(path: Endpoints.logout),
@@ -142,7 +146,7 @@ void main() {
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -179,7 +183,7 @@ void main() {
     WidgetTester tester,
   ) async {
     // Given
-    when(mockApiClient.delete(1)).thenAnswer(
+    when(mockApiClient.delete(uuidUserId)).thenAnswer(
       (_) async => Response<dynamic>(
         statusCode: 204,
         requestOptions: RequestOptions(path: 'Delete'),
@@ -188,7 +192,7 @@ void main() {
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.pl,
         email: 'jan4@example.com',
@@ -230,7 +234,7 @@ void main() {
     // Given
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -270,12 +274,12 @@ void main() {
             Language.pl,
           ),
         ),
-        1,
+        uuidUserId,
       ),
     ).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'jan4@example.com',
           'name': 'Jan',
           'language': 'pl',
@@ -287,7 +291,7 @@ void main() {
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',

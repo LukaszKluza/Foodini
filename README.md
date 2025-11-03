@@ -25,6 +25,13 @@ cd Foodini/frontend
 python ./run.py
 ```
 
+#### 3.1. Running the frontend tests
+
+``` bash
+cd Foodini/frontend
+flutter test --coverage
+```
+
 ### Generating translation
 
 ``` bash

@@ -4,6 +4,7 @@ import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/utils/cache_manager.dart';
+import 'package:uuid/uuid_value.dart';
 
 class DietPredictionRepository {
   final ApiClient apiClient;
@@ -11,9 +12,9 @@ class DietPredictionRepository {
 
   DietPredictionRepository(this.apiClient, this.cacheManager);
 
-  Future<MealRecipe> getMealRecipe(int userId, int mealRecipeId, Language language) async {
+  Future<MealRecipe> getMealRecipe(UuidValue userId, UuidValue mealId, Language language) async {
     try {
-      final response = await apiClient.getMealRecipe(mealRecipeId, language, userId);
+      final response = await apiClient.getMealRecipe(mealId, language, userId);
       return MealRecipe.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
@@ -22,7 +23,7 @@ class DietPredictionRepository {
     }
   }
 
-  Future<void> generateMealPlan(int userId) async {
+  Future<void> generateMealPlan(UuidValue userId) async {
     try {
       await apiClient.generateMealPlan(userId);
     } on DioException catch (e) {

@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:frontend/models/diet_generation/meal_recipe.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user/language.dart';
+import 'package:uuid/uuid_value.dart';
 
 class MealRecipeState {
-  final int? mealId;
+  final UuidValue? mealId;
   final Language? language;
   final MealRecipe? mealRecipe;
   final int? errorCode;
@@ -23,7 +24,7 @@ class MealRecipeState {
   });
 
   MealRecipeState copyWith({
-    int? mealId,
+    UuidValue? mealId,
     Language? language,
     MealRecipe? mealRecipe,
     int? errorCode,

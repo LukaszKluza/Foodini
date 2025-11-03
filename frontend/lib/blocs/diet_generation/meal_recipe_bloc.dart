@@ -45,7 +45,7 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
       emit(
         state.copyWith(
           mealRecipe: mealRecipe,
-          iconUrl: mealIconInfo.iconPath,
+          iconUrl: mealRecipe.iconPath,
           processingStatus: ProcessingStatus.gettingSuccess,
         ),
       );

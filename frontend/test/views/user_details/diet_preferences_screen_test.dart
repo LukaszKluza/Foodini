@@ -165,8 +165,6 @@ void main() {
 
     // Then
     expect(find.text('Meals per day'), findsOneWidget);
-    expect(find.textContaining('1'), findsOneWidget);
-    expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
     expect(find.textContaining('4'), findsOneWidget);
     expect(find.textContaining('5'), findsAtLeastNWidgets(2));

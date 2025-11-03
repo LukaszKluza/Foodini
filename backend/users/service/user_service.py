@@ -65,7 +65,7 @@ class UserService:
             )
 
         access_token, refresh_token = await self.authorization_service.create_tokens(
-            {"sub": user_.email, "id": user_.id}
+            {"sub": user_.email, "id": str(user_.id)}
         )
 
         return LoginUserResponse(

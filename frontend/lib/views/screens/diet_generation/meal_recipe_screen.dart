@@ -18,9 +18,10 @@ import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 class MealRecipeScreen extends StatelessWidget {
-  final int mealId;
+  final UuidValue mealId;
 
   const MealRecipeScreen({super.key, required this.mealId});
 
@@ -29,7 +30,7 @@ class MealRecipeScreen extends StatelessWidget {
     var state = context.watch<LanguageCubit>().state;
     var language = Language.fromJson(state.languageCode);
     return BlocProvider(
-      key: ValueKey('bloc_${mealId}_${language.code}'),
+      key: ValueKey('bloc_${mealId.uuid}_${language.code}'),
       create: (_) {
         final bloc = MealRecipeBloc(
           Provider.of<DietPredictionRepository>(context, listen: false),
@@ -39,7 +40,7 @@ class MealRecipeScreen extends StatelessWidget {
         return bloc;
       },
       child: Scaffold(
-        body: _MealRecipe(key: ValueKey('body_${mealId}_${language.code}')),
+        body: _MealRecipe(key: ValueKey('body_${mealId.uuid}_${language.code}')),
         bottomNavigationBar: BottomNavBar(
           currentRoute: GoRouterState.of(context).uri.path,
           mode: NavBarMode.normal,

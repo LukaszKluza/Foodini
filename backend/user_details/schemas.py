@@ -74,9 +74,9 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
 
 
 class PredictedMacros(BaseModel):
-    protein: int
-    fat: int
-    carbs: int
+    protein: float
+    fat: float
+    carbs: float
 
 
 class PredictedCalories(BaseModel):
