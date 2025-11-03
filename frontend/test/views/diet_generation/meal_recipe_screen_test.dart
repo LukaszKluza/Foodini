@@ -52,7 +52,7 @@ void main() {
   setUp(() {
     languageCubit = LanguageCubit();
     SharedPreferences.setMockInitialValues({});
-    mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository);
+    mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository, mockMealsRepository);
     uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealRecipeId = UuidValue.fromString('recipe13-bb44-5b37-90d9-5b0c9a4f1b87');

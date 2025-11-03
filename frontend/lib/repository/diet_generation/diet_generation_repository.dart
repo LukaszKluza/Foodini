@@ -5,6 +5,7 @@ import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/utils/cache_manager.dart';
+import 'package:uuid/uuid_value.dart';
 
 class DietGenerationRepository {
   final ApiClient apiClient;
@@ -12,7 +13,7 @@ class DietGenerationRepository {
 
   DietGenerationRepository(this.apiClient, this.cacheManager);
 
-  Future<DailyMealsCreate> getDailySummaryMeals(DateTime day, int userId) async {
+  Future<DailyMealsCreate> getDailySummaryMeals(DateTime day, UuidValue userId) async {
     try {
       final response = await apiClient.getDailySummaryMeals(day, userId);
       return DailyMealsCreate.fromJson(response.data);
@@ -23,7 +24,7 @@ class DietGenerationRepository {
     }
   }
 
-  Future<DailyMealsCreate> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, int userId) async {
+  Future<DailyMealsCreate> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, UuidValue userId) async {
     try {
       final response = await apiClient.updateDailySummaryMeals(mealInfoUpdateRequest, userId);
       return DailyMealsCreate.fromJson(response.data);
@@ -36,7 +37,7 @@ class DietGenerationRepository {
     }
   }
 
-  Future<DailyMacrosSummaryCreate> getDailySummaryMacros(DateTime day, int userId) async {
+  Future<DailyMacrosSummaryCreate> getDailySummaryMacros(DateTime day, UuidValue userId) async {
     try {
       final response = await apiClient.getDailySummaryMacros(day, userId);
       return DailyMacrosSummaryCreate.fromJson(response.data);
