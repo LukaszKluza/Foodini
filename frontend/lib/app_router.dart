@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/diet_generation/daily_meals_screen.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -68,6 +69,23 @@ final GoRouter router = GoRouter(
           return '/.../meal-recipe/${state.pathParameters['id']}';
         }
       },
+    ),
+    GoRoute(
+      path: '/daily-meals/:date',
+      builder: (context, state) {
+        final dateStr = state.pathParameters['date']!;
+        final date = DateTime.tryParse(dateStr);
+        if (date == null) {
+          final today = DateTime.now();
+          return DailyMealsScreen(
+            selectedDate: DateTime(today.year, today.month, today.day),
+          );
+        }
+        return DailyMealsScreen(
+          selectedDate: DateTime(date.year, date.month, date.day),
+        );
+      },
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
       path: '/change-password',
