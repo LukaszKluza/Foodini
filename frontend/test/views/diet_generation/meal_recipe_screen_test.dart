@@ -31,11 +31,10 @@ void main() {
   late LanguageCubit languageCubit;
   late UuidValue uuidUserId;
   late UuidValue uuidMealId;
-  late UuidValue uuidMealRecipeId;
 
   Widget buildTestWidget(
     Widget child, {
-    String initialLocation = '/meal-recipe/1/EN',
+    String initialLocation = '/meal-recipe/meal78c3-bb44-5b37-90d9-5b0c9a4f1b87/EN',
   }) {
     return TestWrapperBuilder(child)
         .withRouter()
@@ -55,11 +54,10 @@ void main() {
     mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository, mockMealsRepository);
     uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
-    uuidMealRecipeId = UuidValue.fromString('recipe13-bb44-5b37-90d9-5b0c9a4f1b87');
 
     mealRecipe = MealRecipe(
       id: uuidUserId,
-      mealRecipeId: uuidMealRecipeId,
+      mealId: uuidMealId,
       language: Language.en,
       mealName: 'Cornflakes with soy milk',
       iconPath: '/black-coffee-fried-egg-with-toasts.jpg',

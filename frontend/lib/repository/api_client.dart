@@ -214,7 +214,7 @@ class ApiClient {
     return _client.patch(
       Endpoints.dailySummaryMeals,
       data: mealInfoUpdateRequest.toJson,
-      queryParameters: {'user_id': userId.uuid},
+      queryParameters: {'user_id': userId.uuid, 'cache': false},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
@@ -263,7 +263,7 @@ class ApiClient {
     return _client.patch(
       Endpoints.meal,
       data: customMealUpdateRequest.toJson,
-      queryParameters: {'user_id': userId.uuid},
+      queryParameters: {'user_id': userId.uuid, 'cache': false},
       options: Options(extra: {'requiresAuth': true}),
     );
   }

@@ -5,7 +5,7 @@ import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/states/diet_generation/meal_recipe.dart';
+import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
