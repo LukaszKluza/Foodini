@@ -1,5 +1,6 @@
 from langgraph.graph import END, StateGraph
 from langgraph.graph.state import CompiledStateGraph
+from main import logger
 
 from backend.diet_generation.schemas import AgentState
 from backend.diet_generation.tools.planner import PlannerTool
@@ -35,7 +36,9 @@ class DietAgentBuilder:
 
         graph_builder.add_node(
             "error",
-            lambda state: print(f"AGENT ERROR: Limit of correction was reached. Last error: {state.validation_report}"),
+            lambda state: logger.error(
+                f"AGENT ERROR: Limit of correction was reached. Last error: {state.validation_report}"
+            ),
         )
 
         graph_builder.set_entry_point("generate")

@@ -2,6 +2,8 @@ from datetime import date, timedelta
 from typing import Dict, List
 from uuid import UUID
 
+from main import logger
+
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfo
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
@@ -120,5 +122,5 @@ class DailyMealsGeneratorService:
                 await self.meal_gateway.add_meal_recipe(meal_recipe_translation_to_recipe(translated_recipe, meal.id))
             # Error suppression in case of failed translation
             except Exception as e:
-                print(f"{e}")
+                logger.error(f"Error while translating recipe: {str(e)}")
                 pass
