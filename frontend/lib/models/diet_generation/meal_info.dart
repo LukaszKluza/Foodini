@@ -1,7 +1,8 @@
 import 'package:frontend/models/diet_generation/meal_status.dart';
+import 'package:uuid/uuid_value.dart';
 
 class MealInfo {
-  final int? mealId;
+  final UuidValue? mealId;
   final MealStatus mealStatus;
   final String? name;
   final int? calories;
@@ -21,7 +22,7 @@ class MealInfo {
 
   factory MealInfo.fromJson(Map<String, dynamic> json) {
     return MealInfo(
-      mealId: json['meal_id'] as int,
+      mealId: UuidValue.fromString(json['meal_id']),
       mealStatus: MealStatus.fromJson(json['meal_status']),
       calories: json['calories'] as int,
       protein: (json['protein'] as num).toDouble(),

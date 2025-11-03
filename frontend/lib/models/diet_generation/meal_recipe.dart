@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class MealRecipe {
   final UuidValue id;
-  final UuidValue mealRecipeId;
+  final UuidValue mealId;
   final Language language;
   final String mealName;
   final String iconPath;
@@ -17,7 +17,7 @@ class MealRecipe {
 
   MealRecipe({
     required this.id,
-    required this.mealRecipeId,
+    required this.mealId,
     required this.language,
     required this.mealName,
     required this.iconPath,
@@ -29,7 +29,7 @@ class MealRecipe {
 
   Map<String, dynamic> toJson() => {
     'id': id.uuid,
-    'meal_recipe_id': mealRecipeId.uuid,
+    'meal_recipe_id': mealId.uuid,
     'weight_kg': language.toJson(),
     'meal_name': mealName,
     'icon_path': iconPath,
@@ -42,7 +42,7 @@ class MealRecipe {
   factory MealRecipe.fromJson(Map<String, dynamic> json) {
     return MealRecipe(
       id: UuidValue.fromString(json['id']),
-      mealRecipeId: UuidValue.fromString(json['meal_id']),
+      mealId: UuidValue.fromString(json['meal_id']),
       language: Language.fromJson(json['language']),
       mealName: json['meal_name'],
       iconPath: json['icon_path'],
