@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List
 from sqlalchemy import UUID, Column, DateTime, func
 from sqlmodel import Field, Relationship, SQLModel
 
-from backend.diet_generation.enums.meal_type import MealType
+from backend.meals.enums.meal_type import MealType
 
 from ..core.db_listeners import register_timestamp_listeners
 

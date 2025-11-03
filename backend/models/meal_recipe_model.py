@@ -15,7 +15,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel
 
-from backend.diet_generation.enums.meal_type import MealType
+from backend.meals.enums.meal_type import MealType
 from backend.users.enums.language import Language
 
 from ..core.db_listeners import register_timestamp_listeners

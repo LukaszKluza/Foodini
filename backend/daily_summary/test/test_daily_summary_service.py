@@ -6,19 +6,19 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.enums.meal_status import MealStatus
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.schemas import (
+from backend.daily_summary.enums.meal_status import MealStatus
+from backend.daily_summary.schemas import (
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
-    MealCreate,
     MealInfoUpdateRequest,
 )
-from backend.diet_generation.test.test_data import MEAL_ICON_ID, MEAL_ID
+from backend.meals.enums.meal_type import MealType
+from backend.meals.schemas import MealCreate
+from backend.meals.test.test_data import MEAL_ICON_ID, MEAL_ID
 
 with patch.dict(sys.modules, {"backend.diet_generation.daily_summary_repository": MagicMock()}):
-    from backend.diet_generation.daily_summary_service import DailySummaryService
+    from backend.daily_summary.daily_summary_service import DailySummaryService
 
 
 class MockDailyMealLink:
@@ -77,8 +77,17 @@ def mock_meal_repository():
 
 
 @pytest.fixture
-def daily_summary_service(mock_daily_summary_repository, mock_meal_repository):
-    return DailySummaryService(mock_daily_summary_repository, mock_meal_repository)
+def mock_last_generated_meals_repository():
+    repo = AsyncMock()
+    repo.get_last_generated_meals = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def daily_summary_service(mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository):
+    return DailySummaryService(
+        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository
+    )
 
 
 @pytest.mark.asyncio

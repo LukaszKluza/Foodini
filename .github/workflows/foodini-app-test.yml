@@ -22,6 +22,7 @@ env:
   MAIL_PORT: ${{ secrets.MAIL_PORT }}
   MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
   MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+  OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
 
 
 on:

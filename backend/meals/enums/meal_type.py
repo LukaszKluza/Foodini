@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 
 
 class MealType(str, Enum):
@@ -35,3 +36,15 @@ class MealType(str, Enum):
                 if member.value == value.lower():
                     return member
         return super()._missing_(value)
+
+    @classmethod
+    def daily_meals(cls, count: int) -> List["MealType"]:
+        mapping = {
+            3: [cls.BREAKFAST, cls.LUNCH, cls.DINNER],
+            4: [cls.BREAKFAST, cls.MORNING_SNACK, cls.LUNCH, cls.DINNER],
+            5: [cls.BREAKFAST, cls.MORNING_SNACK, cls.LUNCH, cls.AFTERNOON_SNACK, cls.DINNER],
+            6: [cls.BREAKFAST, cls.MORNING_SNACK, cls.LUNCH, cls.AFTERNOON_SNACK, cls.DINNER, cls.EVENING_SNACK],
+        }
+        if count not in mapping:
+            raise ValueError("Supported daily meals count: 3,4,5,6")
+        return mapping[count]

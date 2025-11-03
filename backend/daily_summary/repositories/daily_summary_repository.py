@@ -5,11 +5,8 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.diet_generation.enums.meal_status import MealStatus
-from backend.diet_generation.schemas import (
-    DailyMacrosSummaryCreate,
-    DailyMealsCreate,
-)
+from backend.daily_summary.enums.meal_status import MealStatus
+from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary, MealDailySummary
 
 
