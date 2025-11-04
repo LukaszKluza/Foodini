@@ -3,7 +3,6 @@ from typing import Dict, List
 from uuid import UUID
 
 from backend.core.logger import logger
-
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfo
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
