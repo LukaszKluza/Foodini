@@ -189,11 +189,6 @@ class DailySummaryService:
             None,
         )
 
-        print(daily_meals.daily_meals[0].meal.id)
-
-        for link in daily_meals.daily_meals:
-            print(link.meal_id)
-
         if not existing_link:
             raise NotFoundInDatabaseException(f"No meal of id: {custom_meal.meal_id} for this day.")
 
@@ -210,10 +205,6 @@ class DailySummaryService:
         )
 
         new_meal = await self.meal_repo.add_meal(new_meal)
-
-        print("DUDU")
-        print(new_meal)
-
         new_name = custom_meal.custom_name or existing_link.meal.recipes[0].meal_name
 
         new_meal_id = new_meal.id
@@ -227,8 +218,6 @@ class DailySummaryService:
                 steps=[],
             )
         )
-
-        print(new_meal.fat)
 
         meal_info = MealInfo(
             status=previous_status,

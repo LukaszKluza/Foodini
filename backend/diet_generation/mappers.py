@@ -2,7 +2,7 @@ from datetime import date
 from typing import Dict
 from uuid import UUID
 
-from backend.daily_summary.schemas import DailyMealsCreate, BasicMealInfo
+from backend.daily_summary.schemas import BasicMealInfo, DailyMealsCreate
 from backend.diet_generation.schemas import CompleteMeal, IngredientCreate, MealRecipeTranslation, StepCreate
 from backend.meals.enums.meal_type import MealType
 from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDietPredictions
@@ -68,6 +68,7 @@ def to_daily_meals_create(
         target_fat=user_diet_predictions.fat,
         target_carbs=user_diet_predictions.carbs,
     )
+
 
 def to_empty_basic_meal_info(meal_id: UUID) -> BasicMealInfo:
     return BasicMealInfo(

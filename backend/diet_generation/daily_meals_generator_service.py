@@ -4,14 +4,15 @@ from uuid import UUID
 
 from backend.core.logger import logger
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
-from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfo, BasicMealInfo
+from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import (
     complete_meal_to_meal,
     complete_meal_to_recipe,
     meal_recipe_translation_to_recipe,
     recipe_to_meal_recipe_translation,
-    to_daily_meals_create, to_empty_basic_meal_info,
+    to_daily_meals_create,
+    to_empty_basic_meal_info,
 )
 from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, create_agent_state
 from backend.diet_generation.tools.translator import TranslatorTool
