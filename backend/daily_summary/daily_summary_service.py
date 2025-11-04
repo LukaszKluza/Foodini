@@ -109,8 +109,10 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals_dict = {
-            link.meal.meal_type.value: BasicMealInfo(
+            link.meal.meal_type.value: MealInfo(
                 meal_id=link.meal.id,
+                name=link.meal.recipes[0].meal_name,
+                description=link.meal.recipes[0].meal_description,
                 status=link.status,
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),

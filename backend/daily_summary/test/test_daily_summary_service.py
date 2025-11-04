@@ -34,6 +34,10 @@ class MockDailyMealLink:
         self.meal.fat = 5
         self.status = status
         self.meal.custom_name = None
+        mock_recipe = MagicMock()
+        mock_recipe.meal_name = "Test meal"
+        mock_recipe.meal_description = "Delicious mock meal"
+        self.meal.recipes = [mock_recipe]
 
 
 class MockDailyMealsSummary:
