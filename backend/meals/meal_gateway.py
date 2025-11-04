@@ -25,7 +25,7 @@ class MealGateway:
         return await self.meal_service.get_meal_icon_id(meal_type)
 
 
-def get_meal_gateway(
+async def get_meal_gateway(
     meal_service: MealService = Depends(get_meal_service),
 ) -> MealGateway:
     return MealGateway(meal_service)

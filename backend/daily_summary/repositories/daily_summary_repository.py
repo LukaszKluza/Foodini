@@ -8,6 +8,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary, MealDailySummary
+from backend.models import Meal
+from backend.users.enums.language import Language
 
 
 class DailySummaryRepository:
@@ -32,6 +34,31 @@ class DailySummaryRepository:
         await self.db.commit()
         await self.db.refresh(user_daily_meals)
         return user_daily_meals
+
+    async def get_daily_summary(self, user_id: UUID, day: date, language: Language) -> DailyMealsSummary | None:
+        query = (
+            select(DailyMealsSummary)
+            .where(
+                DailyMealsSummary.user_id == user_id,
+                DailyMealsSummary.day == day
+            )
+            .options(
+                selectinload(DailyMealsSummary.daily_meals)
+                .selectinload(MealDailySummary.meal)
+                .selectinload(Meal.recipes)
+            )
+        )
+
+        result = await self.db.execute(query)
+        daily_summary = result.unique().scalar_one_or_none()
+
+        if daily_summary:
+            for daily_meal in daily_summary.daily_meals:
+                daily_meal.meal.recipes = [
+                    r for r in daily_meal.meal.recipes if r.language == language
+                ]
+
+        return daily_summary
 
     async def get_daily_meals_summary(self, user_id: UUID, day: date) -> DailyMealsSummary | None:
         query = (
@@ -113,7 +140,6 @@ class DailySummaryRepository:
                     MealDailySummary.meal_id == meal_id,
                 )
                 .values(status=new_status)
-                .execution_options(synchronize_session="fetch")
             )
             await self.db.commit()
             await self.db.refresh(user_daily_meals_summary)
