@@ -7,29 +7,28 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
-    BasicMealInfo, CustomMealUpdateRequest,
+    BasicMealInfo,
+    CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
-    DailySummary, MealInfo,
+    DailySummary,
+    MealInfo,
     MealInfoUpdateRequest,
 )
 from backend.meals.enums.meal_type import MealType
+from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
-from backend.models import DailyMealsSummary
-from backend.models import User
-from backend.meals.meal_gateway import MealGateway
-from backend.models import Ingredients, MealRecipe
-from backend.models import Ingredient
+from backend.models import DailyMealsSummary, Ingredient, Ingredients, MealRecipe, User
 
 
 class DailySummaryService:
     def __init__(
-            self,
-            summary_repo: DailySummaryRepository,
-            meal_repo: MealRepository,
-            last_generated_meals_repo: LastGeneratedMealsRepository,
-            meal_gateway: MealGateway,
+        self,
+        summary_repo: DailySummaryRepository,
+        meal_repo: MealRepository,
+        last_generated_meals_repo: LastGeneratedMealsRepository,
+        meal_gateway: MealGateway,
     ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
@@ -188,11 +187,6 @@ class DailySummaryService:
             None,
         )
 
-        print(daily_meals.daily_meals[0].meal.id)
-
-        for link in daily_meals.daily_meals:
-            print(link.meal_id)
-
         if not existing_link:
             raise NotFoundInDatabaseException(f"No meal of id: {custom_meal.meal_id} for this day.")
 
@@ -209,10 +203,6 @@ class DailySummaryService:
         )
 
         new_meal = await self.meal_repo.add_meal(new_meal)
-
-        print("DUDU")
-        print(new_meal)
-
         new_name = custom_meal.custom_name or existing_link.meal.recipes[0].meal_name
 
         new_meal_id = new_meal.id
@@ -226,8 +216,6 @@ class DailySummaryService:
                 steps=[],
             )
         )
-
-        print(new_meal.fat)
 
         meal_info = MealInfo(
             status=previous_status,
