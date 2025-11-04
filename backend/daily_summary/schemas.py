@@ -32,6 +32,7 @@ class DailyMealsCreate(BaseModel):
 
 
 class DailySummary(DailyMealsCreate):
+    meals: Dict[MealType, MealInfo]
     eaten_calories: int
     eaten_protein: float
     eaten_carbs: float

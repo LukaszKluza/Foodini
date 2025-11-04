@@ -3,8 +3,9 @@ import 'package:uuid/uuid_value.dart';
 
 class MealInfo {
   final UuidValue? mealId;
-  final MealStatus mealStatus;
+  final MealStatus status;
   final String? name;
+  final String? description;
   final int? calories;
   final double? protein;
   final double? carbs;
@@ -12,8 +13,9 @@ class MealInfo {
 
   MealInfo({
     this.mealId,
-    required this.mealStatus,
+    required this.status,
     this.name,
+    this.description,
     this.calories,
     this.protein,
     this.carbs,
@@ -23,7 +25,9 @@ class MealInfo {
   factory MealInfo.fromJson(Map<String, dynamic> json) {
     return MealInfo(
       mealId: UuidValue.fromString(json['meal_id']),
-      mealStatus: MealStatus.fromJson(json['meal_status']),
+      status: MealStatus.fromJson(json['status']),
+      name: json['name'],
+      description: json['description'],
       calories: json['calories'] as int,
       protein: (json['protein'] as num).toDouble(),
       carbs: (json['carbs'] as num).toDouble(),
@@ -34,8 +38,9 @@ class MealInfo {
   Map<String, dynamic> toJson() {
     return {
       if (mealId != null) 'meal_id': mealId.toString(),
-      'meal_status': mealStatus.toJson(),
+      'status': status.toJson(),
       if (name != null) 'name': name,
+      if (description != null) 'description': description,
       if (calories != null) 'calories': calories,
       if (protein != null) 'protein': protein,
       if (carbs != null) 'carbs': carbs,

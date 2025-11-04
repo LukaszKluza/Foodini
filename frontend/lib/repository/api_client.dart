@@ -199,9 +199,19 @@ class ApiClient {
   }
 
   // diet-generation
-  Future<Response> getDailySummaryMeals(DateTime day, UuidValue userId) {
+  Future<Response> getDailySummary(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.get(
-      '${Endpoints.dailySummaryMeals}/$day',
+      '${Endpoints.dailySummary}/$formattedDate',
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getDailySummaryMeals(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
+    return _client.get(
+      '${Endpoints.dailySummaryMeals}/$formattedDate',
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -220,8 +230,9 @@ class ApiClient {
   }
 
   Future<Response> getDailySummaryMacros(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.get(
-      '${Endpoints.dailySummaryMacros}/$day',
+      '${Endpoints.dailySummaryMacros}/$formattedDate',
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );

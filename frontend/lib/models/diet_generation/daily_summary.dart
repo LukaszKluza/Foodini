@@ -9,10 +9,10 @@ class DailySummary {
   final double targetCarbs;
   final double targetFat;
 
-  final int currentCalories;
-  final double currentProtein;
-  final double currentCarbs;
-  final double currentFat;
+  final int eatenCalories;
+  final double eatenProtein;
+  final double eatenCarbs;
+  final double eatenFat;
 
   DailySummary({
     required this.day,
@@ -21,10 +21,10 @@ class DailySummary {
     required this.targetProtein,
     required this.targetCarbs,
     required this.targetFat,
-    required this.currentCalories,
-    required this.currentProtein,
-    required this.currentCarbs,
-    required this.currentFat,
+    required this.eatenCalories,
+    required this.eatenProtein,
+    required this.eatenCarbs,
+    required this.eatenFat,
   });
 
   factory DailySummary.fromJson(Map<String, dynamic> json) {
@@ -43,10 +43,10 @@ class DailySummary {
       targetProtein: (json['target_protein'] as num).toDouble(),
       targetCarbs: (json['target_carbs'] as num).toDouble(),
       targetFat: (json['target_fat'] as num).toDouble(),
-      currentCalories: json['current_calories'] as int,
-      currentProtein: (json['current_protein'] as num).toDouble(),
-      currentCarbs: (json['current_carbs'] as num).toDouble(),
-      currentFat: (json['current_fat'] as num).toDouble(),
+      eatenCalories: json['eaten_calories'] as int,
+      eatenProtein: (json['eaten_protein'] as num).toDouble(),
+      eatenCarbs: (json['eaten_carbs'] as num).toDouble(),
+      eatenFat: (json['eaten_fat'] as num).toDouble(),
     );
   }
 
@@ -60,10 +60,10 @@ class DailySummary {
       'target_protein': targetProtein,
       'target_carbs': targetCarbs,
       'target_fat': targetFat,
-      'current_calories': currentCalories,
-      'current_protein': currentProtein,
-      'current_carbs': currentCarbs,
-      'current_fat': currentFat,
+      'eaten_calories': eatenCalories,
+      'eaten_protein': eatenProtein,
+      'eaten_carbs': eatenCarbs,
+      'eaten_fat': eatenFat,
     };
   }
 }

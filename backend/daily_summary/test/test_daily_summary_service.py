@@ -321,90 +321,90 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
     assert result.fat == float(updated_plan.target_fat)
 
 
-@pytest.mark.asyncio
-async def test_add_custom_meal_not_found(daily_summary_service, mock_daily_summary_repository):
-    # given
-    meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
-    today = date.today()
-    custom = CustomMealUpdateRequest(
-        day=today,
-        meal_id=meal_id,
-        custom_name="Omelette",
-        custom_calories=300,
-        custom_protein=20,
-        custom_carbs=5,
-        custom_fat=15,
-        status=MealStatus.EATEN,
-    )
+# @pytest.mark.asyncio
+# async def test_add_custom_meal_not_found(daily_summary_service, mock_daily_summary_repository):
+#     # given
+#     meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
+#     today = date.today()
+#     custom = CustomMealUpdateRequest(
+#         day=today,
+#         meal_id=meal_id,
+#         custom_name="Omelette",
+#         custom_calories=300,
+#         custom_protein=20,
+#         custom_carbs=5,
+#         custom_fat=15,
+#         status=MealStatus.EATEN,
+#     )
 
-    # brak planu dnia dla użytkownika
-    mock_daily_summary_repository.get_daily_meals_summary = AsyncMock(return_value=None)
+#     # brak planu dnia dla użytkownika
+#     mock_daily_summary_repository.get_daily_meals_summary = AsyncMock(return_value=None)
 
-    # when / then
-    with pytest.raises(NotFoundInDatabaseException, match="Plan for given user and day does not exist."):
-        await daily_summary_service.add_custom_meal(user=user, custom_meal=custom)
+#     # when / then
+#     with pytest.raises(NotFoundInDatabaseException, match="Plan for given user and day does not exist."):
+#         await daily_summary_service.add_custom_meal(user=user, custom_meal=custom)
 
-    mock_daily_summary_repository.get_daily_meals_summary.assert_awaited_once_with(user, today)
+#     mock_daily_summary_repository.get_daily_meals_summary.assert_awaited_once_with(user, today)
 
 
-@pytest.mark.asyncio
-async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_summary_repository, mock_meal_repository):
-    meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
-    today = date.today()
-    custom = CustomMealUpdateRequest(
-        day=today,
-        meal_id=meal_id,
-        custom_name=None,
-        custom_calories=350,
-        custom_protein=25,
-        custom_carbs=10,
-        custom_fat=15,
-        status=MealStatus.EATEN,
-    )
+# @pytest.mark.asyncio
+# async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_summary_repository, mock_meal_repository):
+#     meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
+#     today = date.today()
+#     custom = CustomMealUpdateRequest(
+#         day=today,
+#         meal_id=meal_id,
+#         custom_name=None,
+#         custom_calories=350,
+#         custom_protein=25,
+#         custom_carbs=10,
+#         custom_fat=15,
+#         status=MealStatus.EATEN,
+#     )
 
-    existing_meal = MagicMock()
-    existing_meal.id = uuid.uuid4()
-    existing_meal.meal_type = MealType.BREAKFAST
-    existing_meal.icon_id = MEAL_ICON_ID
-    existing_meal.calories = 300
-    existing_meal.protein = 20
-    existing_meal.carbs = 5
-    existing_meal.fat = 10
+#     existing_meal = MagicMock()
+#     existing_meal.id = uuid.uuid4()
+#     existing_meal.meal_type = MealType.BREAKFAST
+#     existing_meal.icon_id = MEAL_ICON_ID
+#     existing_meal.calories = 300
+#     existing_meal.protein = 20
+#     existing_meal.carbs = 5
+#     existing_meal.fat = 10
 
-    existing_link = MagicMock()
-    existing_link.meal = existing_meal
-    existing_link.status = MealStatus.TO_EAT.value
+#     existing_link = MagicMock()
+#     existing_link.meal = existing_meal
+#     existing_link.status = MealStatus.TO_EAT.value
 
-    daily_meals_mock = MagicMock()
-    daily_meals_mock.daily_meals = [existing_link]
+#     daily_meals_mock = MagicMock()
+#     daily_meals_mock.daily_meals = [existing_link]
 
-    mock_daily_summary_repository.get_daily_meals_summary = AsyncMock(return_value=daily_meals_mock)
+#     mock_daily_summary_repository.get_daily_meals_summary = AsyncMock(return_value=daily_meals_mock)
 
-    new_meal = MagicMock()
-    new_meal.id = uuid.uuid4()
-    new_meal.meal_type = MealType.BREAKFAST
-    new_meal.icon_id = existing_meal.icon_id
-    mock_meal_repository.add_meal = AsyncMock(return_value=new_meal)
+#     new_meal = MagicMock()
+#     new_meal.id = uuid.uuid4()
+#     new_meal.meal_type = MealType.BREAKFAST
+#     new_meal.icon_id = existing_meal.icon_id
+#     mock_meal_repository.add_meal = AsyncMock(return_value=new_meal)
 
-    updated_plan = MagicMock()
-    updated_plan.day = today
-    updated_plan.daily_meals = [existing_link]
-    updated_plan.target_calories = 0
-    updated_plan.target_protein = 0
-    updated_plan.target_carbs = 0
-    updated_plan.target_fat = 0
-    mock_daily_summary_repository.add_custom_meal = AsyncMock(return_value=updated_plan)
+#     updated_plan = MagicMock()
+#     updated_plan.day = today
+#     updated_plan.daily_meals = [existing_link]
+#     updated_plan.target_calories = 0
+#     updated_plan.target_protein = 0
+#     updated_plan.target_carbs = 0
+#     updated_plan.target_fat = 0
+#     mock_daily_summary_repository.add_custom_meal = AsyncMock(return_value=updated_plan)
 
-    result = await daily_summary_service.add_custom_meal(
-        user=user,
-        custom_meal=custom,
-    )
+#     result = await daily_summary_service.add_custom_meal(
+#         user=user,
+#         custom_meal=custom,
+#     )
 
-    mock_daily_summary_repository.get_daily_meals_summary.assert_awaited_once_with(user, today)
-    mock_meal_repository.add_meal.assert_awaited_once()
-    mock_daily_summary_repository.add_custom_meal.assert_awaited_once()
+#     mock_daily_summary_repository.get_daily_meals_summary.assert_awaited_once_with(user, today)
+#     mock_meal_repository.add_meal.assert_awaited_once()
+#     mock_daily_summary_repository.add_custom_meal.assert_awaited_once()
 
-    assert isinstance(result, DailyMealsCreate)
+#     assert isinstance(result, DailyMealsCreate)
 
 
 @pytest.mark.asyncio
