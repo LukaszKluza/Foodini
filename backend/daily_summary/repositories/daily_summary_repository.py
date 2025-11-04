@@ -59,7 +59,7 @@ class DailySummaryRepository:
         query = (
             select(DailyMealsSummary)
             .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
-            .options(selectinload(DailyMealsSummary.daily_meals).selectinload(MealDailySummary.meal))
+            .options(selectinload(DailyMealsSummary.daily_meals).selectinload(MealDailySummary.meal).selectinload(Meal.recipes))
         )
         result = await self.db.execute(query)
         return result.scalar_one_or_none()

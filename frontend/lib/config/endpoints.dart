@@ -17,7 +17,7 @@ class Endpoints {
   static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
 
   // diet-prediction
-  static const String generateMealPlan = '$baseUrl/diet-prediction/generate-meal-plan';
+  static const String generateMealPlan = '$baseUrl/diet-generation/generate-meal-plan';
 
   // daily-summary
   static const String dailySummary = '$baseUrl/daily-summary';
