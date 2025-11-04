@@ -26,6 +26,7 @@ class Endpoints {
 
   // meals
   static const String meal = '$baseUrl/meals';
+  static const String customMeal = '$baseUrl/meals/custom';
   static const String mealRecipe = '$baseUrl/meals/meal-recipes';
   static const String mealIconInfo = '$baseUrl/meals/meal-icon';
 

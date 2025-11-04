@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart';
 import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
@@ -44,6 +45,19 @@ class DietGenerationRepository {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while updating daily summary meals: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
+
+  Future<DailyMealsCreate> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
+    try {
+      final response = await apiClient.addCustomMeal(customMealUpdateRequest, userId);
+      return DailyMealsCreate.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while adding custom meal: $e');
     } finally {
       await cacheManager.clearAllCache();
     }
