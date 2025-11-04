@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
+import 'package:frontend/foodini.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/views/widgets/action_button.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -27,7 +29,11 @@ class DailyMealsScreen extends StatelessWidget {
     final prevRoute = '/daily-meals/${formatForUrl(prevDate)}';
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
+    var state = context.watch<LanguageCubit>().state;
+    var language = Language.fromJson(state.languageCode);
+
     return BlocProvider(
+      key: ValueKey('bloc_${selectedDate}_${language.code}'),
       create: (context) => DailySummaryBloc(
         context.read(),
       )..add(GetDailySummary(selectedDate)),
