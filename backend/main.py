@@ -8,6 +8,7 @@ from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
 from backend.daily_summary.daily_summary_router import daily_summary_router
@@ -17,7 +18,6 @@ from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
 from backend.users.user_router import user_router
-from backend.core.logger import logger
 
 app = FastAPI()
 app.include_router(user_router)

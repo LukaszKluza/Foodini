@@ -10,8 +10,8 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import (
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
-    DailyMealsCreate,
-    MealInfo, MealInfoUpdateRequest,
+    MealInfo,
+    MealInfoUpdateRequest,
 )
 from backend.meals.enums.meal_type import MealType
 from backend.meals.schemas import MealCreate
@@ -103,16 +103,15 @@ def mock_meal_gateway():
 
 
 @pytest.fixture
-def daily_summary_service(mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository,
-                          mock_meal_gateway):
+def daily_summary_service(
+    mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+):
     return DailySummaryService(
         mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
     )
 
 
-user = User(
-    id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
-)
+user = User(id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"))
 
 
 @pytest.mark.asyncio
@@ -194,9 +193,7 @@ async def test_update_meal_status_success(daily_summary_service, mock_daily_summ
     mock_summary = MockDailyMealsSummary()
     mock_daily_summary_repository.get_daily_meals_summary.return_value = mock_summary
 
-    update = MealInfoUpdateRequest(
-        day=date.today(), meal_id=mock_daily_base_info.meal_id, status=MealStatus.EATEN
-    )
+    update = MealInfoUpdateRequest(day=date.today(), meal_id=mock_daily_base_info.meal_id, status=MealStatus.EATEN)
 
     daily_summary_service._add_macros_after_status_change = AsyncMock()
     daily_summary_service._update_next_meal_status = AsyncMock()
@@ -277,7 +274,6 @@ async def test_update_meal_status_adds_macros_when_eaten(
 @pytest.mark.asyncio
 async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary_repository, mock_meal_repository):
     meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
-    today = date.today()
 
     custom = CustomMealUpdateRequest(
         day=date.today(),
@@ -348,7 +344,11 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
 
 
 # @pytest.mark.asyncio
-# async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_summary_repository, mock_meal_repository):
+# async def test_add_custom_meal_without_name(
+#   daily_summary_service,
+#   mock_daily_summary_repository,
+#   mock_meal_repository
+# ):
 #     meal_id = uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
 #     today = date.today()
 #     custom = CustomMealUpdateRequest(

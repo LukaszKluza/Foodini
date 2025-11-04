@@ -7,29 +7,28 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
-    BasicMealInfo, CustomMealUpdateRequest,
+    BasicMealInfo,
+    CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
-    DailySummary, MealInfo,
+    DailySummary,
+    MealInfo,
     MealInfoUpdateRequest,
 )
 from backend.meals.enums.meal_type import MealType
+from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
-from backend.models import DailyMealsSummary
-from backend.models import User
-from backend.meals.meal_gateway import MealGateway
-from backend.models import Ingredients, MealRecipe
-from backend.models import Ingredient
+from backend.models import DailyMealsSummary, Ingredient, Ingredients, MealRecipe, User
 
 
 class DailySummaryService:
     def __init__(
-            self,
-            summary_repo: DailySummaryRepository,
-            meal_repo: MealRepository,
-            last_generated_meals_repo: LastGeneratedMealsRepository,
-            meal_gateway: MealGateway,
+        self,
+        summary_repo: DailySummaryRepository,
+        meal_repo: MealRepository,
+        last_generated_meals_repo: LastGeneratedMealsRepository,
+        meal_gateway: MealGateway,
     ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo

@@ -1,7 +1,7 @@
 from langgraph.graph import END, StateGraph
 from langgraph.graph.state import CompiledStateGraph
-from backend.core.logger import logger
 
+from backend.core.logger import logger
 from backend.diet_generation.schemas import AgentState
 from backend.diet_generation.tools.planner import PlannerTool
 from backend.diet_generation.tools.validator import ValidatorTool

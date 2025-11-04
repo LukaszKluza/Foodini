@@ -11,21 +11,21 @@ from backend.meals.repositories.meal_repository import MealRepository
 
 
 async def get_last_generated_meals_repository(
-        db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> LastGeneratedMealsRepository:
     return LastGeneratedMealsRepository(db)
 
 
 async def get_daily_summary_repository(
-        db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> DailySummaryRepository:
     return DailySummaryRepository(db)
 
 
 async def get_daily_summary_service(
-        daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
-        meal_repository: MealRepository = Depends(get_meal_repository),
-        last_generated_meals_repository: LastGeneratedMealsRepository = Depends(get_last_generated_meals_repository),
-        meal_gateway: MealGateway = Depends(get_meal_gateway)
+    daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
+    meal_repository: MealRepository = Depends(get_meal_repository),
+    last_generated_meals_repository: LastGeneratedMealsRepository = Depends(get_last_generated_meals_repository),
+    meal_gateway: MealGateway = Depends(get_meal_gateway),
 ) -> DailySummaryService:
     return DailySummaryService(daily_summary_repository, meal_repository, last_generated_meals_repository, meal_gateway)

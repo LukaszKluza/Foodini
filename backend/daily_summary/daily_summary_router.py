@@ -6,14 +6,16 @@ from fastapi import APIRouter, Depends, status
 from backend.daily_summary.daily_summary_service import DailySummaryService
 from backend.daily_summary.dependencies import get_daily_summary_service
 from backend.daily_summary.schemas import (
+    BasicMealInfo,
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
-    DailySummary, MealInfo, MealInfoUpdateRequest,
+    DailySummary,
+    MealInfo,
+    MealInfoUpdateRequest,
 )
 from backend.meals.schemas import MealCreate
 from backend.users.user_gateway import UserGateway, get_user_gateway
-from backend.daily_summary.schemas import BasicMealInfo
 
 daily_summary_router = APIRouter(prefix="/v1/daily-summary")
 
