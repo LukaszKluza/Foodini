@@ -2,16 +2,16 @@ from typing import List
 from uuid import UUID
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.meal_icons_repository import MealIconsRepository
-from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.diet_generation.meal_repository import MealRepository
-from backend.diet_generation.schemas import MealRecipeResponse
-from backend.models import MealIcon, MealRecipe
+from backend.meals.enums.meal_type import MealType
+from backend.meals.repositories.meal_icons_repository import MealIconsRepository
+from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
+from backend.meals.repositories.meal_repository import MealRepository
+from backend.meals.schemas import MealRecipeResponse
+from backend.models import Meal, MealIcon, MealRecipe
 from backend.users.enums.language import Language
 
 
-class DietGenerationService:
+class MealService:
     def __init__(
         self,
         meal_recipes_repository: MealRecipesRepository,
@@ -25,6 +25,12 @@ class DietGenerationService:
     async def get_meal_icon(self, meal_type: MealType) -> MealIcon:
         meal_icon = await self.meal_icons_repository.get_meal_icon_by_type(meal_type)
         return await self.validate_response(meal_icon, "Meal icon not found")
+
+    async def get_meal_icon_id(self, meal_type: MealType) -> UUID:
+        return await self.meal_icons_repository.get_meal_icon_id_by_type(meal_type)
+
+    async def add_meal(self, meal: Meal) -> Meal:
+        return await self.meal_recipes_repository.add_meal(meal)
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)

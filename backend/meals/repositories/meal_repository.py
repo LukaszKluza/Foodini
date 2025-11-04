@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.diet_generation.schemas import MealCreate
+from backend.meals.schemas import MealCreate
 from backend.models import Meal
 
 

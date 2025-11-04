@@ -1,115 +1,126 @@
-import json
-import os
-import traceback
-from typing import Any, Dict, List, Optional
+from datetime import date, timedelta
+from typing import Dict, List
+from uuid import UUID
 
-import requests
+from backend.core.logger import logger
 
-from backend.diet_generation.enums.meal_type import MealType
-from backend.diet_generation.meal_recipes_repository import MealRecipesRepository
-from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDetails, UserDietPredictions
-from backend.settings import config
+from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
+from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfo
+from backend.diet_generation.agent.graph_builder import DietAgentBuilder
+from backend.diet_generation.mappers import (
+    complete_meal_to_meal,
+    complete_meal_to_recipe,
+    meal_recipe_translation_to_recipe,
+    recipe_to_meal_recipe_translation,
+    to_daily_meals_create,
+)
+from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, create_agent_state
+from backend.diet_generation.tools.translator import TranslatorTool
+from backend.meals.enums.meal_type import MealType
+from backend.meals.meal_gateway import MealGateway
+from backend.models import Meal, MealRecipe, User, UserDetails, UserDietPredictions
+from backend.user_details.user_details_gateway import UserDetailsGateway
 from backend.users.enums.language import Language
 
 
-class PromptService:
+class DailyMealsGeneratorService:
     def __init__(
         self,
-        meal_recipes_repo: MealRecipesRepository,
+        meal_gateway: MealGateway,
+        daily_summary_gateway: DailySummaryGateway,
+        user_details_gateway: UserDetailsGateway,
     ):
-        self.meal_recipes_repo = meal_recipes_repo
-        self._prompt_template_cache: Optional[str] = None
+        self.meal_gateway = meal_gateway
+        self.daily_summary_gateway = daily_summary_gateway
+        self.user_details_gateway = user_details_gateway
+        self.translator = TranslatorTool()
 
     @staticmethod
-    def _prepare_params(details: UserDetails, predictions: UserDietPredictions) -> dict:
-        return {
-            "allergens": [a.value for a in details.allergies],
-            "meals_per_day": details.meals_per_day,
-            "calories": predictions.target_calories,
-            "macros": {"protein": predictions.protein, "carbs": predictions.carbs, "fat": predictions.fat},
-        }
-
-    @staticmethod
-    def _parse_json_response(response: str) -> List[Dict[str, Any]]:
-        start = response.find("[")
-        end = response.rfind("]")
-        if start == -1 or end == -1:
-            raise ValueError("Response does not contain a JSON array")
-        return json.loads(response[start : end + 1])
-
-    async def generate_meal_plan(
-        self, user_details: UserDetails, user_diet_predictions: UserDietPredictions, retries: int = 2
-    ) -> List[MealRecipe]:
-        params = self._prepare_params(user_details, user_diet_predictions)
-        prompt = self._build_prompt(params)
-
-        response = await self._get_valid_json_from_model(prompt, retries)
-        return await self._save_meals(response)
-
-    def _build_prompt(self, params: dict) -> str:
-        if self._prompt_template_cache is None:
-            prompt_file_path = os.path.join(
-                os.path.dirname(__file__), config.PROMPTS_DIR, config.DAILY_MEALS_PROMPT_FILENAME
-            )
-            try:
-                with open(prompt_file_path, "r", encoding="utf-8") as f:
-                    self._prompt_template_cache = f.read()
-            except FileNotFoundError as err:
-                raise RuntimeError(f"Prompt file not found at: {prompt_file_path}") from err
-
-        meal_types = ", ".join(f'"{m.value}"' for m in MealType)
-        return self._prompt_template_cache.format(
-            input_data=json.dumps(params, indent=2, ensure_ascii=False), meal_type_options=meal_types
+    def _prepare_input(
+        details: UserDetails, predictions: UserDietPredictions, previous_meals: List[str]
+    ) -> DietGenerationInput:
+        return DietGenerationInput(
+            dietary_restriction=[restriction for restriction in details.dietary_restrictions],
+            meals_per_day=details.meals_per_day,
+            meal_types=MealType.daily_meals(details.meals_per_day),
+            calories=predictions.target_calories,
+            protein=predictions.protein,
+            carbs=predictions.carbs,
+            fat=predictions.fat,
+            previous_meals=previous_meals,
         )
 
-    async def _get_valid_json_from_model(self, prompt: str, retries: int) -> List[Dict[str, Any]]:
-        last_exception = None
-        for _attempt in range(retries + 1):
-            try:
-                resp = requests.post(
-                    config.OLLAMA_URL, json={"model": config.MODEL_NAME, "prompt": prompt, "stream": False}
-                )
-                resp.raise_for_status()
-                return self._parse_json_response(resp.json()["response"])
-            except Exception as e:
-                last_exception = e
-                prompt += "\n\nWarning: Previous response was not valid JSON. Return only valid JSON."
-        raise ValueError(f"Model did not return valid JSON: {last_exception}")
+    async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
+        try:
+            user_details, user_diet_predictions, user_latest_meals, meal_icons = await self._get_required_arguments(
+                user, day
+            )
 
-    async def _save_meals(self, meals_data: List[Dict[str, Any]]) -> List[MealRecipe]:
-        saved_recipes = []
+            input_data = self._prepare_input(user_details, user_diet_predictions, user_latest_meals)
 
-        for meal_data in meals_data:
-            try:
-                meal = Meal(
-                    meal_name=meal_data["meal_name"].capitalize(),
-                    meal_type=MealType(meal_data["meal_type"].lower()),
-                    icon_id=MealType(meal_data["meal_type"].lower()).meal_order,
-                    calories=int(meal_data["calories"]),
-                    protein=int(meal_data["macros"]["protein"]),
-                    fat=int(meal_data["macros"]["fat"]),
-                    carbs=int(meal_data["macros"]["carbs"]),
-                )
-                saved_meal = await self.meal_recipes_repo.add_meal(meal)
+            agent = DietAgentBuilder(user_details.meals_per_day)
+            app = agent.build_graph()
 
-                ingredients = Ingredients(
-                    ingredients=[
-                        Ingredient(name=i["name"], unit=i["unit"], volume=float(i["volume"]))
-                        for i in meal_data["ingredients"]
-                    ]
-                )
-                steps = [Step(description=s) for s in meal_data.get("steps", [])]
+            initial_state = create_agent_state(input_data)
+            generated_diet = app.invoke(initial_state)
 
-                recipe = MealRecipe(
-                    meal_id=saved_meal.id,
-                    language=Language.EN,
-                    meal_description=meal_data["meal_description"],
-                    ingredients=ingredients.model_dump(),
-                    steps=[s.model_dump() for s in steps],
-                )
-                saved = await self.meal_recipes_repo.add_meal_recipe(recipe)
-                saved_recipes.append(saved)
-            except Exception as e:
-                print(traceback.format_exc())
-                print(f"[ERROR] Failed to save recipe '{meal_data['meal_name']}': {e}")
+            saved_meals, saved_recipes, meals_type_map = await self._save_meals(
+                generated_diet.get("current_plan"), meal_icons
+            )
+            await self._save_daily_summary(day, user_diet_predictions, meals_type_map)
+            await self._translate_and_save_recipes(saved_meals, saved_recipes)
+        except Exception as e:
+            raise RuntimeError(f"Error generating diet plan for user {user.id}: {e}") from e
         return saved_recipes
+
+    async def _get_required_arguments(self, user: User, day: date):
+        user_details = await self.user_details_gateway.get_user_details(user)
+        user_diet_predictions = await self.user_details_gateway.get_user_diet_predictions(user)
+        user_latest_meals = await self.daily_summary_gateway.get_last_generated_meals(
+            user.id, day - timedelta(days=7), day
+        )
+        meal_types = MealType.daily_meals(user_details.meals_per_day)
+        meal_icons = {meal_type.value: await self.meal_gateway.get_meal_icon_id(meal_type) for meal_type in meal_types}
+
+        return user_details, user_diet_predictions, user_latest_meals, meal_icons
+
+    async def _save_meals(self, daily_diet: List[CompleteMeal], meal_icons: Dict[str, UUID]):
+        saved_meals = []
+        saved_recipes = []
+        meals_type_map = {}
+
+        for complete_meal in daily_diet:
+            saved_meal = await self.meal_gateway.add_meal(
+                complete_meal_to_meal(complete_meal, meal_icons[complete_meal.meal_type])
+            )
+            meal_recipe = await self.meal_gateway.add_meal_recipe(
+                complete_meal_to_recipe(complete_meal, saved_meal.id, Language.EN)
+            )
+
+            saved_meals.append(saved_meal)
+            saved_recipes.append(meal_recipe)
+            meals_type_map[saved_meal.meal_type.value] = MealInfo(meal_id=saved_meal.id)
+
+        return saved_meals, saved_recipes, meals_type_map
+
+    async def _save_daily_summary(
+        self, day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, MealInfo]
+    ):
+        await self.daily_summary_gateway.add_daily_meals(
+            to_daily_meals_create(day, user_diet_predictions, meals_type_map), user_diet_predictions.user_id
+        )
+        await self.daily_summary_gateway.add_daily_macros_summary(
+            user_diet_predictions.user_id, DailyMacrosSummaryCreate(day=day)
+        )
+
+    async def _translate_and_save_recipes(self, meals: List[Meal], meal_recipes: List[MealRecipe]):
+        for meal, meal_recipe in zip(meals, meal_recipes):
+            try:
+                translated_recipe = self.translator.translate_meal_recipe_to_polish(
+                    recipe_to_meal_recipe_translation(meal_recipe)
+                )
+                await self.meal_gateway.add_meal_recipe(meal_recipe_translation_to_recipe(translated_recipe, meal.id))
+            # Error suppression in case of failed translation
+            except Exception as e:
+                logger.error(f"Error while translating recipe: {str(e)}")
+                pass

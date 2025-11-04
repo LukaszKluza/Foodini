@@ -10,7 +10,7 @@ from backend.user_details.service.user_details_service import UserDetailsService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
 #
-user_details_router = APIRouter(prefix="/v1/user_details")
+user_details_router = APIRouter(prefix="/v1/user-details")
 
 
 @user_details_router.get("/", response_model=UserDetails)
