@@ -1,7 +1,7 @@
 import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
@@ -39,10 +39,10 @@ class UpdateDietType extends DietFormEvent {
   UpdateDietType(this.dietType);
 }
 
-class UpdateAllergies extends DietFormEvent {
-  final List<Allergy> allergies;
+class UpdateDietaryRestrictions extends DietFormEvent {
+  final List<DietaryRestriction> dietaryRestrictions;
 
-  UpdateAllergies(this.allergies);
+  UpdateDietaryRestrictions(this.dietaryRestrictions);
 }
 
 class UpdateDietGoal extends DietFormEvent {
@@ -104,5 +104,3 @@ class InitForm extends DietFormEvent {}
 class SubmitForm extends DietFormEvent {}
 
 class DietFormResetRequested extends DietFormEvent {}
-
-class CalculateCalories extends DietFormEvent {}

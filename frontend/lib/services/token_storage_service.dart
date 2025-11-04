@@ -3,15 +3,15 @@ import 'package:frontend/repository/user/token_storage_mobile_repository.dart';
 import 'package:frontend/repository/user/token_storage_repository.dart';
 import 'package:frontend/repository/user/token_storage_web_repository.dart';
 
-class TokenStorageRepository {
-  static final TokenStorageRepository _instance =
-      TokenStorageRepository._internal();
+class TokenStorageService {
+  static final TokenStorageService _instance =
+      TokenStorageService._internal();
 
   late final TokenStorage _storage;
 
-  factory TokenStorageRepository() => _instance;
+  factory TokenStorageService() => _instance;
 
-  TokenStorageRepository._internal() {
+  TokenStorageService._internal() {
     if (kIsWeb) {
       _storage = TokenStorageWeb();
     } else {

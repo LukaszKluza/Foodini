@@ -10,16 +10,13 @@ class RegisterListenerHelper {
   static void onRegisterListener({
     required BuildContext context,
     required RegisterState state,
-    required void Function(void Function()) setState,
     required bool mounted,
     required void Function(String) setMessage,
     required void Function(TextStyle) setMessageStyle,
   }) {
     if (state is RegisterSuccess) {
-      setState(() {
-        setMessage(AppLocalizations.of(context)!.checkAndConfirmEmailAddress);
-        setMessageStyle(Styles.successStyle);
-      });
+      setMessage(AppLocalizations.of(context)!.checkAndConfirmEmailAddress);
+      setMessageStyle(Styles.successStyle);
       Future.delayed(
         const Duration(milliseconds: Constants.redirectionDelay),
         () {
@@ -31,11 +28,7 @@ class RegisterListenerHelper {
         },
       );
     } else if (state is RegisterFailure) {
-      setState(() {
-        setMessage(
-          ExceptionConverter.formatErrorMessage(state.error.data, context),
-        );
-      });
+      setMessage(ExceptionConverter.formatErrorMessage(state.error.data, context));
     }
   }
 }

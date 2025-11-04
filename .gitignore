@@ -128,6 +128,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.local
 .venv
 env/
 venv/
@@ -179,3 +180,4 @@ cython_debug/
 
 #ruff configuration files
 .ruff_cache
+/.env.local

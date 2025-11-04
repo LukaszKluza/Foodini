@@ -3,9 +3,9 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
@@ -16,21 +16,21 @@ class AppConfig {
     DietType.muscleGain: AppLocalizations.of(context)!.dietType_MuscleGain,
     DietType.weightMaintenance:
         AppLocalizations.of(context)!.dietType_WeightMaintenance,
-    DietType.vegetarian: AppLocalizations.of(context)!.dietType_Vegetarian,
-    DietType.vegan: AppLocalizations.of(context)!.dietType_Vegan,
-    DietType.keto: AppLocalizations.of(context)!.dietType_Keto,
   };
 
-  static Map<Allergy, String> allergyLabels(BuildContext context) => {
-    Allergy.gluten: AppLocalizations.of(context)!.allergy_Gluten,
-    Allergy.peanuts: AppLocalizations.of(context)!.allergy_Peanuts,
-    Allergy.lactose: AppLocalizations.of(context)!.allergy_Lactose,
-    Allergy.fish: AppLocalizations.of(context)!.allergy_Fish,
-    Allergy.soy: AppLocalizations.of(context)!.allergy_Soy,
-    Allergy.wheat: AppLocalizations.of(context)!.allergy_Wheat,
-    Allergy.celery: AppLocalizations.of(context)!.allergy_Celery,
-    Allergy.sulphites: AppLocalizations.of(context)!.allergy_Sulphites,
-    Allergy.lupin: AppLocalizations.of(context)!.allergy_Lupin,
+  static Map<DietaryRestriction, String> dietaryRestrictionLabels(BuildContext context) => {
+    DietaryRestriction.gluten: AppLocalizations.of(context)!.dietaryRestriction_Gluten,
+    DietaryRestriction.peanuts: AppLocalizations.of(context)!.dietaryRestriction_Peanuts,
+    DietaryRestriction.lactose: AppLocalizations.of(context)!.dietaryRestriction_Lactose,
+    DietaryRestriction.fish: AppLocalizations.of(context)!.dietaryRestriction_Fish,
+    DietaryRestriction.soy: AppLocalizations.of(context)!.dietaryRestriction_Soy,
+    DietaryRestriction.wheat: AppLocalizations.of(context)!.dietaryRestriction_Wheat,
+    DietaryRestriction.celery: AppLocalizations.of(context)!.dietaryRestriction_Celery,
+    DietaryRestriction.sulphites: AppLocalizations.of(context)!.dietaryRestriction_Sulphites,
+    DietaryRestriction.lupin: AppLocalizations.of(context)!.dietaryRestriction_Lupin,
+    DietaryRestriction.vegetarian: AppLocalizations.of(context)!.dietaryRestriction_Vegetarian,
+    DietaryRestriction.vegan: AppLocalizations.of(context)!.dietaryRestriction_Vegan,
+    DietaryRestriction.keto: AppLocalizations.of(context)!.dietaryRestriction_Keto,
   };
 
   static Map<DietIntensity, String> dietIntensityLabels(

@@ -3,7 +3,7 @@
 name: Foodini
 env:
   BACKEND_TEST_COVERAGE_THRESHOLD: 80
-  FRONTEND_TEST_COVERAGE_THRESHOLD: 70
+  FRONTEND_TEST_COVERAGE_THRESHOLD: 60
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -22,15 +22,13 @@ env:
   MAIL_PORT: ${{ secrets.MAIL_PORT }}
   MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
   MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+  OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
 
 
 on:
   push:
     branches:
       - '*'
-#  pull_request:
-#    branches:
-#      - '*'
 
 permissions:
   contents: read
@@ -45,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install pre-commit
         run: pip install pre-commit

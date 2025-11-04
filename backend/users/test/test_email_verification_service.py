@@ -6,7 +6,7 @@ from fastapi_mail import MessageSchema, MessageType
 from pydantic import EmailStr, TypeAdapter
 
 from backend.settings import config
-from backend.users.service.email_verification_sevice import EmailVerificationService
+from backend.users.service.email_verification_service import EmailVerificationService
 
 
 @pytest.fixture

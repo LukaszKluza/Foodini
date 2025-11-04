@@ -10,15 +10,18 @@ import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
+
+late UuidValue uuidUserId;
 
 late MockDio mockDio;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late ProvideEmailBloc provideEmailBloc;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -38,16 +41,19 @@ void main() {
   setUp(() {
     mockDio = MockDio();
     mockApiClient = MockApiClient();
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
     authRepository = UserRepository(mockApiClient);
     provideEmailBloc = ProvideEmailBloc(
       authRepository,
-      tokenStorageRepository: mockTokenStorageRepository,
+      apiClient: mockApiClient,
+      tokenStorageService: mockTokenStorageService,
     );
+
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     when(mockDio.interceptors).thenReturn(Interceptors());
     when(
-      mockTokenStorageRepository.getAccessToken(),
+      mockTokenStorageService.getAccessToken(),
     ).thenAnswer((_) async => null);
   });
 
@@ -96,7 +102,7 @@ void main() {
     when(mockApiClient.provideEmail(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'john@example.com',
           'name': 'John',
           'language': 'pl',

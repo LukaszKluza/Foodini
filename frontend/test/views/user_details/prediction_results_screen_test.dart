@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
 import 'package:frontend/states/macros_change_states.dart';
@@ -71,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('2200'), findsOneWidget); // target calories
     expect(find.textContaining('1600'), findsOneWidget); // BMR
     expect(find.textContaining('2100'), findsOneWidget); // TDEE
@@ -117,7 +117,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('Error message from backend'), findsOneWidget);
 
     expect(find.byIcon(Icons.warning_amber), findsOneWidget);
@@ -156,7 +156,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('Error message from backend'), findsOneWidget);
 
     expect(find.byIcon(Icons.warning_amber), findsOneWidget);

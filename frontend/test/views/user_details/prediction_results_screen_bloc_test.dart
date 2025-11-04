@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
 import 'package:frontend/models/user_details/macros.dart';
@@ -15,6 +15,7 @@ import 'package:frontend/views/screens/user_details/prediction_results_screen.da
 import 'package:go_router/go_router.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
@@ -33,6 +34,7 @@ class RecordingMacrosChangeBloc extends MacrosChangeBloc {
 
 late RecordingMacrosChangeBloc macrosChangeBloc;
 late PredictedCalories predictedCalories;
+late UuidValue uuidUserId;
 
 MockUserDetailsRepository mockUserDetailsRepository =
     MockUserDetailsRepository();
@@ -65,10 +67,11 @@ void main() {
     );
 
     SharedPreferences.setMockInitialValues({});
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -83,7 +86,7 @@ void main() {
   testWidgets('Prediction results screen, happy path.', (tester) async {
     // Given
     when(
-      mockUserDetailsRepository.getCaloriesPrediction(1),
+      mockUserDetailsRepository.getCaloriesPrediction(uuidUserId),
     ).thenAnswer((_) async => predictedCalories);
 
     // When
@@ -112,7 +115,7 @@ void main() {
 
   testWidgets('Prediction results screen, prediction not found.', (tester) async {
     // Given
-    when(mockUserDetailsRepository.getCaloriesPrediction(1))
+    when(mockUserDetailsRepository.getCaloriesPrediction(uuidUserId))
         .thenAnswer((_) async {
       throw ApiException({'detail': 'Prediction not found'}, statusCode: 404);
     });
@@ -148,7 +151,7 @@ void main() {
     // Given
     int callCount = 0;
 
-    when(mockUserDetailsRepository.getCaloriesPrediction(1)).thenAnswer((_) async {
+    when(mockUserDetailsRepository.getCaloriesPrediction(uuidUserId)).thenAnswer((_) async {
       callCount++;
       if (callCount == 1) {
         throw ApiException({'detail': 'Server error'}, statusCode: 500);
@@ -210,8 +213,8 @@ void main() {
       predictedMacros: updatedMacros,
     );
 
-    when(mockUserDetailsRepository.getCaloriesPrediction(1),).thenAnswer((_) async => predictedCalories);
-    when(mockUserDetailsRepository.submitMacrosChange(updatedMacros, 1),).thenAnswer((_) async => updatedPredictedCalories);
+    when(mockUserDetailsRepository.getCaloriesPrediction(uuidUserId),).thenAnswer((_) async => predictedCalories);
+    when(mockUserDetailsRepository.submitMacrosChange(updatedMacros, uuidUserId),).thenAnswer((_) async => updatedPredictedCalories);
 
     // When
     await tester.pumpWidget(

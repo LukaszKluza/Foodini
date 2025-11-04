@@ -4,13 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user/register_events.dart';
+import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/register_listener.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -38,18 +41,21 @@ class RegisterScreen extends StatelessWidget {
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.registration,
-            style: Styles.titleStyle,
-          ),
+        title: Stack(
+          alignment: Alignment.center,
+          children: [
+            TitleTextWidgets.scaledTitle(
+              AppLocalizations.of(context)!.registration,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.translate_rounded),
+                onPressed: () => LanguagePicker.show(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.translate_rounded),
-            onPressed: () => LanguagePicker.show(context),
-          ),
-        ],
       ),
       body: _RegisterForm(),
     );
@@ -88,6 +94,11 @@ class _RegisterFormState extends State<_RegisterForm> {
     );
   }
 
+  Language getLanguage(BuildContext context){
+    final locale = context.read<LanguageCubit>().state;
+    return Language.fromJson(locale.languageCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -111,7 +122,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
                 ),
-                validator: (value) => validateName(value, context),
+                validator: (value) => validateLastname(value, context),
               ),
               TextFormField(
                 key: Key('country'),
@@ -161,10 +172,9 @@ class _RegisterFormState extends State<_RegisterForm> {
                   RegisterListenerHelper.onRegisterListener(
                     context: context,
                     state: state,
-                    setState: setState,
                     mounted: mounted,
-                    setMessage: (msg) => _message = msg,
-                    setMessageStyle: (style) => _messageStyle = style,
+                    setMessage: (msg) => setState(() => _message = msg),
+                    setMessageStyle: (style) => setState(() => _messageStyle = style),
                   );
                 },
                 builder: (context, state) {
@@ -181,6 +191,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                             country: _selectedCountry ?? '',
                             email: _emailController.text,
                             password: _passwordController.text,
+                            language: getLanguage(context)
                           );
                           context.read<RegisterBloc>().add(
                             RegisterSubmitted(request),

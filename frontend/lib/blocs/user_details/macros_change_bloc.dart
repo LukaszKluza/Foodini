@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/states/macros_change_states.dart';

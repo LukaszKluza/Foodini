@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from fastapi import HTTPException, Response, status
 from starlette.responses import RedirectResponse
@@ -16,7 +17,7 @@ from backend.users.schemas import (
     UserLogin,
     UserUpdate,
 )
-from backend.users.service.email_verification_sevice import EmailVerificationService
+from backend.users.service.email_verification_service import EmailVerificationService
 from backend.users.service.password_service import PasswordService
 from backend.users.service.user_validation_service import (
     UserValidationService,
@@ -46,7 +47,9 @@ class UserService:
             )
         user.password = await PasswordService.hash_password(user.password)
 
-        token = await self.authorization_service.create_url_safe_token({"email": user.email})
+        token = await self.authorization_service.create_url_safe_token(
+            {"email": user.email, "language": user.language.value}
+        )
 
         await self.email_verification_service.process_new_account_verification(user.email, token)
         return await self.user_repository.create_user(user)
@@ -62,7 +65,7 @@ class UserService:
             )
 
         access_token, refresh_token = await self.authorization_service.create_tokens(
-            {"sub": user_.email, "id": user_.id}
+            {"sub": user_.email, "id": str(user_.id)}
         )
 
         return LoginUserResponse(
@@ -89,17 +92,17 @@ class UserService:
             email=user_.email,
         )
 
-    async def update(self, user: User, new_user_data: UserUpdate):
+    async def update(self, user: Type[User], new_user_data: UserUpdate):
         return await self.user_repository.update_user(user.id, new_user_data)
 
     async def change_language(
         self,
-        user: User,
+        user: Type[User],
         change_language_request: ChangeLanguageRequest,
     ):
         return await self.user_repository.change_language(user.id, change_language_request.language)
 
-    async def delete(self, user: User, token_payload: dict):
+    async def delete(self, user: Type[User], token_payload: dict):
         await self.authorization_service.revoke_tokens(token_payload["jti"], token_payload["linked_jti"])
         return await self.user_repository.delete_user(user.id)
 
@@ -123,14 +126,18 @@ class UserService:
         return await self.user_repository.update_password(user_.id, hashed_password, datetime.now(config.TIMEZONE))
 
     async def confirm_new_account(self, token: str):
+        email = await self.authorization_service.extract_email_from_base64(token)
+        language = await self.authorization_service.extract_language_from_base64(token)
         try:
             user_email = await self.decode_url_token(token)
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
         except (HTTPException, TypeError):
-            email = await self.authorization_service.extract_email_from_base64(token)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
-            if email:
-                redirect_url += f"&email={email}"
+
+        if email:
+            redirect_url += f"&email={email}"
+        if language:
+            redirect_url += f"&language={language}"
 
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)

@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c581ae81-a5d0-4421-a6e4-7b7d1652cecd",
-		"name": "Foodini",
+		"_postman_id": "a32e2ac1-0241-4feb-8af2-63c51db72cfd",
+		"name": "Foodini Copy 3",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43666064",
-		"_collection_link": "https://foodini-9310435.postman.co/workspace/Foodini's-Workspace~c4ed0f8f-fcd4-4969-82db-6cfbc231ee8f/collection/43666064-c581ae81-a5d0-4421-a6e4-7b7d1652cecd?action=share&source=collection_link&creator=43666064"
+		"_exporter_id": "35056117"
 	},
 	"item": [
 		{
@@ -35,7 +34,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/?user_id={{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/users/?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -47,7 +46,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{user_id}}"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -79,7 +78,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/language?user_id={{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/users/language?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -91,7 +90,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{user_id}}"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -123,14 +122,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/{{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/users/{{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
 							"path": [
 								"v1",
 								"users",
-								"{{user_id}}"
+								"{{userId}}"
 							]
 						}
 					},
@@ -176,7 +175,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"micexo6750@lewou.com\",\r\n  \"password\": \"Password123\"\r\n}",
+							"raw": "{\r\n  \"email\": \"gibeya2249@foxroids.com\",\r\n  \"password\": \"Password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -283,7 +282,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users/logout?user_id=2",
+							"raw": "{{foodiniUrl}}/v1/users/logout?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -295,7 +294,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "2"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -318,7 +317,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/users?user_id=2",
+							"raw": "{{foodiniUrl}}/v1/users?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -329,7 +328,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "2"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -466,7 +465,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -477,7 +476,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{user_id}}"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -509,7 +508,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -520,7 +519,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{user_id}}"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -552,7 +551,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{user_id}}",
+							"raw": "{{foodiniUrl}}/v1/user_details?user_id={{userId}}",
 							"host": [
 								"{{foodiniUrl}}"
 							],
@@ -563,7 +562,7 @@
 							"query": [
 								{
 									"key": "user_id",
-									"value": "{{user_id}}"
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -573,25 +572,842 @@
 			]
 		},
 		{
-			"name": "Health check",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Daily Summary",
+			"item": [
+				{
+					"name": "Get Daily Nutrition Plan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Visualization Script",
+									"// Visualization Script",
+									"const template = `",
+									"<h3>Daily Nutrition Summary for {{day}}</h3>",
+									"<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse:collapse;\">",
+									"  <thead>",
+									"    <tr>",
+									"      <th>Meal</th>",
+									"      <th>Status</th>",
+									"      <th>Meal ID</th>",
+									"      <th>Custom Name</th>",
+									"      <th>Calories</th>",
+									"      <th>Protein</th>",
+									"      <th>Carbs</th>",
+									"      <th>Fat</th>",
+									"    </tr>",
+									"  </thead>",
+									"  <tbody>",
+									"    {{#each meals}}",
+									"      <tr>",
+									"        <td>{{@key}}</td>",
+									"        <td>{{this.status}}</td>",
+									"        <td>{{this.meal_id}}</td>",
+									"        <td>{{#if this.custom_name}}{{this.custom_name}}{{else}}-{{/if}}</td>",
+									"        <td>{{#if this.custom_calories}}{{this.custom_calories}}{{else}}-{{/if}}</td>",
+									"        <td>{{#if this.custom_protein}}{{this.custom_protein}}{{else}}-{{/if}}</td>",
+									"        <td>{{#if this.custom_carbs}}{{this.custom_carbs}}{{else}}-{{/if}}</td>",
+									"        <td>{{#if this.custom_fat}}{{this.custom_fat}}{{else}}-{{/if}}</td>",
+									"      </tr>",
+									"    {{/each}}",
+									"  </tbody>",
+									"</table>",
+									"<br/>",
+									"<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse:collapse;\">",
+									"  <thead>",
+									"    <tr>",
+									"      <th>Target Calories</th>",
+									"      <th>Target Protein</th>",
+									"      <th>Target Carbs</th>",
+									"      <th>Target Fat</th>",
+									"    </tr>",
+									"  </thead>",
+									"  <tbody>",
+									"    <tr>",
+									"      <td>{{target_calories}}</td>",
+									"      <td>{{target_protein}}</td>",
+									"      <td>{{target_carbs}}</td>",
+									"      <td>{{target_fat}}</td>",
+									"    </tr>",
+									"  </tbody>",
+									"</table>",
+									"`;",
+									"",
+									"function createPayload() {",
+									"    var data = pm.response.json();",
+									"    // Convert meals object to array with meal name as key",
+									"    var meals = [];",
+									"    for (var key in data.meals) {",
+									"        if (data.meals.hasOwnProperty(key)) {",
+									"            meals.push({",
+									"                key: key,",
+									"                ...data.meals[key]",
+									"            });",
+									"        }",
+									"    }",
+									"    // But for Handlebars, keep as object for @key",
+									"    return {",
+									"        day: data.day,",
+									"        meals: data.meals,",
+									"        target_calories: data.target_calories,",
+									"        target_protein: data.target_protein,",
+									"        target_carbs: data.target_carbs,",
+									"        target_fat: data.target_fat",
+									"    };",
+									"}",
+									"pm.visualizer.set(template, createPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals/2025-10-09?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"meals",
+								"2025-10-09"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DEV] Add Daily Meals",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meals\": {\n    \"breakfast\": {\n      \"meal_id\": 2,\n      \"status\": \"to_eat\"\n    },\n    \"lunch\": {\n      \"meal_id\": 1,\n      \"status\": \"toEat\"\n    },\n    \"dinner\": {\n      \"meal_id\": 3,\n      \"status\": \"toEat\"\n    }\n  },\n  \"target_calories\": 2000,\n  \"target_protein\": 100,\n  \"target_carbs\": 250,\n  \"target_fat\": 70\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"meals"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Daily Macros Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/macros/{{data}}?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"macros",
+								"{{data}}"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DEV] Add Daily Macros",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"calories\": 0,\n  \"protein\": 0,\n  \"carbs\": 0,\n  \"fat\": 0\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/macros?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"macros"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Meal Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"day\": \"2025-10-09\",\n    \"meal_type\": \"lunch\",\n    \"status\": \"skipped\"\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily-summary/meals?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily-summary",
+								"meals"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Custom Meal",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meal_type\": \"lunch\",\n  \"custom_name\": \"Pizza Margherita\",\n  \"custom_calories\": 850,\n  \"custom_protein\": 80,\n  \"custom_carbs\": 50,\n  \"custom_fat\": 210,\n  \"status\": \"eaten\"\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily_summary/meals/custom?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily_summary",
+								"meals",
+								"custom"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Custom Meal Without Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"day\": \"2025-10-09\",\n  \"meal_type\": \"lunch\",\n  \"custom_calories\": 850,\n  \"custom_protein\": 80,\n  \"custom_carbs\": 50,\n  \"custom_fat\": 200,\n  \"status\": \"eaten\"\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/daily_summary/meals/custom?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"daily_summary",
+								"meals",
+								"custom"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DEV] Add Meal",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"meal_name\": \"Chicken Salads\",\n  \"meal_type\": \"lunch\",\n  \"icon_id\": 5,\n  \"calories\": 520,\n  \"protein\": 42,\n  \"fat\": 19,\n  \"carbs\": 45\n}"
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meal",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get MealDetails by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meal/{{mealId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meal",
+								"{{mealId}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CaloriesPrediction",
+			"item": [
+				{
+					"name": "Add CaloriesPrediction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/calories-prediction?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"calories-prediction"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get CaloriesPrediction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/calories-prediction?user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"calories-prediction"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DietGeneration",
+			"item": [
+				{
+					"name": "Generate Meal Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/diet-prediction/generate-meal-plan?day={{day}}&user_id={{userId}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"diet-prediction",
+								"generate-meal-plan"
+							],
+							"query": [
+								{
+									"key": "day",
+									"value": "{{day}}",
+									"description": "2025-11-11"
+								},
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Meals",
+			"item": [
+				{
+					"name": "Get Meal Icon",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/static/meals-icon/{{iconPath}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"static",
+								"meals-icon",
+								"{{iconPath}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recipe By Recipe Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-icon"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "meal_type",
+									"value": "{{mealType}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recipes By Meal Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-icon"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "meal_type",
+									"value": "{{mealType}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meal Icon Info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-icon?user_id={{userId}}&meal_type={{mealType}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-icon"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "meal_type",
+									"value": "{{mealType}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meal Recipce By Meal Id And Language",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{foodiniUrl}}/v1/meals/meal-recipe/{{recipe_id}}?user_id={{userId}}&language={{language}}",
+							"host": [
+								"{{foodiniUrl}}"
+							],
+							"path": [
+								"v1",
+								"meals",
+								"meal-recipe",
+								"{{recipe_id}}"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{userId}}"
+								},
+								{
+									"key": "language",
+									"value": "{{language}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
 					}
-				},
+				],
 				"url": {
 					"raw": "{{foodiniUrl}}/health",
 					"host": [
@@ -603,6 +1419,18 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "default"
 		}
 	]
 }

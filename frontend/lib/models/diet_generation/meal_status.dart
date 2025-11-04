@@ -16,7 +16,7 @@ enum MealStatus {
 
   static MealStatus fromJson(String value) {
     return MealStatus.values.firstWhere(
-          (e) => e.nameStr == value,
+      (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown meal status: $value'),
     );
   }

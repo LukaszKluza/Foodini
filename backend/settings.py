@@ -1,7 +1,10 @@
+import os
 from datetime import timezone
 from typing import List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+env = os.getenv("ENV", ".env")
 
 
 class Settings(BaseSettings):
@@ -20,18 +23,17 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     TIMEZONE: timezone = timezone.utc
-    MAIL_USERNAME: str
-    MAIL_PASSWORD: str
-    MAIL_FROM: str
-    MAIL_PORT: int
-    MAIL_SERVER: str
-    MAIL_FROM_NAME: str
     MACROS_CHANGE_TOLERANCE: int = 30
     FAT_CONVERSION_FACTOR: int = 9
     CARBS_CONVERSION_FACTOR: int = 4
     PROTEIN_CONVERSION_FACTOR: int = 4
+    PROMPTS_DIR: str = "prompts"
+    DAILY_MEALS_PROMPT_FILENAME: str = "daily_meals_generator_prompt.txt"
+    MODEL_NAME: str = "qwen3-coder:480b-cloud"
+    OLLAMA_API_BASE_URL: str = "https://ollama.com"
+    OLLAMA_API_KEY: str
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=f"{env}", extra="ignore")
 
     @property
     def SALTS(self) -> List[str]:

@@ -5,13 +5,14 @@ import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../mocks/mocks.mocks.dart';
 
@@ -19,13 +20,14 @@ late MockDio mockDio;
 late AccountBloc accountBloc;
 late ApiClient apiClient;
 late UserRepository authRepository;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
+late UuidValue uuidUserId;
 
 Widget wrapWithProviders(Widget child) {
   return MultiProvider(
     providers: [
       Provider<UserRepository>.value(value: authRepository),
-      Provider<TokenStorageRepository>.value(value: mockTokenStorageRepository),
+      Provider<TokenStorageService>.value(value: mockTokenStorageService),
     ],
     child: MaterialApp(home: child),
   );
@@ -36,11 +38,13 @@ void main() {
     mockDio = MockDio();
     when(mockDio.interceptors).thenReturn(Interceptors());
 
-    mockTokenStorageRepository = MockTokenStorageRepository();
-    apiClient = ApiClient(mockDio, mockTokenStorageRepository);
+    mockTokenStorageService = MockTokenStorageService();
+    apiClient = ApiClient(mockDio, mockTokenStorageService);
 
     authRepository = UserRepository(apiClient);
-    accountBloc = AccountBloc(authRepository, mockTokenStorageRepository);
+    accountBloc = AccountBloc(authRepository, mockTokenStorageService);
+
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
   });
 
   testWidgets('Should retry when access token revoke', (
@@ -48,7 +52,7 @@ void main() {
   ) async {
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -58,7 +62,7 @@ void main() {
     when(
       mockDio.get(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenThrow(
@@ -67,7 +71,7 @@ void main() {
         response: Response(
           requestOptions: RequestOptions(
             path: Endpoints.logout,
-            queryParameters: {'user_id': 1},
+            queryParameters: {'user_id': uuidUserId.uuid},
           ),
           statusCode: 401,
           data: 'Unauthorized',
@@ -77,13 +81,13 @@ void main() {
     );
 
     when(
-      mockTokenStorageRepository.getRefreshToken(),
+      mockTokenStorageService.getRefreshToken(),
     ).thenAnswer((_) async => 'refresh_token');
 
     when(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer(
@@ -100,7 +104,7 @@ void main() {
     when(
       mockDio.request(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).thenAnswer(
@@ -112,13 +116,13 @@ void main() {
 
     // When
     try {
-      await apiClient.logout(1);
+      await apiClient.logout(uuidUserId);
     } catch (e) {
       expect(e, isA<DioException>());
       final handler = MockErrorInterceptorHandler();
       final interceptor = GlobalErrorInterceptor(
         apiClient,
-        mockTokenStorageRepository,
+        mockTokenStorageService,
       );
 
       await interceptor.onError(e as DioException, handler);
@@ -127,7 +131,7 @@ void main() {
     verify(
       mockDio.get(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
@@ -135,7 +139,7 @@ void main() {
     verify(
       mockDio.post(
         Endpoints.refreshTokens,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
@@ -143,7 +147,7 @@ void main() {
     verify(
       mockDio.request(
         Endpoints.logout,
-        queryParameters: {'user_id': 1},
+        queryParameters: {'user_id': uuidUserId.uuid},
         options: anyNamed('options'),
       ),
     ).called(1);
@@ -162,17 +166,17 @@ void main() {
     );
 
     when(
-      mockTokenStorageRepository.getRefreshToken(),
+      mockTokenStorageService.getRefreshToken(),
     ).thenAnswer((_) async => null);
     final handler = MockErrorInterceptorHandler();
     final interceptor = GlobalErrorInterceptor(
       apiClient,
-      mockTokenStorageRepository,
+      mockTokenStorageService,
     );
 
     await interceptor.onError(error, handler);
 
-    verify(mockTokenStorageRepository.getRefreshToken()).called(1);
+    verify(mockTokenStorageService.getRefreshToken()).called(1);
     verifyNever(
       mockDio.post(Endpoints.refreshTokens, options: anyNamed('options')),
     );

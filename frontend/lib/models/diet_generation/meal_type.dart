@@ -1,23 +1,21 @@
-import 'package:flutter/material.dart';
-
 enum MealType {
-  breakfast(0, 'breakfast', Icons.egg_alt),
-  morningSnack(1, 'morning_snack', Icons.free_breakfast),
-  lunch(2, 'lunch', Icons.rice_bowl),
-  afternoonSnack(3, 'afternoon_snack', Icons.cookie),
-  dinner(4, 'dinner', Icons.dinner_dining),
-  eveningSnack(5, 'evening_snack', Icons.bakery_dining);
+  breakfast(0, 'breakfast', 'Breakfast'),
+  morningSnack(1, 'morning_snack', 'Morning Snack'),
+  lunch(2, 'lunch', 'Lunch'),
+  afternoonSnack(3, 'afternoon_snack', 'Afternoon Snack'),
+  dinner(4, 'dinner', 'Dinner'),
+  eveningSnack(5, 'evening_snack', 'Evening Snack');
+
 
   final int value;
   final String nameStr;
-  final IconData icon;
+  final String displayName;
 
-  const MealType(this.value, this.nameStr, this.icon);
+ const MealType(this.value, this.nameStr, this.displayName);
 
   String toJson() => nameStr;
 
   int toInt() => value;
-  IconData toIcon() => icon;
 
   static MealType fromJson(String value) {
     return MealType.values.firstWhere(
