@@ -15,6 +15,9 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     on<GetDailySummary>(_onGetDailySummary);
     on<ChangeMealStatus>(_onChangeMealStatus);
     on<UpdateMeal>(_onUpdateMeal);
+    on<ResetDailySummary>((event, emit) {
+      emit(DailySummaryInit());
+    });
   }
 
   Future<void> _onGetDailySummary(
