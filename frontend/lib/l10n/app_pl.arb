@@ -171,5 +171,8 @@
   "mealDescriptions": "Opis posiłku",
   "groceries": "Produkty spożywcze",
   "recipe": "Przepis",
-  "optional": "Opcjonalnie"
+  "optional": "Opcjonalnie",
+
+  "dailySummary": "Dzienne podsumowanie",
+  "dailyMeals": "Dzienne menu"
 }

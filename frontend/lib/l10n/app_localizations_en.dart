@@ -481,4 +481,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get optional => 'Optional';
+
+  @override
+  String get dailySummary => 'Daily Summary';
+
+  @override
+  String get dailyMeals => 'Daily Menu';
 }

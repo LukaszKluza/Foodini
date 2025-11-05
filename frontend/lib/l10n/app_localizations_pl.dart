@@ -481,4 +481,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get optional => 'Opcjonalnie';
+
+  @override
+  String get dailySummary => 'Dzienne podsumowanie';
+
+  @override
+  String get dailyMeals => 'Dzienne menu';
 }

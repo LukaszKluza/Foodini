@@ -171,5 +171,8 @@
   "mealDescriptions": "Meal description",
   "groceries": "Groceries",
   "recipe": "Recipe",
-  "optional": "Optional"
+  "optional": "Optional",
+
+  "dailySummary": "Daily Summary",
+  "dailyMeals": "Daily Menu"
 }
