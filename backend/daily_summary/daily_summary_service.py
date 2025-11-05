@@ -275,7 +275,7 @@ class DailySummaryService:
         return user_daily_macros
 
     async def _update_macros_after_status_change(
-            self, user_id: UUID, day: date, meal_info: BasicMealInfo, status: MealStatus, previous_status: MealStatus
+        self, user_id: UUID, day: date, meal_info: BasicMealInfo, status: MealStatus, previous_status: MealStatus
     ):
         multiplier = 0
 
@@ -316,9 +316,7 @@ class DailySummaryService:
 
         await self._update_daily_macros_summary(user_id, data)
 
-    async def _update_next_meal_status(
-            self, user_daily_meals: DailyMealsSummary
-    ):
+    async def _update_next_meal_status(self, user_daily_meals: DailyMealsSummary):
         all_meal_links = user_daily_meals.daily_meals
         day = user_daily_meals.day
         user_id = user_daily_meals.user_id
@@ -333,7 +331,7 @@ class DailySummaryService:
             if not link_to_check:
                 continue
 
-            current_status =link_to_check.status
+            current_status = link_to_check.status
 
             if current_status == MealStatus.TO_EAT or current_status == MealStatus.PENDING:
                 target_pending_meal_link = link_to_check
@@ -355,6 +353,4 @@ class DailySummaryService:
 
             if new_status != current_status:
                 link.status = new_status.value
-                await self.daily_summary_repo.update_meal_status(
-                    user_id, day, link.meal_id, new_status
-                )
+                await self.daily_summary_repo.update_meal_status(user_id, day, link.meal_id, new_status)
