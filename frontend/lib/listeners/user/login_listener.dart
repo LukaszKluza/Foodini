@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/states/login_states.dart';
@@ -22,16 +21,11 @@ class LoginListenerHelper {
       var newLanguage = state.userResponse.language;
       context.read<LanguageCubit>().change(newLanguage);
 
-      Future.delayed(
-        const Duration(milliseconds: Constants.redirectionDelay),
-        () {
-          if (mounted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/main-page');
-            });
-          }
-        },
-      );
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.go('/main-page');
+        });
+      }
     } else if (state is AccountSuccessVerification ||
         state is ResendAccountVerificationSuccess) {
       setMessage(state.getMessage!(context));

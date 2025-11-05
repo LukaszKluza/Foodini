@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -11,7 +12,7 @@ class UserCreate(PasswordValidationMixin, CountryValidationMixin, BaseModel):
     last_name: str = Field(..., min_length=2, max_length=50, pattern="^[a-zA-Z-]+$")
     country: str = Field(..., min_length=2, max_length=50)
     email: EmailStr
-    password: str = (Field(..., min_length=8, max_length=64),)
+    password: str = Field(..., min_length=8, max_length=64)
     language: Language
 
 
@@ -41,24 +42,24 @@ class UserLogin(PasswordValidationMixin, BaseModel):
 
 
 class UserLogout(BaseModel):
-    id: int = Field(..., gt=0)
+    id: UUID
     email: EmailStr
 
 
 class DefaultResponse(BaseModel):
-    id: int = Field(..., gt=0)
+    id: UUID
     email: EmailStr
 
 
 class UserResponse(DefaultResponse):
-    id: int = Field(..., gt=0)
+    id: UUID
     name: str
     email: EmailStr
     language: Language
 
 
 class LoginUserResponse(DefaultResponse):
-    id: int
+    id: UUID
     email: EmailStr
     access_token: str
     refresh_token: str

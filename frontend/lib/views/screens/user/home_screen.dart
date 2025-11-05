@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Spacer(flex: 1),
             Expanded(
@@ -41,7 +41,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Spacer(flex: 2),
-            // Spacer(flex: 1),
             ElevatedButton(
               style: ButtonStyle(
                 minimumSize: WidgetStateProperty.all(Size(200, 50)),

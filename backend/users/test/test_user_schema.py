@@ -36,11 +36,14 @@ def test_password_model_validation(valid_user_data, invalid_password):
     invalid_data = prepare_invalid_data(valid_user_data, password=invalid_password)
 
     # When/Then
-    with pytest.raises(ValueErrorException) as exc_info:
-        UserCreate(**invalid_data)
-
-    # Then
-    assert exc_info.type == ValueErrorException
+    if len(invalid_password) < 8 or len(invalid_password) > 64:
+        with pytest.raises(ValidationError) as exc_info:
+            UserCreate(**invalid_data)
+            errors = exc_info.value.errors()
+            assert len(errors) == 1
+    else:
+        with pytest.raises(ValueErrorException) as exc_info:
+            UserCreate(**invalid_data)
 
 
 @pytest.mark.parametrize(

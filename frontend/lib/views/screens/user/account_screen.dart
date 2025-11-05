@@ -57,9 +57,7 @@ class _AccountScreenState extends State<_AccountBody> {
         title: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Image.asset(
-              Constants.mainFoodiniIcon, width: 124,
-            ),
+            child: Image.asset(Constants.mainFoodiniIcon, width: 124),
           ),
         ),
       ),
@@ -75,7 +73,7 @@ class _AccountScreenState extends State<_AccountBody> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsets.only(

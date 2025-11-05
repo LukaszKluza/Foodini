@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
@@ -42,7 +43,7 @@ def valid_payload():
     return {
         "jti": "token_id",
         "linked_jti": "linked_token_id",
-        "id": 1,
+        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         "sub": "user@example.com",
         "type": Token.ACCESS.value,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=30),
@@ -54,7 +55,7 @@ def valid_refresh_payload():
     return {
         "jti": "refresh_token_id",
         "linked_jti": "access_token_id",
-        "id": 1,
+        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         "sub": "user@example.com",
         "type": Token.REFRESH.value,
         "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=60),
@@ -66,7 +67,7 @@ def expired_payload():
     return {
         "jti": "token_id",
         "linked_jti": "linked_token_id",
-        "id": 1,
+        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         "sub": "user@example.com",
         "exp": datetime.now(config.TIMEZONE) - timedelta(minutes=30),
     }
@@ -90,7 +91,9 @@ async def test_create_tokens_success(authorization_service, mock_redis):
         patch("uuid.uuid4", side_effect=["access_jti", "refresh_jti"]),
     ):
         # when
-        access, refresh = await authorization_service.create_tokens({"id": 1})
+        access, refresh = await authorization_service.create_tokens(
+            {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")}
+        )
 
         # then
         assert access == "access_token"
@@ -149,7 +152,7 @@ async def test_refresh_token_success(authorization_service, mock_redis, credenti
 
         # then
         assert result == RefreshTokensResponse(
-            id=1,
+            id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
             email=TypeAdapter(EmailStr).validate_python("user@example.com"),
             access_token="new_access",
             refresh_token="new_refresh",

@@ -37,6 +37,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
           child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.profileDetails),
         ),
@@ -175,6 +176,7 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
             children: [
               DropdownButtonFormField<Gender>(
                 key: const Key('gender'),
+                isExpanded: true,
                 value: _selectedGender,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.gender,

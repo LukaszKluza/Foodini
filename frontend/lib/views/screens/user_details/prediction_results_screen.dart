@@ -21,6 +21,7 @@ class PredictionResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
           child: TitleTextWidgets.scaledTitle(
             AppLocalizations.of(context)!.caloriesPrediction,
@@ -32,7 +33,6 @@ class PredictionResultsScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(
         currentRoute: GoRouterState.of(context).uri.path,
         mode: NavBarMode.wizard,
-        prevRoute: '/calories-prediction',
       ),
     );
   }

@@ -1,15 +1,16 @@
 enum MealType {
-  breakfast(0, 'breakfast'),
-  morningSnack(1, 'morning_snack'),
-  lunch(2, 'lunch'),
-  afternoonSnack(3, 'afternoon_snack'),
-  dinner(4, 'dinner'),
-  eveningSnack(5, 'evening_snack');
+  breakfast(0, 'breakfast', 'Breakfast'),
+  morningSnack(1, 'morning_snack', 'Morning Snack'),
+  lunch(2, 'lunch', 'Lunch'),
+  afternoonSnack(3, 'afternoon_snack', 'Afternoon Snack'),
+  dinner(4, 'dinner', 'Dinner'),
+  eveningSnack(5, 'evening_snack', 'Evening Snack');
 
   final int value;
   final String nameStr;
+  final String displayName;
 
-  const MealType(this.value, this.nameStr);
+  const MealType(this.value, this.nameStr, this.displayName);
 
   String toJson() => nameStr;
 

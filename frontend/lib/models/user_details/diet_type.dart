@@ -1,10 +1,7 @@
 enum DietType {
   fatLoss(0, 'fat_loss'),
   muscleGain(1, 'muscle_gain'),
-  weightMaintenance(2, 'weight_maintenance'),
-  vegetarian(3, 'vegetarian'),
-  vegan(4, 'vegan'),
-  keto(5, 'keto');
+  weightMaintenance(2, 'weight_maintenance');
 
   final int value;
   final String nameStr;

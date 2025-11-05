@@ -36,7 +36,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredName => 'Imię jest wymagane';
 
   @override
+  String get requiredLastname => 'Nazwisko jest wymagane';
+
+  @override
   String get provideCorrectName => 'Podaj poprawne imię';
+
+  @override
+  String get provideCorrectLastname => 'Podaj poprawne nazwisko';
 
   @override
   String get requiredCountry => 'Wybierz kraj';
@@ -177,7 +183,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredDietType => 'Wymagany typ diety';
 
   @override
-  String get allergies => 'Alergie';
+  String get dietaryRestrictions => 'Restrykcje żywieniowe';
 
   @override
   String get dietGoal => 'Cel diety';
@@ -288,40 +294,40 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Utrzymanie wagi';
 
   @override
-  String get dietType_Vegetarian => 'Wegetariańska';
+  String get dietaryRestriction_Gluten => 'Gluten';
 
   @override
-  String get dietType_Vegan => 'Wegańska';
+  String get dietaryRestriction_Peanuts => 'Orzeszki ziemne';
 
   @override
-  String get dietType_Keto => 'Keto';
+  String get dietaryRestriction_Lactose => 'Laktoza';
 
   @override
-  String get allergy_Gluten => 'Gluten';
+  String get dietaryRestriction_Fish => 'Ryby';
 
   @override
-  String get allergy_Peanuts => 'Orzeszki ziemne';
+  String get dietaryRestriction_Soy => 'Soja';
 
   @override
-  String get allergy_Lactose => 'Laktoza';
+  String get dietaryRestriction_Wheat => 'Pszenica';
 
   @override
-  String get allergy_Fish => 'Ryby';
+  String get dietaryRestriction_Celery => 'Seler';
 
   @override
-  String get allergy_Soy => 'Soja';
+  String get dietaryRestriction_Sulphites => 'Siarczyny';
 
   @override
-  String get allergy_Wheat => 'Pszenica';
+  String get dietaryRestriction_Lupin => 'Łubin';
 
   @override
-  String get allergy_Celery => 'Seler';
+  String get dietaryRestriction_Vegetarian => 'Wegetariańska';
 
   @override
-  String get allergy_Sulphites => 'Siarczyny';
+  String get dietaryRestriction_Vegan => 'Wegańska';
 
   @override
-  String get allergy_Lupin => 'Łubin';
+  String get dietaryRestriction_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Powolna';

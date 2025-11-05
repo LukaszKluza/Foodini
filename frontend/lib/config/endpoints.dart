@@ -1,5 +1,6 @@
 class Endpoints {
   static const String baseUrl = String.fromEnvironment('baseUrl');
+  // users
   static const String login = '$baseUrl/users/login';
   static const String logout = '$baseUrl/users/logout';
   static const String users = '$baseUrl/users/';
@@ -10,9 +11,25 @@ class Endpoints {
   static const String confirmNewPassword =
       '$baseUrl/users/confirm/new-password';
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
-  static const String dietPreferences = '$baseUrl/user_details';
-  static const String mealRecipe = '$baseUrl/diet-prediction/meal-recipe';
-  static const String mealIconInfo = '$baseUrl/diet-prediction/meal-icon';
-  static const String mealIcon= '$baseUrl/static/meals-icon';
+
+  // user-details
+  static const String dietPreferences = '$baseUrl/user-details';
   static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
+
+  // diet-prediction
+  static const String generateMealPlan = '$baseUrl/diet-generation/generate-meal-plan';
+
+  // daily-summary
+  static const String dailySummary = '$baseUrl/daily-summary';
+  static const String dailySummaryMeals = '$baseUrl/daily-summary/meals';
+  static const String dailySummaryMacros = '$baseUrl/daily-summary/macros';
+
+  // meals
+  static const String meal = '$baseUrl/meals';
+  static const String customMeal = '$baseUrl/meals/custom';
+  static const String mealRecipe = '$baseUrl/meals/meal-recipes';
+  static const String mealIconInfo = '$baseUrl/meals/meal-icon';
+
+  // static
+  static const String mealIcon= '$baseUrl/static/meals-icon';
 }
