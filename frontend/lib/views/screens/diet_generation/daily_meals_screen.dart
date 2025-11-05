@@ -39,6 +39,7 @@ class DailyMealsScreen extends StatelessWidget {
         context.read(),
       )..add(GetDailySummary(selectedDate)),
       child: Scaffold(
+        key: ValueKey('bloc_${selectedDate}_${language.code}'),
         body: SafeArea(
           child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
             builder: (context, state) {

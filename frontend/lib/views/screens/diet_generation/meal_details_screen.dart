@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_item.dart';
-import 'package:frontend/states/diet_generation/meal_recipe.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
@@ -13,6 +17,9 @@ class MealDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = DateTime(2025, 11, 3);
+    context.read<DailySummaryBloc>().add(GetDailySummary(dateTime));
+
     return Scaffold(
       body: _MealDetails(),
       bottomNavigationBar: BottomNavBar(
@@ -28,25 +35,56 @@ class MealDetailsScreen extends StatelessWidget {
 class _MealDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 140),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              generateMealDetails(context),
-              const SizedBox(height: 24),
-            ],
-          ),
-        ),
-      ),
+    return BlocBuilder<DailySummaryBloc, DailySummaryState>(
+      builder: (context, state) {
+        if (state is DailySummaryLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is DailySummaryError) {
+          return Center(
+            child: Text(
+              state.message ?? 'Błąd ładowania danych',
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        }
+
+        if (state is DailySummaryLoaded) {
+          print('Nowy stan: ${state.dailySummary.toJson()}');
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 140),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    generateMealDetails(context),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 
   Padding generateMealDetails(BuildContext context) {
+    final blocState = context.read<DailySummaryBloc>().state;
+
+    print(blocState.runtimeType);
+
+    if(blocState is DailySummaryLoaded){
+      print(blocState.dailySummary.toJson());
+    }
+
     List<MealItem> meals = [
       MealItem(name: 'Cola', carbs: 0, fat: 0, protein: 0, calories: 3),
       MealItem(name: 'Cola', carbs: 0, fat: 0, protein: 0, calories: 3),
