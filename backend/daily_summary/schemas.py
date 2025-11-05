@@ -41,10 +41,10 @@ class DailySummary(DailyMealsCreate):
 
 class DailyMacrosSummaryCreate(BaseModel):
     day: date
-    calories: int = Field(default=0, ge=0)
-    protein: float = Field(default=0, ge=0)
-    carbs: float = Field(default=0, ge=0)
-    fat: float = Field(default=0, ge=0)
+    calories: int = Field(default=0)
+    protein: float = Field(default=0)
+    carbs: float = Field(default=0)
+    fat: float = Field(default=0)
 
 
 class MealInfoUpdateRequest(BaseModel):

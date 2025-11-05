@@ -56,7 +56,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               final summary = state.dailySummary;
 
               final meals = summary.meals;
-              final mealTypes = meals.keys.toList();
+              final mealTypes = meals.keys.toList()..sort((a, b) => a.value.compareTo(b.value));
 
               if (mealTypes.isEmpty) {
                 return Center(
@@ -353,7 +353,6 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                   }
 
                   final nextStatus = MealStatus.getNextStatus(activeMealType, allMeals);
-                  logger.w(nextStatus);
                   context.read<DailySummaryBloc>().add(
                         ChangeMealStatus(
                           day: selectedDay,

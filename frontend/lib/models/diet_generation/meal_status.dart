@@ -23,69 +23,20 @@ enum MealStatus {
 
   int toInt() => value;
 
-  // Location: Wherever your MealStatus class is defined (e.g., meal_status.dart)
-
   static MealStatus getNextStatus(
       MealType currentType,
       Map<MealType, MealInfo> allMeals,
   ) {
-      final List<MealType> order = MealType.values;
-      final currentMeal = allMeals[currentType]!;
-      final currentStatus = currentMeal.status;
-      final currentIndex = order.indexOf(currentType);
+      final currentStatus = allMeals[currentType]!.status;
+      final statusCycle = [MealStatus.toEat, MealStatus.eaten, MealStatus.skipped];
+      int currentIndex = statusCycle.indexOf(currentStatus);
 
-      bool noEatenFutureMeal() {
-        final futureMeals = order.skip(currentIndex + 1);
-        return !futureMeals.any(
-          (type) => allMeals[type]?.status == MealStatus.eaten,
-        );
+      if (currentStatus == MealStatus.pending) {
+          currentIndex = 0;
       }
 
-      bool noPendingFutureMeal() {
-        final futureMeals = order.skip(currentIndex + 1);
-        return !futureMeals.any(
-          (type) => allMeals[type]?.status == MealStatus.pending,
-        );
-      }
+      int nextIndex = (currentIndex + 1) % statusCycle.length;
 
-      bool noPendingPreviousMeal() {
-        final previousMeals = order.take(currentIndex);
-        return !previousMeals.any(
-          (type) => allMeals[type]?.status == MealStatus.pending,
-        );
-      }
-
-      // PARAMETER CHANGE: Removed the unused 'current' argument
-      bool condition(MealStatus status /*, MealStatus current */) {
-        switch (status) {
-          case MealStatus.eaten:
-            return noPendingPreviousMeal();
-          case MealStatus.skipped:
-            return true;
-          case MealStatus.toEat:
-            return noEatenFutureMeal() && noPendingFutureMeal();
-          case MealStatus.pending:
-            return noEatenFutureMeal() && noPendingPreviousMeal();
-        }
-      }
-
-      final statusOrder = [
-        MealStatus.eaten,
-        MealStatus.skipped,
-        MealStatus.toEat,
-        MealStatus.pending,
-      ];
-
-      final next = statusOrder
-          .skipWhile((s) => s != currentStatus)
-          .skip(1)
-          .followedBy(statusOrder)
-          .firstWhere(
-            // CALL SITE CHANGE: Removed the second argument
-            (s) => condition(s),
-            orElse: () => currentStatus,
-          );
-
-      return next;
+      return statusCycle[nextIndex];
   }
 }
