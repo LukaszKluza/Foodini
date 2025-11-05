@@ -200,7 +200,7 @@ async def test_update_meal_status_success(daily_summary_service, mock_daily_summ
 
     update = MealInfoUpdateRequest(day=date.today(), meal_id=mock_daily_base_info.meal_id, status=MealStatus.EATEN)
 
-    daily_summary_service._add_macros_after_status_change = AsyncMock()
+    daily_summary_service._update_macros_after_status_change = AsyncMock()
     daily_summary_service._update_next_meal_status = AsyncMock()
 
     result = await daily_summary_service.update_meal_status(
@@ -215,7 +215,7 @@ async def test_update_meal_status_success(daily_summary_service, mock_daily_summ
         update.meal_id,
         update.status,
     )
-    daily_summary_service._add_macros_after_status_change.assert_awaited_once()
+    daily_summary_service._update_macros_after_status_change.assert_awaited_once()
     daily_summary_service._update_next_meal_status.assert_awaited_once()
 
     assert result.status == MealStatus.EATEN
@@ -248,7 +248,7 @@ async def test_update_meal_status_adds_macros_when_eaten(
     mock_daily_summary_repository.get_daily_meals_summary.return_value = mock_summary
     mock_daily_summary_repository.update_meal_status = AsyncMock()
 
-    daily_summary_service._add_macros_to_daily_summary = AsyncMock()
+    daily_summary_service._update_daily_macros_summary = AsyncMock()
     daily_summary_service._update_next_meal_status = AsyncMock()
 
     update_request = MealInfoUpdateRequest(
@@ -266,8 +266,8 @@ async def test_update_meal_status_adds_macros_when_eaten(
         user.id, today, first_meal.meal_id, MealStatus.EATEN
     )
 
-    daily_summary_service._add_macros_to_daily_summary.assert_awaited_once()
-    called_data = daily_summary_service._add_macros_to_daily_summary.call_args[0][1]
+    daily_summary_service._update_daily_macros_summary.assert_awaited_once()
+    called_data = daily_summary_service._update_daily_macros_summary.call_args[0][1]
 
     assert isinstance(called_data, DailyMacrosSummaryCreate)
     assert called_data.calories == first_meal.meal.calories

@@ -16,7 +16,7 @@ class MealInfoUpdateRequest {
     return {
       'day': day.toIso8601String().split('T').first,
       'meal_id': mealId.uuid,
-      'meal_status': mealStatus.toJson(),
+      'status': mealStatus.toJson(),
     };
   }
 
@@ -24,7 +24,7 @@ class MealInfoUpdateRequest {
     return MealInfoUpdateRequest(
       day: DateTime.parse(json['day']),
       mealId: UuidValue.fromString(json['meal_id']),
-      mealStatus: MealStatus.fromJson(json['meal_status']),
+      mealStatus: MealStatus.fromJson(json['status']),
     );
   }
 }

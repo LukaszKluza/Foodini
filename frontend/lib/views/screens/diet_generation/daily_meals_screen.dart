@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/foodini.dart';
@@ -72,7 +73,7 @@ class DailyMealsScreen extends StatelessWidget {
                           const SizedBox(height: 60),
                           for (final entry in meals.entries)
                             _buildMealSection(
-                              title: entry.key.displayName,
+                              title: AppConfig.mealTypeLabels(context)[entry.key]!,
                               color: _getMealColor(entry.key.name),
                               imageUrl: entry.value.iconPath!,
                               mealName: entry.value.name ?? '',

@@ -173,6 +173,29 @@
   "recipe": "Recipe",
   "optional": "Optional",
 
+  "breakfast": "Breakfast",
+  "morningSnack": "Morning snack",
+  "lunch": "Lunch",
+  "afternoonSnack": "Afternoon snack",
+  "dinner": "Dinner",
+  "eveningSnack": "Evening snack",
+
+  "toEat": "To eat",
+  "pending": "Pending",
+  "eaten": "Eaten",
+  "skipped": "Skipped",
+
+  "f_fat": "F",
+  "p_protein": "P",
+  "c_carbs": "C",
+  "g_grams": "g",
+  "cal_calories": "Cal",
+  "of_calories": "of",
+
+  "cannotEditPastMeals": "Cannot edit past meals",
+  "noMealsForToday": "There aren't any meals planned for today",
+  "markedAs": "marked as",
+
   "dailySummary": "Daily Summary",
   "dailyMeals": "Daily Menu"
 }
