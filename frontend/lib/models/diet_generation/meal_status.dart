@@ -1,5 +1,5 @@
-import 'package:collection/collection.dart';
-import 'package:frontend/views/screens/diet_generation/daily_summary_screen.dart';
+import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 
 enum MealStatus {
   toEat(0, 'to_eat'),
@@ -16,71 +16,76 @@ enum MealStatus {
 
   static MealStatus fromJson(String value) {
     return MealStatus.values.firstWhere(
-      (e) => e.nameStr == value,
+          (e) => e.nameStr == value,
       orElse: () => throw ArgumentError('Unknown meal status: $value'),
     );
   }
 
   int toInt() => value;
 
-  static MealStatus getNextStatus(Meal currentMeal, List<Meal> all) {
-    final List<MealStatus> order = [
-      MealStatus.eaten,
-      MealStatus.skipped,
-      MealStatus.toEat,
-      MealStatus.pending,
-    ];
-    MealStatus current = currentMeal.mealStatus;
+  // Location: Wherever your MealStatus class is defined (e.g., meal_status.dart)
 
-    final currentIndex = all.indexWhere((m) => m.type == currentMeal.type);
+  static MealStatus getNextStatus(
+      MealType currentType,
+      Map<MealType, MealInfo> allMeals,
+  ) {
+      final List<MealType> order = MealType.values;
+      final currentMeal = allMeals[currentType]!;
+      final currentStatus = currentMeal.status;
+      final currentIndex = order.indexOf(currentType);
 
-    bool noEatenFutureMeal() {
-      final futureMeals = all.skip(currentIndex + 1);
-      return !futureMeals.any((m) => m.mealStatus == MealStatus.eaten);
-    }
-
-     bool noPendingFutureMeal() {
-      final futureMeals = all.skip(currentIndex + 1);
-      return !futureMeals.any((m) => m.mealStatus == MealStatus.pending);
-    }
-
-    bool noPendingPreviousMeal() {
-      final previousMeals = all.take(currentIndex);
-      return !previousMeals.any((m) => m.mealStatus == MealStatus.pending);
-    }
-
-    bool condition(MealStatus status, MealStatus current) {
-      switch (status) {
-        case MealStatus.eaten:
-          return noPendingPreviousMeal();
-        case MealStatus.skipped:
-          return true;
-        case MealStatus.toEat:
-          return noEatenFutureMeal() && noPendingFutureMeal();
-        case MealStatus.pending:
-          return noEatenFutureMeal() && noPendingPreviousMeal();
+      bool noEatenFutureMeal() {
+        final futureMeals = order.skip(currentIndex + 1);
+        return !futureMeals.any(
+          (type) => allMeals[type]?.status == MealStatus.eaten,
+        );
       }
-    }
 
-    final next = order
-        .skipWhile((s) => s != current)
-        .skip(1)
-        .followedBy(order)
-        .firstWhere((s) => condition(s, current), orElse: () => current);
+      bool noPendingFutureMeal() {
+        final futureMeals = order.skip(currentIndex + 1);
+        return !futureMeals.any(
+          (type) => allMeals[type]?.status == MealStatus.pending,
+        );
+      }
 
-    Meal? findNextMeal(bool Function(Meal m) test) =>
-      all.skip(currentIndex + 1).firstWhereOrNull(test);
+      bool noPendingPreviousMeal() {
+        final previousMeals = order.take(currentIndex);
+        return !previousMeals.any(
+          (type) => allMeals[type]?.status == MealStatus.pending,
+        );
+      }
 
-    if (current == MealStatus.pending) {
-      final nextToEat = findNextMeal((m) => m.mealStatus == MealStatus.toEat);
-      if (nextToEat != null) nextToEat.mealStatus = MealStatus.pending;
-    }
+      // PARAMETER CHANGE: Removed the unused 'current' argument
+      bool condition(MealStatus status /*, MealStatus current */) {
+        switch (status) {
+          case MealStatus.eaten:
+            return noPendingPreviousMeal();
+          case MealStatus.skipped:
+            return true;
+          case MealStatus.toEat:
+            return noEatenFutureMeal() && noPendingFutureMeal();
+          case MealStatus.pending:
+            return noEatenFutureMeal() && noPendingPreviousMeal();
+        }
+      }
 
-    if (next == MealStatus.pending) {
-      final nextPending = findNextMeal((m) => m.mealStatus == MealStatus.pending);
-      if (nextPending != null) nextPending.mealStatus = MealStatus.toEat;
-    }
+      final statusOrder = [
+        MealStatus.eaten,
+        MealStatus.skipped,
+        MealStatus.toEat,
+        MealStatus.pending,
+      ];
 
-    return next;
+      final next = statusOrder
+          .skipWhile((s) => s != currentStatus)
+          .skip(1)
+          .followedBy(statusOrder)
+          .firstWhere(
+            // CALL SITE CHANGE: Removed the second argument
+            (s) => condition(s),
+            orElse: () => currentStatus,
+          );
+
+      return next;
   }
 }

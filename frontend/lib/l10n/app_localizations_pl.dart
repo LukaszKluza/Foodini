@@ -532,4 +532,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get cannotEditPastMeals => 'Nie można edytować posiłków z przeszłości';
+
+  @override
+  String get noMealsForToday => 'Nie masz zaplanowanych żadnych posiłków na dziś';
+
+  @override
+  String get markedAs => 'oznaczone jako';
 }

@@ -192,5 +192,7 @@
   "cal_calories": "Cal",
   "of_calories": "of",
 
-  "cannotEditPastMeals": "Cannot edit past meals"
+  "cannotEditPastMeals": "Cannot edit past meals",
+  "noMealsForToday": "There aren't any meals planned for today",
+  "markedAs": "marked as"
 }

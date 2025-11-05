@@ -192,5 +192,7 @@
   "cal_calories": "Kal",
   "of_calories": "z",
 
-  "cannotEditPastMeals": "Nie można edytować posiłków z przeszłości"
+  "cannotEditPastMeals": "Nie można edytować posiłków z przeszłości",
+  "noMealsForToday": "Nie masz zaplanowanych żadnych posiłków na dziś",
+  "markedAs": "oznaczone jako"
 }

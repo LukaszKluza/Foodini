@@ -1144,6 +1144,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cannot edit past meals'**
   String get cannotEditPastMeals;
+
+  /// No description provided for @noMealsForToday.
+  ///
+  /// In en, this message translates to:
+  /// **'There aren\'t any meals planned for today'**
+  String get noMealsForToday;
+
+  /// No description provided for @markedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'marked as'**
+  String get markedAs;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
