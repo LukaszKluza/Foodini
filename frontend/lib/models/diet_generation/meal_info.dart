@@ -6,6 +6,7 @@ class MealInfo {
   final MealStatus status;
   final String? name;
   final String? description;
+  final String? iconPath;
   final int? calories;
   final double? protein;
   final double? carbs;
@@ -16,6 +17,7 @@ class MealInfo {
     required this.status,
     this.name,
     this.description,
+    this.iconPath,
     this.calories,
     this.protein,
     this.carbs,
@@ -28,6 +30,7 @@ class MealInfo {
       status: MealStatus.fromJson(json['status']),
       name: json['name'],
       description: json['description'],
+      iconPath: json['icon_path'],
       calories: json['calories'] as int,
       protein: (json['protein'] as num).toDouble(),
       carbs: (json['carbs'] as num).toDouble(),
@@ -41,6 +44,7 @@ class MealInfo {
       'status': status.toJson(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (iconPath != null) 'icon_path': iconPath,
       if (calories != null) 'calories': calories,
       if (protein != null) 'protein': protein,
       if (carbs != null) 'carbs': carbs,

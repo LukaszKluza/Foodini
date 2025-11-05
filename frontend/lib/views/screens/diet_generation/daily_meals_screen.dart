@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/models/user/language.dart';
@@ -72,7 +73,7 @@ class DailyMealsScreen extends StatelessWidget {
                             _buildMealSection(
                               title: entry.key.displayName,
                               color: _getMealColor(entry.key.name),
-                              imageUrl: 'entry.value.icon',
+                              imageUrl: entry.value.iconPath!,
                               mealName: entry.value.name ?? '',
                               description: entry.value.description ?? '',
                             ),
@@ -193,7 +194,7 @@ class DailyMealsScreen extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: CachedNetworkImage(
-                  imageUrl: imageUrl,
+                  imageUrl: '${Endpoints.mealIcon}/$imageUrl',
                   width: 100,
                   height: 100,
                   fit: BoxFit.cover,

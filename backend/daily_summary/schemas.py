@@ -21,6 +21,7 @@ class MealInfo(BasicMealInfo):
     name: str
     description: str
 
+
 class MealInfoWithIconPath(MealInfo):
     icon_path: str
 
@@ -35,7 +36,7 @@ class DailyMealsCreate(BaseModel):
 
 
 class DailySummary(DailyMealsCreate):
-    meals: Dict[MealType, MealInfo]
+    meals: Dict[MealType, MealInfoWithIconPath]
     eaten_calories: int
     eaten_protein: float
     eaten_carbs: float
