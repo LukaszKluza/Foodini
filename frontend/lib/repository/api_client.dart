@@ -262,7 +262,7 @@ class ApiClient {
   ) {
     return _client.patch(
       Endpoints.customMeal,
-      data: customMealUpdateRequest.toJson,
+      data: customMealUpdateRequest.toJson(),
       queryParameters: {'user_id': userId.uuid, 'cache': false},
       options: Options(extra: {'requiresAuth': true}),
     );
