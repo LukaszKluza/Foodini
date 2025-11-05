@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/meal_status.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -69,5 +71,21 @@ class AppConfig {
   static Map<Gender, String> genderLabels(BuildContext context) => {
     Gender.male: AppLocalizations.of(context)!.gender_Male,
     Gender.female: AppLocalizations.of(context)!.gender_Female,
+  };
+
+  static Map<MealType, String> mealTypeLabels(BuildContext context) => {
+    MealType.breakfast: AppLocalizations.of(context)!.breakfast,
+    MealType.morningSnack: AppLocalizations.of(context)!.morningSnack,
+    MealType.lunch: AppLocalizations.of(context)!.lunch,
+    MealType.afternoonSnack: AppLocalizations.of(context)!.afternoonSnack,
+    MealType.dinner: AppLocalizations.of(context)!.dinner,
+    MealType.eveningSnack: AppLocalizations.of(context)!.eveningSnack,
+  };
+
+  static Map<MealStatus, String> mealStatusLabels(BuildContext context) => {
+    MealStatus.toEat: AppLocalizations.of(context)!.toEat,
+    MealStatus.pending: AppLocalizations.of(context)!.pending,
+    MealStatus.eaten: AppLocalizations.of(context)!.eaten,
+    MealStatus.skipped: AppLocalizations.of(context)!.skipped,
   };
 }

@@ -13,7 +13,7 @@ import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
-import 'package:frontend/states/diet_generation/meal_recipe.dart';
+import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/views/widgets/action_buttons.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';

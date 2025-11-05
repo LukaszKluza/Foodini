@@ -23,9 +23,9 @@ class DietPredictionRepository {
     }
   }
 
-  Future<void> generateMealPlan(UuidValue userId) async {
+  Future<void> generateMealPlan(UuidValue userId, DateTime day) async {
     try {
-      await apiClient.generateMealPlan(userId);
+      await apiClient.generateMealPlan(userId, day);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {

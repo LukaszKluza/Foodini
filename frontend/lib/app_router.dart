@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/events/diet_generation/daily_summary_events.dart';
+import 'package:frontend/foodini.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/views/screens/diet_generation/daily_meals_screen.dart';
+import 'package:frontend/views/screens/diet_generation/daily_summary_screen.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -70,6 +77,23 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/daily-meals/:date',
+      builder: (context, state) {
+        final dateStr = state.pathParameters['date']!;
+        final date = DateTime.tryParse(dateStr);
+        if (date == null) {
+          final today = DateTime.now();
+          return DailyMealsScreen(
+            selectedDate: DateTime(today.year, today.month, today.day),
+          );
+        }
+        return DailyMealsScreen(
+          selectedDate: DateTime(date.year, date.month, date.day),
+        );
+      },
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
       path: '/change-password',
       pageBuilder:
           (context, state) => MaterialPage(
@@ -86,6 +110,28 @@ final GoRouter router = GoRouter(
       builder: (context, state) => PredictionResultsScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
+    GoRoute(
+      path: '/daily-summary/:date',
+      builder: (context, state) {
+        final dateStr = state.pathParameters['date']!;
+        final date = DateTime.tryParse(dateStr);
+        final selectedDate = date != null
+            ? DateTime(date.year, date.month, date.day)
+            : DateTime.now();
+
+        var langState = context.watch<LanguageCubit>().state;
+        var language = Language.fromJson(langState.languageCode);
+
+        return BlocProvider(
+          key: ValueKey('bloc_${selectedDate}_${language.code}'),
+          create: (context) =>
+              DailySummaryBloc(context.read())..add(GetDailySummary(selectedDate)),
+          child: DailySummaryScreen(selectedDate: selectedDate),
+        );
+      },
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+
   ],
 );
 

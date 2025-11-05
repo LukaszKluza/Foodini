@@ -652,9 +652,9 @@ class MockDietPredictionRepository extends _i1.Mock
           as _i20.Future<_i12.MealRecipe>);
 
   @override
-  _i20.Future<void> generateMealPlan(_i21.UuidValue? userId) =>
+  _i20.Future<void> generateMealPlan(_i21.UuidValue? userId, DateTime? day) =>
       (super.noSuchMethod(
-            Invocation.method(#generateMealPlan, [userId]),
+            Invocation.method(#generateMealPlan, [userId, day]),
             returnValue: _i20.Future<void>.value(),
             returnValueForMissingStub: _i20.Future<void>.value(),
           )
@@ -705,41 +705,19 @@ class MockMealsRepository extends _i1.Mock implements _i35.MealsRepository {
           as _i20.Future<_i13.MealCreate>);
 
   @override
-  _i20.Future<_i14.DailyMealsCreate> addMealDetails(
+  _i20.Future<_i14.DailyMealsCreate> addCustomMeal(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     _i21.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addMealDetails, [
+            Invocation.method(#addCustomMeal, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i14.DailyMealsCreate>.value(
               _FakeDailyMealsCreate_12(
                 this,
-                Invocation.method(#addMealDetails, [
-                  customMealUpdateRequest,
-                  userId,
-                ]),
-              ),
-            ),
-          )
-          as _i20.Future<_i14.DailyMealsCreate>);
-
-  @override
-  _i20.Future<_i14.DailyMealsCreate> updateMealDetails(
-    _i36.CustomMealUpdateRequest? customMealUpdateRequest,
-    _i21.UuidValue? userId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateMealDetails, [
-              customMealUpdateRequest,
-              userId,
-            ]),
-            returnValue: _i20.Future<_i14.DailyMealsCreate>.value(
-              _FakeDailyMealsCreate_12(
-                this,
-                Invocation.method(#updateMealDetails, [
+                Invocation.method(#addCustomMeal, [
                   customMealUpdateRequest,
                   userId,
                 ]),
@@ -1268,13 +1246,30 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   @override
   _i20.Future<_i16.Response<dynamic>> generateMealPlan(
     _i21.UuidValue? userId,
+    DateTime? day,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#generateMealPlan, [userId]),
+            Invocation.method(#generateMealPlan, [userId, day]),
             returnValue: _i20.Future<_i16.Response<dynamic>>.value(
               _FakeResponse_19<dynamic>(
                 this,
-                Invocation.method(#generateMealPlan, [userId]),
+                Invocation.method(#generateMealPlan, [userId, day]),
+              ),
+            ),
+          )
+          as _i20.Future<_i16.Response<dynamic>>);
+
+  @override
+  _i20.Future<_i16.Response<dynamic>> getDailySummary(
+    DateTime? day,
+    _i21.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getDailySummary, [day, userId]),
+            returnValue: _i20.Future<_i16.Response<dynamic>>.value(
+              _FakeResponse_19<dynamic>(
+                this,
+                Invocation.method(#getDailySummary, [day, userId]),
               ),
             ),
           )
@@ -1367,41 +1362,19 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i20.Future<_i16.Response<dynamic>>);
 
   @override
-  _i20.Future<_i16.Response<dynamic>> addMealDetails(
+  _i20.Future<_i16.Response<dynamic>> addCustomMeal(
     _i36.CustomMealUpdateRequest? customMealUpdateRequest,
     _i21.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addMealDetails, [
+            Invocation.method(#addCustomMeal, [
               customMealUpdateRequest,
               userId,
             ]),
             returnValue: _i20.Future<_i16.Response<dynamic>>.value(
               _FakeResponse_19<dynamic>(
                 this,
-                Invocation.method(#addMealDetails, [
-                  customMealUpdateRequest,
-                  userId,
-                ]),
-              ),
-            ),
-          )
-          as _i20.Future<_i16.Response<dynamic>>);
-
-  @override
-  _i20.Future<_i16.Response<dynamic>> updateMealDetails(
-    _i36.CustomMealUpdateRequest? customMealUpdateRequest,
-    _i21.UuidValue? userId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateMealDetails, [
-              customMealUpdateRequest,
-              userId,
-            ]),
-            returnValue: _i20.Future<_i16.Response<dynamic>>.value(
-              _FakeResponse_19<dynamic>(
-                this,
-                Invocation.method(#updateMealDetails, [
+                Invocation.method(#addCustomMeal, [
                   customMealUpdateRequest,
                   userId,
                 ]),

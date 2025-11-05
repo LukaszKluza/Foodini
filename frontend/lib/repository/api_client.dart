@@ -181,7 +181,7 @@ class ApiClient {
     );
   }
 
-  // diet prediction
+  // diet-prediction
   Future<Response> getMealRecipe(UuidValue mealId, Language language, UuidValue userId) {
     return _client.get(
       '${Endpoints.mealRecipe}/${mealId.uuid}',
@@ -190,18 +190,29 @@ class ApiClient {
     );
   }
 
-  Future<Response> generateMealPlan(UuidValue userId) {
+  Future<Response> generateMealPlan(UuidValue userId, DateTime day) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.post(
       Endpoints.generateMealPlan,
-      queryParameters: {'user_id': userId.uuid},
+      queryParameters: {'user_id': userId.uuid, 'day': formattedDate},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   // diet-generation
-  Future<Response> getDailySummaryMeals(DateTime day, UuidValue userId) {
+  Future<Response> getDailySummary(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.get(
-      '${Endpoints.dailySummaryMeals}/$day',
+      '${Endpoints.dailySummary}/$formattedDate',
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> getDailySummaryMeals(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
+    return _client.get(
+      '${Endpoints.dailySummaryMeals}/$formattedDate',
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -213,15 +224,16 @@ class ApiClient {
   ) {
     return _client.patch(
       Endpoints.dailySummaryMeals,
-      data: mealInfoUpdateRequest.toJson,
+      data: mealInfoUpdateRequest.toJson(),
       queryParameters: {'user_id': userId.uuid, 'cache': false},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
 
   Future<Response> getDailySummaryMacros(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.get(
-      '${Endpoints.dailySummaryMacros}/$day',
+      '${Endpoints.dailySummaryMacros}/$formattedDate',
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
@@ -244,25 +256,13 @@ class ApiClient {
     );
   }
 
-  Future<Response> addMealDetails(
-      CustomMealUpdateRequest customMealUpdateRequest,
-      UuidValue userId,
-  ) {
-    return _client.post(
-      Endpoints.meal,
-      data: customMealUpdateRequest.toJson,
-      queryParameters: {'user_id': userId.uuid},
-      options: Options(extra: {'requiresAuth': true}),
-    );
-  }
-
-  Future<Response> updateMealDetails(
+  Future<Response> addCustomMeal(
       CustomMealUpdateRequest customMealUpdateRequest,
       UuidValue userId,
   ) {
     return _client.patch(
-      Endpoints.meal,
-      data: customMealUpdateRequest.toJson,
+      Endpoints.customMeal,
+      data: customMealUpdateRequest.toJson(),
       queryParameters: {'user_id': userId.uuid, 'cache': false},
       options: Options(extra: {'requiresAuth': true}),
     );

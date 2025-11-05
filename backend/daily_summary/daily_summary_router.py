@@ -42,7 +42,7 @@ async def get_daily_meals(
 
 
 # DEV
-@daily_summary_router.post("/meals", status_code=status.HTTP_201_CREATED, response_model=BasicMealInfo)
+@daily_summary_router.post("/meals", status_code=status.HTTP_201_CREATED)
 async def add_daily_meals(
     daily_summary: DailyMealsCreate,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),

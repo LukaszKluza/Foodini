@@ -481,4 +481,61 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get optional => 'Opcjonalnie';
+
+  @override
+  String get breakfast => 'Śniadanie';
+
+  @override
+  String get morningSnack => 'Przekąska poranna';
+
+  @override
+  String get lunch => 'Obiad';
+
+  @override
+  String get afternoonSnack => 'Przekąska popołudniowa';
+
+  @override
+  String get dinner => 'Kolacja';
+
+  @override
+  String get eveningSnack => 'Przekąska wieczorna';
+
+  @override
+  String get toEat => 'Do zjedzenia';
+
+  @override
+  String get pending => 'Oczekujący';
+
+  @override
+  String get eaten => 'Zjedzony';
+
+  @override
+  String get skipped => 'Pominięty';
+
+  @override
+  String get f_fat => 'T';
+
+  @override
+  String get p_protein => 'B';
+
+  @override
+  String get c_carbs => 'W';
+
+  @override
+  String get g_grams => 'g';
+
+  @override
+  String get cal_calories => 'Kal';
+
+  @override
+  String get of_calories => 'z';
+
+  @override
+  String get cannotEditPastMeals => 'Nie można edytować posiłków z przeszłości';
+
+  @override
+  String get noMealsForToday => 'Nie masz zaplanowanych żadnych posiłków na dziś';
+
+  @override
+  String get markedAs => 'oznaczone jako';
 }

@@ -4,7 +4,7 @@ from uuid import UUID
 
 from backend.core.logger import logger
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
-from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfo
+from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import (
     complete_meal_to_meal,
@@ -12,6 +12,7 @@ from backend.diet_generation.mappers import (
     meal_recipe_translation_to_recipe,
     recipe_to_meal_recipe_translation,
     to_daily_meals_create,
+    to_empty_basic_meal_info,
 )
 from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, create_agent_state
 from backend.diet_generation.tools.translator import TranslatorTool
@@ -98,12 +99,12 @@ class DailyMealsGeneratorService:
 
             saved_meals.append(saved_meal)
             saved_recipes.append(meal_recipe)
-            meals_type_map[saved_meal.meal_type.value] = MealInfo(meal_id=saved_meal.id)
+            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id)
 
         return saved_meals, saved_recipes, meals_type_map
 
     async def _save_daily_summary(
-        self, day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, MealInfo]
+        self, day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, BasicMealInfo]
     ):
         await self.daily_summary_gateway.add_daily_meals(
             to_daily_meals_create(day, user_diet_predictions, meals_type_map), user_diet_predictions.user_id
