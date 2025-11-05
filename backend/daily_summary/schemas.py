@@ -21,6 +21,9 @@ class MealInfo(BasicMealInfo):
     name: str
     description: str
 
+class MealInfoWithIconPath(MealInfo):
+    icon_path: str
+
 
 class DailyMealsCreate(BaseModel):
     day: date

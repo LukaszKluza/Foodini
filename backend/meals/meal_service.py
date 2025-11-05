@@ -29,6 +29,9 @@ class MealService:
     async def get_meal_icon_id(self, meal_type: MealType) -> UUID:
         return await self.meal_icons_repository.get_meal_icon_id_by_type(meal_type)
 
+    async def get_meal_path_by_id(self, icon_id: UUID) -> str:
+        return await self.meal_icons_repository.get_meal_icon_path_by_id(icon_id)
+
     async def add_meal(self, meal: Meal) -> Meal:
         return await self.meal_recipes_repository.add_meal(meal)
 

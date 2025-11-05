@@ -25,3 +25,9 @@ class MealIconsRepository:
         result = await self.db.execute(query)
 
         return result.scalar_one_or_none()
+
+    async def get_meal_icon_path_by_id(self, meal_id: UUID) -> str | None:
+        query = select(MealIcon.id).where(MealIcon.id == meal_id)
+        result = await self.db.execute(query)
+
+        return result.scalar_one_or_none()
