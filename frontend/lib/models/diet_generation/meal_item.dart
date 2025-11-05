@@ -1,12 +1,10 @@
-class MealItem {
-  final String name;
-  final int carbs;
-  final int fat;
-  final int protein;
+class MealTypeMacrosSummary {
+  final double carbs;
+  final double fat;
+  final double protein;
   final int calories;
 
-  MealItem({
-    required this.name,
+  MealTypeMacrosSummary({
     required this.carbs,
     required this.fat,
     required this.protein,
@@ -14,19 +12,17 @@ class MealItem {
   });
 
   Map<String, dynamic> toJson() => {
-    'name': name,
     'carbs': carbs,
     'fat': fat,
     'protein': protein,
     'calories': calories,
   };
 
-  factory MealItem.fromJson(Map<String, dynamic> json) {
-    return MealItem(
-      name: json['name'] as String,
-      carbs: json['carbs'] as int,
-      fat: json['fat'] as int,
-      protein: json['protein'] as int,
+  factory MealTypeMacrosSummary.fromJson(Map<String, dynamic> json) {
+    return MealTypeMacrosSummary(
+      carbs: (json['carbs'] as num).toDouble(),
+      fat: (json['fat'] as num).toDouble(),
+      protein: (json['protein'] as num).toDouble(),
       calories: json['calories'] as int,
     );
   }

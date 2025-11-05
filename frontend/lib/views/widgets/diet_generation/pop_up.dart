@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/diet_generation/meal_item.dart';
+import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 
-VoidCallback showPopUp(BuildContext context, {MealItem? mealItem}) {
+VoidCallback showPopUp(BuildContext context, {MealInfo? mealInfo}) {
   TextFormField editableTextFormField(
     BuildContext context,
     TextEditingController textEditingController,
@@ -30,19 +30,19 @@ VoidCallback showPopUp(BuildContext context, {MealItem? mealItem}) {
       context: context,
       builder: (context) {
         final nameController = TextEditingController(
-          text: mealItem?.name ?? '',
+          text: mealInfo?.name ?? '',
         );
         final carbsController = TextEditingController(
-          text: mealItem?.carbs.toString() ?? '',
+          text: mealInfo?.carbs.toString() ?? '',
         );
         final fatController = TextEditingController(
-          text: mealItem?.fat.toString() ?? '',
+          text: mealInfo?.fat.toString() ?? '',
         );
         final proteinController = TextEditingController(
-          text: mealItem?.protein.toString() ?? '',
+          text: mealInfo?.protein.toString() ?? '',
         );
         final caloriesController = TextEditingController(
-          text: mealItem?.calories.toString() ?? '',
+          text: mealInfo?.calories.toString() ?? '',
         );
 
         return Dialog(
@@ -57,13 +57,14 @@ VoidCallback showPopUp(BuildContext context, {MealItem? mealItem}) {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  editableTextFormField(
-                    context,
-                    nameController,
-                    (value) => validateMealItemName(value, context),
-                    AppLocalizations.of(context)!.mealName,
-                    textInputType: TextInputType.text,
-                  ),
+                  if(mealInfo == null)
+                    editableTextFormField(
+                      context,
+                      nameController,
+                          (value) => validateMealItemName(value, context),
+                      AppLocalizations.of(context)!.mealName,
+                      textInputType: TextInputType.text,
+                    ),
                   const SizedBox(height: 12),
                   editableTextFormField(
                     context,
@@ -93,7 +94,7 @@ VoidCallback showPopUp(BuildContext context, {MealItem? mealItem}) {
                     AppLocalizations.of(context)!.calories,
                   ),
                   const SizedBox(height: 18),
-                  if (mealItem == null) ...[
+                  if (mealInfo == null) ...[
                     Row(
                       children: [
                         ActionButton(

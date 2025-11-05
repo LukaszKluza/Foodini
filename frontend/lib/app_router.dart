@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/services/token_storage_service.dart';
-import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
 import 'package:frontend/views/screens/diet_generation/daily_meals_screen.dart';
+import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
 import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:frontend/views/screens/user/account_screen.dart';
@@ -106,9 +107,19 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/meal-details',
-      builder: (context, state) => MealDetailsScreen(),
-      // redirect: (context, state) => _redirectIfUnauthenticated(context),
+      path: '/meal-details/:mealType',
+      builder: (context, state) {
+        final mealType = MealType.fromJson(state.pathParameters['mealType']!);
+        return MealDetailsScreen(mealType: mealType);
+      },
+      redirect: (context, state) {
+        try {
+          MealType.fromJson(state.pathParameters['mealType']!);
+          return _redirectIfUnauthenticated(context);
+        } catch (_) {
+          return '/.../meal-details/${state.pathParameters['mealType']}';
+        }
+      },
     ),
   ],
 );

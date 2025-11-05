@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 
 class CustomBottomSheet extends StatelessWidget {
-  const CustomBottomSheet({super.key});
+  final MealTypeMacrosSummary mealTypeMacrosSummary;
+
+  const CustomBottomSheet({super.key, required this.mealTypeMacrosSummary});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +41,10 @@ class CustomBottomSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    buildCarbsItem(context, 10),
-                    buildFatItem(context, 12),
-                    buildProteinItem(context, 21),
-                    buildCaloriesItem(context, 1123)
+                    buildCarbsItem(context, mealTypeMacrosSummary.carbs),
+                    buildFatItem(context, mealTypeMacrosSummary.fat),
+                    buildProteinItem(context, mealTypeMacrosSummary.protein),
+                    buildCaloriesItem(context, mealTypeMacrosSummary.calories)
                   ],
                 ),
                 const SizedBox(height: 16),
