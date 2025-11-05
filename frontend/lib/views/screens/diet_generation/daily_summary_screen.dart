@@ -134,11 +134,11 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
         final summary = state.dailySummary;
 
         final proteinPercent =
-            (summary.eatenProtein / summary.targetProtein).toDouble().clamp(0.0, 1.0);
+            (summary.eatenProtein / summary.targetProtein).toDouble();
         final carbsPercent =
-            (summary.eatenCarbs / summary.targetCarbs).toDouble().clamp(0.0, 1.0);
+            (summary.eatenCarbs / summary.targetCarbs).toDouble();
         final fatPercent =
-            (summary.eatenFat / summary.targetFat).toDouble().clamp(0.0, 1.0);
+            (summary.eatenFat / summary.targetFat).toDouble();
 
         final widgetHeight =
             min(min(40 + screenWidth * 0.25, screenWidth * 0.40), 360.0);
