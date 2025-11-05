@@ -59,6 +59,8 @@ class DailyMealsScreen extends StatelessWidget {
 
               if (state is DailySummaryLoaded) {
                 final meals = state.dailySummary.meals;
+                final sortedEntries = meals.entries.toList()
+                            ..sort((a, b) => a.key.value.compareTo(b.key.value));
 
                 return Stack(
                   children: [
@@ -71,7 +73,7 @@ class DailyMealsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 60),
-                          for (final entry in meals.entries)
+                          for (final entry in sortedEntries)
                             _buildMealSection(
                               title: AppConfig.mealTypeLabels(context)[entry.key]!,
                               color: _getMealColor(entry.key.name),
