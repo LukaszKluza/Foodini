@@ -7,11 +7,14 @@ import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   final MealTypeMacrosSummary mealTypeMacrosSummary;
+  final DateTime selectedDate;
 
-  const CustomBottomSheet({super.key, required this.mealTypeMacrosSummary});
+  const CustomBottomSheet({super.key, required this.mealTypeMacrosSummary, required this.selectedDate});
 
   @override
   Widget build(BuildContext context) {
+    final displayDate =
+        "${selectedDate.day.toString().padLeft(2, '0')}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.year}";
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -28,7 +31,7 @@ class CustomBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              AppLocalizations.of(context)!.macrosSummary,
+              '${AppLocalizations.of(context)!.macrosSummary} ${AppLocalizations.of(context)!.of_calories} $displayDate',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -50,8 +53,6 @@ class CustomBottomSheet extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    ActionButton(onPressed: () {}, color: Colors.orange, label: AppLocalizations.of(context)!.submit),
-                    const SizedBox(width: 12),
                     ActionButton(onPressed: () {}, color: Colors.redAccent, label: AppLocalizations.of(context)!.skipMeal)
                   ],
                 ),

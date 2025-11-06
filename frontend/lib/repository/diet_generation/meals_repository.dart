@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
-import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/meal_create.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/utils/cache_manager.dart';

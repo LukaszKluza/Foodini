@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
@@ -70,10 +71,11 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
               bottomNavigationBar: BottomNavBar(
                 currentRoute: GoRouterState.of(context).uri.path,
                 mode: NavBarMode.wizard,
-                prevRoute: '/diet-preferences',
+                prevRoute: '/daily-summary/${widget.day}',
               ),
               bottomSheet: CustomBottomSheet(
                 mealTypeMacrosSummary: calculateTotalMacros(mealItems),
+                selectedDate: widget.day,
               ),
             );
           }
@@ -201,15 +203,18 @@ class _MealDetails extends StatelessWidget {
     );
   }
 
-  Text generateMealItemNameHeader(String label) {
-    return Text(
-      label,
-      style: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: Colors.grey[700],
-      ),
-    );
+  Widget generateMealItemNameHeader(String label) {
+    return AutoSizeText(
+        label,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey[700],
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        minFontSize: 12,
+      );
   }
 }
 
