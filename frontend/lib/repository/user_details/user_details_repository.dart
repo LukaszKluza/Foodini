@@ -37,8 +37,6 @@ class UserDetailsRepository {
       UuidValue userId,
   ) async {
     try {
-      //TODO: only for test purposes remove later
-      // await apiClient.generateMealPlan(userId, DateTime.now());
       final response = await apiClient.submitMacrosChange(request, userId);
       return PredictedCalories.fromJson(response.data);
     } on DioException catch (e) {

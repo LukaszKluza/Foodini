@@ -30,4 +30,12 @@ class ChangeMealStatus extends DailySummaryEvent {
   });
 }
 
+class GenerateMealPlan extends DailySummaryEvent {
+  final DateTime day;
+
+  GenerateMealPlan({
+    required this.day
+  });
+}
+
 class ResetDailySummary extends DailySummaryEvent {}
