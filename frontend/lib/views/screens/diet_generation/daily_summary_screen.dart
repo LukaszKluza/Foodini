@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
@@ -335,70 +336,70 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      if (!isActive) {
-                        // Show a small tooltip if trying to edit past days
-                        final overlay = Overlay.of(context);
-                        final renderBox = context.findRenderObject() as RenderBox;
-                        final position = renderBox.localToGlobal(Offset.zero);
+                  Builder(
+                      builder: (ctx) => ElevatedButton.icon(
+                      onPressed: () {
+                        if (!isActive) {
+                          final overlay = Overlay.of(ctx);
+                          final renderBox = ctx.findRenderObject() as RenderBox;
+                          final position = renderBox.localToGlobal(Offset.zero);
 
-                        OverlayEntry entry = OverlayEntry(
-                          builder: (_) => Positioned(
-                            left: position.dx - renderBox.size.width * 0.2,
-                            top: position.dy - 60,
-                            width: renderBox.size.width * 1.4,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.black87,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  AppLocalizations.of(context)!.cannotEditPastMeals,
-                                  style: const TextStyle(color: Colors.white),
+                          OverlayEntry entry = OverlayEntry(
+                            builder: (_) => Positioned(
+                              left: position.dx - renderBox.size.width * 0.2,
+                              top: position.dy - 60,
+                              width: renderBox.size.width * 1.4,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: Container(
+                                  padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.cannotEditPastMeals,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
+                          );
 
-                        overlay.insert(entry);
-                        Future.delayed(const Duration(milliseconds: 800), () => entry.remove());
-                        return;
-                      }
-
-                      final nextStatus = MealStatus.getNextStatus(activeMealType, allMeals);
-                      context.read<DailySummaryBloc>().add(
+                          overlay.insert(entry);
+                          Future.delayed(const Duration(milliseconds: 800), () => entry.remove());
+                        } else {
+                          final nextStatus = MealStatus.getNextStatus(activeMealType, allMeals);
+                          context.read<DailySummaryBloc>().add(
                             ChangeMealStatus(
                               day: selectedDay,
                               mealId: activeMealInfo.mealId as UuidValue,
                               status: nextStatus,
                             ),
-                      );
-                    },
-                    icon: isEaten
-                        ? const Icon(Icons.check_circle_outline)
-                        : isSkipped
-                            ? const Icon(Icons.remove_circle_outline)
-                            : const Icon(Icons.fastfood),
-                    label: Text(
-                      AppConfig.mealStatusLabels(context)[activeMealInfo.status]!,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
+                          );
+                        }
+                      },
+                      icon: isEaten
+                          ? const Icon(Icons.check_circle_outline)
+                          : isSkipped
+                              ? const Icon(Icons.remove_circle_outline)
+                              : const Icon(Icons.fastfood),
+                      label: Text(
+                        AppConfig.mealStatusLabels(context)[activeMealInfo.status]!,
                       ),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
 
@@ -408,17 +409,16 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        activeMealInfo.name ?? 'Custom Meal',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                    child: AutoSizeText(
+                      activeMealInfo.name!,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      minFontSize: 12,
                     ),
                   ),
                   if (!isSkipped && isActive)
@@ -440,32 +440,37 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
 
               const SizedBox(height: 12),
 
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _macroChip(
-                      AppLocalizations.of(context)!.f_fat,
-                      activeMealInfo.fat ?? 0,
-                      AppLocalizations.of(context)!.g_grams,
-                      const Color(0xFFFFCA28)),
-                  _macroChip(
-                      AppLocalizations.of(context)!.p_protein,
-                      activeMealInfo.protein ?? 0,
-                      AppLocalizations.of(context)!.g_grams,
-                      const Color(0xFF0687F6)),
-                  _macroChip(
-                      AppLocalizations.of(context)!.c_carbs,
-                      activeMealInfo.carbs ?? 0,
-                      AppLocalizations.of(context)!.g_grams,
-                      const Color(0xFF3DAF43)),
-                  _macroChip(
-                      AppLocalizations.of(context)!.cal_calories,
-                      activeMealInfo.calories ?? 0,
-                      AppLocalizations.of(context)!.kcal,
-                      const Color(0xFFBA68C8),
-                      width: double.infinity),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth >= 380) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            _fatChip(activeMealInfo),
+                            const SizedBox(width: 8),
+                            _proteinChip(activeMealInfo),
+                            const SizedBox(width: 8),
+                            _carbsChip(activeMealInfo),
+                          ],
+                        ),
+                        Row(children: [_caloriesChip(activeMealInfo)]),
+                      ],
+                    );
+                  } else {
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _fatChip(activeMealInfo),
+                        _proteinChip(activeMealInfo),
+                        _carbsChip(activeMealInfo),
+                        _caloriesChip(activeMealInfo, width: double.infinity)
+                      ],
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -494,6 +499,22 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     );
   }
 
+  Widget _fatChip(MealInfo activeMealInfo){
+    return _macroChip(AppLocalizations.of(context)!.f_fat, activeMealInfo.fat ?? 0 ,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28));
+  }
+
+  Widget _proteinChip(MealInfo activeMealInfo){
+    return _macroChip(AppLocalizations.of(context)!.p_protein, activeMealInfo.protein ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6));
+  }
+
+  Widget _carbsChip(MealInfo activeMealInfo){
+    return _macroChip(AppLocalizations.of(context)!.c_carbs, activeMealInfo.carbs ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43));
+  }
+
+  Widget _caloriesChip(MealInfo activeMealInfo, {double? width}){
+    return _macroChip(AppLocalizations.of(context)!.cal_calories, activeMealInfo.calories ?? 0, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8), width: width);
+  }
+
   Widget _buildNutritionRings(
     double ringSize,
     double percent,
@@ -518,6 +539,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
         message: tooltipMessage,
         preferBelow: true,
         triggerMode: TooltipTriggerMode.tap,
+        textStyle: TextStyle(
+          fontSize: baseFontSize * 0.45,
+          color: Colors.white,
+        ),
 
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: fraction),
