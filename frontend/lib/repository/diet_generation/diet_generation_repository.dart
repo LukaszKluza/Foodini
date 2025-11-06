@@ -74,4 +74,16 @@ class DietGenerationRepository {
       throw Exception('Error while getting daily summary meals: $e');
     }
   }
+
+  Future<void> generateMealPlan(UuidValue userId, DateTime day) async {
+    try {
+      await apiClient.generateMealPlan(userId, day);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while generating meal plan: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
 }

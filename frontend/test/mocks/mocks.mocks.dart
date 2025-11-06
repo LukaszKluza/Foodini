@@ -650,15 +650,6 @@ class MockDietPredictionRepository extends _i1.Mock
             ),
           )
           as _i20.Future<_i12.MealRecipe>);
-
-  @override
-  _i20.Future<void> generateMealPlan(_i21.UuidValue? userId, DateTime? day) =>
-      (super.noSuchMethod(
-            Invocation.method(#generateMealPlan, [userId, day]),
-            returnValue: _i20.Future<void>.value(),
-            returnValueForMissingStub: _i20.Future<void>.value(),
-          )
-          as _i20.Future<void>);
 }
 
 /// A class which mocks [MealsRepository].

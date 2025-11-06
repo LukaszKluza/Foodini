@@ -8,6 +8,7 @@ import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/views/widgets/action_button.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -44,25 +45,52 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     final prevRoute = '/daily-meals/${formatForUrl(prevDate)}';
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
+    final now = DateTime.now();
+
+    final isActiveDay = (
+        widget.selectedDate.isAfter(now) ||
+            (
+                now.year == widget.selectedDate.year &&
+                now.month == widget.selectedDate.month &&
+                now.day == widget.selectedDate.day
+            )
+    );
+
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
+
+            generateOnPressed() {
+                context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
+              }
+
             if (state is DailySummaryLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             if (state is DailySummaryError) {
-              return Center(
-                child: Text(
-                  state.message ?? 'Error during fetching data',
-                  style: const TextStyle(fontSize: 16, color: Colors.red),
-                ),
-              );
-            }
+                return Stack(
+                  children: [
+                    Center(
+                      child: Text(
+                        state.message ?? 'Błąd ładowania danych',
+                        style: const TextStyle(fontSize: 16, color: Colors.red),
+                      ),
+                    ),
+                    if (isActiveDay)
+                      GenerateMealsButton(
+                        selectedDay: widget.selectedDate,
+                        isRegenerateMode: false,
+                        onPressed: generateOnPressed,
+                      ),
+                  ],
+                );
+              }
 
             if (state is DailySummaryLoaded) {
               final meals = state.dailySummary.meals;
+              final bool isRegenerate = meals.isNotEmpty;
               final sortedEntries =
                   meals.entries.toList()
                     ..sort((a, b) => a.key.value.compareTo(b.key.value));
@@ -94,7 +122,12 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ),
                   ),
                   _buildHeader(displayDate),
-                  _buildBottomActionButton(context),
+                  if (isActiveDay && widget.selectedDate.isAfter(now))
+                      GenerateMealsButton(
+                        selectedDay: widget.selectedDate,
+                        isRegenerateMode: isRegenerate,
+                        onPressed: generateOnPressed,
+                      ),
                 ],
               );
             }
@@ -122,29 +155,12 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         child: Center(
           child: Text(
             'Meals for $displayDate',
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomActionButton(BuildContext context) {
-    return Positioned(
-      left: 16,
-      right: 16,
-      bottom: 8,
-      child: Row(
-        children: [
-          ActionButton(
-            onPressed: () {
-              // TODO: logika regenerowania posiłków
-            },
-            color: const Color(0xFFF09090),
-            label: 'Regenerate meals',
-            keyId: 'generate_meals_button',
-          ),
-        ],
       ),
     );
   }
