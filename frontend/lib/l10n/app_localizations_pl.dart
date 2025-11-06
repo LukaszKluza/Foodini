@@ -546,38 +546,5 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailyMeals => 'Dzienne menu';
 
   @override
-  String get macrosSummary => 'Podsumowanie makroskładników';
-
-  @override
-  String get calories => 'Kalorie';
-
-  @override
-  String get submit => 'Zatwierdź';
-
-  @override
-  String get edit => 'Edytuj';
-
-  @override
-  String get skipMeal => 'Pomiń posiłek';
-
-  @override
-  String get addNewMeal => 'Dodaj nowy posiłek';
-
-  @override
-  String get save => 'Zapisz';
-
-  @override
-  String get scanProductBarCode => 'Zeskanuj kod kreskowy produktu';
-
-  @override
-  String get mealName => 'Nazwa posiłku';
-
-  @override
-  String get mealItemNameShouldBeBetween => 'Nazwa posiłku powinna mieć długość pomiędzy';
-
-  @override
-  String get valueOfThisMacroShouldBeBetween => 'Wartość tego makroskładnika powinna mieścić się w przedziale';
-
-  @override
-  String get valueOfCaloriesMacroShouldBeBetween => 'Wartość kalorii powinna mieścić się w przedziale';
+  String get dailyMealsFor => 'Posiłki na dzień ';
 }

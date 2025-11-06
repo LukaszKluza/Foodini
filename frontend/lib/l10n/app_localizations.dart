@@ -1169,77 +1169,11 @@ abstract class AppLocalizations {
   /// **'Daily Menu'**
   String get dailyMeals;
 
-  /// No description provided for @macrosSummary.
+  /// No description provided for @dailyMealsFor.
   ///
   /// In en, this message translates to:
-  /// **'Macros summary'**
-  String get macrosSummary;
-
-  /// No description provided for @calories.
-  ///
-  /// In en, this message translates to:
-  /// **'Calories'**
-  String get calories;
-
-  /// No description provided for @submit.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit'**
-  String get submit;
-
-  /// No description provided for @edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
-  /// No description provided for @skipMeal.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip Meal'**
-  String get skipMeal;
-
-  /// No description provided for @addNewMeal.
-  ///
-  /// In en, this message translates to:
-  /// **'Add new meal'**
-  String get addNewMeal;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
-
-  /// No description provided for @scanProductBarCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan product bar code'**
-  String get scanProductBarCode;
-
-  /// No description provided for @mealName.
-  ///
-  /// In en, this message translates to:
-  /// **'Meal name'**
-  String get mealName;
-
-  /// No description provided for @mealItemNameShouldBeBetween.
-  ///
-  /// In en, this message translates to:
-  /// **'Meal item name should be between'**
-  String get mealItemNameShouldBeBetween;
-
-  /// No description provided for @valueOfThisMacroShouldBeBetween.
-  ///
-  /// In en, this message translates to:
-  /// **'Value of this macro should be between'**
-  String get valueOfThisMacroShouldBeBetween;
-
-  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
-  ///
-  /// In en, this message translates to:
-  /// **'Value of calories should be between'**
-  String get valueOfCaloriesMacroShouldBeBetween;
+  /// **'Daily Meals for '**
+  String get dailyMealsFor;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

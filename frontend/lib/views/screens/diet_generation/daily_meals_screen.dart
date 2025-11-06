@@ -5,9 +5,11 @@ import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -149,15 +151,11 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
       right: 0,
       top: 0,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
-          child: Text(
-            'Meals for $displayDate',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
+          child: TitleTextWidgets.scaledTitle(
+              '${AppLocalizations.of(context)!.dailyMealsFor}$displayDate',
           ),
         ),
       ),
@@ -195,7 +193,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Material(
-        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey.shade200,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => context.push('/meal-recipe/$mealId'),
