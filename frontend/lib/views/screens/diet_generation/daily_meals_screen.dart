@@ -108,7 +108,7 @@ class DailyMealsScreen extends StatelessWidget {
                       ),
                     ),
                     _buildHeader(displayDate),
-                    if (isActiveDay)
+                    if (isActiveDay && selectedDate.isAfter(now))
                       GenerateMealsButton(
                         selectedDay: selectedDate,
                         isRegenerateMode: isRegenerate,
