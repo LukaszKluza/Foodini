@@ -440,12 +440,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                   ),
                   if (!isSkipped && isActive)
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => Container()),
-                        );
-                      },
+                      onTap: () => context.push('/meal-details/${activeMealType.nameStr}/$selectedDay'),
                       child: const Icon(
                         Icons.edit,
                         color: Colors.black54,

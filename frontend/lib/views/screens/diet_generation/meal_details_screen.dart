@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
@@ -31,8 +32,8 @@ class MealDetailsScreen extends StatefulWidget {
 class _MealDetailsScreenState extends State<MealDetailsScreen> {
   @override
   void initState() {
-    context.read<DailySummaryBloc>().add(GetDailySummary(widget.day));
     super.initState();
+    context.read<DailySummaryBloc>().add(GetDailySummary(widget.day));
   }
 
   @override
@@ -118,7 +119,7 @@ class _MealDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          generateMealNameHeader(mealType),
+          generateMealNameHeader(context, mealType),
           ...mealItems.map((mealItem) {
             return Column(children: [createMealItemWidget(context, mealItem)]);
           }),
@@ -189,9 +190,9 @@ class _MealDetails extends StatelessWidget {
     );
   }
 
-  Text generateMealNameHeader(MealType mealType) {
+  Text generateMealNameHeader(BuildContext context, MealType mealType) {
     return Text(
-      mealType.displayName,
+      AppConfig.mealTypeLabels(context)[mealType]!,
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
