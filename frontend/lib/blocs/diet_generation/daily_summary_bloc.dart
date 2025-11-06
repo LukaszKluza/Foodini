@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
-import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
@@ -30,18 +29,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       final summary = await dietGenerationRepository.getDailySummary(event.day, UserStorage().getUserId!);
 
       emit(DailySummaryLoaded(
-        dailySummary: DailySummary(
-          day: event.day,
-          meals: summary.meals,
-          targetCalories: summary.targetCalories,
-          targetProtein: summary.targetProtein,
-          targetCarbs: summary.targetCarbs,
-          targetFat: summary.targetFat,
-          eatenCalories: summary.eatenCalories,
-          eatenProtein: summary.eatenProtein,
-          eatenCarbs: summary.eatenCarbs,
-          eatenFat: summary.eatenFat,
-        )));
+        dailySummary: summary
+      ));
     } on ApiException catch (e) {
       emit(DailySummaryError(
         message: 'Unable to fetch daily summary',

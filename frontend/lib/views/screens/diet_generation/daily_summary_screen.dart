@@ -9,6 +9,7 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uuid/uuid_value.dart';
@@ -34,9 +35,20 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
   }
 
+  String formatForUrl(DateTime date) =>
+    '${date.year.toString().padLeft(4, '0')}-'
+    '${date.month.toString().padLeft(2, '0')}-'
+    '${date.day.toString().padLeft(2, '0')}';
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
+
+    final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
+    final nextDate = widget.selectedDate.add(const Duration(days: 1));
+
+    final prevRoute = '/daily-summary/${formatForUrl(prevDate)}';
+    final nextRoute = '/daily-summary/${formatForUrl(nextDate)}';
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -118,6 +130,11 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             return const SizedBox.shrink();
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavBarDate(
+        prevRoute: prevRoute,
+        nextRoute: nextRoute,
+        selectedDate: widget.selectedDate,
       ),
     );
   }
