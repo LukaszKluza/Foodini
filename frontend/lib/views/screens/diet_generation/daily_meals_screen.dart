@@ -149,7 +149,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
       right: 0,
       top: 0,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: Text(
@@ -195,7 +195,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Material(
-        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey.shade200,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => context.push('/meal-recipe/$mealId'),
