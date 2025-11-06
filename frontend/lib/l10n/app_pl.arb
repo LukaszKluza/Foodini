@@ -197,5 +197,6 @@
   "markedAs": "oznaczone jako",
 
   "dailySummary": "Dzienne podsumowanie",
-  "dailyMeals": "Dzienne menu"
+  "dailyMeals": "Dzienne menu",
+  "dailyMealsFor": "Posiłki na dzień "
 }

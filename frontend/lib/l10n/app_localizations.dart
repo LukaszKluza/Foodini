@@ -1168,6 +1168,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily Menu'**
   String get dailyMeals;
+
+  /// No description provided for @dailyMealsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Meals for '**
+  String get dailyMealsFor;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

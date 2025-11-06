@@ -544,4 +544,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dailyMeals => 'Dzienne menu';
+
+  @override
+  String get dailyMealsFor => 'Posiłki na dzień ';
 }

@@ -544,4 +544,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyMeals => 'Daily Menu';
+
+  @override
+  String get dailyMealsFor => 'Daily Meals for ';
 }

@@ -197,5 +197,6 @@
   "markedAs": "marked as",
 
   "dailySummary": "Daily Summary",
-  "dailyMeals": "Daily Menu"
+  "dailyMeals": "Daily Menu",
+  "dailyMealsFor": "Daily Meals for "
 }
