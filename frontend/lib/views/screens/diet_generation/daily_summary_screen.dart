@@ -9,6 +9,8 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uuid/uuid_value.dart';
@@ -28,6 +30,11 @@ class DailySummaryScreen extends StatefulWidget {
 class _DailySummaryScreenState extends State<DailySummaryScreen> {
   MealType? selectedMealType;
 
+  String formatForUrl(DateTime date) =>
+      '${date.year.toString().padLeft(4, '0')}-'
+      '${date.month.toString().padLeft(2, '0')}-'
+      '${date.day.toString().padLeft(2, '0')}';
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +45,22 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
   Widget build(BuildContext context) {
     final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
 
+    final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
+    final nextDate = widget.selectedDate.add(const Duration(days: 1));
+    final prevRoute = '/daily-summary/${formatForUrl(prevDate)}';
+    final nextRoute = '/daily-summary/${formatForUrl(nextDate)}';
+
+    final now = DateTime.now();
+
+    final isActiveDay = (
+        widget.selectedDate.isAfter(now) ||
+            (
+                now.year == widget.selectedDate.year &&
+                now.month == widget.selectedDate.month &&
+                now.day == widget.selectedDate.day
+            )
+    );
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
@@ -46,11 +69,26 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             if (state is DailySummaryLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is DailySummaryError) {
-              return Center(
-                child: Text(
-                  state.message ?? 'Data loading error',
-                  style: const TextStyle(fontSize: 16, color: Colors.red),
-                ),
+              return Stack(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 100.0),
+                      child: Text(
+                        state.message ?? 'Data loading error',
+                        style: const TextStyle(fontSize: 16, color: Colors.red),
+                      ),
+                    ),
+                  ),
+                  if (isActiveDay)
+                    GenerateMealsButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: false,
+                      onPressed: () {
+                        context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
+                      },
+                    ),
+                ],
               );
             } else if (state is DailySummaryLoaded) {
               final summary = state.dailySummary;
@@ -71,16 +109,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               final activeMealInfo = meals[activeMeal]!;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
-              final now = DateTime.now();
 
-              final isActiveDay = (
-                  widget.selectedDate.isAfter(now) ||
-                      (
-                          now.year == widget.selectedDate.year &&
-                          now.month == widget.selectedDate.month &&
-                          now.day == widget.selectedDate.day
-                      )
-              );
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -118,6 +147,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             return const SizedBox.shrink();
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+          currentRoute: GoRouterState.of(context).uri.path,
+          mode: NavBarMode.wizard,
+          prevRoute: prevRoute,
+          nextRoute: nextRoute,
       ),
     );
   }

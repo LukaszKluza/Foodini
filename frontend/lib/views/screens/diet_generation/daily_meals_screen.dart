@@ -8,6 +8,7 @@ import 'package:frontend/models/user/language.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/views/widgets/action_button.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:go_router/go_router.dart';
 
 class DailyMealsScreen extends StatelessWidget {
@@ -32,6 +33,17 @@ class DailyMealsScreen extends StatelessWidget {
     var state = context.watch<LanguageCubit>().state;
     var language = Language.fromJson(state.languageCode);
 
+    final now = DateTime.now();
+
+    final isActiveDay = (
+        selectedDate.isAfter(now) ||
+            (
+                now.year == selectedDate.year &&
+                now.month == selectedDate.month &&
+                now.day == selectedDate.day
+            )
+    );
+
     return BlocProvider(
       key: ValueKey('bloc_${selectedDate}_${language.code}'),
       create: (context) => DailySummaryBloc(
@@ -41,21 +53,37 @@ class DailyMealsScreen extends StatelessWidget {
         body: SafeArea(
           child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
             builder: (context, state) {
+
+              generateOnPressed() {
+                context.read<DailySummaryBloc>().add(GenerateMealPlan(day: selectedDate));
+              }
+
               if (state is DailySummaryLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
 
               if (state is DailySummaryError) {
-                return Center(
-                  child: Text(
-                    state.message ?? 'Błąd ładowania danych',
-                    style: const TextStyle(fontSize: 16, color: Colors.red),
-                  ),
+                return Stack(
+                  children: [
+                    Center(
+                      child: Text(
+                        state.message ?? 'Błąd ładowania danych',
+                        style: const TextStyle(fontSize: 16, color: Colors.red),
+                      ),
+                    ),
+                    if (isActiveDay)
+                      GenerateMealsButton(
+                        selectedDay: selectedDate,
+                        isRegenerateMode: false,
+                        onPressed: generateOnPressed,
+                      ),
+                  ],
                 );
               }
 
               if (state is DailySummaryLoaded) {
                 final meals = state.dailySummary.meals;
+                final bool isRegenerate = meals.isNotEmpty;
 
                 return Stack(
                   children: [
@@ -81,7 +109,12 @@ class DailyMealsScreen extends StatelessWidget {
                       ),
                     ),
                     _buildHeader(displayDate),
-                    _buildBottomActionButton(context),
+                    if (isActiveDay)
+                      GenerateMealsButton(
+                        selectedDay: selectedDate,
+                        isRegenerateMode: isRegenerate,
+                        onPressed: generateOnPressed,
+                      ),
                   ],
                 );
               }
@@ -118,26 +151,6 @@ class DailyMealsScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomActionButton(BuildContext context) {
-    return Positioned(
-      left: 16,
-      right: 16,
-      bottom: 8,
-      child: Row(
-        children: [
-          ActionButton(
-            onPressed: () {
-              // TODO: logika regenerowania posiłków
-            },
-            color: const Color(0xFFF09090),
-            label: 'Regenerate meals',
-            keyId: 'generate_meals_button',
-          ),
-        ],
       ),
     );
   }
