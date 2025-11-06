@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +11,8 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uuid/uuid_value.dart';
