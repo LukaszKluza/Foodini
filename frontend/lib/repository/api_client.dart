@@ -182,7 +182,7 @@ class ApiClient {
     );
   }
 
-  // diet prediction
+  // diet-prediction
   Future<Response> getMealRecipe(UuidValue mealId, Language language, UuidValue userId) {
     return _client.get(
       '${Endpoints.mealRecipe}/${mealId.uuid}',
@@ -191,10 +191,11 @@ class ApiClient {
     );
   }
 
-  Future<Response> generateMealPlan(UuidValue userId) {
+  Future<Response> generateMealPlan(UuidValue userId, DateTime day) {
+    final formattedDate = day.toIso8601String().split('T').first;
     return _client.post(
       Endpoints.generateMealPlan,
-      queryParameters: {'user_id': userId.uuid},
+      queryParameters: {'user_id': userId.uuid, 'day': formattedDate},
       options: Options(extra: {'requiresAuth': true}),
     );
   }

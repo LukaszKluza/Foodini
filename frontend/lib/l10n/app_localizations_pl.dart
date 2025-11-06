@@ -483,38 +483,65 @@ class AppLocalizationsPl extends AppLocalizations {
   String get optional => 'Opcjonalnie';
 
   @override
-  String get macrosSummary => 'Podsumowanie makroskładników';
+  String get breakfast => 'Śniadanie';
 
   @override
-  String get calories => 'Kalorie';
+  String get morningSnack => 'Przekąska poranna';
 
   @override
-  String get submit => 'Zatwierdź';
+  String get lunch => 'Obiad';
 
   @override
-  String get edit => 'Edytuj';
+  String get afternoonSnack => 'Przekąska popołudniowa';
 
   @override
-  String get skipMeal => 'Pomiń posiłek';
+  String get dinner => 'Kolacja';
 
   @override
-  String get addNewMeal => 'Dodaj nowy posiłek';
+  String get eveningSnack => 'Przekąska wieczorna';
 
   @override
-  String get save => 'Zapisz';
+  String get toEat => 'Do zjedzenia';
 
   @override
-  String get scanProductBarCode => 'Zeskanuj kod kreskowy produktu';
+  String get pending => 'Oczekujący';
 
   @override
-  String get mealName => 'Nazwa posiłku';
+  String get eaten => 'Zjedzony';
 
   @override
-  String get mealItemNameShouldBeBetween => 'Nazwa posiłku powinna mieć długość pomiędzy';
+  String get skipped => 'Pominięty';
 
   @override
-  String get valueOfThisMacroShouldBeBetween => 'Wartość tego makroskładnika powinna mieścić się w przedziale';
+  String get f_fat => 'T';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween => 'Wartość kalorii powinna mieścić się w przedziale';
+  String get p_protein => 'B';
+
+  @override
+  String get c_carbs => 'W';
+
+  @override
+  String get g_grams => 'g';
+
+  @override
+  String get cal_calories => 'Kal';
+
+  @override
+  String get of_calories => 'z';
+
+  @override
+  String get cannotEditPastMeals => 'Nie można edytować posiłków z przeszłości';
+
+  @override
+  String get noMealsForToday => 'Nie masz zaplanowanych żadnych posiłków na dziś';
+
+  @override
+  String get markedAs => 'oznaczone jako';
+
+  @override
+  String get dailySummary => 'Dzienne podsumowanie';
+
+  @override
+  String get dailyMeals => 'Dzienne menu';
 }

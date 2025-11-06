@@ -175,8 +175,8 @@ class DailySummaryService:
             meal_id=meal_id,
         )
 
-        await self._add_macros_after_status_change(user.id, day, meal_info, new_status, previous_status)
-        await self._update_next_meal_status(link_to_update.meal.meal_type, user_daily_meals, new_status)
+        await self._update_macros_after_status_change(user.id, day, meal_info, new_status, previous_status)
+        await self._update_next_meal_status(user_daily_meals)
 
         return meal_info
 
@@ -263,7 +263,7 @@ class DailySummaryService:
             "carbs": carbs,
         }
 
-    async def _add_macros_to_daily_summary(self, user_id: UUID, data: DailyMacrosSummaryCreate):
+    async def _update_daily_macros_summary(self, user_id: UUID, data: DailyMacrosSummaryCreate):
         user_daily_macros = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
         if not user_daily_macros:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
@@ -276,10 +276,17 @@ class DailySummaryService:
         await self.daily_summary_repo.update_daily_macros_summary(user_id, data, data.day)
         return user_daily_macros
 
-    async def _add_macros_after_status_change(
+    async def _update_macros_after_status_change(
         self, user_id: UUID, day: date, meal_info: BasicMealInfo, status: MealStatus, previous_status: MealStatus
     ):
-        if status != MealStatus.EATEN or previous_status == MealStatus.EATEN:
+        multiplier = 0
+
+        if status == MealStatus.EATEN and previous_status != MealStatus.EATEN:
+            multiplier = 1
+        elif status != MealStatus.EATEN and previous_status == MealStatus.EATEN:
+            multiplier = -1
+
+        if multiplier == 0:
             return
 
         calories = meal_info.calories
@@ -303,31 +310,49 @@ class DailySummaryService:
 
         data = DailyMacrosSummaryCreate(
             day=day,
-            calories=calories,
-            protein=protein,
-            carbs=carbs,
-            fat=fat,
+            calories=calories * multiplier,
+            protein=protein * multiplier,
+            carbs=carbs * multiplier,
+            fat=fat * multiplier,
         )
 
-        await self._add_macros_to_daily_summary(user_id, data)
+        await self._update_daily_macros_summary(user_id, data)
 
-    async def _update_next_meal_status(
-        self, meal_type_enum: MealType, user_daily_meals: DailyMealsSummary, status: MealStatus
-    ):
-        if status not in [MealStatus.EATEN, MealStatus.SKIPPED]:
-            return
+    async def _update_next_meal_status(self, user_daily_meals: DailyMealsSummary):
+        all_meal_links = user_daily_meals.daily_meals
+        day = user_daily_meals.day
+        user_id = user_daily_meals.user_id
 
         sorted_meals = MealType.sorted_meals()
-        current_idx = sorted_meals.index(meal_type_enum)
 
-        for next_idx in range(current_idx + 1, len(sorted_meals)):
-            next_meal_enum = sorted_meals[next_idx]
-            next_link = next(
-                (link for link in user_daily_meals.daily_meals if link.meal.meal_type == next_meal_enum), None
-            )
-            if next_link and next_link.status == MealStatus.TO_EAT.value:
-                next_link.status = MealStatus.PENDING
-                await self.daily_summary_repo.update_meal_status(
-                    user_daily_meals.user_id, user_daily_meals.day, next_link.meal_id, MealStatus.PENDING
-                )
+        target_pending_meal_link = None
+
+        for meal_type in sorted_meals:
+            link_to_check = next((link for link in all_meal_links if link.meal.meal_type == meal_type), None)
+
+            if not link_to_check:
+                continue
+
+            current_status = link_to_check.status
+
+            if current_status == MealStatus.TO_EAT or current_status == MealStatus.PENDING:
+                target_pending_meal_link = link_to_check
                 break
+
+        for link in all_meal_links:
+            current_status = link.status
+            new_status = current_status
+
+            if link == target_pending_meal_link:
+                if current_status != MealStatus.PENDING:
+                    new_status = MealStatus.PENDING
+                else:
+                    continue
+            elif current_status == MealStatus.PENDING:
+                new_status = MealStatus.TO_EAT
+            elif current_status == MealStatus.TO_EAT and link != target_pending_meal_link:
+                continue
+
+            if new_status != current_status:
+                link.status = new_status.value
+                await self.daily_summary_repo.update_meal_status(user_id, day, link.meal_id, new_status)

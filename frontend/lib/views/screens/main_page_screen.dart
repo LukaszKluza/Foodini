@@ -20,6 +20,12 @@ class _LoginScreenState extends State<MainPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    final date = DateTime.now();
+    final formattedDate =
+        '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
 
     return Scaffold(
@@ -72,6 +78,14 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
+                            AppLocalizations.of(context)!.dailySummary,
+                            Icons.list_alt,
+                            screenWidth,
+                            screenHeight,
+                            () => context.push('/daily-summary/$formattedDate'),
+                          ),
+                          const SizedBox(height: 16),
+                          rectangularButton(
                             AppLocalizations.of(context)!.myAccount,
                             Icons.person,
                             screenWidth,
@@ -93,6 +107,14 @@ class _LoginScreenState extends State<MainPageScreen> {
                       ),
                       Column(
                         children: [
+                          rectangularButton(
+                            AppLocalizations.of(context)!.dailyMeals,
+                            Icons.fastfood,
+                            screenWidth,
+                            screenHeight,
+                            () => context.push('/daily-meals/$formattedDate'),
+                          ),
+                          const SizedBox(height: 16),
                           rectangularButton(
                             AppLocalizations.of(context)!.changeCaloriesPrediction,
                             Icons.change_circle_outlined,

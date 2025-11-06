@@ -25,6 +25,7 @@ class CacheManager {
       store: cacheStore,
       policy: CachePolicy.forceCache,
       hitCacheOnErrorCodes: [500, 502, 503, 504],
+      maxStale: const Duration(seconds: 15),
       keyBuilder: CacheOptions.defaultCacheKeyBuilder,
       allowPostMethod: false,
     );

@@ -38,10 +38,10 @@ class DietGenerationRepository {
     }
   }
 
-  Future<DailyMealsCreate> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, UuidValue userId) async {
+  Future<MealInfo> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, UuidValue userId) async {
     try {
       final response = await apiClient.updateDailySummaryMeals(mealInfoUpdateRequest, userId);
-      return DailyMealsCreate.fromJson(response.data);
+      return MealInfo.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
