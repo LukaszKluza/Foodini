@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:uuid/uuid.dart';
 
-VoidCallback showPopUp(BuildContext context, {MealInfo? mealInfo}) {
+VoidCallback showPopUp(BuildContext context, DateTime day, UuidValue updatedMealId, {MealInfo? mealInfo}) {
   TextFormField editableTextFormField(
     BuildContext context,
     TextEditingController textEditingController,
@@ -116,7 +121,19 @@ VoidCallback showPopUp(BuildContext context, {MealInfo? mealInfo}) {
                       ),
                       const SizedBox(width: 12),
                       ActionButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          var customMealUpdateRequest = CustomMealUpdateRequest(
+                            day: day,
+                            mealId: updatedMealId,
+                            customName: mealInfo == null ? nameController.text : null,
+                            customCalories: int.tryParse(caloriesController.text),
+                            customProtein: double.tryParse(proteinController.text),
+                            customCarbs: double.tryParse(carbsController.text),
+                            customFat: double.tryParse(fatController.text),
+                          );
+                          context.read<DailySummaryBloc>().add(UpdateMeal(customMealUpdateRequest: customMealUpdateRequest));
+                          Navigator.pop(context);
+                        },
                         color: Colors.lightGreen,
                         label: AppLocalizations.of(context)!.save,
                       ),

@@ -81,7 +81,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         UserStorage().getUserId!,
       );
 
-      emit(DailySummaryLoaded(
+      emit(currentState.copyWith(
         dailySummary: updatedSummary,
         isChangingMealStatus: false,
       ));
@@ -108,33 +108,25 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     emit(currentState.copyWith(isChangingMealStatus: true));
 
     try {
-      final request = CustomMealUpdateRequest(
-        day: event.day,
-        mealId: event.mealId,
-        customName: event.updatedMeal.name,
-        customCalories: event.updatedMeal.calories,
-        customProtein: event.updatedMeal.protein,
-        customCarbs: event.updatedMeal.carbs,
-        customFat: event.updatedMeal.fat,
-      );
 
       await dietGenerationRepository.addCustomMeal(
-        request,
+        event.customMealUpdateRequest,
         UserStorage().getUserId!,
       );
 
       final updatedSummary = await dietGenerationRepository.getDailySummary(
-        event.day,
+        event.customMealUpdateRequest.day,
         UserStorage().getUserId!,
       );
 
-      emit(DailySummaryLoaded(
+
+      emit(currentState.copyWith(
         dailySummary: updatedSummary,
         isChangingMealStatus: false,
       ));
     } on ApiException catch (e) {
       emit(DailySummaryError(
-        message: 'Failed to add custom meal',
+        message: 'Failed to add custom meal $e',
         error: e,
       ));
     } catch (e) {

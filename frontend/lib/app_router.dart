@@ -75,19 +75,19 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/daily-meals/:date',
       builder: (context, state) {
-        final dateStr = state.pathParameters['date']!;
-        final date = DateTime.tryParse(dateStr);
-        if (date == null) {
-          final today = DateTime.now();
-          return DailyMealsScreen(
-            selectedDate: DateTime(today.year, today.month, today.day),
-          );
-        }
+        final date = DateTime.tryParse(state.pathParameters['date']!)!;
         return DailyMealsScreen(
           selectedDate: DateTime(date.year, date.month, date.day),
         );
       },
-      redirect: (context, state) => _redirectIfUnauthenticated(context),
+      redirect: (context, state) {
+        try {
+          DateTime.tryParse(state.pathParameters['date']!)!;
+          return _redirectIfUnauthenticated(context);
+        } catch (_) {
+          return '/.../daily-meals/${state.pathParameters['date']}';
+        }
+      },
     ),
     GoRoute(
       path: '/change-password',
@@ -107,14 +107,16 @@ final GoRouter router = GoRouter(
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(
-      path: '/meal-details/:mealType',
+      path: '/meal-details/:mealType/:date',
       builder: (context, state) {
         final mealType = MealType.fromJson(state.pathParameters['mealType']!);
-        return MealDetailsScreen(mealType: mealType);
+        final date = DateTime.tryParse(state.pathParameters['date']!)!;
+        return MealDetailsScreen(mealType: mealType, day: date);
       },
       redirect: (context, state) {
         try {
           MealType.fromJson(state.pathParameters['mealType']!);
+          DateTime.tryParse(state.pathParameters['date']!)!;
           return _redirectIfUnauthenticated(context);
         } catch (_) {
           return '/.../meal-details/${state.pathParameters['mealType']}';

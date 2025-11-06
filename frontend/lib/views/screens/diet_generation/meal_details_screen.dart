@@ -14,22 +14,39 @@ import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
 import 'package:go_router/go_router.dart';
 
-class MealDetailsScreen extends StatelessWidget {
+class MealDetailsScreen extends StatefulWidget {
   final MealType mealType;
+  final DateTime day;
 
-  const MealDetailsScreen({super.key, required this.mealType});
+  const MealDetailsScreen({
+    super.key,
+    required this.mealType,
+    required this.day,
+  });
+
+  @override
+  State<MealDetailsScreen> createState() => _MealDetailsScreenState();
+}
+
+class _MealDetailsScreenState extends State<MealDetailsScreen> {
+  @override
+  void initState() {
+    context.read<DailySummaryBloc>().add(GetDailySummary(widget.day));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dateTime = DateTime(2025, 11, 3);
-    context.read<DailySummaryBloc>().add(GetDailySummary(dateTime));
-
     return Scaffold(
       body: BlocBuilder<DailySummaryBloc, DailySummaryState>(
         builder: (context, state) {
           if (state is DailySummaryLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is DailySummaryLoaded && state.dailySummary.day != widget.day) {
+            return Center(
+              child: Text('Błąd ładowania danych'),
             );
           }
 
@@ -40,7 +57,7 @@ class MealDetailsScreen extends StatelessWidget {
           }
 
           if (state is DailySummaryLoaded) {
-            final meal = state.dailySummary.meals[mealType];
+            final meal = state.dailySummary.meals[widget.mealType];
             if (meal == null) {
               return const Center(child: Text('Brak danych dla tego posiłku'));
             }
@@ -48,13 +65,15 @@ class MealDetailsScreen extends StatelessWidget {
             final mealItems = [meal];
 
             return Scaffold(
-              body: _MealDetails(mealType: mealType, mealItems: mealItems),
+              body: _MealDetails(mealType: widget.mealType, mealItems: mealItems, day: widget.day),
               bottomNavigationBar: BottomNavBar(
                 currentRoute: GoRouterState.of(context).uri.path,
                 mode: NavBarMode.wizard,
                 prevRoute: '/diet-preferences',
               ),
-              bottomSheet: CustomBottomSheet(mealTypeMacrosSummary: calculateTotalMacros(mealItems)),
+              bottomSheet: CustomBottomSheet(
+                mealTypeMacrosSummary: calculateTotalMacros(mealItems),
+              ),
             );
           }
 
@@ -68,8 +87,9 @@ class MealDetailsScreen extends StatelessWidget {
 class _MealDetails extends StatelessWidget {
   final MealType mealType;
   final List<MealInfo> mealItems;
+  final DateTime day;
 
-  const _MealDetails({required this.mealType, required this.mealItems});
+  const _MealDetails({required this.mealType, required this.mealItems, required this.day});
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +130,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context),
+                    onPressed: showPopUp(context, day, mealItems[0].mealId!),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -152,7 +172,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, mealInfo: mealInfo),
+                onPressed: showPopUp(context, day, mealInfo.mealId!, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
