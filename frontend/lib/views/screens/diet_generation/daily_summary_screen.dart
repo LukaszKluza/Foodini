@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +11,9 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uuid/uuid_value.dart';
@@ -63,7 +65,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dailySummary),
+        ),
+      ),
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
@@ -100,7 +107,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               if (mealTypes.isEmpty) {
                 return Center(
                   child: Text(
-                    AppLocalizations.of(context)?.noMealsForToday ?? 'No meals',
+                    AppLocalizations.of(context)!.noMealsForToday,
                   ),
                 );
               }
@@ -149,11 +156,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-          currentRoute: GoRouterState.of(context).uri.path,
-          mode: NavBarMode.wizard,
-          prevRoute: prevRoute,
-          nextRoute: nextRoute,
+      bottomNavigationBar: BottomNavBarDate(
+        prevRoute: prevRoute,
+        nextRoute: nextRoute,
+        selectedDate: widget.selectedDate,
       ),
     );
   }
@@ -233,6 +239,16 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 children: [
                   _buildNutritionRings(
                     ringSize,
+                    carbsPercent,
+                    const [Color(0xFF97FF9A), Color(0xFF66F86D), Color(0xFF3DAF43)],
+                    Icons.local_fire_department,
+                    AppLocalizations.of(context)!.c_carbs,
+                    baseFontSize,
+                    summary.eatenCarbs,
+                    summary.targetCarbs,
+                  ),
+                  _buildNutritionRings(
+                    ringSize,
                     fatPercent,
                     const [Color(0xFFFFD54F), Color(0xFFFFCA28), Color(0xFFFFB74D)],
                     Icons.bubble_chart,
@@ -250,16 +266,6 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                     baseFontSize,
                     summary.eatenProtein,
                     summary.targetProtein,
-                  ),
-                  _buildNutritionRings(
-                    ringSize,
-                    carbsPercent,
-                    const [Color(0xFF97FF9A), Color(0xFF66F86D), Color(0xFF3DAF43)],
-                    Icons.opacity,
-                    AppLocalizations.of(context)!.c_carbs,
-                    baseFontSize,
-                    summary.eatenCarbs,
-                    summary.targetCarbs,
                   ),
                 ],
               ),
@@ -458,12 +464,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                   ),
                   if (!isSkipped && isActive)
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => Container()),
-                        );
-                      },
+                      onTap: () => context.push('/meal-details/${activeMealType.nameStr}/$selectedDay'),
                       child: const Icon(
                         Icons.edit,
                         color: Colors.black54,
@@ -483,11 +484,11 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       children: [
                         Row(
                           children: [
+                            _carbsChip(activeMealInfo),
+                            const SizedBox(width: 8),
                             _fatChip(activeMealInfo),
                             const SizedBox(width: 8),
                             _proteinChip(activeMealInfo),
-                            const SizedBox(width: 8),
-                            _carbsChip(activeMealInfo),
                           ],
                         ),
                         Row(children: [_caloriesChip(activeMealInfo)]),
@@ -498,9 +499,9 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
+                        _carbsChip(activeMealInfo),
                         _fatChip(activeMealInfo),
                         _proteinChip(activeMealInfo),
-                        _carbsChip(activeMealInfo),
                         _caloriesChip(activeMealInfo, width: double.infinity)
                       ],
                     );
@@ -603,14 +604,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                   center: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                        Text(
-                          label,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                              fontSize: baseFontSize * 0.8,
-                          ),
-                        ),
+                      Icon(icon, size: ringSize * 0.15, color: colors.last,),
                     ],
                   ),
                 ),

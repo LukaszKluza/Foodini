@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/views/widgets/nav_icon_button.dart';
 import 'package:go_router/go_router.dart';
 
 enum NavBarMode { normal, wizard }
@@ -39,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
     final canPop = Navigator.of(context).canPop();
     final isActive = mode == NavBarMode.normal ? canPop : prevRoute != null;
 
-    return _buildNavButton(
+    return NavIconButton(
       icon: Icons.arrow_back,
       isActive: isActive,
       onPressed:
@@ -57,7 +58,7 @@ class BottomNavBar extends StatelessWidget {
 
   Widget _buildHomeButton(BuildContext context) {
     final isActive = currentRoute != '/main-page';
-    return _buildNavButton(
+    return NavIconButton(
       icon: Icons.home,
       isActive: isActive,
       onPressed: isActive ? () => context.go('/main-page') : null,
@@ -67,25 +68,10 @@ class BottomNavBar extends StatelessWidget {
   Widget _buildNextButton(BuildContext context) {
     final isActive =
         mode == NavBarMode.wizard && nextRoute != null && isNextRouteEnabled;
-    return _buildNavButton(
+    return NavIconButton(
       icon: Icons.arrow_forward,
       isActive: isActive,
       onPressed: isActive ? () => context.go(nextRoute!) : null,
-    );
-  }
-
-  Widget _buildNavButton({
-    required IconData icon,
-    required bool isActive,
-    required VoidCallback? onPressed,
-  }) {
-    return IconButton(
-      icon: Icon(icon),
-      iconSize: 24,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      color: isActive ? Colors.blue : Colors.grey,
-      onPressed: onPressed,
     );
   }
 }

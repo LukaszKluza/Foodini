@@ -538,4 +538,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markedAs => 'marked as';
+
+  @override
+  String get dailySummary => 'Daily Summary';
+
+  @override
+  String get dailyMeals => 'Daily Menu';
+
+  @override
+  String get dailyMealsFor => 'Daily Meals for ';
+
+  @override
+  String get macrosSummary => 'Macros summary';
+
+  @override
+  String get calories => 'Calories';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get skipMeal => 'Skip Meal';
+
+  @override
+  String get addNewMeal => 'Add new meal';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get scanProductBarCode => 'Scan product bar code';
+
+  @override
+  String get mealName => 'Meal name';
+
+  @override
+  String get mealItemNameShouldBeBetween => 'Meal item name should be between';
+
+  @override
+  String get valueOfThisMacroShouldBeBetween => 'Value of this macro should be between';
+
+  @override
+  String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
 }

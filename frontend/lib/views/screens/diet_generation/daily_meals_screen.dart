@@ -2,18 +2,33 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
-import 'package:frontend/foodini.dart';
-import 'package:frontend/models/user/language.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid_value.dart';
 
-class DailyMealsScreen extends StatelessWidget {
+class DailyMealsScreen extends StatefulWidget {
   final DateTime selectedDate;
 
-  const DailyMealsScreen({super.key, required this.selectedDate});
+  DailyMealsScreen({Key? key, required this.selectedDate})
+    : super(key: ValueKey('daily_meals_$selectedDate'));
+
+  @override
+  State<DailyMealsScreen> createState() => _DailyMealsScreenState();
+}
+
+class _DailyMealsScreenState extends State<DailyMealsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
+  }
 
   String formatForUrl(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-'
@@ -23,45 +38,39 @@ class DailyMealsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayDate =
-        "${selectedDate.day.toString().padLeft(2, '0')}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.year}";
-    final prevDate = selectedDate.subtract(const Duration(days: 1));
-    final nextDate = selectedDate.add(const Duration(days: 1));
+        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
+
+    final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
+    final nextDate = widget.selectedDate.add(const Duration(days: 1));
+
     final prevRoute = '/daily-meals/${formatForUrl(prevDate)}';
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
-
-    var state = context.watch<LanguageCubit>().state;
-    var language = Language.fromJson(state.languageCode);
 
     final now = DateTime.now();
 
     final isActiveDay = (
-        selectedDate.isAfter(now) ||
+        widget.selectedDate.isAfter(now) ||
             (
-                now.year == selectedDate.year &&
-                now.month == selectedDate.month &&
-                now.day == selectedDate.day
+                now.year == widget.selectedDate.year &&
+                now.month == widget.selectedDate.month &&
+                now.day == widget.selectedDate.day
             )
     );
 
-    return BlocProvider(
-      key: ValueKey('bloc_${selectedDate}_${language.code}'),
-      create: (context) => DailySummaryBloc(
-        context.read(),
-      )..add(GetDailySummary(selectedDate)),
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
-            builder: (context, state) {
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
+          builder: (context, state) {
 
-              generateOnPressed() {
-                context.read<DailySummaryBloc>().add(GenerateMealPlan(day: selectedDate));
+            generateOnPressed() {
+                context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
               }
 
-              if (state is DailySummaryLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+            if (state is DailySummaryLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (state is DailySummaryError) {
+            if (state is DailySummaryError) {
                 return Stack(
                   children: [
                     Center(
@@ -72,7 +81,7 @@ class DailyMealsScreen extends StatelessWidget {
                     ),
                     if (isActiveDay)
                       GenerateMealsButton(
-                        selectedDay: selectedDate,
+                        selectedDay: widget.selectedDate,
                         isRegenerateMode: false,
                         onPressed: generateOnPressed,
                       ),
@@ -80,55 +89,58 @@ class DailyMealsScreen extends StatelessWidget {
                 );
               }
 
-              if (state is DailySummaryLoaded) {
-                final meals = state.dailySummary.meals;
-                final bool isRegenerate = meals.isNotEmpty;
+            if (state is DailySummaryLoaded) {
+              final meals = state.dailySummary.meals;
+              final bool isRegenerate = meals.isNotEmpty;
+              final sortedEntries =
+                  meals.entries.toList()
+                    ..sort((a, b) => a.key.value.compareTo(b.key.value));
 
-                return Stack(
-                  children: [
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 16.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 60),
-                          for (final entry in meals.entries)
-                            _buildMealSection(
-                              title: entry.key.displayName,
-                              color: _getMealColor(entry.key.name),
-                              imageUrl: 'entry.value.icon',
-                              mealName: entry.value.name ?? '',
-                              description: entry.value.description ?? '',
-                            ),
-                          const SizedBox(height: 40),
-                        ],
-                      ),
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
                     ),
-                    _buildHeader(displayDate),
-                    if (isActiveDay && selectedDate.isAfter(now))
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 60),
+                        for (final entry in sortedEntries)
+                          _buildMealSection(
+                            title:
+                                AppConfig.mealTypeLabels(context)[entry.key]!,
+                            color: _getMealColor(entry.key.name),
+                            imageUrl: entry.value.iconPath!,
+                            mealName: entry.value.name ?? '',
+                            description: entry.value.description ?? '',
+                            mealId: entry.value.mealId!,
+                            context: context,
+                          ),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+                  ),
+                  _buildHeader(displayDate),
+                  if (isActiveDay && widget.selectedDate.isAfter(now))
                       GenerateMealsButton(
-                        selectedDay: selectedDate,
+                        selectedDay: widget.selectedDate,
                         isRegenerateMode: isRegenerate,
                         onPressed: generateOnPressed,
                       ),
-                  ],
-                );
-              }
+                ],
+              );
+            }
 
-              // Domyślny stan (np. Initial)
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
-        bottomNavigationBar: BottomNavBar(
-          currentRoute: GoRouterState.of(context).uri.path,
-          mode: NavBarMode.wizard,
-          prevRoute: prevRoute,
-          nextRoute: nextRoute,
-        ),
+      ),
+      bottomNavigationBar: BottomNavBarDate(
+        prevRoute: prevRoute,
+        nextRoute: nextRoute,
+        selectedDate: widget.selectedDate,
       ),
     );
   }
@@ -139,15 +151,11 @@ class DailyMealsScreen extends StatelessWidget {
       right: 0,
       top: 0,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
-          child: Text(
-            'Meals for $displayDate',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
+          child: TitleTextWidgets.scaledTitle(
+              '${AppLocalizations.of(context)!.dailyMealsFor}$displayDate',
           ),
         ),
       ),
@@ -174,77 +182,100 @@ class DailyMealsScreen extends StatelessWidget {
   }
 
   Widget _buildMealSection({
+    required BuildContext context,
     required String title,
     required Color color,
     required String imageUrl,
     required String mealName,
     required String description,
+    required UuidValue mealId,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+      child: Material(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey.shade200,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => context.push('/meal-recipe/$mealId'),
+          child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => const SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Center(child: CircularProgressIndicator()),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
-                  errorWidget: (context, url, error) => Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey.shade200,
-                    child: const Icon(Icons.error, color: Colors.red),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
+                const SizedBox(height: 8),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      mealName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: '${Endpoints.mealIcon}/$imageUrl',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => const SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.grey.shade200,
+                              child: const Icon(Icons.error, color: Colors.red),
+                            ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: const TextStyle(fontSize: 14, color: Colors.black87),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mealName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            description,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

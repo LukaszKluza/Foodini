@@ -24,4 +24,9 @@ class Constants {
   static const int proteinEstimator = 4;
   static const int fatEstimator = 9;
   static const int carbsEstimator = 4;
+
+  static const int minNameLength = 2;
+  static const int maxNameLength = 124;
+  static const int maxMacroValue = 1000;
+  static const int maxCaloriesValue = 10_000;
 }

@@ -14,6 +14,7 @@ from backend.daily_summary.schemas import (
     DailySummary,
     MealInfo,
     MealInfoUpdateRequest,
+    MealInfoWithIconPath,
 )
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
@@ -41,11 +42,12 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals_dict = {
-            link.meal.meal_type.value: MealInfo(
+            link.meal.meal_type.value: MealInfoWithIconPath(
                 meal_id=link.meal.id,
                 status=link.status,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                icon_path=await self.meal_gateway.get_meal_icon_path_by_id(link.meal.icon_id),
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),

@@ -194,5 +194,23 @@
 
   "cannotEditPastMeals": "Nie można edytować posiłków z przeszłości",
   "noMealsForToday": "Nie masz zaplanowanych żadnych posiłków na dziś",
-  "markedAs": "oznaczone jako"
+  "markedAs": "oznaczone jako",
+
+  "dailySummary": "Dzienne podsumowanie",
+  "dailyMeals": "Dzienne menu",
+  "dailyMealsFor": "Posiłki na dzień ",
+
+  "macrosSummary": "Podsumowanie makroskładników",
+  "calories": "Kalorie",
+  "submit": "Zatwierdź",
+  "edit": "Edytuj",
+  "skipMeal": "Pomiń posiłek",
+  "addNewMeal": "Dodaj nowy posiłek",
+  "save": "Zapisz",
+  "scanProductBarCode": "Zeskanuj kod kreskowy produktu",
+  "mealName": "Nazwa posiłku",
+
+  "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
+  "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
+  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale"
 }

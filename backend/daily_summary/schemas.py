@@ -22,6 +22,10 @@ class MealInfo(BasicMealInfo):
     description: str
 
 
+class MealInfoWithIconPath(MealInfo):
+    icon_path: str
+
+
 class DailyMealsCreate(BaseModel):
     day: date
     meals: Dict[MealType, BasicMealInfo]
@@ -32,7 +36,7 @@ class DailyMealsCreate(BaseModel):
 
 
 class DailySummary(DailyMealsCreate):
-    meals: Dict[MealType, MealInfo]
+    meals: Dict[MealType, MealInfoWithIconPath]
     eaten_calories: int
     eaten_protein: float
     eaten_carbs: float
@@ -61,4 +65,3 @@ class CustomMealUpdateRequest(BaseModel):
     custom_protein: Optional[float] = Field(default=None, ge=0)
     custom_carbs: Optional[float] = Field(default=None, ge=0)
     custom_fat: Optional[float] = Field(default=None, ge=0)
-    status: MealStatus = Field(default=MealStatus.EATEN)

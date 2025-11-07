@@ -1,0 +1,245 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/app_config.dart';
+import 'package:frontend/events/diet_generation/daily_summary_events.dart';
+import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/meal_item.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
+import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
+import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
+import 'package:go_router/go_router.dart';
+
+class MealDetailsScreen extends StatefulWidget {
+  final MealType mealType;
+  final DateTime day;
+
+  const MealDetailsScreen({
+    super.key,
+    required this.mealType,
+    required this.day,
+  });
+
+  @override
+  State<MealDetailsScreen> createState() => _MealDetailsScreenState();
+}
+
+class _MealDetailsScreenState extends State<MealDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<DailySummaryBloc>().add(GetDailySummary(widget.day));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<DailySummaryBloc, DailySummaryState>(
+        builder: (context, state) {
+          if (state is DailySummaryLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is DailySummaryLoaded && state.dailySummary.day != widget.day) {
+            return Center(
+              child: Text('Błąd ładowania danych'),
+            );
+          }
+
+          if (state is DailySummaryError) {
+            return Center(
+              child: Text(state.message ?? 'Błąd ładowania danych'),
+            );
+          }
+
+          if (state is DailySummaryLoaded) {
+            final meal = state.dailySummary.meals[widget.mealType];
+            if (meal == null) {
+              return const Center(child: Text('Brak danych dla tego posiłku'));
+            }
+
+            final mealItems = [meal];
+
+            return Scaffold(
+              body: _MealDetails(mealType: widget.mealType, mealItems: mealItems, day: widget.day),
+              bottomNavigationBar: BottomNavBar(
+                currentRoute: GoRouterState.of(context).uri.path,
+                mode: NavBarMode.wizard,
+                prevRoute: '/daily-summary/${widget.day}',
+              ),
+              bottomSheet: CustomBottomSheet(
+                mealTypeMacrosSummary: calculateTotalMacros(mealItems),
+                selectedDate: widget.day,
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+}
+
+class _MealDetails extends StatelessWidget {
+  final MealType mealType;
+  final List<MealInfo> mealItems;
+  final DateTime day;
+
+  const _MealDetails({required this.mealType, required this.mealItems, required this.day});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 140),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              generateMealDetails(context, mealType, mealItems),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding generateMealDetails(BuildContext context, MealType mealType, List<MealInfo> mealItems) {
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          generateMealNameHeader(context, mealType),
+          ...mealItems.map((mealItem) {
+            return Column(children: [createMealItemWidget(context, mealItem)]);
+          }),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: [
+                  ActionButton(
+                    onPressed: showPopUp(context, day, mealItems[0].mealId!),
+                    color: Colors.orangeAccent,
+                    label: AppLocalizations.of(context)!.addNewMeal,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container createMealItemWidget(BuildContext context, MealInfo mealInfo) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [getShadowBox()],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          generateMealItemNameHeader(mealInfo.name!),
+          const SizedBox(height: 12),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildCarbsItem(context, mealInfo.carbs!),
+              buildFatItem(context, mealInfo.fat!),
+              buildProteinItem(context, mealInfo.protein!),
+              buildCaloriesItem(context, mealInfo.calories!),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          Row(
+            children: [
+              ActionButton(
+                onPressed: showPopUp(context, day, mealInfo.mealId!, mealInfo: mealInfo),
+                color: Colors.orange[300]!,
+                label: AppLocalizations.of(context)!.edit,
+              ),
+              const SizedBox(width: 12),
+              ActionButton(
+                onPressed: () {},
+                color: Colors.redAccent,
+                label: AppLocalizations.of(context)!.delete,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Text generateMealNameHeader(BuildContext context, MealType mealType) {
+    return Text(
+      AppConfig.mealTypeLabels(context)[mealType]!,
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: Colors.grey[700],
+      ),
+    );
+  }
+
+  Widget generateMealItemNameHeader(String label) {
+    return AutoSizeText(
+        label,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey[700],
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        minFontSize: 12,
+      );
+  }
+}
+
+
+BoxShadow getShadowBox() =>
+    BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4));
+
+MealTypeMacrosSummary calculateTotalMacros(List<MealInfo> meals) {
+  double totalProtein = 0;
+  double totalCarbs = 0;
+  double totalFat = 0;
+  int totalCalories = 0;
+
+  for (final meal in meals) {
+    totalProtein += meal.protein!;
+    totalCarbs += meal.carbs!;
+    totalFat += meal.fat!;
+    totalCalories += meal.calories!;
+  }
+
+  return MealTypeMacrosSummary(
+    carbs: double.parse(totalCarbs.toStringAsFixed(2)),
+    fat: double.parse(totalFat.toStringAsFixed(2)),
+    protein: double.parse(totalProtein.toStringAsFixed(2)),
+    calories: totalCalories,
+  );
+}
+

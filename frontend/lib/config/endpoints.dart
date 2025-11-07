@@ -23,10 +23,10 @@ class Endpoints {
   static const String dailySummary = '$baseUrl/daily-summary';
   static const String dailySummaryMeals = '$baseUrl/daily-summary/meals';
   static const String dailySummaryMacros = '$baseUrl/daily-summary/macros';
+  static const String customMeal = '$baseUrl/daily-summary/meals/custom';
 
   // meals
   static const String meal = '$baseUrl/meals';
-  static const String customMeal = '$baseUrl/meals/custom';
   static const String mealRecipe = '$baseUrl/meals/meal-recipes';
   static const String mealIconInfo = '$baseUrl/meals/meal-icon';
 
