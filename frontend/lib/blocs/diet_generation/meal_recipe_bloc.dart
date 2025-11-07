@@ -2,15 +2,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/diet_generation/meal_recipe_events.dart';
 import 'package:frontend/models/processing_status.dart';
-import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/states/diet_generation/meal_recipe.dart';
+import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
-  final MealRecipeRepository mealRecipeRepository;
+  final DietPredictionRepository dietPredictionRepository;
+  final MealsRepository mealsRepository;
 
-  MealRecipeBloc(this.mealRecipeRepository) : super(MealRecipeState()) {
+  MealRecipeBloc(this.dietPredictionRepository, this.mealsRepository) : super(MealRecipeState()) {
     on<MealRecipeInit>(_onDietPredictionInit);
   }
 
@@ -29,21 +31,16 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
 
       final userId = UserStorage().getUserId!;
 
-      final mealRecipe = await mealRecipeRepository.getMealRecipe(
+      final mealRecipe = await dietPredictionRepository.getMealRecipe(
         userId,
         event.mealId,
         event.language,
       );
 
-      final mealIconInfo = await mealRecipeRepository.getMealIconInfo(
-        userId,
-        mealRecipe.mealType,
-      );
-
       emit(
         state.copyWith(
           mealRecipe: mealRecipe,
-          iconUrl: mealIconInfo.iconPath,
+          iconUrl: mealRecipe.iconPath,
           processingStatus: ProcessingStatus.gettingSuccess,
         ),
       );

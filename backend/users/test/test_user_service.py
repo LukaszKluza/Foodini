@@ -1,4 +1,5 @@
 import sys
+import uuid
 from datetime import datetime, timedelta
 from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
@@ -102,7 +103,7 @@ user_create = UserCreate(
 )
 
 basic_user = User(
-    id=1,
+    id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
     email="test@example.com",
 )
 
@@ -131,7 +132,9 @@ async def test_register_user_new(
     # Given
     mock_user_repository.get_user_by_email.return_value = None
     mock_password_service["hash_password"].return_value = "hashed_password"
-    mock_user_repository.create_user.return_value = MagicMock(id=1, email="test@example.com")
+    mock_user_repository.create_user.return_value = MagicMock(
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), email="test@example.com"
+    )
 
     # When
     new_user = await user_service.register(user_create)
@@ -185,7 +188,9 @@ async def test_login_user_success(
     user_service,
 ):
     # Given
-    mock_user = User(id=1, email="test@example.com", password="hashed_password")
+    mock_user = User(
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), email="test@example.com", password="hashed_password"
+    )
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
     mock_password_service["verify_password"].return_value = True
     mock_authorization_service.create_tokens.return_value = (
@@ -207,7 +212,9 @@ async def test_login_user_success(
 
 @pytest.mark.asyncio
 async def test_logout_user_success(mock_user_validators, mock_authorization_service, user_service):
-    response = await user_service.logout({"id": 1, "jti": "jti", "linked_jti": "linked_jti"})
+    response = await user_service.logout(
+        {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "jti": "jti", "linked_jti": "linked_jti"}
+    )
 
     # Then
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -223,7 +230,7 @@ async def test_reset_password_user_unlogged(
 ):
     # Given
     mock_user = MagicMock(
-        id=1,
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         email="test@example.com",
         last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2),
     )
@@ -249,7 +256,7 @@ async def test_reset_password_user_logged_successful(
 ):
     # Given
     mock_user = MagicMock(
-        id=1,
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         email="test@example.com",
         last_password_update=datetime.now(config.TIMEZONE) - timedelta(days=2),
     )
@@ -278,7 +285,7 @@ async def test_reset_password_too_early(
 ):
     # Given
     password_reset_data = PasswordResetRequest(email=TypeAdapter(EmailStr).validate_python("test@example.com"))
-    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    user_ = type("User", (), {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "email": "test@example.com"})()
 
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
     mock_user_validators.ensure_verified_user.return_value = None
@@ -317,7 +324,11 @@ async def test_delete_account_when_user_exist(
     user_service, mock_user_validators, mock_authorization_service, mock_user_repository
 ):
     # Given
-    token_payload = {"id": "1", "jti": "fake_jti", "linked_jti": "fake_linked_jti"}
+    token_payload = {
+        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        "jti": "fake_jti",
+        "linked_jti": "fake_linked_jti",
+    }
     mock_authorization_service.revoke_tokens.return_value = True
     mock_user_repository.delete_user.return_value = basic_user
 
@@ -402,7 +413,7 @@ async def test_confirm_new_password_success(
         token="valid_token",
     )
 
-    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    user_ = type("User", (), {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "email": "test@example.com"})()
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
     mock_authorization_service.decode_url_safe_token.return_value = {"email": "test@example.com"}
@@ -431,7 +442,7 @@ async def test_confirm_new_password_invalid_token(user_service, mock_user_valida
         token="invalid_token",
     )
 
-    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    user_ = type("User", (), {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "email": "test@example.com"})()
     mock_user_validators.ensure_user_exists_by_email.return_value = user_
 
     mock_authorization_service.decode_url_safe_token.side_effect = Exception("Decode failed")
@@ -454,7 +465,7 @@ async def test_confirm_new_password_missing_token(user_service, mock_user_valida
         password="NewPassword123",
         token="",
     )
-    user_ = type("User", (), {"id": 1, "email": "test@example.com"})()
+    user_ = type("User", (), {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "email": "test@example.com"})()
 
     mock_authorization_service.decode_url_safe_token.side_effect = HTTPException(
         status_code=400,

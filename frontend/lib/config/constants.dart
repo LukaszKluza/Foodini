@@ -8,8 +8,9 @@ class Constants {
   static const double minHeight = 60;
   static const double maxHeight = 230;
   static const double defaultHeight = 175;
+  static const int minMealsPerDay = 3;
   static const int maxMealsPerDay = 6;
-  static const int defaultMealsPerDay = 3;
+  static const int defaultMealsPerDay = 4;
   static const String mainFoodiniIcon = 'assets/icons/icon_14.png';
 
   static const double defaultMusclePercentage = 45;
@@ -23,4 +24,9 @@ class Constants {
   static const int proteinEstimator = 4;
   static const int fatEstimator = 9;
   static const int carbsEstimator = 4;
+
+  static const int minNameLength = 2;
+  static const int maxNameLength = 124;
+  static const int maxMacroValue = 1000;
+  static const int maxCaloriesValue = 10_000;
 }

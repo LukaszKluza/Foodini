@@ -128,7 +128,7 @@ class AuthorizationService:
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
-        redis_key = token_jti if expected_type == "refresh" else linked_jti
+        redis_key = token_jti if expected_type == Token.REFRESH.value else linked_jti
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:

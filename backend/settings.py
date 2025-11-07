@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     FAT_CONVERSION_FACTOR: int = 9
     CARBS_CONVERSION_FACTOR: int = 4
     PROTEIN_CONVERSION_FACTOR: int = 4
+    PROMPTS_DIR: str = "prompts"
+    DAILY_MEALS_PROMPT_FILENAME: str = "daily_meals_generator_prompt.txt"
+    MODEL_NAME: str = "qwen3-coder:480b-cloud"
+    OLLAMA_API_BASE_URL: str = "https://ollama.com"
+    OLLAMA_API_KEY: str
 
     model_config = SettingsConfigDict(env_file=f"{env}", extra="ignore")
 

@@ -149,11 +149,23 @@ abstract class AppLocalizations {
   /// **'Name is required'**
   String get requiredName;
 
+  /// No description provided for @requiredLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Lastname is required'**
+  String get requiredLastname;
+
   /// No description provided for @provideCorrectName.
   ///
   /// In en, this message translates to:
   /// **'Provide correct name'**
   String get provideCorrectName;
+
+  /// No description provided for @provideCorrectLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide correct lastname'**
+  String get provideCorrectLastname;
 
   /// No description provided for @requiredCountry.
   ///
@@ -1030,6 +1042,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional'**
   String get optional;
+
+  /// No description provided for @breakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get breakfast;
+
+  /// No description provided for @morningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning snack'**
+  String get morningSnack;
+
+  /// No description provided for @lunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get lunch;
+
+  /// No description provided for @afternoonSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon snack'**
+  String get afternoonSnack;
+
+  /// No description provided for @dinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dinner;
+
+  /// No description provided for @eveningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening snack'**
+  String get eveningSnack;
+
+  /// No description provided for @toEat.
+  ///
+  /// In en, this message translates to:
+  /// **'To eat'**
+  String get toEat;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @eaten.
+  ///
+  /// In en, this message translates to:
+  /// **'Eaten'**
+  String get eaten;
+
+  /// No description provided for @skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get skipped;
+
+  /// No description provided for @f_fat.
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get f_fat;
+
+  /// No description provided for @p_protein.
+  ///
+  /// In en, this message translates to:
+  /// **'P'**
+  String get p_protein;
+
+  /// No description provided for @c_carbs.
+  ///
+  /// In en, this message translates to:
+  /// **'C'**
+  String get c_carbs;
+
+  /// No description provided for @g_grams.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get g_grams;
+
+  /// No description provided for @cal_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Cal'**
+  String get cal_calories;
+
+  /// No description provided for @of_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get of_calories;
+
+  /// No description provided for @cannotEditPastMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit past meals'**
+  String get cannotEditPastMeals;
+
+  /// No description provided for @noMealsForToday.
+  ///
+  /// In en, this message translates to:
+  /// **'There aren\'t any meals planned for today'**
+  String get noMealsForToday;
+
+  /// No description provided for @markedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'marked as'**
+  String get markedAs;
+
+  /// No description provided for @dailySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Summary'**
+  String get dailySummary;
+
+  /// No description provided for @dailyMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Menu'**
+  String get dailyMeals;
+
+  /// No description provided for @dailyMealsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Meals for '**
+  String get dailyMealsFor;
+
+  /// No description provided for @macrosSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros summary'**
+  String get macrosSummary;
+
+  /// No description provided for @calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get calories;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @skipMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Meal'**
+  String get skipMeal;
+
+  /// No description provided for @addNewMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new meal'**
+  String get addNewMeal;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @scanProductBarCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan product bar code'**
+  String get scanProductBarCode;
+
+  /// No description provided for @mealName.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal name'**
+  String get mealName;
+
+  /// No description provided for @mealItemNameShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal item name should be between'**
+  String get mealItemNameShouldBeBetween;
+
+  /// No description provided for @valueOfThisMacroShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of this macro should be between'**
+  String get valueOfThisMacroShouldBeBetween;
+
+  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of calories should be between'**
+  String get valueOfCaloriesMacroShouldBeBetween;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

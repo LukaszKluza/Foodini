@@ -11,15 +11,17 @@ import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
 import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
-import 'package:frontend/repository/diet_prediction/meal_recipe_repository.dart';
-import 'package:frontend/states/diet_generation/meal_recipe.dart';
-import 'package:frontend/views/widgets/action_buttons.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
+import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 class MealRecipeScreen extends StatelessWidget {
-  final int mealId;
+  final UuidValue mealId;
 
   const MealRecipeScreen({super.key, required this.mealId});
 
@@ -28,16 +30,17 @@ class MealRecipeScreen extends StatelessWidget {
     var state = context.watch<LanguageCubit>().state;
     var language = Language.fromJson(state.languageCode);
     return BlocProvider(
-      key: ValueKey('bloc_${mealId}_${language.code}'),
+      key: ValueKey('bloc_${mealId.uuid}_${language.code}'),
       create: (_) {
         final bloc = MealRecipeBloc(
-          Provider.of<MealRecipeRepository>(context, listen: false),
+          Provider.of<DietPredictionRepository>(context, listen: false),
+          Provider.of<MealsRepository>(context, listen: false),
         );
         bloc.add(MealRecipeInit(mealId, language));
         return bloc;
       },
       child: Scaffold(
-        body: _MealRecipe(key: ValueKey('body_${mealId}_${language.code}')),
+        body: _MealRecipe(key: ValueKey('body_${mealId.uuid}_${language.code}')),
         bottomNavigationBar: BottomNavBar(
           currentRoute: GoRouterState.of(context).uri.path,
           mode: NavBarMode.normal,

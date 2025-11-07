@@ -71,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('2200'), findsOneWidget); // target calories
     expect(find.textContaining('1600'), findsOneWidget); // BMR
     expect(find.textContaining('2100'), findsOneWidget); // TDEE
@@ -117,7 +117,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('Error message from backend'), findsOneWidget);
 
     expect(find.byIcon(Icons.warning_amber), findsOneWidget);
@@ -156,7 +156,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.textContaining('Calories prediction'), findsOneWidget); // title
+    expect(find.textContaining('Calories prediction'), findsOneWidget);
     expect(find.textContaining('Error message from backend'), findsOneWidget);
 
     expect(find.byIcon(Icons.warning_amber), findsOneWidget);

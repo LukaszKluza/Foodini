@@ -57,9 +57,7 @@ class _AccountScreenState extends State<_AccountBody> {
         title: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Image.asset(
-              Constants.mainFoodiniIcon, width: 124,
-            ),
+            child: Image.asset(Constants.mainFoodiniIcon, width: 124),
           ),
         ),
       ),

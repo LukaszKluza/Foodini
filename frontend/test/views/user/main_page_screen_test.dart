@@ -7,11 +7,13 @@ import 'package:frontend/views/screens/main_page_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../wrapper/test_wrapper_builder.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late UuidValue uuidUserId;
 
   Widget buildTestWidget(
     Widget child, {
@@ -27,10 +29,11 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
     UserStorage().setUser(
       UserResponse(
-        id: 1,
+        id: uuidUserId,
         name: 'Jan',
         language: Language.en,
         email: 'jan4@example.com',
@@ -74,30 +77,29 @@ void main() {
     expect(find.byKey(Key('my_account')), findsOneWidget);
   });
 
-  testWidgets('Tap on Diet preferences navigates to account screen', (
-    tester,
-  ) async {
-    // Given, When
+  testWidgets('Tap on Diet preferences navigates to account screen', (tester) async {
     await tester.pumpWidget(
       buildTestWidget(
         MainPageScreen(),
         additionalRoutes: [
           GoRoute(
             path: '/profile-details',
-            builder:
-                (context, state) => const Scaffold(key: Key('profile_details')),
+            builder: (context, state) => const Scaffold(key: Key('profile_details')),
           ),
         ],
       ),
     );
 
-    // Then
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Diet preferences'));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(Key('profile_details')), findsOneWidget);
+    final dietPreferencesFinder = find.text('Diet preferences');
+    await tester.ensureVisible(dietPreferencesFinder);
+    await tester.tap(dietPreferencesFinder);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profile_details')), findsOneWidget);
   });
+
 
   testWidgets('Tap on Change calories prediction, navigates to prediction result screen', (tester) async {
     // Given, When

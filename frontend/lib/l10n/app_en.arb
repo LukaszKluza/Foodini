@@ -9,7 +9,9 @@
   "home": "Home",
   "welcome": "Welcome",
   "requiredName": "Name is required",
+  "requiredLastname": "Lastname is required",
   "provideCorrectName": "Provide correct name",
+  "provideCorrectLastname": "Provide correct lastname",
   "requiredCountry": "Select your country",
   "requiredEmail": "E-mail is required",
   "requiredPassword": "Password is required",
@@ -169,5 +171,46 @@
   "mealDescriptions": "Meal description",
   "groceries": "Groceries",
   "recipe": "Recipe",
-  "optional": "Optional"
+  "optional": "Optional",
+
+  "breakfast": "Breakfast",
+  "morningSnack": "Morning snack",
+  "lunch": "Lunch",
+  "afternoonSnack": "Afternoon snack",
+  "dinner": "Dinner",
+  "eveningSnack": "Evening snack",
+
+  "toEat": "To eat",
+  "pending": "Pending",
+  "eaten": "Eaten",
+  "skipped": "Skipped",
+
+  "f_fat": "F",
+  "p_protein": "P",
+  "c_carbs": "C",
+  "g_grams": "g",
+  "cal_calories": "Cal",
+  "of_calories": "of",
+
+  "cannotEditPastMeals": "Cannot edit past meals",
+  "noMealsForToday": "There aren't any meals planned for today",
+  "markedAs": "marked as",
+
+  "dailySummary": "Daily Summary",
+  "dailyMeals": "Daily Menu",
+  "dailyMealsFor": "Daily Meals for ",
+
+  "macrosSummary": "Macros summary",
+  "calories": "Calories",
+  "submit": "Submit",
+  "edit": "Edit",
+  "skipMeal": "Skip Meal",
+  "addNewMeal": "Add new meal",
+  "save": "Save",
+  "scanProductBarCode": "Scan product bar code",
+  "mealName": "Meal name",
+
+  "mealItemNameShouldBeBetween": "Meal item name should be between",
+  "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
 }

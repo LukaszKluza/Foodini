@@ -9,7 +9,9 @@
   "home": "Strona główna",
   "welcome": "Witamy",
   "requiredName": "Imię jest wymagane",
+  "requiredLastname": "Nazwisko jest wymagane",
   "provideCorrectName": "Podaj poprawne imię",
+  "provideCorrectLastname": "Podaj poprawne nazwisko",
   "requiredCountry": "Wybierz kraj",
   "requiredEmail": "E-mail jest wymagany",
   "requiredPassword": "Hasło jest wymagane",
@@ -169,5 +171,46 @@
   "mealDescriptions": "Opis posiłku",
   "groceries": "Produkty spożywcze",
   "recipe": "Przepis",
-  "optional": "Opcjonalnie"
+  "optional": "Opcjonalnie",
+
+  "breakfast": "Śniadanie",
+  "morningSnack": "Przekąska poranna",
+  "lunch": "Obiad",
+  "afternoonSnack": "Przekąska popołudniowa",
+  "dinner": "Kolacja",
+  "eveningSnack": "Przekąska wieczorna",
+
+  "toEat": "Do zjedzenia",
+  "pending": "Oczekujący",
+  "eaten": "Zjedzony",
+  "skipped": "Pominięty",
+
+  "f_fat": "T",
+  "p_protein": "B",
+  "c_carbs": "W",
+  "g_grams": "g",
+  "cal_calories": "Kal",
+  "of_calories": "z",
+
+  "cannotEditPastMeals": "Nie można edytować posiłków z przeszłości",
+  "noMealsForToday": "Nie masz zaplanowanych żadnych posiłków na dziś",
+  "markedAs": "oznaczone jako",
+
+  "dailySummary": "Dzienne podsumowanie",
+  "dailyMeals": "Dzienne menu",
+  "dailyMealsFor": "Posiłki na dzień ",
+
+  "macrosSummary": "Podsumowanie makroskładników",
+  "calories": "Kalorie",
+  "submit": "Zatwierdź",
+  "edit": "Edytuj",
+  "skipMeal": "Pomiń posiłek",
+  "addNewMeal": "Dodaj nowy posiłek",
+  "save": "Zapisz",
+  "scanProductBarCode": "Zeskanuj kod kreskowy produktu",
+  "mealName": "Nazwa posiłku",
+
+  "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
+  "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
+  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale"
 }

@@ -14,9 +14,12 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
+
+late UuidValue uuidUserId;
 
 late MockDio mockDio;
 late RegisterBloc registerBloc;
@@ -53,6 +56,8 @@ void main() {
     authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
     mockTokenStorageService = MockTokenStorageService();
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+
     when(mockDio.interceptors).thenReturn(Interceptors());
     when(mockLanguageCubit.state).thenReturn(Locale(Language.pl.code));
   });
@@ -77,7 +82,7 @@ void main() {
     when(mockApiClient.register(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'jan4@example.com',
           'name': 'Jan',
           'language': 'pl',
@@ -138,7 +143,8 @@ void main() {
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Name is required'), findsNWidgets(2));
+    expect(find.text('Name is required'), findsOneWidget);
+    expect(find.text('Lastname is required'), findsOneWidget);
     expect(find.text('E-mail is required'), findsOneWidget);
     expect(find.text('Password is required'), findsOneWidget);
     expect(find.text('Select your country'), findsOneWidget);

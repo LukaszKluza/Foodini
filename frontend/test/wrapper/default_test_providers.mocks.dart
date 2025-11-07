@@ -5,19 +5,20 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i8;
 
-import 'package:frontend/models/user/change_language_request.dart' as _i13;
-import 'package:frontend/models/user/change_password_request.dart' as _i12;
+import 'package:frontend/models/user/change_language_request.dart' as _i14;
+import 'package:frontend/models/user/change_password_request.dart' as _i13;
 import 'package:frontend/models/user/default_response.dart' as _i5;
 import 'package:frontend/models/user/logged_user.dart' as _i4;
-import 'package:frontend/models/user/login_request.dart' as _i9;
-import 'package:frontend/models/user/provide_email_request.dart' as _i11;
+import 'package:frontend/models/user/login_request.dart' as _i10;
+import 'package:frontend/models/user/provide_email_request.dart' as _i12;
 import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i6;
-import 'package:frontend/models/user/register_request.dart' as _i10;
+import 'package:frontend/models/user/register_request.dart' as _i11;
 import 'package:frontend/models/user/user_response.dart' as _i3;
 import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
-import 'package:frontend/services/token_storage_service.dart' as _i14;
+import 'package:frontend/services/token_storage_service.dart' as _i15;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:uuid/uuid_value.dart' as _i9;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -77,7 +78,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i2.ApiClient);
 
   @override
-  _i8.Future<_i3.UserResponse> getUser(int? userId) =>
+  _i8.Future<_i3.UserResponse> getUser(_i9.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [userId]),
             returnValue: _i8.Future<_i3.UserResponse>.value(
@@ -87,7 +88,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<_i3.UserResponse>);
 
   @override
-  _i8.Future<_i4.LoggedUser> login(_i9.LoginRequest? request) =>
+  _i8.Future<_i4.LoggedUser> login(_i10.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
             returnValue: _i8.Future<_i4.LoggedUser>.value(
@@ -97,7 +98,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<_i4.LoggedUser>);
 
   @override
-  _i8.Future<void> logout(int? userId) =>
+  _i8.Future<void> logout(_i9.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#logout, [userId]),
             returnValue: _i8.Future<void>.value(),
@@ -115,7 +116,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<void>);
 
   @override
-  _i8.Future<void> delete(int? userId) =>
+  _i8.Future<void> delete(_i9.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
             returnValue: _i8.Future<void>.value(),
@@ -124,7 +125,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<void>);
 
   @override
-  _i8.Future<_i5.DefaultResponse?> register(_i10.RegisterRequest? request) =>
+  _i8.Future<_i5.DefaultResponse?> register(_i11.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
             returnValue: _i8.Future<_i5.DefaultResponse?>.value(),
@@ -133,7 +134,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i8.Future<_i5.DefaultResponse> provideEmail(
-    _i11.ProvideEmailRequest? request,
+    _i12.ProvideEmailRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#provideEmail, [request]),
@@ -148,7 +149,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i8.Future<_i5.DefaultResponse> changePassword(
-    _i12.ChangePasswordRequest? request,
+    _i13.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
@@ -163,8 +164,8 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 
   @override
   _i8.Future<_i5.DefaultResponse> changeLanguage(
-    _i13.ChangeLanguageRequest? request,
-    int? userId,
+    _i14.ChangeLanguageRequest? request,
+    _i9.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changeLanguage, [request, userId]),
@@ -178,7 +179,9 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i8.Future<_i5.DefaultResponse>);
 
   @override
-  _i8.Future<_i6.RefreshedTokensResponse> refreshTokens(int? userId) =>
+  _i8.Future<_i6.RefreshedTokensResponse> refreshTokens(
+    _i9.UuidValue? userId,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#refreshTokens, [userId]),
             returnValue: _i8.Future<_i6.RefreshedTokensResponse>.value(
@@ -195,7 +198,7 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageService extends _i1.Mock
-    implements _i14.TokenStorageService {
+    implements _i15.TokenStorageService {
   MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }

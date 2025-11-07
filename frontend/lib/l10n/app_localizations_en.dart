@@ -36,7 +36,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredName => 'Name is required';
 
   @override
+  String get requiredLastname => 'Lastname is required';
+
+  @override
   String get provideCorrectName => 'Provide correct name';
+
+  @override
+  String get provideCorrectLastname => 'Provide correct lastname';
 
   @override
   String get requiredCountry => 'Select your country';
@@ -475,4 +481,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get optional => 'Optional';
+
+  @override
+  String get breakfast => 'Breakfast';
+
+  @override
+  String get morningSnack => 'Morning snack';
+
+  @override
+  String get lunch => 'Lunch';
+
+  @override
+  String get afternoonSnack => 'Afternoon snack';
+
+  @override
+  String get dinner => 'Dinner';
+
+  @override
+  String get eveningSnack => 'Evening snack';
+
+  @override
+  String get toEat => 'To eat';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get eaten => 'Eaten';
+
+  @override
+  String get skipped => 'Skipped';
+
+  @override
+  String get f_fat => 'F';
+
+  @override
+  String get p_protein => 'P';
+
+  @override
+  String get c_carbs => 'C';
+
+  @override
+  String get g_grams => 'g';
+
+  @override
+  String get cal_calories => 'Cal';
+
+  @override
+  String get of_calories => 'of';
+
+  @override
+  String get cannotEditPastMeals => 'Cannot edit past meals';
+
+  @override
+  String get noMealsForToday => 'There aren\'t any meals planned for today';
+
+  @override
+  String get markedAs => 'marked as';
+
+  @override
+  String get dailySummary => 'Daily Summary';
+
+  @override
+  String get dailyMeals => 'Daily Menu';
+
+  @override
+  String get dailyMealsFor => 'Daily Meals for ';
+
+  @override
+  String get macrosSummary => 'Macros summary';
+
+  @override
+  String get calories => 'Calories';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get skipMeal => 'Skip Meal';
+
+  @override
+  String get addNewMeal => 'Add new meal';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get scanProductBarCode => 'Scan product bar code';
+
+  @override
+  String get mealName => 'Meal name';
+
+  @override
+  String get mealItemNameShouldBeBetween => 'Meal item name should be between';
+
+  @override
+  String get valueOfThisMacroShouldBeBetween => 'Value of this macro should be between';
+
+  @override
+  String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
 }
