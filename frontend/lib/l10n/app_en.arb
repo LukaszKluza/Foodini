@@ -198,5 +198,19 @@
 
   "dailySummary": "Daily Summary",
   "dailyMeals": "Daily Menu",
-  "dailyMealsFor": "Daily Meals for "
+  "dailyMealsFor": "Daily Meals for ",
+
+  "macrosSummary": "Macros summary",
+  "calories": "Calories",
+  "submit": "Submit",
+  "edit": "Edit",
+  "skipMeal": "Skip Meal",
+  "addNewMeal": "Add new meal",
+  "save": "Save",
+  "scanProductBarCode": "Scan product bar code",
+  "mealName": "Meal name",
+
+  "mealItemNameShouldBeBetween": "Meal item name should be between",
+  "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
 }

@@ -1,4 +1,4 @@
-import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -11,14 +11,10 @@ class GetDailySummary extends DailySummaryEvent {
 }
 
 class UpdateMeal extends DailySummaryEvent {
-  final DateTime day;
-  final UuidValue mealId;
-  final MealInfo updatedMeal;
+  final CustomMealUpdateRequest customMealUpdateRequest;
 
   UpdateMeal({
-    required this.day,
-    required this.mealId,
-    required this.updatedMeal,
+    required this.customMealUpdateRequest,
   });
 }
 

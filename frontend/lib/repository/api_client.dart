@@ -88,7 +88,7 @@ class ApiClient {
       Endpoints.changeLanguage,
       data: request.toJson(),
       queryParameters: {'user_id': userId.uuid},
-      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+      options: Options(extra: {'requiresAuth': true}),
     );
   }
 
@@ -121,7 +121,7 @@ class ApiClient {
     return _client.delete(
       Endpoints.users,
       queryParameters: {'user_id': userId.uuid},
-      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+      options: Options(extra: {'requiresAuth': true}),
     );
   }
 
@@ -143,7 +143,7 @@ class ApiClient {
     return _client.get(
       Endpoints.dietPreferences,
       queryParameters: {'user_id': userId.uuid},
-      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+      options: Options(extra: {'requiresAuth': true}),
     );
   }
 
@@ -161,7 +161,7 @@ class ApiClient {
       Endpoints.userCaloriesPrediction,
       data: request.toJson(),
       queryParameters: {'user_id': userId.uuid},
-      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+      options: Options(extra: {'requiresAuth': true}),
     );
   }
 
@@ -225,7 +225,7 @@ class ApiClient {
     return _client.patch(
       Endpoints.dailySummaryMeals,
       data: mealInfoUpdateRequest.toJson(),
-      queryParameters: {'user_id': userId.uuid, 'cache': false},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
@@ -263,7 +263,7 @@ class ApiClient {
     return _client.patch(
       Endpoints.customMeal,
       data: customMealUpdateRequest.toJson(),
-      queryParameters: {'user_id': userId.uuid, 'cache': false},
+      queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
   }
