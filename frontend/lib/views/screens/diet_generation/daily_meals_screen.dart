@@ -6,6 +6,7 @@ import 'package:frontend/config/app_config.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
@@ -111,7 +112,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                           _buildMealSection(
                             title:
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
-                            color: _getMealColor(entry.key.name),
+                            color: _getMealColor(entry.key),
                             imageUrl: entry.value.iconPath!,
                             mealName: entry.value.name ?? '',
                             description: entry.value.description ?? '',
@@ -162,23 +163,21 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     );
   }
 
-  Color _getMealColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'breakfast':
+  Color _getMealColor(MealType type) {
+    switch (type) {
+      case MealType.breakfast:
         return const Color(0xFFFFF0B3);
-      case 'morning snack':
+      case MealType.morningSnack:
         return const Color(0xFFDFB2C4);
-      case 'lunch':
+      case MealType.lunch:
         return const Color(0xFFC9EAB8);
-      case 'afternoon snack':
+      case MealType.afternoonSnack:
         return const Color(0xFFCCBAAA);
-      case 'dinner':
+      case MealType.dinner:
         return const Color(0xFFB6D8E7);
-      case 'evening snack':
+      case MealType.eveningSnack:
         return const Color(0xFFCBE3A8);
-      default:
-        return const Color(0xFFE0E0E0);
-    }
+      }
   }
 
   Widget _buildMealSection({
@@ -228,7 +227,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: CachedNetworkImage(
-                        imageUrl: '${Endpoints.mealIcon}/$imageUrl',
+                        imageUrl: '${Endpoints.mealIcon}$imageUrl',
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,
