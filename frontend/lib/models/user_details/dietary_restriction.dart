@@ -7,10 +7,7 @@ enum DietaryRestriction {
   wheat(5, 'wheat'),
   celery(6, 'celery'),
   sulphites(7, 'sulphites'),
-  lupin(8, 'lupin'),
-  vegetarian(9, 'vegetarian'),
-  vegan(10, 'vegan'),
-  keto(11, 'keto');
+  lupin(8, 'lupin');
 
   final int value;
   final String nameStr;
@@ -22,7 +19,7 @@ enum DietaryRestriction {
   static DietaryRestriction fromJson(String value) {
     return DietaryRestriction.values.firstWhere(
       (e) => e.nameStr == value,
-      orElse: () => throw ArgumentError('Unknown allergy: $value'),
+      orElse: () => throw ArgumentError('Unknown dietary restriction: $value'),
     );
   }
 
@@ -31,7 +28,7 @@ enum DietaryRestriction {
   static DietaryRestriction fromInt(int value) {
     return DietaryRestriction.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ArgumentError('Invalid allergy value: $value'),
+      orElse: () => throw ArgumentError('Invalid dietary restriction value: $value'),
     );
   }
 }

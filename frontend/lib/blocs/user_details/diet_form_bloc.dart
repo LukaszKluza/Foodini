@@ -47,6 +47,13 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       }
     });
 
+    on<UpdateDietStyle>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(dietStyle: event.dietStyle));
+      }
+    });
+
     on<UpdateDietaryRestrictions>((event, emit) {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
@@ -192,6 +199,7 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         weight: currentState.weight!,
         dateOfBirth: currentState.dateOfBirth!,
         dietType: currentState.dietType!,
+        dietStyle: currentState.dietStyle,
         dietaryRestrictions: currentState.dietaryRestrictions!,
         dietGoal: currentState.dietGoal!,
         mealsPerDay: currentState.mealsPerDay!,

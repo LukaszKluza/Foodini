@@ -58,6 +58,7 @@
   "dietPreferences": "Diet preferences",
   "dietType": "Diet type",
   "requiredDietType": "Diet type is required",
+  "dietStyle": "Diet style",
   "dietaryRestrictions": "Dietary restrictions",
   "dietGoal": "Diet goal",
   "enterYourDietGoal": "Enter your diet goal",
@@ -106,9 +107,10 @@
   "dietaryRestriction_Celery": "Celery",
   "dietaryRestriction_Sulphites": "Sulphites",
   "dietaryRestriction_Lupin": "Lupin",
-  "dietaryRestriction_Vegetarian": "Vegetarian",
-  "dietaryRestriction_Vegan": "Vegan",
-  "dietaryRestriction_Keto": "Keto",
+
+  "dietStyle_Vegetarian": "Vegetarian",
+  "dietStyle_Vegan": "Vegan",
+  "dietStyle_Keto": "Keto",
 
   "dietIntensity_Slow": "Slow",
   "dietIntensity_Medium": "Medium",
@@ -212,5 +214,8 @@
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
-  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
+
+  "chooseOption": "Choose option",
+  "statistics": "Statistics"
 }

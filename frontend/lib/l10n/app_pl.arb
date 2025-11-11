@@ -57,7 +57,8 @@
   "wrongChangePasswordUrl": "Nie możesz otworzyć formularza zmiany hasła",
   "dietPreferences": "Preferencje dietetyczne",
   "dietType": "Typ diety",
-  "requiredDietType": "Wymagany typ diety",
+  "requiredDietType": "Typ diety jest wymagany",
+  "dietStyle": "Styl diety",
   "dietaryRestrictions": "Restrykcje żywieniowe",
   "dietGoal": "Cel diety",
   "enterYourDietGoal": "Wprowadź swój cel diety",
@@ -106,9 +107,10 @@
   "dietaryRestriction_Celery": "Seler",
   "dietaryRestriction_Sulphites": "Siarczyny",
   "dietaryRestriction_Lupin": "Łubin",
-  "dietaryRestriction_Vegetarian": "Wegetariańska",
-  "dietaryRestriction_Vegan": "Wegańska",
-  "dietaryRestriction_Keto": "Keto",
+
+  "dietStyle_Vegetarian": "Wegetariańska",
+  "dietStyle_Vegan": "Wegańska",
+  "dietStyle_Keto": "Keto",
 
   "dietIntensity_Slow": "Powolna",
   "dietIntensity_Medium": "Średnia",
@@ -212,5 +214,8 @@
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
-  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale"
+  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+
+  "chooseOption": "Wybierz opcję",
+  "statistics": "Statystyki"
 }

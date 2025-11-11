@@ -9,6 +9,7 @@ import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/states/diet_form_states.dart';
@@ -72,8 +73,9 @@ class _DietPreferencesForm extends StatefulWidget {
 class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final _formKey = GlobalKey<FormState>();
 
-  DietType? _selectedDietType;
   List<DietaryRestriction> _selectedDietaryRestrictions = [];
+  DietType? _selectedDietType;
+  DietStyle? _selectedDietStyle;
   double _selectedDietGoal = Constants.defaultWeight;
   DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = Constants.defaultMealsPerDay;
@@ -88,6 +90,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final blocState = context.read<DietFormBloc>().state;
     if (blocState is DietFormSubmit) {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
+      _selectedDietStyle = blocState.dietStyle ?? _selectedDietStyle;
       _selectedDietGoal = blocState.dietGoal ?? _selectedDietGoal;
       _selectedDietaryRestrictions = blocState.dietaryRestrictions ?? _selectedDietaryRestrictions;
       _selectedDietIntensity =
@@ -157,6 +160,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 
+  void _onDietStyleChanged(DietStyle? value) {
+    _updateStateAndBloc(
+      updateState: () => _selectedDietStyle = value,
+      blocEvent: UpdateDietStyle(value),
+    );
+  }
+
   void _onDietaryRestrictionsChanged(List<DietaryRestriction> values) {
     _updateStateAndBloc(
       updateState: () => _selectedDietaryRestrictions = values,
@@ -190,26 +200,6 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final fields = [
-      DropdownButtonFormField<DietType>(
-        key: const Key('diet_type'),
-        isExpanded: true,
-        value: _selectedDietType,
-        decoration: InputDecoration(
-          labelText: AppLocalizations.of(context)!.dietType,
-        ),
-        items:
-            DietType.values.map((diet) {
-              return DropdownMenuItem<DietType>(
-                value: diet,
-                child: Text(
-                  AppConfig.dietTypeLabels(context)[diet]!,
-                  style: const TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
-        onChanged: _onDietTypeChanged,
-        validator: (value) => validateDietType(value, context),
-      ),
       MultiSelectDialogField<DietaryRestriction>(
         initialValue: _selectedDietaryRestrictions,
         items:
@@ -229,6 +219,46 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         ),
         buttonText: Text(AppLocalizations.of(context)!.dietaryRestrictions),
         onConfirm: _onDietaryRestrictionsChanged,
+      ),
+      DropdownButtonFormField<DietStyle>(
+        key: const Key('diet_style'),
+        isExpanded: true,
+        value: _selectedDietStyle,
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.dietStyle,
+        ),
+        items: [
+          for (final dietStyle in [null, ...DietStyle.values])
+            DropdownMenuItem<DietStyle>(
+              value: dietStyle,
+              child: Text(
+                dietStyle == null
+                    ? AppLocalizations.of(context)!.chooseOption
+                    : AppConfig.dietStyleLabels(context)[dietStyle]!,
+              ),
+            ),
+        ],
+        onChanged: _onDietStyleChanged,
+      ),
+      DropdownButtonFormField<DietType>(
+        key: const Key('diet_type'),
+        isExpanded: true,
+        value: _selectedDietType,
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.dietType,
+        ),
+        items:
+        DietType.values.map((diet) {
+          return DropdownMenuItem<DietType>(
+            value: diet,
+            child: Text(
+              AppConfig.dietTypeLabels(context)[diet]!,
+              style: const TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
+        onChanged: _onDietTypeChanged,
+        validator: (value) => validateDietType(value, context),
       ),
       if (_selectedDietType != DietType.weightMaintenance)
         WeightSlider(

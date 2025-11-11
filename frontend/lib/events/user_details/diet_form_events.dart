@@ -1,5 +1,6 @@
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
@@ -37,6 +38,12 @@ class UpdateDietType extends DietFormEvent {
   final DietType dietType;
 
   UpdateDietType(this.dietType);
+}
+
+class UpdateDietStyle extends DietFormEvent {
+  final DietStyle? dietStyle;
+
+  UpdateDietStyle(this.dietStyle);
 }
 
 class UpdateDietaryRestrictions extends DietFormEvent {

@@ -183,6 +183,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredDietType => 'Diet type is required';
 
   @override
+  String get dietStyle => 'Diet style';
+
+  @override
   String get dietaryRestrictions => 'Dietary restrictions';
 
   @override
@@ -321,13 +324,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietaryRestriction_Lupin => 'Lupin';
 
   @override
-  String get dietaryRestriction_Vegetarian => 'Vegetarian';
+  String get dietStyle_Vegetarian => 'Vegetarian';
 
   @override
-  String get dietaryRestriction_Vegan => 'Vegan';
+  String get dietStyle_Vegan => 'Vegan';
 
   @override
-  String get dietaryRestriction_Keto => 'Keto';
+  String get dietStyle_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Slow';
@@ -583,4 +586,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
+
+  @override
+  String get chooseOption => 'Choose option';
+
+  @override
+  String get statistics => 'Statistics';
 }

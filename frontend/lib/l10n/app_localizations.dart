@@ -443,6 +443,12 @@ abstract class AppLocalizations {
   /// **'Diet type is required'**
   String get requiredDietType;
 
+  /// No description provided for @dietStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet style'**
+  String get dietStyle;
+
   /// No description provided for @dietaryRestrictions.
   ///
   /// In en, this message translates to:
@@ -719,23 +725,23 @@ abstract class AppLocalizations {
   /// **'Lupin'**
   String get dietaryRestriction_Lupin;
 
-  /// No description provided for @dietaryRestriction_Vegetarian.
+  /// No description provided for @dietStyle_Vegetarian.
   ///
   /// In en, this message translates to:
   /// **'Vegetarian'**
-  String get dietaryRestriction_Vegetarian;
+  String get dietStyle_Vegetarian;
 
-  /// No description provided for @dietaryRestriction_Vegan.
+  /// No description provided for @dietStyle_Vegan.
   ///
   /// In en, this message translates to:
   /// **'Vegan'**
-  String get dietaryRestriction_Vegan;
+  String get dietStyle_Vegan;
 
-  /// No description provided for @dietaryRestriction_Keto.
+  /// No description provided for @dietStyle_Keto.
   ///
   /// In en, this message translates to:
   /// **'Keto'**
-  String get dietaryRestriction_Keto;
+  String get dietStyle_Keto;
 
   /// No description provided for @dietIntensity_Slow.
   ///
@@ -1246,6 +1252,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
   String get valueOfCaloriesMacroShouldBeBetween;
+
+  /// No description provided for @chooseOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose option'**
+  String get chooseOption;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

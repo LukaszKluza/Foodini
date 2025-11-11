@@ -1,5 +1,6 @@
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
@@ -12,6 +13,7 @@ class DietForm {
   final double weight;
   final DateTime dateOfBirth;
   final DietType dietType;
+  final DietStyle? dietStyle;
   final List<DietaryRestriction> dietaryRestrictions;
   final double dietGoal;
   final int mealsPerDay;
@@ -29,6 +31,7 @@ class DietForm {
     required this.weight,
     required this.dateOfBirth,
     required this.dietType,
+    this.dietStyle,
     required this.dietaryRestrictions,
     required this.dietGoal,
     required this.mealsPerDay,
@@ -47,6 +50,7 @@ class DietForm {
     'weight_kg': weight,
     'date_of_birth': dateOfBirth.toIso8601String(),
     'diet_type': dietType.toJson(),
+    'diet_style': dietStyle?.toJson(),
     'dietary_restrictions': dietaryRestrictions.map((a) => a.toJson()).toList(),
     'diet_goal_kg': dietGoal,
     'meals_per_day': mealsPerDay,
@@ -66,6 +70,9 @@ class DietForm {
       weight: (json['weight_kg'] as num).toDouble(),
       dateOfBirth: DateTime.parse(json['date_of_birth']),
       dietType: DietType.fromJson(json['diet_type']),
+      dietStyle: json['diet_style'] != null
+          ? DietStyle.fromJson(json['diet_style'])
+          : null,
       dietaryRestrictions:
           (json['dietary_restrictions'] as List<dynamic>)
               .map((e) => DietaryRestriction.fromJson(e))

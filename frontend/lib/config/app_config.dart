@@ -4,6 +4,7 @@ import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
@@ -18,6 +19,12 @@ class AppConfig {
         AppLocalizations.of(context)!.dietType_WeightMaintenance,
   };
 
+  static Map<DietStyle, String> dietStyleLabels(BuildContext context) => {
+    DietStyle.vegetarian: AppLocalizations.of(context)!.dietStyle_Vegetarian,
+    DietStyle.vegan: AppLocalizations.of(context)!.dietStyle_Vegan,
+    DietStyle.keto: AppLocalizations.of(context)!.dietStyle_Keto,
+  };
+
   static Map<DietaryRestriction, String> dietaryRestrictionLabels(BuildContext context) => {
     DietaryRestriction.gluten: AppLocalizations.of(context)!.dietaryRestriction_Gluten,
     DietaryRestriction.peanuts: AppLocalizations.of(context)!.dietaryRestriction_Peanuts,
@@ -27,10 +34,7 @@ class AppConfig {
     DietaryRestriction.wheat: AppLocalizations.of(context)!.dietaryRestriction_Wheat,
     DietaryRestriction.celery: AppLocalizations.of(context)!.dietaryRestriction_Celery,
     DietaryRestriction.sulphites: AppLocalizations.of(context)!.dietaryRestriction_Sulphites,
-    DietaryRestriction.lupin: AppLocalizations.of(context)!.dietaryRestriction_Lupin,
-    DietaryRestriction.vegetarian: AppLocalizations.of(context)!.dietaryRestriction_Vegetarian,
-    DietaryRestriction.vegan: AppLocalizations.of(context)!.dietaryRestriction_Vegan,
-    DietaryRestriction.keto: AppLocalizations.of(context)!.dietaryRestriction_Keto,
+    DietaryRestriction.lupin: AppLocalizations.of(context)!.dietaryRestriction_Lupin
   };
 
   static Map<DietIntensity, String> dietIntensityLabels(
