@@ -11,6 +11,7 @@ import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
+import 'package:frontend/views/widgets/missing_predictions_alert.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
@@ -148,22 +149,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                     ),
                   ),
                   if (_errorCode == 404) ...[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of(
-                            context,
-                          )!.fillFormToSeePredictions,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 30.sp.clamp(20.0, 40.0),
-                            color: Colors.orangeAccent,
-                          ),
-                        ),
-                      ),
-                    ),
-                    redirectToProfileDetailsButton(context),
+                    const MissingPredictionsAlert()
                   ] else
                     retryRequestButton(context),
                 ],

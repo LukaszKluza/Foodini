@@ -77,6 +77,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             if (state is DailySummaryLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is DailySummaryError) {
+              // TODO: use MissingPredictionsAlert when proper error handling is added to bloc
               return Stack(
                 children: [
                   Center(
@@ -112,7 +113,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= mealTypes.first;
+              selectedMealType ??= meals.entries.firstWhere((entry) =>
+              entry.value.status == MealStatus.pending, orElse: () =>
+                  MapEntry(mealTypes.first, meals[mealTypes.first]!),).key;
+
               final activeMeal = selectedMealType!;
               final activeMealInfo = meals[activeMeal]!;
               final dailyGoal = summary.targetCalories;
@@ -369,12 +373,17 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    AppConfig.mealTypeLabels(context)[activeMealType]!,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.grey[600],
+                  Expanded(
+                    child: AutoSizeText(
+                      AppConfig.mealTypeLabels(context)[activeMealType]!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.grey[600],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      minFontSize: 12,
                     ),
                   ),
                   Builder(
