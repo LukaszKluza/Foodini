@@ -94,6 +94,7 @@ class PlannerTool:
         - Carbohydrates: {targets.carbs}g
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
+        - Diet style: {getattr(targets, 'diet_style', None) or 'none'}
         ---
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.
@@ -118,6 +119,10 @@ class PlannerTool:
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
         - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
+        - Strictly follow the diet style if provided. If diet_style is:
+          - vegan: absolutely no animal products (no meat, fish, dairy, eggs, honey, gelatin).
+          - vegetarian: no meat or fish; dairy and eggs are allowed unless restricted elsewhere.
+          - keto: keep carbohydrates very low; prioritize high fat and moderate protein ingredients.
         - Avoid using any of the user’s previous meals, new meals must be completely different: {
             targets.previous_meals or "None"
         }.
@@ -128,6 +133,7 @@ class PlannerTool:
         Double-check **before finalizing**:
         - The sum of all calories == {targets.calories}
         - The sum of all macros == {targets.protein}/{targets.carbs}/{targets.fat} grams (±1g allowed)
+        - Diet style rules are not violated (e.g., vegan contains no animal-derived ingredients)
         - Meal names are realistic and type-consistent
         - JSON is strictly valid and matches schema.
         ---

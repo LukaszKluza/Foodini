@@ -18,6 +18,7 @@ from backend.user_details.mixins import DietGoalValidationMixin
 
 from ..core.db_listeners import register_timestamp_listeners
 from .types import FloatAsNumeric
+from ..user_details.enums.diet_style import DietStyle
 
 if TYPE_CHECKING:
     from .user_model import User
@@ -60,6 +61,7 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     weight_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
+    diet_style: Optional[DietStyle] = Field(default=None)
     dietary_restrictions: List[DietaryRestriction] = Field(
         sa_column=Column(ARRAY(Enum(DietaryRestriction))), default=[]
     )
