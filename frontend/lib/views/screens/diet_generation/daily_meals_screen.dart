@@ -231,6 +231,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,
+                        memCacheWidth: 100,
+                        memCacheHeight: 100,
                         placeholder:
                             (context, url) => const SizedBox(
                               width: 100,

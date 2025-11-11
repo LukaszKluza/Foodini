@@ -1,3 +1,4 @@
+import asyncio
 from datetime import date, timedelta
 from typing import Dict, List
 from uuid import UUID
@@ -62,7 +63,7 @@ class DailyMealsGeneratorService:
             app = agent.build_graph()
 
             initial_state = create_agent_state(input_data)
-            generated_diet = app.invoke(initial_state)
+            generated_diet = await asyncio.to_thread(lambda: app.invoke(initial_state))
 
             saved_meals, saved_recipes, meals_type_map = await self._save_meals(
                 generated_diet.get("current_plan"), meal_icons
@@ -116,8 +117,8 @@ class DailyMealsGeneratorService:
     async def _translate_and_save_recipes(self, meals: List[Meal], meal_recipes: List[MealRecipe]):
         for meal, meal_recipe in zip(meals, meal_recipes):
             try:
-                translated_recipe = self.translator.translate_meal_recipe_to_polish(
-                    recipe_to_meal_recipe_translation(meal_recipe)
+                translated_recipe = await asyncio.to_thread(
+                    lambda: self.translator.translate_meal_recipe_to_polish(recipe_to_meal_recipe_translation(meal_recipe))
                 )
                 await self.meal_gateway.add_meal_recipe(meal_recipe_translation_to_recipe(translated_recipe, meal.id))
             # Error suppression in case of failed translation
