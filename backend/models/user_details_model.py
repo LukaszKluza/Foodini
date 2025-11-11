@@ -17,8 +17,8 @@ from backend.user_details.enums import (
 from backend.user_details.mixins import DietGoalValidationMixin
 
 from ..core.db_listeners import register_timestamp_listeners
-from .types import FloatAsNumeric
 from ..user_details.enums.diet_style import DietStyle
+from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from .user_model import User

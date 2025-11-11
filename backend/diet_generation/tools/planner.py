@@ -94,7 +94,7 @@ class PlannerTool:
         - Carbohydrates: {targets.carbs}g
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
-        - Diet style: {getattr(targets, 'diet_style', None) or 'none'}
+        - Diet style: {getattr(targets, "diet_style", None) or "none"}
         ---
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.
