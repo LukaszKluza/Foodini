@@ -118,7 +118,9 @@ class DailyMealsGeneratorService:
         for meal, meal_recipe in zip(meals, meal_recipes):
             try:
                 translated_recipe = await asyncio.to_thread(
-                    lambda: self.translator.translate_meal_recipe_to_polish(recipe_to_meal_recipe_translation(meal_recipe))
+                    lambda _meal_recipe=meal_recipe: self.translator.translate_meal_recipe_to_polish(
+                        recipe_to_meal_recipe_translation(_meal_recipe)
+                    )
                 )
                 await self.meal_gateway.add_meal_recipe(meal_recipe_translation_to_recipe(translated_recipe, meal.id))
             # Error suppression in case of failed translation
