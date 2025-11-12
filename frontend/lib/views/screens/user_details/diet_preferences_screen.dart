@@ -8,6 +8,8 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -80,6 +82,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   DietIntensity? _selectedDietIntensity;
   int _selectedMealsPerDay = Constants.defaultMealsPerDay;
   double _selectedWeight = Constants.defaultWeight;
+  DailyBudget? _selectedDailyBudget = Constants.defaultDailyBudget;
+  CookingSkills? _selectedCookingSkills = Constants.defaultCookingSkills;
 
   String? _dietGoalError;
 
@@ -96,6 +100,8 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
+      _selectedDailyBudget = blocState.dailyBudget ?? _selectedDailyBudget;
+      _selectedCookingSkills = blocState.cookingSkills ?? _selectedCookingSkills;
       _selectedWeight = blocState.weight!;
 
       if (_selectedDietType == DietType.weightMaintenance ||
@@ -115,9 +121,11 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   void _softFormValidation() {
     final allRequiredFilled =
         _selectedDietType != null &&
-        _selectedDietIntensity != null &&
-        _selectedMealsPerDay >= Constants.minMealsPerDay &&
-          _selectedMealsPerDay <= Constants.maxMealsPerDay;
+            _selectedDietIntensity != null &&
+            _selectedMealsPerDay >= Constants.minMealsPerDay &&
+            _selectedMealsPerDay <= Constants.maxMealsPerDay &&
+            _selectedDailyBudget != null &&
+            _selectedCookingSkills != null;
 
     final error = validateDietGoal(
       _selectedDietGoal.toString(),
@@ -195,6 +203,20 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 
+  void _onDailyBudgetChanged(DailyBudget? value) {
+    _updateStateAndBloc(
+      updateState: () => _selectedDailyBudget = value,
+      blocEvent: UpdateDailyBudget(value!),
+    );
+  }
+
+  void _onCookingSkillsChanged(CookingSkills? value) {
+    _updateStateAndBloc(
+      updateState: () => _selectedCookingSkills = value,
+      blocEvent: UpdateCookingSkills(value!),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -268,10 +290,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           dialogTitle: AppLocalizations.of(context)!.enterYourDietGoal,
         ),
       if (_dietGoalError != null)
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text(_dietGoalError!, style: Styles.errorStyle),
-        ),
+          Text(_dietGoalError!, style: Styles.errorStyle),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -302,7 +321,51 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           ),
         ],
       ),
-      const SizedBox(height: 20),
+      Row(
+        children: [
+          Expanded(
+            child: DropdownButtonFormField<DailyBudget>(
+              isExpanded: true,
+              value: _selectedDailyBudget,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.dailyBudget,
+              ),
+              items: DailyBudget.values.map((dailyBudgetValue) {
+                return DropdownMenuItem<DailyBudget>(
+                  value: dailyBudgetValue,
+                  child: Text(
+                    AppConfig.dailyBudgetLabels(context)[dailyBudgetValue]!,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                );
+              }).toList(),
+              onChanged: _onDailyBudgetChanged,
+              validator: (value) => validateDailyBudget(value, context),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: DropdownButtonFormField<CookingSkills>(
+              isExpanded: true,
+              value: _selectedCookingSkills,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.cookingSkills,
+              ),
+              items: CookingSkills.values.map((cookingSkillsValue) {
+                return DropdownMenuItem<CookingSkills>(
+                  value: cookingSkillsValue,
+                  child: Text(
+                    AppConfig.cookingSkillsLabels(context)[cookingSkillsValue]!,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                );
+              }).toList(),
+              onChanged: _onCookingSkillsChanged,
+              validator: (value) => validateCookingSkill(value, context),
+            ),
+          ),
+        ],
+      ),
       DropdownButtonFormField<DietIntensity>(
         key: const Key('diet_intensity'),
         isExpanded: true,
@@ -326,13 +389,13 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     ];
 
     return Padding(
-      padding: const EdgeInsets.all(35.0),
+      padding: const EdgeInsets.fromLTRB(35.0, 15.0, 35.0, 35.0),
       child: Form(
         key: _formKey,
         child: ListView.separated(
           shrinkWrap: true,
           itemCount: fields.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 20),
+          separatorBuilder: (_, __) => const SizedBox(height: 15),
           itemBuilder: (_, index) => fields[index],
         ),
       ),

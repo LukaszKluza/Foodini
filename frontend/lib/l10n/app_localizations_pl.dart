@@ -222,6 +222,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get caloriesPrediction => 'Prognoza zapotrzebowania kalorycznego';
 
   @override
+  String get dailyBudget => 'Dzienny budżet';
+
+  @override
+  String get requiredDailyBudget => 'Dzienny budżet jest wymagany';
+
+  @override
+  String get cookingSkills => 'Umiejętności kulinarne';
+
+  @override
+  String get requiredCookingSkills => 'Umiejętności kulinarne są wymagane';
+
+  @override
   String get activityLevel => 'Poziom aktywności';
 
   @override
@@ -340,6 +352,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Szybka';
+
+  @override
+  String get dailyBudget_low => 'Niski';
+
+  @override
+  String get dailyBudget_medium => 'Średni';
+
+  @override
+  String get dailyBudget_high => 'Wysoki';
+
+  @override
+  String get cookingSkills_beginner => 'Początkujący';
+
+  @override
+  String get cookingSkills_advanced => 'Zaawansowany';
+
+  @override
+  String get cookingSkills_professional => 'Profesjonalista';
 
   @override
   String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';

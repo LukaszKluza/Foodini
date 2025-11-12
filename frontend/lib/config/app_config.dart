@@ -3,6 +3,8 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -43,6 +45,18 @@ class AppConfig {
     DietIntensity.slow: AppLocalizations.of(context)!.dietIntensity_Slow,
     DietIntensity.medium: AppLocalizations.of(context)!.dietIntensity_Medium,
     DietIntensity.fast: AppLocalizations.of(context)!.dietIntensity_Fast,
+  };
+
+  static Map<DailyBudget, String> dailyBudgetLabels(BuildContext context) => {
+    DailyBudget.low: AppLocalizations.of(context)!.dailyBudget_low,
+    DailyBudget.medium: AppLocalizations.of(context)!.dailyBudget_medium,
+    DailyBudget.high: AppLocalizations.of(context)!.dailyBudget_high,
+  };
+
+  static Map<CookingSkills, String> cookingSkillsLabels(BuildContext context) => {
+    CookingSkills.beginner: AppLocalizations.of(context)!.cookingSkills_beginner,
+    CookingSkills.advanced: AppLocalizations.of(context)!.cookingSkills_advanced,
+    CookingSkills.professional: AppLocalizations.of(context)!.cookingSkills_professional,
   };
 
   static Map<ActivityLevel, String> activityLevelLabels(

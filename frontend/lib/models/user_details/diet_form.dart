@@ -1,4 +1,6 @@
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -18,6 +20,8 @@ class DietForm {
   final double dietGoal;
   final int mealsPerDay;
   final DietIntensity dietIntensity;
+  final DailyBudget dailyBudget;
+  final CookingSkills cookingSkills;
   final ActivityLevel activityLevel;
   final StressLevel stressLevel;
   final SleepQuality sleepQuality;
@@ -36,6 +40,8 @@ class DietForm {
     required this.dietGoal,
     required this.mealsPerDay,
     required this.dietIntensity,
+    required this.dailyBudget,
+    required this.cookingSkills,
     required this.activityLevel,
     required this.stressLevel,
     required this.sleepQuality,
@@ -55,6 +61,8 @@ class DietForm {
     'diet_goal_kg': dietGoal,
     'meals_per_day': mealsPerDay,
     'diet_intensity': dietIntensity.toJson(),
+    'daily_budget': dailyBudget.toJson(),
+    'cooking_skills': cookingSkills.toJson(),
     'activity_level': activityLevel.toJson(),
     'stress_level': stressLevel.toJson(),
     'sleep_quality': sleepQuality.toJson(),
@@ -80,6 +88,8 @@ class DietForm {
       dietGoal: (json['diet_goal_kg'] as num).toDouble(),
       mealsPerDay: json['meals_per_day'] as int,
       dietIntensity: DietIntensity.fromJson(json['diet_intensity']),
+      dailyBudget: DailyBudget.fromJson(json['daily_budget']),
+      cookingSkills: CookingSkills.fromJson(json['cooking_skills']),
       activityLevel: ActivityLevel.fromJson(json['activity_level']),
       stressLevel: StressLevel.fromJson(json['stress_level']),
       sleepQuality: SleepQuality.fromJson(json['sleep_quality']),

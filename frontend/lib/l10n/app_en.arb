@@ -71,6 +71,10 @@
   "dietIntensity": "Diet intensity",
   "requiredDietIntensity": "Diet intensity is required",
   "caloriesPrediction": "Calories prediction",
+  "dailyBudget": "Daily budget",
+  "requiredDailyBudget": "Daily budget is required",
+  "cookingSkills": "Cooking skills",
+  "requiredCookingSkills": "Cooking skills are required",
   "activityLevel": "Activity level",
   "requiredActivityLevel": "Activity level is required",
   "stressLevel": "Stress level",
@@ -115,6 +119,14 @@
   "dietIntensity_Slow": "Slow",
   "dietIntensity_Medium": "Medium",
   "dietIntensity_Fast": "Fast",
+
+  "dailyBudget_low": "Low",
+  "dailyBudget_medium": "Medium",
+  "dailyBudget_high": "High",
+
+  "cookingSkills_beginner": "Beginner",
+  "cookingSkills_advanced": "Advanced",
+  "cookingSkills_professional": "Professional",
 
   "activityLevel_VeryLow": "Very Low (1–2 days a week or less)",
   "activityLevel_Light": "Low (2–3 days a week)",

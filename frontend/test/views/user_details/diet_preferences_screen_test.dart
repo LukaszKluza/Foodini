@@ -46,11 +46,11 @@ void main() {
 
     // Then
     expect(find.byKey(const Key('diet_type')), findsOneWidget);
-    expect(find.byKey(const Key('diet_intensity')), findsOneWidget);
+    expect(find.byKey(const Key('diet_intensity'), skipOffstage: false), findsOneWidget);
     expect(find.text('Dietary restrictions'), findsOneWidget);
     expect(find.textContaining('Diet goal'), findsOneWidget);
     expect(find.text('Meals per day'), findsOneWidget);
-    expect(find.text('Diet intensity'), findsOneWidget);
+    expect(find.text('Diet intensity', skipOffstage: false), findsOneWidget);
   });
 
   testWidgets('Diet type enums are displayed after tap', (
@@ -186,13 +186,13 @@ void main() {
 
     // Then
     expect(find.text('Slow'), findsOneWidget);
-    expect(find.text('Medium'), findsOneWidget);
-    expect(find.text('Fast'), findsOneWidget);
+    expect(find.text('Medium', skipOffstage: false), findsWidgets);
+    expect(find.text('Fast', skipOffstage: false), findsWidgets);
 
-    await tester.tap(find.text('Medium'));
+    await tester.tap(find.text('Medium', skipOffstage: false).last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Medium'), findsOneWidget);
+    expect(find.text('Medium'), findsWidgets);
   });
 
   testWidgets('Weight slider is hidden when diet type is Weight Maintenance', (

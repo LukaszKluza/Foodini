@@ -1,4 +1,6 @@
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -68,6 +70,18 @@ class UpdateDietIntensity extends DietFormEvent {
   final DietIntensity dietIntensity;
 
   UpdateDietIntensity(this.dietIntensity);
+}
+
+class UpdateDailyBudget extends DietFormEvent {
+  final DailyBudget dailyBudget;
+
+  UpdateDailyBudget(this.dailyBudget);
+}
+
+class UpdateCookingSkills extends DietFormEvent {
+  final CookingSkills cookingSkills;
+
+  UpdateCookingSkills(this.cookingSkills);
 }
 
 class UpdateActivityLevel extends DietFormEvent {

@@ -521,6 +521,30 @@ abstract class AppLocalizations {
   /// **'Calories prediction'**
   String get caloriesPrediction;
 
+  /// No description provided for @dailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget'**
+  String get dailyBudget;
+
+  /// No description provided for @requiredDailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget is required'**
+  String get requiredDailyBudget;
+
+  /// No description provided for @cookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills'**
+  String get cookingSkills;
+
+  /// No description provided for @requiredCookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills are required'**
+  String get requiredCookingSkills;
+
   /// No description provided for @activityLevel.
   ///
   /// In en, this message translates to:
@@ -760,6 +784,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fast'**
   String get dietIntensity_Fast;
+
+  /// No description provided for @dailyBudget_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get dailyBudget_low;
+
+  /// No description provided for @dailyBudget_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get dailyBudget_medium;
+
+  /// No description provided for @dailyBudget_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get dailyBudget_high;
+
+  /// No description provided for @cookingSkills_beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get cookingSkills_beginner;
+
+  /// No description provided for @cookingSkills_advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get cookingSkills_advanced;
+
+  /// No description provided for @cookingSkills_professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get cookingSkills_professional;
 
   /// No description provided for @activityLevel_VeryLow.
   ///

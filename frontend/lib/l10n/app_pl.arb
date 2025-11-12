@@ -70,6 +70,10 @@
   "mealsPerDay": "Liczba posiłków dziennie",
   "dietIntensity": "Intensywność diety",
   "requiredDietIntensity": "Wybierz intensywność diety",
+  "dailyBudget": "Dzienny budżet",
+  "requiredDailyBudget": "Dzienny budżet jest wymagany",
+  "cookingSkills": "Umiejętności kulinarne",
+  "requiredCookingSkills": "Umiejętności kulinarne są wymagane",
   "caloriesPrediction": "Prognoza zapotrzebowania kalorycznego",
   "activityLevel": "Poziom aktywności",
   "requiredActivityLevel": "Wskaż poziom swojej aktywności",
@@ -111,6 +115,14 @@
   "dietStyle_Vegetarian": "Wegetariańska",
   "dietStyle_Vegan": "Wegańska",
   "dietStyle_Keto": "Keto",
+
+  "dailyBudget_low": "Niski",
+  "dailyBudget_medium": "Średni",
+  "dailyBudget_high": "Wysoki",
+
+  "cookingSkills_beginner": "Początkujący",
+  "cookingSkills_advanced": "Zaawansowany",
+  "cookingSkills_professional": "Profesjonalista",
 
   "dietIntensity_Slow": "Powolna",
   "dietIntensity_Medium": "Średnia",

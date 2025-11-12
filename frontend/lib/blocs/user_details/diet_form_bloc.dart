@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
@@ -72,6 +73,20 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(mealsPerDay: event.mealsPerDay));
+      }
+    });
+
+    on<UpdateDailyBudget>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(dailyBudget: event.dailyBudget));
+      }
+    });
+
+    on<UpdateCookingSkills>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(cookingSkills: event.cookingSkills));
       }
     });
 
@@ -175,6 +190,8 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       currentState.dietaryRestrictions,
       currentState.dietGoal,
       currentState.mealsPerDay,
+      currentState.dailyBudget,
+      currentState.cookingSkills,
       currentState.dietIntensity,
       currentState.activityLevel,
       currentState.stressLevel,
@@ -182,6 +199,8 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     ];
 
     if (requiredFields.any((field) => field == null)) {
+      print(      currentState.dailyBudget);
+      print(      currentState.cookingSkills);
       emit(
         DietFormSubmitFailure(
           previousData: currentState,
@@ -204,6 +223,8 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         dietGoal: currentState.dietGoal!,
         mealsPerDay: currentState.mealsPerDay!,
         dietIntensity: currentState.dietIntensity!,
+        dailyBudget: currentState.dailyBudget!,
+        cookingSkills: currentState.cookingSkills!,
         activityLevel: currentState.activityLevel!,
         stressLevel: currentState.stressLevel!,
         sleepQuality: currentState.sleepQuality!,
