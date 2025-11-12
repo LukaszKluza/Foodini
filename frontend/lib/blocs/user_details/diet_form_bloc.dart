@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/user_details/diet_form_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/cooking_skills.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
