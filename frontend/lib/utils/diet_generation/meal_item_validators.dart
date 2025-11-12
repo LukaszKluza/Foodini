@@ -12,7 +12,7 @@ String? validateMealItemName(String? name, BuildContext context) {
 }
 
 String? validateMacro(String? rawValue, BuildContext context) {
-  final value = int.tryParse(rawValue ?? '');
+  final value = double.tryParse(rawValue ?? '');
   if (value == null ||
       value < 0 ||
       value > Constants.maxMacroValue) {
