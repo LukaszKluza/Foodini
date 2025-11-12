@@ -232,6 +232,16 @@ class DailySummaryService:
             meal_id=new_meal.id,
         )
 
+        if meal_info.status == MealStatus.EATEN:
+            updated_macros = DailyMacrosSummaryCreate(
+                day=day,
+                calories=meal_info.calories - existing_meal.calories,
+                protein=meal_info.protein - existing_meal.protein,
+                carbs=meal_info.carbs - existing_meal.carbs,
+                fat=meal_info.fat - existing_meal.fat,
+            )
+            await self._update_daily_macros_summary(user.id, updated_macros)
+
         await self.daily_summary_repo.add_custom_meal(user.id, day, {new_meal.id: meal_info})
         return meal_info
 
