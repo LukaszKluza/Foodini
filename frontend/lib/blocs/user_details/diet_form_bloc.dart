@@ -199,8 +199,6 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
     ];
 
     if (requiredFields.any((field) => field == null)) {
-      print(      currentState.dailyBudget);
-      print(      currentState.cookingSkills);
       emit(
         DietFormSubmitFailure(
           previousData: currentState,
