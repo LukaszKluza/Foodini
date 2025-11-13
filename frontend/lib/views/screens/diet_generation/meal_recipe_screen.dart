@@ -224,6 +224,8 @@ class _MealRecipe extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: CachedNetworkImage(
         imageUrl: '${Endpoints.mealIcon}/${state.iconUrl!}',
+        memCacheWidth: 420,
+        memCacheHeight: 420,
         fit: BoxFit.cover,
         placeholder:
             (context, url) =>

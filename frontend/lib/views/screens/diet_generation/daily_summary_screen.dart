@@ -112,12 +112,14 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= mealTypes.first;
+              selectedMealType ??= meals.entries.firstWhere(
+                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
+                orElse: () => meals.entries.last,
+              ).key;
               final activeMeal = selectedMealType!;
               final activeMealInfo = meals[activeMeal]!;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
-
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),

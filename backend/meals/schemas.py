@@ -12,9 +12,9 @@ class MealCreate(BaseModel):
     meal_type: MealType
     icon_id: UUID
     calories: int = Field(default=0, ge=0)
-    protein: int = Field(default=0, ge=0)
-    fat: int = Field(default=0, ge=0)
-    carbs: int = Field(default=0, ge=0)
+    protein: float = Field(default=0, ge=0)
+    fat: float = Field(default=0, ge=0)
+    carbs: float = Field(default=0, ge=0)
 
 
 class MealRecipeResponse(BaseModel):
