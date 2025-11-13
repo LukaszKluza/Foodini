@@ -34,8 +34,6 @@ Future<void> fetchTokenTaskCallback({
 
         userResponse = await authRepository.getUser(userId);
         userStorage.setUser(userResponse);
-
-        router.go('/account');
       }
     } catch (e) {
       userStorage.removeUser();
