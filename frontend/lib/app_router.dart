@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
-import 'package:frontend/events/diet_generation/daily_summary_events.dart';
-import 'package:frontend/foodini.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/diet_generation/daily_meals_screen.dart';
 import 'package:frontend/views/screens/diet_generation/daily_summary_screen.dart';
