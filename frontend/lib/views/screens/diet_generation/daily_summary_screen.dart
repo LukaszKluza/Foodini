@@ -22,10 +22,8 @@ import 'package:uuid/uuid_value.dart';
 class DailySummaryScreen extends StatefulWidget {
   final DateTime selectedDate;
 
-  const DailySummaryScreen({
-    super.key,
-    required this.selectedDate,
-  });
+  DailySummaryScreen({Key? key, required this.selectedDate})
+      : super(key: ValueKey('daily_summary_$selectedDate'));
 
   @override
   State<DailySummaryScreen> createState() => _DailySummaryScreenState();

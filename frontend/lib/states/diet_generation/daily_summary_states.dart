@@ -38,7 +38,7 @@ class DailySummaryState {
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
       changingMealStatus: changingMealStatus ?? this.changingMealStatus,
       updatingMealStatus: updatingMealStatus ?? this.updatingMealStatus,
-      dietGeneratingInfo: dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
+      dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
       getMessage: getMessage ?? this.getMessage,
     );

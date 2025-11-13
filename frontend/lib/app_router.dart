@@ -115,23 +115,17 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/daily-summary/:date',
       builder: (context, state) {
-        final dateStr = state.pathParameters['date']!;
-        final date = DateTime.tryParse(dateStr);
-        final selectedDate = date != null
-            ? DateTime(date.year, date.month, date.day)
-            : DateTime.now();
-
-        var langState = context.watch<LanguageCubit>().state;
-        var language = Language.fromJson(langState.languageCode);
-
-        return BlocProvider(
-          key: ValueKey('bloc_${selectedDate}_${language.code}'),
-          create: (context) =>
-              DailySummaryBloc(context.read())..add(GetDailySummary(selectedDate)),
-          child: DailySummaryScreen(selectedDate: selectedDate),
-        );
+        final date = DateTime.tryParse(state.pathParameters['date']!)!;
+        return DailySummaryScreen(selectedDate: date);
       },
-      redirect: (context, state) => _redirectIfUnauthenticated(context),
+      redirect: (context, state) {
+        try {
+          DateTime.tryParse(state.pathParameters['date']!)!;
+          return _redirectIfUnauthenticated(context);
+        } catch (_) {
+          return '/.../daily-summary/${state.pathParameters['date']}';
+        }
+      },
     ),
     GoRoute(
       path: '/meal-details/:mealType/:date',
@@ -146,7 +140,7 @@ final GoRouter router = GoRouter(
           DateTime.tryParse(state.pathParameters['date']!)!;
           return _redirectIfUnauthenticated(context);
         } catch (_) {
-          return '/.../meal-details/${state.pathParameters['mealType']}';
+          return '/.../meal-details/${state.pathParameters['mealType']}/${state.pathParameters['date']}';
         }
       },
     ),
