@@ -155,7 +155,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         )));
     } on ApiException catch (e) {
       emit(DailySummaryError(
-        message: 'Failed to generate new plan',
+        message: 'Failed to generate new plan: ${e.data["detail"]}',
         error: e,
       ));
     } catch (e) {
