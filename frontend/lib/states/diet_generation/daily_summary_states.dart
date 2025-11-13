@@ -1,51 +1,61 @@
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
+import 'package:frontend/models/processing_status.dart';
 
-/// Bazowy stan — wszystkie stany dziedziczą po tym
-abstract class DailySummaryState {}
+class DailySummaryState {
+  final DailySummary? dailySummary;
+  final ProcessingStatus gettingDailySummaryStatus;
+  final ProcessingStatus changingMealStatus;
+  final ProcessingStatus updatingMeal;
+  final DietGeneratingInfo dietGeneratingInfo;
 
-/// Stan początkowy (np. zanim załadujemy dane)
-class DailySummaryInit extends DailySummaryState {}
-
-/// Stan ładowania danych (np. przy starcie ekranu)
-class DailySummaryLoading extends DailySummaryState {}
-
-/// Stan załadowanych danych
-class DailySummaryLoaded extends DailySummaryState {
-  final DailySummary dailySummary;
-  final bool isUpdatingMeal;
-  final bool isChangingMealStatus;
-
-  DailySummaryLoaded({
-    required this.dailySummary,
-    this.isUpdatingMeal = false,
-    this.isChangingMealStatus = false,
+  DailySummaryState({
+    this.dailySummary,
+    this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
+    this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
+    this.updatingMeal = ProcessingStatus.emptyProcessingStatus,
+    this.dietGeneratingInfo = const DietGeneratingInfo(),
   });
 
-  DailySummaryLoaded copyWith({
+  DailySummaryState copyWith({
     DailySummary? dailySummary,
-    bool? isUpdatingMeal,
-    bool? isChangingMealStatus,
+    ProcessingStatus? gettingDailySummaryStatus,
+    ProcessingStatus? changingMealStatus,
+    ProcessingStatus? updatingMeal,
+
+    DateTime? day,
+    ProcessingStatus? processingStatus,
   }) {
-    return DailySummaryLoaded(
+    return DailySummaryState(
       dailySummary: dailySummary ?? this.dailySummary,
-      isUpdatingMeal: isUpdatingMeal ?? this.isUpdatingMeal,
-      isChangingMealStatus:
-          isChangingMealStatus ?? this.isChangingMealStatus,
+      gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
+      changingMealStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
+      updatingMeal: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
+      dietGeneratingInfo: dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
     );
   }
+
+  @override
+  String toString() {
+    return 'DailySummaryState('
+        'dailySummary: $dailySummary, '
+        'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
+        'changingMealStatus: $changingMealStatus, '
+        'updatingMeal: $updatingMeal, '
+        'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
+        ')';
+  }
+
 }
 
-/// Stan błędu — np. nie udało się pobrać danych z backendu
-class DailySummaryError extends DailySummaryState {
+class DailySummaryError {
   final String? message;
   final ApiException? error;
 
   DailySummaryError({this.message, this.error});
 }
 
-/// Stan sukcesu po akcji (np. po udanym update posiłku lub zmianie statusu)
-class DailySummaryUpdateSuccess extends DailySummaryState {
+class DailySummaryUpdateSuccess{
   final DailySummary updatedSummary;
   final String? successMessage;
 
@@ -55,8 +65,7 @@ class DailySummaryUpdateSuccess extends DailySummaryState {
   });
 }
 
-/// Stan błędu po akcji (np. update posiłku nieudany)
-class DailySummaryUpdateFailure extends DailySummaryState {
+class DailySummaryUpdateFailure{
   final DailySummary previousSummary;
   final String? errorMessage;
   final ApiException? error;
@@ -66,4 +75,29 @@ class DailySummaryUpdateFailure extends DailySummaryState {
     this.errorMessage,
     this.error,
   });
+}
+
+class DietGeneratingInfo {
+  final DateTime? day;
+  final ProcessingStatus processingStatus;
+
+  const DietGeneratingInfo({
+    this.day,
+    this.processingStatus = ProcessingStatus.emptyProcessingStatus,
+  });
+
+  DietGeneratingInfo copyWith({
+    DateTime? day,
+    ProcessingStatus? processingStatus,
+  }) {
+    return DietGeneratingInfo(
+      day: day ?? this.day,
+      processingStatus: processingStatus ?? this.processingStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'DietGeneratingInfo(day: $day, processingStatus: $processingStatus)';
+  }
 }

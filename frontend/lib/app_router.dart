@@ -138,7 +138,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final mealType = MealType.fromJson(state.pathParameters['mealType']!);
         final date = DateTime.tryParse(state.pathParameters['date']!)!;
-        return MealDetailsScreen(mealType: mealType, day: date);
+        return MealDetailsScreen(mealType: mealType, selectedDate: date);
       },
       redirect: (context, state) {
         try {
