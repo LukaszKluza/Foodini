@@ -44,6 +44,7 @@ app.state.limiter = limiter
 
 templates = Jinja2Templates(directory="backend/templates")
 
+
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     raise HTTPException(

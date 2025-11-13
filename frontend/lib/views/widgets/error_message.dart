@@ -27,7 +27,7 @@ class ErrorMessage extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withOpacity(0.2),
+              color: Colors.red.withValues(),
               offset: const Offset(0, 2),
               blurRadius: 4.0,
             ),
