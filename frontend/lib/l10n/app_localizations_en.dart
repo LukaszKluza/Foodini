@@ -583,4 +583,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'No data for this meal. Please refresh request or contact support at $email.';
+  }
 }

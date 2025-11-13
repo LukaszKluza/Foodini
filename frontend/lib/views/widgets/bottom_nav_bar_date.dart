@@ -1,5 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:frontend/views/widgets/nav_icon_button.dart';
+import 'package:frontend/views/widgets/circle_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -13,7 +14,6 @@ class BottomNavBarDate extends StatelessWidget {
     required this.prevRoute,
     required this.nextRoute,
     required this.selectedDate,
-
   });
 
   @override
@@ -24,50 +24,51 @@ class BottomNavBarDate extends StatelessWidget {
     final prevLabel = DateFormat('dd.MM.yyyy').format(prevDate);
     final nextLabel = DateFormat('dd.MM.yyyy').format(nextDate);
 
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            NavIconButton(
-              icon: Icons.arrow_back,
-              onPressed: () => context.go(prevRoute),
-            ),
-
-            _buildDateButton(
-              label: prevLabel,
-              onPressed: () => context.go(prevRoute),
-            ),
-
-            NavIconButton(
-              icon: Icons.home,
-              onPressed: () => context.go('/main-page')
-            ),
-
-            _buildDateButton(
-              label: nextLabel,
-              onPressed: () => context.go(nextRoute),
-            ),
-
-            NavIconButton(
-              icon: Icons.arrow_forward,
-              onPressed: () => context.go(nextRoute),
-            ),
-          ],
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(72),
+            border: Border.all(color: Colors.white.withAlpha(78)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(30),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              circleButton(
+                context,
+                icon: Icons.arrow_back,
+                onTap: () => context.go(prevRoute),
+              ),
+              _dateButton(label: prevLabel, onPressed: () => context.go(prevRoute)),
+              circleButton(
+                context,
+                icon: Icons.home,
+                onTap: () => context.go('/main-page'),
+                iconSize: 40.0
+              ),
+              _dateButton(label: nextLabel, onPressed: () => context.go(nextRoute)),
+              circleButton(
+                context,
+                icon: Icons.arrow_forward,
+                onTap: () => context.go(nextRoute),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDateButton({
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-
-    
+  Widget _dateButton({required String label, required VoidCallback onPressed}) {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
@@ -76,7 +77,7 @@ class BottomNavBarDate extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }

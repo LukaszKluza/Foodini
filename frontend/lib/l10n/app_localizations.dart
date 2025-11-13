@@ -1246,6 +1246,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
   String get valueOfCaloriesMacroShouldBeBetween;
+
+  /// No description provided for @noMealData_contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
+  String noMealData_contactSupport(Object email);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

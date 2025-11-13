@@ -56,9 +56,9 @@ class DietGenerationRepository {
       final response = await apiClient.addCustomMeal(customMealUpdateRequest, userId);
       return MealInfo.fromJson(response.data);
     } on DioException catch (e) {
-      throw ApiException(e.response?.data ?? defaultDioExceptionReadableStringBuilder(e), statusCode: e.response?.statusCode);
+      throw ApiException(e.response?.data ?? 'Error while editing meals', statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while adding custom meal: $e');
+      throw Exception('Error while editing meals: $e');
     } finally {
       await cacheManager.clearAllCache();
     }

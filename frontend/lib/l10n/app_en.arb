@@ -212,5 +212,7 @@
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
-  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
+
+  "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}."
 }
