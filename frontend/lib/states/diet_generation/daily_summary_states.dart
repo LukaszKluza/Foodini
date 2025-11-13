@@ -1,4 +1,4 @@
-import 'package:frontend/api_exception.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/processing_status.dart';
 
@@ -6,32 +6,41 @@ class DailySummaryState {
   final DailySummary? dailySummary;
   final ProcessingStatus gettingDailySummaryStatus;
   final ProcessingStatus changingMealStatus;
-  final ProcessingStatus updatingMeal;
+  final ProcessingStatus updatingMealStatus;
   final DietGeneratingInfo dietGeneratingInfo;
+  final int? errorCode;
+  final String Function(BuildContext)? getMessage;
 
   DailySummaryState({
     this.dailySummary,
     this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
     this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
-    this.updatingMeal = ProcessingStatus.emptyProcessingStatus,
+    this.updatingMealStatus = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
+    this.errorCode,
+    this.getMessage,
   });
 
   DailySummaryState copyWith({
     DailySummary? dailySummary,
     ProcessingStatus? gettingDailySummaryStatus,
     ProcessingStatus? changingMealStatus,
-    ProcessingStatus? updatingMeal,
+    ProcessingStatus? updatingMealStatus,
 
     DateTime? day,
     ProcessingStatus? processingStatus,
+
+    int? errorCode,
+    String Function(BuildContext)? getMessage,
   }) {
     return DailySummaryState(
       dailySummary: dailySummary ?? this.dailySummary,
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
-      changingMealStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
-      updatingMeal: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
+      changingMealStatus: changingMealStatus ?? this.changingMealStatus,
+      updatingMealStatus: updatingMealStatus ?? this.updatingMealStatus,
       dietGeneratingInfo: dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
+      errorCode: errorCode ?? this.errorCode,
+      getMessage: getMessage ?? this.getMessage,
     );
   }
 
@@ -41,40 +50,11 @@ class DailySummaryState {
         'dailySummary: $dailySummary, '
         'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
         'changingMealStatus: $changingMealStatus, '
-        'updatingMeal: $updatingMeal, '
+        'updatingMeal: $updatingMealStatus, '
         'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
+        'errorCode: $errorCode'
         ')';
   }
-
-}
-
-class DailySummaryError {
-  final String? message;
-  final ApiException? error;
-
-  DailySummaryError({this.message, this.error});
-}
-
-class DailySummaryUpdateSuccess{
-  final DailySummary updatedSummary;
-  final String? successMessage;
-
-  DailySummaryUpdateSuccess({
-    required this.updatedSummary,
-    this.successMessage,
-  });
-}
-
-class DailySummaryUpdateFailure{
-  final DailySummary previousSummary;
-  final String? errorMessage;
-  final ApiException? error;
-
-  DailySummaryUpdateFailure({
-    required this.previousSummary,
-    this.errorMessage,
-    this.error,
-  });
 }
 
 class DietGeneratingInfo {

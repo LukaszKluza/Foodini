@@ -10,7 +10,6 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_comparator.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
@@ -76,10 +75,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
-            if (state.dietGeneratingInfo.processingStatus == ProcessingStatus.submittingOnGoing
+            if (state.dietGeneratingInfo.processingStatus.isOngoing
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state.dietGeneratingInfo.processingStatus == ProcessingStatus.submittingFailure
+            } else if (state.dietGeneratingInfo.processingStatus.isFailure
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0
             ) {
               return Stack(
@@ -88,8 +87,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 100.0),
                       child: Text(
-                        // state.message ?? 'Data loading error',
-                        'Data loading error',
+                        state.getMessage!(context),
                         style: const TextStyle(fontSize: 16, color: Colors.red),
                       ),
                     ),

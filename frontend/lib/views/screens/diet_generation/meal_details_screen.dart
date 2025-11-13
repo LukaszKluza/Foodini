@@ -8,7 +8,6 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_comparator.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
@@ -44,24 +43,18 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
     return Scaffold(
       body: BlocBuilder<DailySummaryBloc, DailySummaryState>(
         builder: (context, state) {
-          if (state.dietGeneratingInfo.processingStatus == ProcessingStatus.submittingOnGoing
+          if (state.dietGeneratingInfo.processingStatus.isOngoing
               && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
             return const Center(child: CircularProgressIndicator());
-          }
-
-          // if (state is DailySummaryLoaded && state.dailySummary != null &&  state.dailySummary!.selectedDate != widget.selectedDate) {
-          //   return Center(
-          //     child: Text('Błąd ładowania danych'),
-          //   );
-          // }
-          //
-          // if (state is DailySummaryError) {
-          //   return Center(
-          //     child: Text(state.message ?? 'Błąd ładowania danych'),
-          //   );
-          // }
-
-          if (state.dailySummary != null &&
+          } else if (state.dailySummary != null &&  state.dailySummary!.day != widget.selectedDate) {
+            return Center(
+              child: Text('Błąd ładowania danych'),
+            );
+          } else if (state.changingMealStatus.isFailure) {
+            return Center(
+              child: Text(state.getMessage!(context)),
+            );
+          } else if (state.dailySummary != null &&
               dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
             final meal = state.dailySummary!.meals[widget.mealType];
             if (meal == null) {
