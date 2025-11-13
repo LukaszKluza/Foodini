@@ -32,10 +32,10 @@ class MealDailySummary(SQLModel, table=True):
     status: MealStatus = Field(default=MealStatus.TO_EAT, nullable=False)
 
     daily_summary: Optional["DailyMealsSummary"] = Relationship(
-        back_populates="daily_meals", sa_relationship_kwargs={"cascade": "all, delete"}
+        back_populates="daily_meals", sa_relationship_kwargs={"passive_deletes": True}
     )
     meal: Optional["Meal"] = Relationship(
-        back_populates="daily_meals", sa_relationship_kwargs={"cascade": "all, delete", "overlaps": "daily_summary"}
+        back_populates="daily_meals", sa_relationship_kwargs={"passive_deletes": True, "overlaps": "daily_summary"}
     )
 
 
@@ -67,9 +67,11 @@ class DailyMealsSummary(SQLModel, table=True):
     )
 
     user: Optional["User"] = Relationship(
-        back_populates="daily_meals_summaries", sa_relationship_kwargs={"cascade": "all, delete"}
+        back_populates="daily_meals_summaries", sa_relationship_kwargs={"passive_deletes": True}
     )
-    daily_meals: List["MealDailySummary"] = Relationship(back_populates="daily_summary", cascade_delete=True)
+    daily_meals: List["MealDailySummary"] = Relationship(
+        back_populates="daily_summary", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
     meals: List["Meal"] = Relationship(
         back_populates="daily_summary",
         link_model=MealDailySummary,
@@ -105,7 +107,7 @@ class DailyMacrosSummary(SQLModel, table=True):
     )
 
     user: Optional["User"] = Relationship(
-        back_populates="daily_macros_summaries", sa_relationship_kwargs={"cascade": "all, delete"}
+        back_populates="daily_macros_summaries", sa_relationship_kwargs={"passive_deletes": True}
     )
 
 

@@ -54,7 +54,7 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
             unique=True,
         )
     )
-    user: Optional["User"] = Relationship(back_populates="details", sa_relationship_kwargs={"cascade": "all, delete"})
+    user: Optional["User"] = Relationship(back_populates="details", sa_relationship_kwargs={"passive_deletes": True})
     gender: Gender = Field(nullable=False)
     height_cm: float = Field(sa_column=Column(FloatAsNumeric), ge=60, le=230)
     weight_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)

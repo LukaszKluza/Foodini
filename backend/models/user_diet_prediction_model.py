@@ -36,7 +36,7 @@ class UserDietPredictions(SQLModel, table=True):
         )
     )
     user: Optional["User"] = Relationship(
-        back_populates="diet_predictions", sa_relationship_kwargs={"cascade": "all, delete"}
+        back_populates="diet_predictions", sa_relationship_kwargs={"passive_deletes": True}
     )
     protein: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)
     fat: float = Field(sa_column=Column(FloatAsNumeric, nullable=False), ge=0)

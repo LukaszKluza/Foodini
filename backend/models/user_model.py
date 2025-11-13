@@ -36,10 +36,18 @@ class User(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True)),
     )
 
-    details: Optional["UserDetails"] = Relationship(back_populates="user", cascade_delete=True)
-    diet_predictions: Optional["UserDietPredictions"] = Relationship(back_populates="user", cascade_delete=True)
-    daily_meals_summaries: List["DailyMealsSummary"] = Relationship(back_populates="user", cascade_delete=True)
-    daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(back_populates="user", cascade_delete=True)
+    details: Optional["UserDetails"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
+    )
+    diet_predictions: Optional["UserDietPredictions"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
+    )
+    daily_meals_summaries: List["DailyMealsSummary"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
+    )
+    daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
+    )
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

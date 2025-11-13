@@ -242,6 +242,7 @@ class DailySummaryService:
             )
             await self._update_daily_macros_summary(user.id, updated_macros)
 
+        await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_meal.id)
         await self.daily_summary_repo.add_custom_meal(user.id, day, {new_meal.id: meal_info})
         return meal_info
 
