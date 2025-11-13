@@ -16,7 +16,7 @@ class DietForm {
   final DateTime dateOfBirth;
   final DietType dietType;
   final DietStyle? dietStyle;
-  final List<DietaryRestriction> dietaryRestrictions;
+  final List<Allergies> allergies;
   final double dietGoal;
   final int mealsPerDay;
   final DietIntensity dietIntensity;
@@ -36,7 +36,7 @@ class DietForm {
     required this.dateOfBirth,
     required this.dietType,
     this.dietStyle,
-    required this.dietaryRestrictions,
+    required this.allergies,
     required this.dietGoal,
     required this.mealsPerDay,
     required this.dietIntensity,
@@ -57,7 +57,7 @@ class DietForm {
     'date_of_birth': dateOfBirth.toIso8601String(),
     'diet_type': dietType.toJson(),
     'diet_style': dietStyle?.toJson(),
-    'dietary_restrictions': dietaryRestrictions.map((a) => a.toJson()).toList(),
+    'dietary_restrictions': allergies.map((a) => a.toJson()).toList(),
     'diet_goal_kg': dietGoal,
     'meals_per_day': mealsPerDay,
     'diet_intensity': dietIntensity.toJson(),
@@ -81,9 +81,9 @@ class DietForm {
       dietStyle: json['diet_style'] != null
           ? DietStyle.fromJson(json['diet_style'])
           : null,
-      dietaryRestrictions:
+      allergies:
           (json['dietary_restrictions'] as List<dynamic>)
-              .map((e) => DietaryRestriction.fromJson(e))
+              .map((e) => Allergies.fromJson(e))
               .toList(),
       dietGoal: (json['diet_goal_kg'] as num).toDouble(),
       mealsPerDay: json['meals_per_day'] as int,

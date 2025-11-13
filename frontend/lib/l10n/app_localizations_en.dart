@@ -186,7 +186,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietStyle => 'Diet style';
 
   @override
-  String get dietaryRestrictions => 'Dietary restrictions';
+  String get allergies => 'Allergies';
 
   @override
   String get dietGoal => 'Diet goal';
@@ -309,31 +309,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietaryRestriction_Gluten => 'Gluten';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietaryRestriction_Peanuts => 'Peanuts';
+  String get allergies_Peanuts => 'Peanuts';
 
   @override
-  String get dietaryRestriction_Lactose => 'Lactose';
+  String get allergies_Lactose => 'Lactose';
 
   @override
-  String get dietaryRestriction_Fish => 'Fish';
+  String get allergies_Fish => 'Fish';
 
   @override
-  String get dietaryRestriction_Soy => 'Soy';
+  String get allergies_Soy => 'Soy';
 
   @override
-  String get dietaryRestriction_Wheat => 'Wheat';
+  String get allergies_Wheat => 'Wheat';
 
   @override
-  String get dietaryRestriction_Celery => 'Celery';
+  String get allergies_Celery => 'Celery';
 
   @override
-  String get dietaryRestriction_Sulphites => 'Sulphites';
+  String get allergies_Sulphites => 'Sulphites';
 
   @override
-  String get dietaryRestriction_Lupin => 'Lupin';
+  String get allergies_Lupin => 'Lupin';
 
   @override
   String get dietStyle_Vegetarian => 'Vegetarian';

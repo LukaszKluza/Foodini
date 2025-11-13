@@ -1,4 +1,4 @@
-enum DietaryRestriction {
+enum Allergies {
   gluten(0, 'gluten'),
   peanuts(1, 'peanuts'),
   lactose(2, 'lactose'),
@@ -12,23 +12,23 @@ enum DietaryRestriction {
   final int value;
   final String nameStr;
 
-  const DietaryRestriction(this.value, this.nameStr);
+  const Allergies(this.value, this.nameStr);
 
   String toJson() => nameStr;
 
-  static DietaryRestriction fromJson(String value) {
-    return DietaryRestriction.values.firstWhere(
+  static Allergies fromJson(String value) {
+    return Allergies.values.firstWhere(
       (e) => e.nameStr == value,
-      orElse: () => throw ArgumentError('Unknown dietary restriction: $value'),
+      orElse: () => throw ArgumentError('Unknown allergy: $value'),
     );
   }
 
   int toInt() => value;
 
-  static DietaryRestriction fromInt(int value) {
-    return DietaryRestriction.values.firstWhere(
+  static Allergies fromInt(int value) {
+    return Allergies.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ArgumentError('Invalid dietary restriction value: $value'),
+      orElse: () => throw ArgumentError('Invalid allergy value: $value'),
     );
   }
 }

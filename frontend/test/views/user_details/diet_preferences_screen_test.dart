@@ -47,7 +47,7 @@ void main() {
     // Then
     expect(find.byKey(const Key('diet_type')), findsOneWidget);
     expect(find.byKey(const Key('diet_intensity'), skipOffstage: false), findsOneWidget);
-    expect(find.text('Dietary restrictions'), findsOneWidget);
+    expect(find.text('Allergies'), findsOneWidget);
     expect(find.textContaining('Diet goal'), findsOneWidget);
     expect(find.text('Meals per day'), findsOneWidget);
     expect(find.text('Diet intensity', skipOffstage: false), findsOneWidget);
@@ -75,7 +75,7 @@ void main() {
     expect(find.text('Weight Maintenance'), findsOneWidget);
   });
 
-  testWidgets('Dietary restrictions enums are displayed after tap', (
+  testWidgets('Allergies enums are displayed after tap', (
     WidgetTester tester,
   ) async {
     // Given
@@ -83,7 +83,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // When
-    await tester.tap(find.text('Dietary restrictions'));
+    await tester.tap(find.text('Allergies'));
     await tester.pumpAndSettle();
 
     // Then
@@ -221,7 +221,7 @@ void main() {
       DietFormSubmit(
         dietType: DietType.muscleGain,
         dietGoal: 50,
-        dietaryRestrictions: [DietaryRestriction.gluten],
+        allergies: [Allergies.gluten],
         dietIntensity: DietIntensity.medium,
         mealsPerDay: 3,
         weight: 80,

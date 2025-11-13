@@ -28,7 +28,7 @@ class DietFormSubmit extends DietFormState {
 
   final DietType? dietType;
   final DietStyle? dietStyle;
-  final List<DietaryRestriction>? dietaryRestrictions;
+  final List<Allergies>? allergies;
   final double? dietGoal;
   final int? mealsPerDay;
   final DietIntensity? dietIntensity;
@@ -53,7 +53,7 @@ class DietFormSubmit extends DietFormState {
     this.dateOfBirth,
     this.dietType,
     this.dietStyle,
-    this.dietaryRestrictions = const [],
+    this.allergies = const [],
     this.dietGoal,
     this.mealsPerDay = Constants.defaultMealsPerDay,
     this.dietIntensity,
@@ -103,8 +103,8 @@ class DietFormSubmit extends DietFormState {
               : dateOfBirth as DateTime?,
       dietType: dietType == _noChange ? this.dietType : dietType as DietType?,
       dietStyle: dietStyle == _noChange ? this.dietStyle : dietStyle as DietStyle?,
-      dietaryRestrictions:
-          allergies == _noChange ? dietaryRestrictions : allergies as List<DietaryRestriction>?,
+      allergies:
+          allergies == _noChange ? this.allergies : allergies as List<Allergies>?,
       dietGoal: dietGoal == _noChange ? this.dietGoal : dietGoal as double?,
       mealsPerDay:
           mealsPerDay == _noChange ? this.mealsPerDay : mealsPerDay as int?,
@@ -158,7 +158,7 @@ class DietFormSubmit extends DietFormState {
       dateOfBirth: form.dateOfBirth,
       dietType: form.dietType,
       dietStyle: form.dietStyle,
-      dietaryRestrictions: form.dietaryRestrictions,
+      allergies: form.allergies,
       dietGoal: form.dietGoal,
       mealsPerDay: form.mealsPerDay,
       dailyBudget: form.dailyBudget,
@@ -184,7 +184,7 @@ class DietFormSubmit extends DietFormState {
       dateOfBirth: null,
       dietType: null,
       dietStyle: null,
-      dietaryRestrictions: const [],
+      allergies: const [],
       dietGoal: null,
       mealsPerDay: Constants.defaultMealsPerDay,
       dietIntensity: null,

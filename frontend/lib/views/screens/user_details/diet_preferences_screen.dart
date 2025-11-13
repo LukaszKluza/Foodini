@@ -75,7 +75,7 @@ class _DietPreferencesForm extends StatefulWidget {
 class _DietPreferencesFormState extends State<_DietPreferencesForm> {
   final _formKey = GlobalKey<FormState>();
 
-  List<DietaryRestriction> _selectedDietaryRestrictions = [];
+  List<Allergies> _selectedAllergies = [];
   DietType? _selectedDietType;
   DietStyle? _selectedDietStyle;
   double _selectedDietGoal = Constants.defaultWeight;
@@ -96,7 +96,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       _selectedDietType = blocState.dietType ?? _selectedDietType;
       _selectedDietStyle = blocState.dietStyle ?? _selectedDietStyle;
       _selectedDietGoal = blocState.dietGoal ?? _selectedDietGoal;
-      _selectedDietaryRestrictions = blocState.dietaryRestrictions ?? _selectedDietaryRestrictions;
+      _selectedAllergies = blocState.allergies ?? _selectedAllergies;
       _selectedDietIntensity =
           blocState.dietIntensity ?? _selectedDietIntensity;
       _selectedMealsPerDay = blocState.mealsPerDay ?? _selectedMealsPerDay;
@@ -175,10 +175,10 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     );
   }
 
-  void _onDietaryRestrictionsChanged(List<DietaryRestriction> values) {
+  void _onAllergiesChanged(List<Allergies> values) {
     _updateStateAndBloc(
-      updateState: () => _selectedDietaryRestrictions = values,
-      blocEvent: UpdateDietaryRestrictions(values),
+      updateState: () => _selectedAllergies = values,
+      blocEvent: UpdateAllergies(values),
     );
   }
 
@@ -222,25 +222,25 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final fields = [
-      MultiSelectDialogField<DietaryRestriction>(
-        initialValue: _selectedDietaryRestrictions,
+      MultiSelectDialogField<Allergies>(
+        initialValue: _selectedAllergies,
         items:
-            DietaryRestriction.values
+            Allergies.values
                 .map(
-                  (dietaryRestriction) => MultiSelectItem<DietaryRestriction>(
-                    dietaryRestriction,
-                    AppConfig.dietaryRestrictionLabels(context)[dietaryRestriction]!,
+                  (allergy) => MultiSelectItem<Allergies>(
+                    allergy,
+                    AppConfig.allergiesLabels(context)[allergy]!,
                   ),
                 )
                 .toList(),
-        title: Text(AppLocalizations.of(context)!.dietaryRestrictions),
+        title: Text(AppLocalizations.of(context)!.allergies),
         selectedColor: Colors.purpleAccent,
         chipDisplay: MultiSelectChipDisplay(
           chipColor: Colors.purpleAccent[50],
           textStyle: const TextStyle(color: Colors.black),
         ),
-        buttonText: Text(AppLocalizations.of(context)!.dietaryRestrictions),
-        onConfirm: _onDietaryRestrictionsChanged,
+        buttonText: Text(AppLocalizations.of(context)!.allergies),
+        onConfirm: _onAllergiesChanged,
       ),
       DropdownButtonFormField<DietStyle>(
         key: const Key('diet_style'),

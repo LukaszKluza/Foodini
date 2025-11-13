@@ -48,10 +48,10 @@ class UpdateDietStyle extends DietFormEvent {
   UpdateDietStyle(this.dietStyle);
 }
 
-class UpdateDietaryRestrictions extends DietFormEvent {
-  final List<DietaryRestriction> dietaryRestrictions;
+class UpdateAllergies extends DietFormEvent {
+  final List<Allergies> allergies;
 
-  UpdateDietaryRestrictions(this.dietaryRestrictions);
+  UpdateAllergies(this.allergies);
 }
 
 class UpdateDietGoal extends DietFormEvent {

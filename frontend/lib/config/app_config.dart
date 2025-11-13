@@ -27,16 +27,16 @@ class AppConfig {
     DietStyle.keto: AppLocalizations.of(context)!.dietStyle_Keto,
   };
 
-  static Map<DietaryRestriction, String> dietaryRestrictionLabels(BuildContext context) => {
-    DietaryRestriction.gluten: AppLocalizations.of(context)!.dietaryRestriction_Gluten,
-    DietaryRestriction.peanuts: AppLocalizations.of(context)!.dietaryRestriction_Peanuts,
-    DietaryRestriction.lactose: AppLocalizations.of(context)!.dietaryRestriction_Lactose,
-    DietaryRestriction.fish: AppLocalizations.of(context)!.dietaryRestriction_Fish,
-    DietaryRestriction.soy: AppLocalizations.of(context)!.dietaryRestriction_Soy,
-    DietaryRestriction.wheat: AppLocalizations.of(context)!.dietaryRestriction_Wheat,
-    DietaryRestriction.celery: AppLocalizations.of(context)!.dietaryRestriction_Celery,
-    DietaryRestriction.sulphites: AppLocalizations.of(context)!.dietaryRestriction_Sulphites,
-    DietaryRestriction.lupin: AppLocalizations.of(context)!.dietaryRestriction_Lupin
+  static Map<Allergies, String> allergiesLabels(BuildContext context) => {
+    Allergies.gluten: AppLocalizations.of(context)!.allergies_Gluten,
+    Allergies.peanuts: AppLocalizations.of(context)!.allergies_Peanuts,
+    Allergies.lactose: AppLocalizations.of(context)!.allergies_Lactose,
+    Allergies.fish: AppLocalizations.of(context)!.allergies_Fish,
+    Allergies.soy: AppLocalizations.of(context)!.allergies_Soy,
+    Allergies.wheat: AppLocalizations.of(context)!.allergies_Wheat,
+    Allergies.celery: AppLocalizations.of(context)!.allergies_Celery,
+    Allergies.sulphites: AppLocalizations.of(context)!.allergies_Sulphites,
+    Allergies.lupin: AppLocalizations.of(context)!.allergies_Lupin
   };
 
   static Map<DietIntensity, String> dietIntensityLabels(

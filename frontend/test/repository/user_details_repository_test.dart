@@ -36,7 +36,7 @@ void main() {
       weight: 75.0,
       dateOfBirth: DateTime.now(),
       dietType: DietType.fatLoss,
-      dietaryRestrictions: [],
+      allergies: [],
       dietGoal: 70.0,
       mealsPerDay: 4,
       dailyBudget: DailyBudget.medium,
