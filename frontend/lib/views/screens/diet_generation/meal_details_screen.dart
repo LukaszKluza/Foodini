@@ -16,7 +16,7 @@ import 'package:frontend/utils/diet_generation/date_comparator.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
-import 'package:frontend/views/widgets/diet_generation/errorBox.dart';
+import 'package:frontend/views/widgets/diet_generation/error_box.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
 import 'package:go_router/go_router.dart';
