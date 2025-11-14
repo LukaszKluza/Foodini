@@ -13,9 +13,15 @@ class Constants {
   static const int defaultMealsPerDay = 4;
   static const String mainFoodiniIcon = 'assets/icons/icon_14.png';
 
-  static const double defaultMusclePercentage = 45;
+  static const double minimumMusclePercentage = 0;
+  static const double maximumMusclePercentage = 60;
+  static const double defaultMusclePercentage = 25;
+  static const double minimumWaterPercentage = 40;
+  static const double maximumWaterPercentage = 80;
   static const double defaultWaterPercentage = 60;
-  static const double defaultFatPercentage = 15;
+  static const double minimumFatPercentage = 0;
+  static const double maximumFatPercentage = 40;
+  static const double defaultFatPercentage = 10;
 
   static const double horizontalPaddingRatio = 0.07;
   static const double screenWidth = 1170;

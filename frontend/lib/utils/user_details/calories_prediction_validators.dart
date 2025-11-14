@@ -48,3 +48,10 @@ String? validateFatPercentage(String? value, BuildContext context) {
   }
   return null;
 }
+
+String? validateAdvancedParameters(double value, BuildContext context) {
+  if (value > 100) {
+    return '${AppLocalizations.of(context)!.advancedParametersValidation} 100%';
+  }
+  return null;
+}

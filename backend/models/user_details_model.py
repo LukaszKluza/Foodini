@@ -14,7 +14,7 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
-from backend.user_details.mixins import DietGoalValidationMixin
+from backend.user_details.mixins import AdvancedParametersMixin, DietGoalValidationMixin
 
 from ..core.db_listeners import register_timestamp_listeners
 from .types import FloatAsNumeric
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from .user_model import User
 
 
-class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
+class UserDetails(AdvancedParametersMixin, DietGoalValidationMixin, SQLModel, table=True):
     __tablename__ = "user_details"
     __table_args__ = (
         CheckConstraint("height_cm >= 60 AND height_cm <= 230", name="ck_height_range"),
@@ -40,6 +40,10 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
         CheckConstraint(
             "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 100))",
             name="ck_fat_percentage_range",
+        ),
+        CheckConstraint(
+            "(COALESCE(muscle_percentage, 0) + COALESCE(water_percentage, 0) + COALESCE(fat_percentage, 0)) <= 100",
+            name="ck_advanced_params_sum",
         ),
     )
 

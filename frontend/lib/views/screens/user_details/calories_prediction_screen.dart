@@ -212,6 +212,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ),
       if (_isChecked) ...[
         PercentageOptionSlider(
+          min: Constants.minimumMusclePercentage,
+          max: Constants.maximumMusclePercentage,
           initialValue: _selectedMusclePercentage,
           pupUpKey: 'muscle_percentage',
           propertiesName: AppLocalizations.of(context)!.musclePercentage,
@@ -232,6 +234,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumWaterPercentage,
+          max: Constants.maximumWaterPercentage,
           initialValue: _selectedWaterPercentage,
           pupUpKey: 'water_percentage',
           propertiesName: AppLocalizations.of(context)!.waterPercentage,
@@ -252,6 +256,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumFatPercentage,
+          max: Constants.maximumFatPercentage,
           initialValue: _selectedFatPercentage,
           pupUpKey: 'fat_percentage',
           propertiesName: AppLocalizations.of(context)!.fatPercentage,
@@ -301,6 +307,17 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                     key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        final sumError = validateAdvancedParameters(
+                          _selectedMusclePercentage + _selectedWaterPercentage + _selectedFatPercentage,
+                          context,
+                        );
+                        if (sumError != null) {
+                          setState(() {
+                            _message = sumError;
+                            _messageStyle = Styles.errorStyle;
+                          });
+                          return;
+                        }
                         context.read<DietFormBloc>().add(SubmitForm());
                       }
                     },
