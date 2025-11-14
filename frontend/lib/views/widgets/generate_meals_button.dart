@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/views/widgets/action_button.dart';
 
-class GenerateMealsButton extends StatelessWidget {
+class DietGenerationInfoButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isRegenerateMode;
   final DateTime selectedDay;
 
-  const GenerateMealsButton({
+  const DietGenerationInfoButton({
     super.key,
     required this.onPressed,
     required this.selectedDay,
@@ -14,7 +14,7 @@ class GenerateMealsButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String label) {
     final String label = isRegenerateMode ? 'Regenerate Meals' : 'Generate New Plan';
     final String keyId = isRegenerateMode ? 'regenerate_meals_button' : 'generate_new_button';
     final Color color = isRegenerateMode ? const Color(0xFFF09090) : const Color(0xFF3B9B49);

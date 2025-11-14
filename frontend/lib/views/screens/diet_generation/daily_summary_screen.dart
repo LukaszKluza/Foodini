@@ -106,7 +106,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                     ),
                   ),
                   if (isActiveDay)
-                    GenerateMealsButton(
+                    DietGenerationInfoButton(
                       selectedDay: widget.selectedDate,
                       isRegenerateMode: false,
                       onPressed: () {

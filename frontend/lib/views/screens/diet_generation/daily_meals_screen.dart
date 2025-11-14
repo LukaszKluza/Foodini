@@ -26,25 +26,10 @@ class DailyMealsScreen extends StatefulWidget {
 }
 
 class _DailyMealsScreenState extends State<DailyMealsScreen> {
-  SnackBar? currentSnackBar;
-
   @override
   void initState() {
     super.initState();
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      currentSnackBar = SnackBar(
-        content: Text(AppLocalizations.of(context)!.dietOutdated),
-        duration: const Duration(seconds: 1),
-        backgroundColor: Colors.orangeAccent[700],
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      );
-    });
   }
 
   String formatForUrl(DateTime date) =>
@@ -52,9 +37,12 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
       '${date.month.toString().padLeft(2, '0')}-'
       '${date.day.toString().padLeft(2, '0')}';
 
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final messenger = ScaffoldMessenger.of(context);
     final displayDate =
         "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
 
@@ -65,15 +53,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
     final now = DateTime.now();
-
-    final isActiveDay = (
-        widget.selectedDate.isAfter(now) ||
-            (
-                now.year == widget.selectedDate.year &&
-                now.month == widget.selectedDate.month &&
-                now.day == widget.selectedDate.day
-            )
-    );
+    final isToDay = isSameDay(now, widget.selectedDate);
+    final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
       body: SafeArea(
@@ -100,7 +81,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ),
                   ),
                   if (isActiveDay)
-                    GenerateMealsButton(
+                    DietGenerationInfoButton(
                       selectedDay: widget.selectedDate,
                       isRegenerateMode: false,
                       onPressed: generateOnPressed,
@@ -117,14 +98,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               final sortedEntries =
                   meals.entries.toList()
                     ..sort((a, b) => a.key.value.compareTo(b.key.value));
-
-              if (state.dailySummary!.isOutDated) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  messenger.showSnackBar(currentSnackBar!);
-                });
-              } else {
-                messenger.hideCurrentSnackBar();
-              }
 
               return Stack(
                 children: [
@@ -153,12 +126,19 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ),
                   ),
                   _buildHeader(displayDate),
-                  if (isActiveDay && widget.selectedDate.isAfter(now))
-                      GenerateMealsButton(
+                  if (widget.selectedDate.isAfter(now))
+                      DietGenerationInfoButton(
                         selectedDay: widget.selectedDate,
                         isRegenerateMode: isRegenerate,
                         onPressed: generateOnPressed,
-                      ),
+                      )
+                  else if(isToDay)
+
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: false,
+                      onPressed: generateOnPressed,
+                    )
                 ],
               );
             }
