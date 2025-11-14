@@ -8,7 +8,7 @@ import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
@@ -30,15 +30,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
   void initState() {
     super.initState();
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
-  }
-
-  String formatForUrl(DateTime date) =>
-      '${date.year.toString().padLeft(4, '0')}-'
-      '${date.month.toString().padLeft(2, '0')}-'
-      '${date.day.toString().padLeft(2, '0')}';
-
-  bool isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   @override
@@ -127,17 +118,19 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                   ),
                   _buildHeader(displayDate),
                   if (widget.selectedDate.isAfter(now))
-                      DietGenerationInfoButton(
-                        selectedDay: widget.selectedDate,
-                        isRegenerateMode: isRegenerate,
-                        onPressed: generateOnPressed,
-                      )
-                  else if(isToDay)
-
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: isRegenerate,
+                      onPressed: generateOnPressed,
+                      label: state.dailySummary!.isOutDated ?
+                        AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
+                        'Regenerate Meals',
+                    )
+                  else if(isToDay && state.dailySummary!.isOutDated)
                     DietGenerationInfoButton(
                       selectedDay: widget.selectedDate,
                       isRegenerateMode: false,
-                      onPressed: generateOnPressed,
+                      label: AppLocalizations.of(context)!.dietOutdated
                     )
                 ],
               );

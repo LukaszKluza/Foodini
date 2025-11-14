@@ -106,13 +106,21 @@ def mock_meal_gateway():
     gateway.add_meal_recipe = AsyncMock()
     return gateway
 
+@pytest.fixture
+def mock_user_details_gateway():
+    gateway = AsyncMock()
+    gateway.add_meal_recipe = AsyncMock()
+    return gateway
+
 
 @pytest.fixture
 def daily_summary_service(
-    mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+    mock_daily_summary_repository, mock_meal_repository,
+    mock_last_generated_meals_repository, mock_meal_gateway, mock_user_details_gateway
 ):
     return DailySummaryService(
-        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository,
+        mock_meal_gateway, mock_user_details_gateway
     )
 
 
@@ -288,7 +296,6 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
         custom_protein=20,
         custom_carbs=5,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     mock_summary = MockDailyMealsSummary()
@@ -335,7 +342,6 @@ async def test_add_custom_meal_not_found(daily_summary_service, mock_daily_summa
         custom_protein=20,
         custom_carbs=5,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     mock_daily_summary_repository.get_daily_summary = AsyncMock(return_value=None)
@@ -359,7 +365,6 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
         custom_protein=25,
         custom_carbs=10,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     existing_recipe = AsyncMock()

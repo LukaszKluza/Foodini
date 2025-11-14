@@ -12,7 +12,7 @@ import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/cache_manager.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
@@ -222,7 +222,6 @@ class _MealDetails extends StatelessWidget {
       );
   }
 }
-
 
 BoxShadow getShadowBox() =>
     BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4));

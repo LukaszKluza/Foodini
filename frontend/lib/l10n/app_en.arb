@@ -215,5 +215,6 @@
   "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
 
   "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",
-  "dietOutdated": "Your meal plan may be outdated – consider regenerating it."
+  "dietOutdatedConsiderRegenerating": "Your meal plan may be outdated – consider regenerating it.",
+  "dietOutdated": "Your meal plan may be outdated."
 }

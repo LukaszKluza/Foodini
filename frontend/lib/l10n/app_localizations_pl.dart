@@ -590,5 +590,8 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get dietOutdated => 'Menu może być nieaktualne – rozważ regenerację.';
+  String get dietOutdatedConsiderRegenerating => 'Menu może być nieaktualne – rozważ regenerację.';
+
+  @override
+  String get dietOutdated => 'Menu może być nieaktualne.';
 }

@@ -1253,10 +1253,16 @@ abstract class AppLocalizations {
   /// **'No data for this meal. Please refresh request or contact support at {email}.'**
   String noMealData_contactSupport(Object email);
 
-  /// No description provided for @dietOutdated.
+  /// No description provided for @dietOutdatedConsiderRegenerating.
   ///
   /// In en, this message translates to:
   /// **'Your meal plan may be outdated – consider regenerating it.'**
+  String get dietOutdatedConsiderRegenerating;
+
+  /// No description provided for @dietOutdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated.'**
   String get dietOutdated;
 }
 

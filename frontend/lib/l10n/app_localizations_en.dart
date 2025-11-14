@@ -590,5 +590,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dietOutdated => 'Your meal plan may be outdated – consider regenerating it.';
+  String get dietOutdatedConsiderRegenerating => 'Your meal plan may be outdated – consider regenerating it.';
+
+  @override
+  String get dietOutdated => 'Your meal plan may be outdated.';
 }
