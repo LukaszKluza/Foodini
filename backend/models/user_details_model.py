@@ -14,7 +14,7 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
-from backend.user_details.mixins import AdvancedParametersMixin, DietGoalValidationMixin
+from backend.user_details.mixins import DietGoalValidationMixin
 
 from ..core.db_listeners import register_timestamp_listeners
 from .types import FloatAsNumeric
@@ -23,27 +23,23 @@ if TYPE_CHECKING:
     from .user_model import User
 
 
-class UserDetails(AdvancedParametersMixin, DietGoalValidationMixin, SQLModel, table=True):
+class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     __tablename__ = "user_details"
     __table_args__ = (
         CheckConstraint("height_cm >= 60 AND height_cm <= 230", name="ck_height_range"),
         CheckConstraint("weight_kg >= 20 AND weight_kg <= 160", name="ck_weight_range"),
         CheckConstraint("meals_per_day >= 1 AND meals_per_day <= 6", name="ck_meals_per_day_range"),
         CheckConstraint(
-            "(muscle_percentage IS NULL OR (muscle_percentage >= 0 AND muscle_percentage <= 100))",
+            "(muscle_percentage IS NULL OR (muscle_percentage >= 0 AND muscle_percentage <= 60))",
             name="ck_muscle_percentage_range",
         ),
         CheckConstraint(
-            "(water_percentage IS NULL OR (water_percentage >= 0 AND water_percentage <= 100))",
+            "(water_percentage IS NULL OR (water_percentage >= 40 AND water_percentage <= 80))",
             name="ck_water_percentage_range",
         ),
         CheckConstraint(
-            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 100))",
+            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 60))",
             name="ck_fat_percentage_range",
-        ),
-        CheckConstraint(
-            "(COALESCE(muscle_percentage, 0) + COALESCE(water_percentage, 0) + COALESCE(fat_percentage, 0)) <= 100",
-            name="ck_advanced_params_sum",
         ),
     )
 
@@ -73,9 +69,9 @@ class UserDetails(AdvancedParametersMixin, DietGoalValidationMixin, SQLModel, ta
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)
-    muscle_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
-    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
-    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=60)
+    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=40, le=80)
+    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=60)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

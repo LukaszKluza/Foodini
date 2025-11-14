@@ -203,7 +203,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Fat percentage: 5.0%'), findsOneWidget);
+    expect(find.text('Fat percentage: 8.0%'), findsOneWidget);
   });
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {

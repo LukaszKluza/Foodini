@@ -13,13 +13,11 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
-from backend.user_details.mixins import AdvancedParametersMixin, DateOfBirthValidationMixin, DietGoalValidationMixin
+from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
 from backend.user_details.mixins.float_field_validator_mixin import FloatFieldValidatorMixin
 
 
-class UserDetailsCreate(
-    AdvancedParametersMixin, DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel
-):
+class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
@@ -32,14 +30,12 @@ class UserDetailsCreate(
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
-    muscle_percentage: Optional[float] = Field(default=None, ge=0, le=100)
-    water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
-    fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(default=None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(default=None, ge=40, le=80)
+    fat_percentage: Optional[float] = Field(default=None, ge=0, le=60)
 
 
-class UserDetailsUpdate(
-    AdvancedParametersMixin, DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel
-):
+class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
@@ -52,9 +48,9 @@ class UserDetailsUpdate(
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None
-    muscle_percentage: Optional[float] = Field(None, ge=0, le=100)
-    water_percentage: Optional[float] = Field(None, ge=0, le=100)
-    fat_percentage: Optional[float] = Field(None, ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(None, ge=40, le=80)
+    fat_percentage: Optional[float] = Field(None, ge=0, le=60)
 
     @staticmethod
     def map(data: UserDetailsCreate) -> "UserDetailsUpdate":

@@ -307,17 +307,6 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                     key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        final sumError = validateAdvancedParameters(
-                          _selectedMusclePercentage + _selectedWaterPercentage + _selectedFatPercentage,
-                          context,
-                        );
-                        if (sumError != null) {
-                          setState(() {
-                            _message = sumError;
-                            _messageStyle = Styles.errorStyle;
-                          });
-                          return;
-                        }
                         context.read<DietFormBloc>().add(SubmitForm());
                       }
                     },
