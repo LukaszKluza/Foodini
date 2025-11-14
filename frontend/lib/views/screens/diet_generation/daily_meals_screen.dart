@@ -26,10 +26,25 @@ class DailyMealsScreen extends StatefulWidget {
 }
 
 class _DailyMealsScreenState extends State<DailyMealsScreen> {
+  SnackBar? currentSnackBar;
+
   @override
   void initState() {
     super.initState();
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      currentSnackBar = SnackBar(
+        content: Text(AppLocalizations.of(context)!.dietOutdated),
+        duration: const Duration(seconds: 1),
+        backgroundColor: Colors.orangeAccent[700],
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      );
+    });
   }
 
   String formatForUrl(DateTime date) =>
@@ -39,6 +54,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final messenger = ScaffoldMessenger.of(context);
     final displayDate =
         "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
 
@@ -101,6 +117,14 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               final sortedEntries =
                   meals.entries.toList()
                     ..sort((a, b) => a.key.value.compareTo(b.key.value));
+
+              if (state.dailySummary!.isOutDated) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  messenger.showSnackBar(currentSnackBar!);
+                });
+              } else {
+                messenger.hideCurrentSnackBar();
+              }
 
               return Stack(
                 children: [

@@ -588,4 +588,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String noMealData_contactSupport(Object email) {
     return 'Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem $email.';
   }
+
+  @override
+  String get dietOutdated => 'Menu może być nieaktualne – rozważ regenerację.';
 }

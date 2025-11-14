@@ -27,6 +27,12 @@ class UserDetailsService:
     async def get_user_details_by_user(self, user: Type[User]):
         return await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)
 
+    async def get_date_of_last_update_user_details(self, user: Type[User]):
+        last_update = await self.user_details_repository.get_date_of_last_update_user_details(user.id)
+        if not last_update:
+            raise NotFoundInDatabaseException("No date in database of last user details update.")
+        return last_update
+
     async def add_user_details(
         self,
         user_details_data: UserDetailsCreate,

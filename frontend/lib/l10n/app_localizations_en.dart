@@ -588,4 +588,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String noMealData_contactSupport(Object email) {
     return 'No data for this meal. Please refresh request or contact support at $email.';
   }
+
+  @override
+  String get dietOutdated => 'Your meal plan may be outdated – consider regenerating it.';
 }
