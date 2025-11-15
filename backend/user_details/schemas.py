@@ -31,8 +31,8 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     stress_level: StressLevel
     sleep_quality: SleepQuality
     muscle_percentage: Optional[float] = Field(default=None, ge=0, le=60)
-    water_percentage: Optional[float] = Field(default=None, ge=40, le=80)
-    fat_percentage: Optional[float] = Field(default=None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(default=None, ge=30, le=80)
+    fat_percentage: Optional[float] = Field(default=None, ge=0, le=45)
 
 
 class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
@@ -49,8 +49,8 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None
     muscle_percentage: Optional[float] = Field(None, ge=0, le=60)
-    water_percentage: Optional[float] = Field(None, ge=40, le=80)
-    fat_percentage: Optional[float] = Field(None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(None, ge=30, le=80)
+    fat_percentage: Optional[float] = Field(None, ge=0, le=45)
 
     @staticmethod
     def map(data: UserDetailsCreate) -> "UserDetailsUpdate":

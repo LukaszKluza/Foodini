@@ -16,11 +16,11 @@ class Constants {
   static const double minimumMusclePercentage = 0;
   static const double maximumMusclePercentage = 60;
   static const double defaultMusclePercentage = 25;
-  static const double minimumWaterPercentage = 40;
+  static const double minimumWaterPercentage = 30;
   static const double maximumWaterPercentage = 80;
   static const double defaultWaterPercentage = 60;
   static const double minimumFatPercentage = 0;
-  static const double maximumFatPercentage = 60;
+  static const double maximumFatPercentage = 45;
   static const double defaultFatPercentage = 15;
 
   static const double horizontalPaddingRatio = 0.07;

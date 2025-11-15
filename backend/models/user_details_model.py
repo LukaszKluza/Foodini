@@ -34,11 +34,11 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
             name="ck_muscle_percentage_range",
         ),
         CheckConstraint(
-            "(water_percentage IS NULL OR (water_percentage >= 40 AND water_percentage <= 80))",
+            "(water_percentage IS NULL OR (water_percentage >= 30 AND water_percentage <= 80))",
             name="ck_water_percentage_range",
         ),
         CheckConstraint(
-            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 60))",
+            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 45))",
             name="ck_fat_percentage_range",
         ),
     )
@@ -70,8 +70,8 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)
     muscle_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=60)
-    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=40, le=80)
-    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=60)
+    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=30, le=80)
+    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=45)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
