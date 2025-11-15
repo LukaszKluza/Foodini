@@ -189,12 +189,23 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         userId,
       );
 
-      emit(
-        currentState.copyWith(
-          dailySummary: summary,
-          processingStatus: ProcessingStatus.submittingSuccess,
-        ),
-      );
+      if (summary.meals.isEmpty) {
+        emit(
+          currentState.copyWith(
+            dailySummary: summary,
+            processingStatus: ProcessingStatus.submittingSuccess,
+            gettingDailySummaryStatus: ProcessingStatus.gettingFailure,
+          ),
+        );
+      } else {
+        emit(
+          currentState.copyWith(
+            dailySummary: summary,
+            processingStatus: ProcessingStatus.submittingSuccess,
+            gettingDailySummaryStatus: ProcessingStatus.gettingSuccess,
+          ),
+        );
+      }
     } on ApiException catch (error) {
       emit(
         currentState.copyWith(
@@ -208,7 +219,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     } catch (error) {
       emit(
         currentState.copyWith(
-          changingMealStatus: ProcessingStatus.submittingFailure,
+          processingStatus: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
         ),
       );
