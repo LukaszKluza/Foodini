@@ -32,12 +32,8 @@ class CaloriesPredictionService:
             user_id_from_request
         )
         if not last_update:
-            raise NotFoundInDatabaseException("No date pf last update calories predictions the user.")
+            raise NotFoundInDatabaseException("No date of last update calories predictions the user.")
         return last_update
-
-    # TODO remove if not used
-    # async def get_diet_predictions_by_user_id(self, user_id_from_request: int):
-    #     return await self.calories_prediction_repository.get_user_calories_prediction_by_user_id(user_id_from_request)
 
     async def add_calories_prediction(
         self,

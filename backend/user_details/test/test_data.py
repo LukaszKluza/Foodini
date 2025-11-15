@@ -1,3 +1,4 @@
+import uuid
 from datetime import date
 
 from backend.models import UserDetails
@@ -13,7 +14,7 @@ from backend.user_details.enums import (
 
 user_1 = UserDetails(
     id=1,
-    user_id=1,
+    user_id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a61"),
     gender=Gender.MALE,
     height_cm=180.0,
     weight_kg=65.0,
@@ -33,7 +34,7 @@ user_1 = UserDetails(
 
 user_2 = UserDetails(
     id=2,
-    user_id=2,
+    user_id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a62"),
     gender=Gender.FEMALE,
     height_cm=165.0,
     weight_kg=65.0,

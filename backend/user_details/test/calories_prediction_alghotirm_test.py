@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
         (
             test_data.user_1,
             PredictedCalories(
+                user_id=test_data.user_1.user_id,
                 bmr=1521,
                 tdee=2065,
                 target_calories=2272,
@@ -27,6 +28,7 @@ logging.basicConfig(level=logging.DEBUG)
         (
             test_data.user_2,
             PredictedCalories(
+                user_id=test_data.user_2.user_id,
                 bmr=1345,
                 tdee=2195,
                 target_calories=1646,

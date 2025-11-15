@@ -68,7 +68,7 @@ class DailySummary {
       'eaten_protein': eatenProtein,
       'eaten_carbs': eatenCarbs,
       'eaten_fat': eatenFat,
-      'is_out_dated': eatenFat,
+      'is_out_dated': isOutDated,
     };
   }
 }
