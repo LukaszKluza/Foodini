@@ -8,6 +8,7 @@ from backend.daily_summary.repositories.last_generated_meals_repository import L
 from backend.meals.dependencies import get_meal_repository
 from backend.meals.meal_gateway import MealGateway, get_meal_gateway
 from backend.meals.repositories.meal_repository import MealRepository
+from backend.user_details.user_details_gateway import UserDetailsGateway, get_user_details_gateway
 
 
 async def get_last_generated_meals_repository(
@@ -27,5 +28,8 @@ async def get_daily_summary_service(
     meal_repository: MealRepository = Depends(get_meal_repository),
     last_generated_meals_repository: LastGeneratedMealsRepository = Depends(get_last_generated_meals_repository),
     meal_gateway: MealGateway = Depends(get_meal_gateway),
+    user_details_gateway: UserDetailsGateway = Depends(get_user_details_gateway),
 ) -> DailySummaryService:
-    return DailySummaryService(daily_summary_repository, meal_repository, last_generated_meals_repository, meal_gateway)
+    return DailySummaryService(
+        daily_summary_repository, meal_repository, last_generated_meals_repository, meal_gateway, user_details_gateway
+    )

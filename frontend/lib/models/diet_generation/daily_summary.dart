@@ -14,6 +14,8 @@ class DailySummary {
   final double eatenCarbs;
   final double eatenFat;
 
+  final bool isOutDated;
+
   DailySummary({
     required this.day,
     required this.meals,
@@ -25,6 +27,7 @@ class DailySummary {
     required this.eatenProtein,
     required this.eatenCarbs,
     required this.eatenFat,
+    required this.isOutDated,
   });
 
   factory DailySummary.fromJson(Map<String, dynamic> json) {
@@ -47,6 +50,7 @@ class DailySummary {
       eatenProtein: (json['eaten_protein'] as num).toDouble(),
       eatenCarbs: (json['eaten_carbs'] as num).toDouble(),
       eatenFat: (json['eaten_fat'] as num).toDouble(),
+      isOutDated: json['is_out_dated'] as bool,
     );
   }
 
@@ -64,6 +68,7 @@ class DailySummary {
       'eaten_protein': eatenProtein,
       'eaten_carbs': eatenCarbs,
       'eaten_fat': eatenFat,
+      'is_out_dated': isOutDated,
     };
   }
 }

@@ -214,5 +214,7 @@
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
   "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
-  "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}."
+  "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
+  "dietOutdatedConsiderRegenerating": "Menu może być nieaktualne – rozważ regenerację.",
+  "dietOutdated": "Menu może być nieaktualne."
 }

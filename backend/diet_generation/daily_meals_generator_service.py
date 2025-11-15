@@ -19,7 +19,8 @@ from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, c
 from backend.diet_generation.tools.translator import TranslatorTool
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
-from backend.models import Meal, MealRecipe, User, UserDetails, UserDietPredictions
+from backend.models import Meal, MealRecipe, User, UserDetails
+from backend.user_details.schemas import PredictedCalories
 from backend.user_details.user_details_gateway import UserDetailsGateway
 from backend.users.enums.language import Language
 
@@ -38,16 +39,16 @@ class DailyMealsGeneratorService:
 
     @staticmethod
     def _prepare_input(
-        details: UserDetails, predictions: UserDietPredictions, previous_meals: List[str]
+        details: UserDetails, predictions: PredictedCalories, previous_meals: List[str]
     ) -> DietGenerationInput:
         return DietGenerationInput(
             dietary_restriction=[restriction for restriction in details.dietary_restrictions],
             meals_per_day=details.meals_per_day,
             meal_types=MealType.daily_meals(details.meals_per_day),
             calories=predictions.target_calories,
-            protein=predictions.protein,
-            carbs=predictions.carbs,
-            fat=predictions.fat,
+            protein=predictions.predicted_macros.protein,
+            carbs=predictions.predicted_macros.carbs,
+            fat=predictions.predicted_macros.fat,
             previous_meals=previous_meals,
         )
 
@@ -105,7 +106,7 @@ class DailyMealsGeneratorService:
         return saved_meals, saved_recipes, meals_type_map
 
     async def _save_daily_summary(
-        self, day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, BasicMealInfo]
+        self, day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, BasicMealInfo]
     ):
         await self.daily_summary_gateway.add_daily_meals(
             to_daily_meals_create(day, user_diet_predictions, meals_type_map), user_diet_predictions.user_id
