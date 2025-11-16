@@ -80,7 +80,7 @@ class DailyMealsGeneratorService:
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error generating diet plan for user {user.id}"
+                detail=f"Error generating diet plan for user {user.id}",
             ) from e
         return saved_recipes
 
