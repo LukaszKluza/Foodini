@@ -2,12 +2,12 @@ from datetime import date
 from typing import Dict
 from uuid import UUID
 
+from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import BasicMealInfo, DailyMealsCreate
 from backend.diet_generation.schemas import CompleteMeal, IngredientCreate, MealRecipeTranslation, StepCreate
 from backend.meals.enums.meal_type import MealType
 from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDietPredictions
 from backend.users.enums.language import Language
-from backend.daily_summary.enums.meal_status import MealStatus
 
 
 def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
