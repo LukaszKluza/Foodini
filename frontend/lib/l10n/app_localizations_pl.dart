@@ -543,6 +543,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailySummary => 'Dzienne podsumowanie';
 
   @override
+  String get fillFormToGenerateMeals => 'Proszę wypełnić formularz, aby móc generować posiłki';
+
+  @override
   String get dailyMeals => 'Dzienne menu';
 
   @override

@@ -11,6 +11,7 @@ import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_comparator.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
+import 'package:frontend/views/widgets/missing_predictions_alert.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid_value.dart';
@@ -75,22 +76,26 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
                 state.gettingDailySummaryStatus.isFailure
             ) {
-              return Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      state.getMessage!(context),
-                      style: const TextStyle(fontSize: 16, color: Colors.red),
+              if (state.errorCode == 404) {
+                return MissingPredictionsAlert(message: AppLocalizations.of(context)!.fillFormToGenerateMeals,);
+              } else {
+                return Stack(
+                  children: [
+                    Center(
+                      child: Text(
+                        state.getMessage!(context),
+                        style: const TextStyle(fontSize: 16, color: Colors.red),
+                      ),
                     ),
-                  ),
-                  if (isActiveDay)
-                    GenerateMealsButton(
-                      selectedDay: widget.selectedDate,
-                      isRegenerateMode: false,
-                      onPressed: generateOnPressed,
-                    ),
-                ],
-              );
+                    if (isActiveDay)
+                      GenerateMealsButton(
+                        selectedDay: widget.selectedDate,
+                        isRegenerateMode: false,
+                        onPressed: generateOnPressed,
+                      ),
+                  ],
+                );
+              }
               }
 
             if (state.dailySummary != null &&

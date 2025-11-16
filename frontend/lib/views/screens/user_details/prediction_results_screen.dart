@@ -149,7 +149,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                     ),
                   ),
                   if (_errorCode == 404) ...[
-                    const MissingPredictionsAlert()
+                    MissingPredictionsAlert(message: AppLocalizations.of(context)!.fillFormToSeePredictions,)
                   ] else
                     retryRequestButton(context),
                 ],

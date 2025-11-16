@@ -1163,6 +1163,12 @@ abstract class AppLocalizations {
   /// **'Daily Summary'**
   String get dailySummary;
 
+  /// No description provided for @fillFormToGenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to be able to generate meals'**
+  String get fillFormToGenerateMeals;
+
   /// No description provided for @dailyMeals.
   ///
   /// In en, this message translates to:

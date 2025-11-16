@@ -5,7 +5,12 @@ import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:go_router/go_router.dart';
 
 class MissingPredictionsAlert extends StatelessWidget {
-  const MissingPredictionsAlert({super.key});
+  final String message;
+
+  const MissingPredictionsAlert({
+    super.key,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class MissingPredictionsAlert extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Center(
             child: Text(
-              AppLocalizations.of(context)!.fillFormToSeePredictions,
+              message,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30.sp.clamp(20.0, 40.0),
