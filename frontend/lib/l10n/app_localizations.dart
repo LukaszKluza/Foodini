@@ -1264,6 +1264,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your meal plan may be outdated.'**
   String get dietOutdated;
+
+  /// No description provided for @planDoesNotExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for given day does not exist.'**
+  String get planDoesNotExist;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

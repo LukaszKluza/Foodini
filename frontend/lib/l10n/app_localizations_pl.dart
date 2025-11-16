@@ -594,4 +594,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dietOutdated => 'Menu może być nieaktualne.';
+
+  @override
+  String get planDoesNotExist => 'Plan na dany dzień nie istnieje.';
 }
