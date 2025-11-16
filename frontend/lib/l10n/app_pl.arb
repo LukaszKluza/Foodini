@@ -214,7 +214,9 @@
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
   "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
+  "generateNewPlan": "Generuj posiłki",
   "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
+  "regenerateMeals": "Generuj posiłki ponownie",
   "dietOutdatedConsiderRegenerating": "Menu może być nieaktualne – rozważ regenerację.",
   "dietOutdated": "Menu może być nieaktualne.",
   "planDoesNotExist": "Plan na dany dzień nie istnieje."

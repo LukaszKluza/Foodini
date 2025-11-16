@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/views/widgets/action_button.dart';
 
 class DietGenerationInfoButton extends StatelessWidget {
@@ -17,7 +18,7 @@ class DietGenerationInfoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonLabel = label ?? 'Generate New Plan';
+    final buttonLabel = label ?? AppLocalizations.of(context)!.generateNewPlan;
     final String keyId = isRegenerateMode ? 'regenerate_meals_button' : 'generate_new_button';
     final Color color = isRegenerateMode ? const Color(0xFFF09090) : const Color(0xFF3B9B49);
 

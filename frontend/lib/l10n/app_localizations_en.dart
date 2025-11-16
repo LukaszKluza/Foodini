@@ -585,9 +585,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
 
   @override
+  String get generateNewPlan => 'Generate New Plan';
+
+  @override
   String noMealData_contactSupport(Object email) {
     return 'No data for this meal. Please refresh request or contact support at $email.';
   }
+
+  @override
+  String get regenerateMeals => 'Regenerate Meals';
 
   @override
   String get dietOutdatedConsiderRegenerating => 'Your meal plan may be outdated – consider regenerating it.';
