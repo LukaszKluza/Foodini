@@ -11,6 +11,7 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/utils/diet_generation/date_comparator.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
@@ -21,10 +22,8 @@ import 'package:uuid/uuid_value.dart';
 class DailySummaryScreen extends StatefulWidget {
   final DateTime selectedDate;
 
-  const DailySummaryScreen({
-    super.key,
-    required this.selectedDate,
-  });
+  DailySummaryScreen({Key? key, required this.selectedDate})
+      : super(key: ValueKey('daily_summary_$selectedDate'));
 
   @override
   State<DailySummaryScreen> createState() => _DailySummaryScreenState();
@@ -74,9 +73,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
-            if (state is DailySummaryLoading) {
+            if (state.dietGeneratingInfo.processingStatus.isOngoing
+                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is DailySummaryError) {
+            } else if (state.dietGeneratingInfo.processingStatus.isFailure
+                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0
+            ) {
               // TODO: use MissingPredictionsAlert when proper error handling is added to bloc
               return Stack(
                 children: [
@@ -84,7 +86,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 100.0),
                       child: Text(
-                        state.message ?? 'Data loading error',
+                        state.getMessage!(context),
                         style: const TextStyle(fontSize: 16, color: Colors.red),
                       ),
                     ),
@@ -99,8 +101,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                     ),
                 ],
               );
-            } else if (state is DailySummaryLoaded) {
-              final summary = state.dailySummary;
+            } else if (state.dailySummary != null && dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
+              final summary = state.dailySummary!;
 
               final meals = summary.meals;
               final mealTypes = meals.keys.toList()..sort((a, b) => a.value.compareTo(b.value));
@@ -113,15 +115,14 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= meals.entries.firstWhere((entry) =>
-              entry.value.status == MealStatus.pending, orElse: () =>
-                  MapEntry(mealTypes.first, meals[mealTypes.first]!),).key;
-
+              selectedMealType ??= meals.entries.firstWhere(
+                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
+                orElse: () => meals.entries.last,
+              ).key;
               final activeMeal = selectedMealType!;
               final activeMealInfo = meals[activeMeal]!;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
-
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -176,8 +177,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
   ) {
     return BlocBuilder<DailySummaryBloc, DailySummaryState>(
       builder: (context, state) {
-        if (state is! DailySummaryLoaded) return const SizedBox.shrink();
-        final summary = state.dailySummary;
+        final summary = state.dailySummary!;
 
         final proteinPercent =
             (summary.eatenProtein / summary.targetProtein).toDouble();

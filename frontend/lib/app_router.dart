@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
-import 'package:frontend/events/diet_generation/daily_summary_events.dart';
-import 'package:frontend/foodini.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/user/language.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/views/screens/diet_generation/daily_meals_screen.dart';
 import 'package:frontend/views/screens/diet_generation/daily_summary_screen.dart';
@@ -115,30 +110,24 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/daily-summary/:date',
       builder: (context, state) {
-        final dateStr = state.pathParameters['date']!;
-        final date = DateTime.tryParse(dateStr);
-        final selectedDate = date != null
-            ? DateTime(date.year, date.month, date.day)
-            : DateTime.now();
-
-        var langState = context.watch<LanguageCubit>().state;
-        var language = Language.fromJson(langState.languageCode);
-
-        return BlocProvider(
-          key: ValueKey('bloc_${selectedDate}_${language.code}'),
-          create: (context) =>
-              DailySummaryBloc(context.read())..add(GetDailySummary(selectedDate)),
-          child: DailySummaryScreen(selectedDate: selectedDate),
-        );
+        final date = DateTime.tryParse(state.pathParameters['date']!)!;
+        return DailySummaryScreen(selectedDate: date);
       },
-      redirect: (context, state) => _redirectIfUnauthenticated(context),
+      redirect: (context, state) {
+        try {
+          DateTime.tryParse(state.pathParameters['date']!)!;
+          return _redirectIfUnauthenticated(context);
+        } catch (_) {
+          return '/.../daily-summary/${state.pathParameters['date']}';
+        }
+      },
     ),
     GoRoute(
       path: '/meal-details/:mealType/:date',
       builder: (context, state) {
         final mealType = MealType.fromJson(state.pathParameters['mealType']!);
         final date = DateTime.tryParse(state.pathParameters['date']!)!;
-        return MealDetailsScreen(mealType: mealType, day: date);
+        return MealDetailsScreen(mealType: mealType, selectedDate: date);
       },
       redirect: (context, state) {
         try {
@@ -146,7 +135,7 @@ final GoRouter router = GoRouter(
           DateTime.tryParse(state.pathParameters['date']!)!;
           return _redirectIfUnauthenticated(context);
         } catch (_) {
-          return '/.../meal-details/${state.pathParameters['mealType']}';
+          return '/.../meal-details/${state.pathParameters['mealType']}/${state.pathParameters['date']}';
         }
       },
     ),

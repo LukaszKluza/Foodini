@@ -9,7 +9,12 @@ import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:uuid/uuid.dart';
 
-VoidCallback showPopUp(BuildContext context, DateTime day, UuidValue updatedMealId, {MealInfo? mealInfo}) {
+VoidCallback showPopUp(
+  BuildContext context,
+  DateTime day,
+  UuidValue updatedMealId, {
+  MealInfo? mealInfo,
+}) {
   TextFormField editableTextFormField(
     BuildContext context,
     TextEditingController textEditingController,
@@ -26,9 +31,11 @@ VoidCallback showPopUp(BuildContext context, DateTime day, UuidValue updatedMeal
       ),
       keyboardType: textInputType,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) => validator(value)
+      validator: (value) => validator(value),
     );
   }
+
+  final formKey = GlobalKey<FormState>();
 
   return () {
     showDialog(
@@ -59,87 +66,100 @@ VoidCallback showPopUp(BuildContext context, DateTime day, UuidValue updatedMeal
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if(mealInfo == null)
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (mealInfo == null)
+                      editableTextFormField(
+                        context,
+                        nameController,
+                        (value) => validateMealItemName(value, context),
+                        AppLocalizations.of(context)!.mealName,
+                        textInputType: TextInputType.text,
+                      ),
+                    const SizedBox(height: 12),
                     editableTextFormField(
                       context,
-                      nameController,
-                          (value) => validateMealItemName(value, context),
-                      AppLocalizations.of(context)!.mealName,
-                      textInputType: TextInputType.text,
+                      carbsController,
+                      (value) => validateMacro(value, context),
+                      AppLocalizations.of(context)!.carbsG,
                     ),
-                  const SizedBox(height: 12),
-                  editableTextFormField(
-                    context,
-                    carbsController,
-                    (value) => validateMacro(value, context),
-                    AppLocalizations.of(context)!.carbsG,
-                  ),
-                  const SizedBox(height: 12),
-                  editableTextFormField(
-                    context,
-                    fatController,
-                    (value) => validateMacro(value, context),
-                    AppLocalizations.of(context)!.fatG,
-                  ),
-                  const SizedBox(height: 12),
-                  editableTextFormField(
-                    context,
-                    proteinController,
-                    (value) => validateMacro(value, context),
-                    AppLocalizations.of(context)!.proteinG,
-                  ),
-                  const SizedBox(height: 12),
-                  editableTextFormField(
-                    context,
-                    caloriesController,
-                    (value) => validateCalories(value, context),
-                    AppLocalizations.of(context)!.calories,
-                  ),
-                  const SizedBox(height: 18),
-                  if (mealInfo == null) ...[
+                    const SizedBox(height: 12),
+                    editableTextFormField(
+                      context,
+                      fatController,
+                      (value) => validateMacro(value, context),
+                      AppLocalizations.of(context)!.fatG,
+                    ),
+                    const SizedBox(height: 12),
+                    editableTextFormField(
+                      context,
+                      proteinController,
+                      (value) => validateMacro(value, context),
+                      AppLocalizations.of(context)!.proteinG,
+                    ),
+                    const SizedBox(height: 12),
+                    editableTextFormField(
+                      context,
+                      caloriesController,
+                      (value) => validateCalories(value, context),
+                      AppLocalizations.of(context)!.calories,
+                    ),
+                    const SizedBox(height: 18),
+                    if (mealInfo == null) ...[
+                      Row(
+                        children: [
+                          ActionButton(
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.orangeAccent,
+                            label:
+                                AppLocalizations.of(
+                                  context,
+                                )!.scanProductBarCode,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     Row(
                       children: [
                         ActionButton(
                           onPressed: () => Navigator.pop(context),
-                          color: Colors.orangeAccent,
-                          label:
-                              AppLocalizations.of(context)!.scanProductBarCode,
+                          color: Colors.grey[500]!,
+                          label: AppLocalizations.of(context)!.cancel,
+                        ),
+                        const SizedBox(width: 12),
+                        ActionButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              var customMealUpdateRequest =
+                                CustomMealUpdateRequest(
+                                  day: day,
+                                  mealId: updatedMealId,
+                                  customName:
+                                    mealInfo == null ? nameController.text : null,
+                                  customCalories: int.tryParse(caloriesController.text),
+                                  customProtein: double.tryParse(proteinController.text),
+                                  customCarbs: double.tryParse(carbsController.text),
+                                  customFat: double.tryParse(fatController.text)
+                                );
+                              context.read<DailySummaryBloc>().add(
+                                UpdateMeal(
+                                  customMealUpdateRequest: customMealUpdateRequest,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            }
+                          },
+                          color: Colors.lightGreen,
+                          label: AppLocalizations.of(context)!.save,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
                   ],
-                  Row(
-                    children: [
-                      ActionButton(
-                        onPressed: () => Navigator.pop(context),
-                        color: Colors.grey[500]!,
-                        label: AppLocalizations.of(context)!.cancel,
-                      ),
-                      const SizedBox(width: 12),
-                      ActionButton(
-                        onPressed: () {
-                          var customMealUpdateRequest = CustomMealUpdateRequest(
-                            day: day,
-                            mealId: updatedMealId,
-                            customName: mealInfo == null ? nameController.text : null,
-                            customCalories: int.tryParse(caloriesController.text),
-                            customProtein: double.tryParse(proteinController.text),
-                            customCarbs: double.tryParse(carbsController.text),
-                            customFat: double.tryParse(fatController.text),
-                          );
-                          context.read<DailySummaryBloc>().add(UpdateMeal(customMealUpdateRequest: customMealUpdateRequest));
-                          Navigator.pop(context);
-                        },
-                        color: Colors.lightGreen,
-                        label: AppLocalizations.of(context)!.save,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
