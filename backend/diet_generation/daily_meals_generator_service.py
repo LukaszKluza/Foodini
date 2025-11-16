@@ -1,9 +1,11 @@
 import asyncio
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from typing import Dict, List
 from uuid import UUID
 
 from backend.core.logger import logger
+from backend.core.value_error_exception import ValueErrorException
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
@@ -20,6 +22,7 @@ from backend.diet_generation.tools.translator import TranslatorTool
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
 from backend.models import Meal, MealRecipe, User, UserDetails, UserDietPredictions
+from backend.settings import config
 from backend.user_details.user_details_gateway import UserDetailsGateway
 from backend.users.enums.language import Language
 
@@ -52,6 +55,17 @@ class DailyMealsGeneratorService:
         )
 
     async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
+        today = datetime.now(config.TIMEZONE).date()
+        if day > today:
+            raise ValueErrorException("Cannot generate diet for future days.")
+
+        if day == today:
+            try:
+                await self.daily_summary_gateway.get_daily_meals(user.id, day)
+                raise ValueErrorException("Diet for today has already been generated.")
+            except NotFoundInDatabaseException:
+                pass
+
         try:
             user_details, user_diet_predictions, user_latest_meals, meal_icons = await self._get_required_arguments(
                 user, day
