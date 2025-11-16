@@ -7,6 +7,7 @@ from backend.diet_generation.schemas import CompleteMeal, IngredientCreate, Meal
 from backend.meals.enums.meal_type import MealType
 from backend.models import Ingredient, Ingredients, Meal, MealRecipe, Step, UserDietPredictions
 from backend.users.enums.language import Language
+from backend.daily_summary.enums.meal_status import MealStatus
 
 
 def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
@@ -70,9 +71,10 @@ def to_daily_meals_create(
     )
 
 
-def to_empty_basic_meal_info(meal_id: UUID) -> BasicMealInfo:
+def to_empty_basic_meal_info(meal_id: UUID, status: MealStatus = MealStatus.TO_EAT) -> BasicMealInfo:
     return BasicMealInfo(
         meal_id=meal_id,
+        status=status,
         calories=0,
         protein=0,
         fat=0,

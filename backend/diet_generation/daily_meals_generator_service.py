@@ -8,6 +8,7 @@ from backend.core.value_error_exception import ValueErrorException
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
+from backend.daily_summary.enums.meal_status import MealStatus
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import (
     complete_meal_to_meal,
@@ -56,8 +57,8 @@ class DailyMealsGeneratorService:
 
     async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
         today = datetime.now(config.TIMEZONE).date()
-        if day > today:
-            raise ValueErrorException("Cannot generate diet for future days.")
+        if day < today:
+            raise ValueErrorException("Cannot generate diet for past days.")
 
         if day == today:
             try:
@@ -104,7 +105,7 @@ class DailyMealsGeneratorService:
         saved_recipes = []
         meals_type_map = {}
 
-        for complete_meal in daily_diet:
+        for idx, complete_meal in enumerate(daily_diet):
             saved_meal = await self.meal_gateway.add_meal(
                 complete_meal_to_meal(complete_meal, meal_icons[complete_meal.meal_type])
             )
@@ -114,7 +115,8 @@ class DailyMealsGeneratorService:
 
             saved_meals.append(saved_meal)
             saved_recipes.append(meal_recipe)
-            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id)
+            status = MealStatus.PENDING if idx == 0 else MealStatus.TO_EAT
+            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id, status=status)
 
         return saved_meals, saved_recipes, meals_type_map
 
