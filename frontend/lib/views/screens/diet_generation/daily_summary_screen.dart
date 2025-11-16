@@ -74,12 +74,18 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
+            void generateOnPressed() {
+              context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
+            }
+
             if (state.dietGeneratingInfo.processingStatus.isOngoing
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state.dietGeneratingInfo.processingStatus.isFailure
-                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0
-            ) {
+            } else if (state.gettingDailySummaryStatus.isOngoing) {
+              return const Center(child: CircularProgressIndicator());
+            } else if ((state.dietGeneratingInfo.processingStatus.isFailure
+                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)
+                || state.gettingDailySummaryStatus.isFailure) {
               if (state.errorCode == 404) {
                 return MissingPredictionsAlert(message: AppLocalizations.of(context)!.fillFormToGenerateMeals,);
               } else {
@@ -98,9 +104,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       GenerateMealsButton(
                         selectedDay: widget.selectedDate,
                         isRegenerateMode: false,
-                        onPressed: () {
-                          context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
-                        },
+                        onPressed: generateOnPressed,
                       ),
                   ],
                 );
