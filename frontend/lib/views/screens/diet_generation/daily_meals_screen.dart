@@ -76,9 +76,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
                 state.gettingDailySummaryStatus.isFailure
             ) {
-              if (state.errorCode == 404) {
-                return MissingPredictionsAlert(message: AppLocalizations.of(context)!.fillFormToGenerateMeals,);
-              } else {
                 return Stack(
                   children: [
                     Center(
@@ -96,8 +93,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                   ],
                 );
               }
-              }
-
             if (state.dailySummary != null &&
                 dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
               final meals = state.dailySummary!.meals;

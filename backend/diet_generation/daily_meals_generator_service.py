@@ -3,7 +3,10 @@ from datetime import date, timedelta
 from typing import Dict, List
 from uuid import UUID
 
+from fastapi import HTTPException, status
+
 from backend.core.logger import logger
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
 from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
@@ -70,8 +73,15 @@ class DailyMealsGeneratorService:
             )
             await self._save_daily_summary(day, user_diet_predictions, meals_type_map)
             await self._translate_and_save_recipes(saved_meals, saved_recipes)
+        except NotFoundInDatabaseException:
+            raise
+        except HTTPException:
+            raise
         except Exception as e:
-            raise RuntimeError(f"Error generating diet plan for user {user.id}: {e}") from e
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error generating diet plan for user {user.id}"
+            ) from e
         return saved_recipes
 
     async def _get_required_arguments(self, user: User, day: date):

@@ -17,7 +17,7 @@ class UserDetailsGateway:
         return await self.user_details_service.get_user_details_by_user(user)
 
     async def get_user_diet_predictions(self, user: User) -> UserDietPredictions:
-        return await self.calories_prediction_service.get_diet_predictions_by_user_id(user.id)
+        return await self.calories_prediction_service.get_calories_prediction_by_user_id(user.id)
 
 
 def get_user_details_gateway(

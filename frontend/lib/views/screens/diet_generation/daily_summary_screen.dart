@@ -86,9 +86,6 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             } else if ((state.dietGeneratingInfo.processingStatus.isFailure
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)
                 || state.gettingDailySummaryStatus.isFailure) {
-              if (state.errorCode == 404) {
-                return MissingPredictionsAlert(message: AppLocalizations.of(context)!.fillFormToGenerateMeals,);
-              } else {
                 return Stack(
                   children: [
                     Center(
@@ -108,7 +105,6 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       ),
                   ],
                 );
-              }
             } else if (state.dailySummary != null && dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
               final summary = state.dailySummary!;
 
