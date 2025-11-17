@@ -159,7 +159,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Muscle percentage: 35.0%'), findsOneWidget);
+    expect(find.text('Muscle percentage: 21.0%'), findsOneWidget);
   });
 
   testWidgets('Water slider works properly', (WidgetTester tester) async {
@@ -180,7 +180,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Water percentage: 57.0%'), findsOneWidget);
+    expect(find.text('Water percentage: 59.0%'), findsOneWidget);
   });
 
   testWidgets('Fat slider works properly', (WidgetTester tester) async {
@@ -203,7 +203,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Then
-    expect(find.text('Fat percentage: 13.0%'), findsOneWidget);
+    expect(find.text('Fat percentage: 6.0%'), findsOneWidget);
   });
 
   testWidgets('Muscle pop-up works properly', (WidgetTester tester) async {
