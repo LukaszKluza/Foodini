@@ -95,15 +95,15 @@ user_details_create = UserDetailsCreate(
     activity_level=enums.ActivityLevel.ACTIVE,
     stress_level=enums.StressLevel.HIGH,
     sleep_quality=enums.SleepQuality.GOOD,
-    muscle_percentage=45.0,
-    water_percentage=55.0,
-    fat_percentage=18.0,
+    muscle_percentage=30.0,
+    water_percentage=50.0,
+    fat_percentage=15.0,
 )
 
 user_details_update = UserDetailsUpdate(
-    muscle_percentage=48.0,
-    water_percentage=58.0,
-    fat_percentage=16.0,
+    muscle_percentage=32.0,
+    water_percentage=52.0,
+    fat_percentage=13.0,
 )
 
 basic_user = User(
