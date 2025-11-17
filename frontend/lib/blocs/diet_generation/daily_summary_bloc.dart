@@ -26,9 +26,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     GetDailySummary event,
     Emitter<DailySummaryState> emit,
   ) async {
-    final currentState = state;
     emit(
-      currentState.copyWith(
+      state.copyWith(
         gettingDailySummaryStatus: ProcessingStatus.gettingOnGoing,
       ),
     );
@@ -40,14 +39,14 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
 
       emit(
-        currentState.copyWith(
+        state.copyWith(
           gettingDailySummaryStatus: ProcessingStatus.gettingSuccess,
           dailySummary: summary,
         ),
       );
     } on ApiException catch (error) {
       emit(
-        currentState.copyWith(
+        state.copyWith(
           gettingDailySummaryStatus: ProcessingStatus.gettingFailure,
           errorCode: error.statusCode,
           getMessage: (context) {
@@ -61,7 +60,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
     } catch (error) {
       emit(
-        currentState.copyWith(
+        state.copyWith(
           gettingDailySummaryStatus: ProcessingStatus.gettingFailure,
           getMessage: (context) => error.toString(),
         ),
@@ -73,10 +72,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     ChangeMealStatus event,
     Emitter<DailySummaryState> emit,
   ) async {
-    final currentState = state;
-
     emit(
-      currentState.copyWith(
+      state.copyWith(
         changingMealStatus: ProcessingStatus.submittingOnGoing,
       ),
     );
@@ -99,14 +96,14 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
 
       emit(
-        currentState.copyWith(
+        state.copyWith(
           dailySummary: updatedSummary,
           changingMealStatus: ProcessingStatus.submittingSuccess,
         ),
       );
     } on ApiException catch (error) {
       emit(
-        currentState.copyWith(
+        state.copyWith(
           changingMealStatus: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
           getMessage:
@@ -116,7 +113,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
     } catch (error) {
       emit(
-        currentState.copyWith(
+        state.copyWith(
           changingMealStatus: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
         ),
@@ -128,10 +125,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     UpdateMeal event,
     Emitter<DailySummaryState> emit,
   ) async {
-    final currentState = state;
-
     emit(
-      currentState.copyWith(updatingMealStatus: ProcessingStatus.submittingOnGoing),
+      state.copyWith(updatingMealDetails: ProcessingStatus.submittingOnGoing),
     );
 
     try {
@@ -146,15 +141,15 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
 
       emit(
-        currentState.copyWith(
+        state.copyWith(
           dailySummary: updatedSummary,
-          updatingMealStatus: ProcessingStatus.submittingSuccess,
+          updatingMealDetails: ProcessingStatus.submittingSuccess,
         ),
       );
     } on ApiException catch (error) {
       emit(
-        currentState.copyWith(
-          updatingMealStatus: ProcessingStatus.submittingFailure,
+        state.copyWith(
+          updatingMealDetails: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
           getMessage:
               (context) =>
@@ -163,8 +158,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       );
     } catch (error) {
       emit(
-        currentState.copyWith(
-          updatingMealStatus: ProcessingStatus.submittingFailure,
+        state.copyWith(
+          updatingMealDetails: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
         ),
       );
@@ -175,8 +170,6 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     GenerateMealPlan event,
     Emitter<DailySummaryState> emit,
   ) async {
-    // final currentState = state;
-
     emit(
       state.copyWith(
         day: event.day,

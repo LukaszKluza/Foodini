@@ -21,8 +21,8 @@ class BottomNavBarDate extends StatelessWidget {
     final prevDate = selectedDate.subtract(const Duration(days: 1));
     final nextDate = selectedDate.add(const Duration(days: 1));
 
-    final prevLabel = DateFormat('dd.MM.yyyy').format(prevDate);
-    final nextLabel = DateFormat('dd.MM.yyyy').format(nextDate);
+    final prevLabel = DateFormat('dd.MM').format(prevDate);
+    final nextLabel = DateFormat('dd.MM').format(nextDate);
 
     return ClipRRect(
       child: BackdropFilter(
@@ -48,14 +48,24 @@ class BottomNavBarDate extends StatelessWidget {
                 icon: Icons.arrow_back,
                 onTap: () => context.go(prevRoute),
               ),
-              _dateButton(label: prevLabel, onPressed: () => context.go(prevRoute)),
+              Expanded(
+                child: _dateButton(
+                  label: prevLabel,
+                  onPressed: () => context.go(prevRoute),
+                ),
+              ),
               circleButton(
                 context,
                 icon: Icons.home,
                 onTap: () => context.go('/main-page'),
                 iconSize: 40.0
               ),
-              _dateButton(label: nextLabel, onPressed: () => context.go(nextRoute)),
+              Expanded(
+                child: _dateButton(
+                  label: nextLabel,
+                  onPressed: () => context.go(nextRoute),
+                ),
+              ),
               circleButton(
                 context,
                 icon: Icons.arrow_forward,
