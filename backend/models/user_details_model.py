@@ -7,14 +7,14 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
     ActivityLevel,
+    CookingSkills,
+    DailyBudget,
     DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
     SleepQuality,
     StressLevel,
-    DailyBudget,
-    CookingSkills,
 )
 from backend.user_details.mixins import DietGoalValidationMixin
 

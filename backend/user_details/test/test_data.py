@@ -3,14 +3,14 @@ from datetime import date
 from backend.models import UserDetails
 from backend.user_details.enums import (
     ActivityLevel,
+    CookingSkills,
+    DailyBudget,
     DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
     SleepQuality,
     StressLevel,
-    DailyBudget,
-    CookingSkills,
 )
 
 user_1 = UserDetails(

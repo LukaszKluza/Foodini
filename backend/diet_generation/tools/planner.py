@@ -95,8 +95,8 @@ class PlannerTool:
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
         - Diet style: {getattr(targets, "diet_style", None) or "none"}
-        - Cooking skill (soft constraint): {getattr(targets, 'cooking_skills', None) or "unspecified"}
-        - Daily budget (soft constraint): {getattr(targets, 'daily_budget', None) or "unspecified"}
+        - Cooking skill (soft constraint): {getattr(targets, "cooking_skills", None) or "unspecified"}
+        - Daily budget (soft constraint): {getattr(targets, "daily_budget", None) or "unspecified"}
         ---
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.

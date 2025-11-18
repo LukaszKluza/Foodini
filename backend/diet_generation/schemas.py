@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from backend.user_details.enums import DietaryRestriction, DailyBudget, CookingSkills
+from backend.user_details.enums import CookingSkills, DailyBudget, DietaryRestriction
 from backend.user_details.enums.diet_style import DietStyle
 
 

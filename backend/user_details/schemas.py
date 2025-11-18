@@ -6,14 +6,14 @@ from pydantic import BaseModel, Field
 from backend.models import UserDietPredictions
 from backend.user_details.enums import (
     ActivityLevel,
+    CookingSkills,
+    DailyBudget,
     DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
     SleepQuality,
     StressLevel,
-    DailyBudget,
-    CookingSkills,
 )
 from backend.user_details.enums.diet_style import DietStyle
 from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin

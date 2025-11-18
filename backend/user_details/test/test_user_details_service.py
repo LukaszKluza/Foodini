@@ -7,6 +7,7 @@ import pytest
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User, UserDetails
 from backend.user_details import enums
+from backend.user_details.enums.diet_style import DietStyle
 from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
@@ -96,6 +97,7 @@ user_details_create = UserDetailsCreate(
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity=enums.DietIntensity.NORMAL,
+    diet_style=DietStyle.VEGAN,
     daily_budget=enums.DailyBudget.MEDIUM,
     cooking_skills=enums.CookingSkills.ADVANCED,
     activity_level=enums.ActivityLevel.ACTIVE,
