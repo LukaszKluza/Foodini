@@ -5,6 +5,8 @@ from .dietary_restriction import DietaryRestriction
 from .gender import Gender
 from .sleep_quality import SleepQuality
 from .stress_level import StressLevel
+from .daily_budget import DailyBudget
+from .cooking_skills import CookingSkills
 
 __all__ = [
     "Gender",
@@ -14,4 +16,6 @@ __all__ = [
     "SleepQuality",
     "StressLevel",
     "DietaryRestriction",
+    "DailyBudget",
+    "CookingSkills",
 ]

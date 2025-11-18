@@ -13,6 +13,8 @@ from backend.user_details.enums import (
     Gender,
     SleepQuality,
     StressLevel,
+    DailyBudget,
+    CookingSkills,
 )
 from backend.user_details.mixins import DietGoalValidationMixin
 
@@ -68,6 +70,8 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     diet_goal_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)
     meals_per_day: int = Field(ge=3, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)
+    daily_budget: DailyBudget = Field(nullable=False)
+    cooking_skills: CookingSkills = Field(nullable=False)
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)

@@ -9,6 +9,8 @@ from backend.user_details.enums import (
     Gender,
     SleepQuality,
     StressLevel,
+    DailyBudget,
+    CookingSkills,
 )
 
 user_1 = UserDetails(
@@ -23,6 +25,8 @@ user_1 = UserDetails(
     diet_goal_kg=70.0,
     meals_per_day=3,
     diet_intensity=DietIntensity.SLOW,
+    daily_budget=DailyBudget.MEDIUM,
+    cooking_skills=CookingSkills.ADVANCED,
     activity_level=ActivityLevel.LIGHT,
     stress_level=StressLevel.MEDIUM,
     sleep_quality=SleepQuality.FAIR,

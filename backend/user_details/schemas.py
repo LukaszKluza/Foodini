@@ -12,6 +12,8 @@ from backend.user_details.enums import (
     Gender,
     SleepQuality,
     StressLevel,
+    DailyBudget,
+    CookingSkills,
 )
 from backend.user_details.enums.diet_style import DietStyle
 from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
@@ -29,6 +31,8 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     diet_goal_kg: float = Field(..., ge=20, le=160)
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
+    daily_budget: DailyBudget
+    cooking_skills: CookingSkills
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
@@ -48,6 +52,8 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
     meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
+    daily_budget: Optional[DailyBudget] = None
+    cooking_skills: Optional[CookingSkills] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None
@@ -68,6 +74,8 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
             diet_goal_kg=data.diet_goal_kg,
             meals_per_day=data.meals_per_day,
             diet_intensity=data.diet_intensity,
+            daily_budget=data.daily_budget,
+            cooking_skills=data.cooking_skills,
             activity_level=data.activity_level,
             stress_level=data.stress_level,
             sleep_quality=data.sleep_quality,
