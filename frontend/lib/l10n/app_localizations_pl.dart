@@ -186,7 +186,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietStyle => 'Styl diety';
 
   @override
-  String get dietaryRestrictions => 'Restrykcje żywieniowe';
+  String get allergies => 'Alergie';
 
   @override
   String get dietGoal => 'Cel diety';
@@ -220,6 +220,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get caloriesPrediction => 'Prognoza zapotrzebowania kalorycznego';
+
+  @override
+  String get dailyBudget => 'Dzienny budżet';
+
+  @override
+  String get requiredDailyBudget => 'Dzienny budżet jest wymagany';
+
+  @override
+  String get cookingSkills => 'Umiejętności kulinarne';
+
+  @override
+  String get requiredCookingSkills => 'Umiejętności kulinarne są wymagane';
 
   @override
   String get activityLevel => 'Poziom aktywności';
@@ -297,31 +309,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Utrzymanie wagi';
 
   @override
-  String get dietaryRestriction_Gluten => 'Gluten';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietaryRestriction_Peanuts => 'Orzeszki ziemne';
+  String get allergies_Peanuts => 'Orzeszki ziemne';
 
   @override
-  String get dietaryRestriction_Lactose => 'Laktoza';
+  String get allergies_Lactose => 'Laktoza';
 
   @override
-  String get dietaryRestriction_Fish => 'Ryby';
+  String get allergies_Fish => 'Ryby';
 
   @override
-  String get dietaryRestriction_Soy => 'Soja';
+  String get allergies_Soy => 'Soja';
 
   @override
-  String get dietaryRestriction_Wheat => 'Pszenica';
+  String get allergies_Wheat => 'Pszenica';
 
   @override
-  String get dietaryRestriction_Celery => 'Seler';
+  String get allergies_Celery => 'Seler';
 
   @override
-  String get dietaryRestriction_Sulphites => 'Siarczyny';
+  String get allergies_Sulphites => 'Siarczyny';
 
   @override
-  String get dietaryRestriction_Lupin => 'Łubin';
+  String get allergies_Lupin => 'Łubin';
 
   @override
   String get dietStyle_Vegetarian => 'Wegetariańska';
@@ -340,6 +352,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Szybka';
+
+  @override
+  String get dailyBudget_low => 'Niski';
+
+  @override
+  String get dailyBudget_medium => 'Średni';
+
+  @override
+  String get dailyBudget_high => 'Wysoki';
+
+  @override
+  String get cookingSkills_beginner => 'Początkujący';
+
+  @override
+  String get cookingSkills_advanced => 'Zaawansowany';
+
+  @override
+  String get cookingSkills_professional => 'Profesjonalista';
 
   @override
   String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';

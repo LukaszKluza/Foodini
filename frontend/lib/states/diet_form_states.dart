@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_style.dart';
@@ -26,10 +28,12 @@ class DietFormSubmit extends DietFormState {
 
   final DietType? dietType;
   final DietStyle? dietStyle;
-  final List<DietaryRestriction>? dietaryRestrictions;
+  final List<Allergies>? allergies;
   final double? dietGoal;
   final int? mealsPerDay;
   final DietIntensity? dietIntensity;
+  final DailyBudget? dailyBudget;
+  final CookingSkills? cookingSkills;
 
   final ActivityLevel? activityLevel;
   final StressLevel? stressLevel;
@@ -49,10 +53,12 @@ class DietFormSubmit extends DietFormState {
     this.dateOfBirth,
     this.dietType,
     this.dietStyle,
-    this.dietaryRestrictions = const [],
+    this.allergies = const [],
     this.dietGoal,
     this.mealsPerDay = Constants.defaultMealsPerDay,
     this.dietIntensity,
+    this.dailyBudget = Constants.defaultDailyBudget,
+    this.cookingSkills = Constants.defaultCookingSkills,
     this.activityLevel,
     this.stressLevel,
     this.sleepQuality,
@@ -75,6 +81,8 @@ class DietFormSubmit extends DietFormState {
     Object? dietGoal = _noChange,
     Object? mealsPerDay = _noChange,
     Object? dietIntensity = _noChange,
+    Object? dailyBudget = _noChange,
+    Object? cookingSkills = _noChange,
     Object? activityLevel = _noChange,
     Object? stressLevel = _noChange,
     Object? sleepQuality = _noChange,
@@ -95,11 +103,15 @@ class DietFormSubmit extends DietFormState {
               : dateOfBirth as DateTime?,
       dietType: dietType == _noChange ? this.dietType : dietType as DietType?,
       dietStyle: dietStyle == _noChange ? this.dietStyle : dietStyle as DietStyle?,
-      dietaryRestrictions:
-          allergies == _noChange ? dietaryRestrictions : allergies as List<DietaryRestriction>?,
+      allergies:
+          allergies == _noChange ? this.allergies : allergies as List<Allergies>?,
       dietGoal: dietGoal == _noChange ? this.dietGoal : dietGoal as double?,
       mealsPerDay:
           mealsPerDay == _noChange ? this.mealsPerDay : mealsPerDay as int?,
+      dailyBudget:
+        dailyBudget == _noChange ? this.dailyBudget : dailyBudget as DailyBudget?,
+      cookingSkills:
+        cookingSkills == _noChange ? this.cookingSkills : cookingSkills as CookingSkills?,
       dietIntensity:
           dietIntensity == _noChange
               ? this.dietIntensity
@@ -146,9 +158,11 @@ class DietFormSubmit extends DietFormState {
       dateOfBirth: form.dateOfBirth,
       dietType: form.dietType,
       dietStyle: form.dietStyle,
-      dietaryRestrictions: form.dietaryRestrictions,
+      allergies: form.allergies,
       dietGoal: form.dietGoal,
       mealsPerDay: form.mealsPerDay,
+      dailyBudget: form.dailyBudget,
+      cookingSkills: form.cookingSkills,
       dietIntensity: form.dietIntensity,
       activityLevel: form.activityLevel,
       stressLevel: form.stressLevel,
@@ -170,10 +184,12 @@ class DietFormSubmit extends DietFormState {
       dateOfBirth: null,
       dietType: null,
       dietStyle: null,
-      dietaryRestrictions: const [],
+      allergies: const [],
       dietGoal: null,
       mealsPerDay: Constants.defaultMealsPerDay,
       dietIntensity: null,
+      dailyBudget: Constants.defaultDailyBudget,
+      cookingSkills: Constants.defaultCookingSkills,
       activityLevel: null,
       stressLevel: null,
       sleepQuality: null,

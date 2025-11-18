@@ -186,7 +186,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietStyle => 'Diet style';
 
   @override
-  String get dietaryRestrictions => 'Dietary restrictions';
+  String get allergies => 'Allergies';
 
   @override
   String get dietGoal => 'Diet goal';
@@ -220,6 +220,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get caloriesPrediction => 'Calories prediction';
+
+  @override
+  String get dailyBudget => 'Daily budget';
+
+  @override
+  String get requiredDailyBudget => 'Daily budget is required';
+
+  @override
+  String get cookingSkills => 'Cooking skills';
+
+  @override
+  String get requiredCookingSkills => 'Cooking skills are required';
 
   @override
   String get activityLevel => 'Activity level';
@@ -297,31 +309,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietaryRestriction_Gluten => 'Gluten';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietaryRestriction_Peanuts => 'Peanuts';
+  String get allergies_Peanuts => 'Peanuts';
 
   @override
-  String get dietaryRestriction_Lactose => 'Lactose';
+  String get allergies_Lactose => 'Lactose';
 
   @override
-  String get dietaryRestriction_Fish => 'Fish';
+  String get allergies_Fish => 'Fish';
 
   @override
-  String get dietaryRestriction_Soy => 'Soy';
+  String get allergies_Soy => 'Soy';
 
   @override
-  String get dietaryRestriction_Wheat => 'Wheat';
+  String get allergies_Wheat => 'Wheat';
 
   @override
-  String get dietaryRestriction_Celery => 'Celery';
+  String get allergies_Celery => 'Celery';
 
   @override
-  String get dietaryRestriction_Sulphites => 'Sulphites';
+  String get allergies_Sulphites => 'Sulphites';
 
   @override
-  String get dietaryRestriction_Lupin => 'Lupin';
+  String get allergies_Lupin => 'Lupin';
 
   @override
   String get dietStyle_Vegetarian => 'Vegetarian';
@@ -340,6 +352,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Fast';
+
+  @override
+  String get dailyBudget_low => 'Low';
+
+  @override
+  String get dailyBudget_medium => 'Medium';
+
+  @override
+  String get dailyBudget_high => 'High';
+
+  @override
+  String get cookingSkills_beginner => 'Beginner';
+
+  @override
+  String get cookingSkills_advanced => 'Advanced';
+
+  @override
+  String get cookingSkills_professional => 'Professional';
 
   @override
   String get activityLevel_VeryLow => 'Very Low (1–2 days a week or less)';
