@@ -50,6 +50,8 @@ class DailyMealsGeneratorService:
             fat=predictions.fat,
             previous_meals=previous_meals,
             diet_style=details.diet_style,
+            daily_budget=details.daily_budget,
+            cooking_skills=details.cooking_skills,
         )
 
     async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
