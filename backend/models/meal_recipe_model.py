@@ -68,9 +68,13 @@ class Meal(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
-    recipes: List["MealRecipe"] = Relationship(back_populates="meal", cascade_delete=True)
+    recipes: List["MealRecipe"] = Relationship(
+        back_populates="meal", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
     icon: Optional["MealIcon"] = Relationship(back_populates="meals", sa_relationship_kwargs={"cascade": "save-update"})
-    daily_meals: List["MealDailySummary"] = Relationship(back_populates="meal", cascade_delete=True)
+    daily_meals: List["MealDailySummary"] = Relationship(
+        back_populates="meal", sa_relationship_kwargs={"passive_deletes": True}
+    )
     daily_summary: List["DailyMealsSummary"] = Relationship(
         back_populates="meals",
         link_model=MealDailySummary,
@@ -102,7 +106,7 @@ class MealRecipe(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
 
-    meal: "Meal" = Relationship(back_populates="recipes", sa_relationship_kwargs={"cascade": "all, delete"})
+    meal: "Meal" = Relationship(back_populates="recipes", sa_relationship_kwargs={"passive_deletes": True})
 
 
 register_timestamp_listeners([Meal, MealRecipe])

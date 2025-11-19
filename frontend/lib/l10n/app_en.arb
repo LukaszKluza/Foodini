@@ -58,7 +58,8 @@
   "dietPreferences": "Diet preferences",
   "dietType": "Diet type",
   "requiredDietType": "Diet type is required",
-  "dietaryRestrictions": "Dietary restrictions",
+  "dietStyle": "Diet style",
+  "allergies": "Allergies",
   "dietGoal": "Diet goal",
   "enterYourDietGoal": "Enter your diet goal",
   "weightKg": "Weight (kg)",
@@ -70,6 +71,10 @@
   "dietIntensity": "Diet intensity",
   "requiredDietIntensity": "Diet intensity is required",
   "caloriesPrediction": "Calories prediction",
+  "dailyBudget": "Daily budget",
+  "requiredDailyBudget": "Daily budget is required",
+  "cookingSkills": "Cooking skills",
+  "requiredCookingSkills": "Cooking skills are required",
   "activityLevel": "Activity level",
   "requiredActivityLevel": "Activity level is required",
   "stressLevel": "Stress level",
@@ -86,6 +91,7 @@
   "fatPercentage": "Fat percentage",
   "enterFatPercentage": "Enter your fat percentage",
   "fatPercentageShouldBeBetween": "Fat % should be %",
+  "advancedParametersValidation": "Sum of advanced parameters can't be higher than",
   "generateWeeklyDiet": "Generate weekly diet",
   "predictedCalories": "Predicted calories",
   "bmr": "Basal Metabolic Rate (BMR)",
@@ -97,22 +103,31 @@
   "dietType_MuscleGain": "Muscle Gain",
   "dietType_WeightMaintenance": "Weight Maintenance",
 
-  "dietaryRestriction_Gluten": "Gluten",
-  "dietaryRestriction_Peanuts": "Peanuts",
-  "dietaryRestriction_Lactose": "Lactose",
-  "dietaryRestriction_Fish": "Fish",
-  "dietaryRestriction_Soy": "Soy",
-  "dietaryRestriction_Wheat": "Wheat",
-  "dietaryRestriction_Celery": "Celery",
-  "dietaryRestriction_Sulphites": "Sulphites",
-  "dietaryRestriction_Lupin": "Lupin",
-  "dietaryRestriction_Vegetarian": "Vegetarian",
-  "dietaryRestriction_Vegan": "Vegan",
-  "dietaryRestriction_Keto": "Keto",
+  "allergies_Gluten": "Gluten",
+  "allergies_Peanuts": "Peanuts",
+  "allergies_Lactose": "Lactose",
+  "allergies_Fish": "Fish",
+  "allergies_Soy": "Soy",
+  "allergies_Wheat": "Wheat",
+  "allergies_Celery": "Celery",
+  "allergies_Sulphites": "Sulphites",
+  "allergies_Lupin": "Lupin",
+
+  "dietStyle_Vegetarian": "Vegetarian",
+  "dietStyle_Vegan": "Vegan",
+  "dietStyle_Keto": "Keto",
 
   "dietIntensity_Slow": "Slow",
   "dietIntensity_Medium": "Medium",
   "dietIntensity_Fast": "Fast",
+
+  "dailyBudget_low": "Low",
+  "dailyBudget_medium": "Medium",
+  "dailyBudget_high": "High",
+
+  "cookingSkills_beginner": "Beginner",
+  "cookingSkills_advanced": "Advanced",
+  "cookingSkills_professional": "Professional",
 
   "activityLevel_VeryLow": "Very Low (1–2 days a week or less)",
   "activityLevel_Light": "Low (2–3 days a week)",
@@ -212,5 +227,8 @@
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
-  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
+
+  "chooseOption": "Choose option",
+  "statistics": "Statistics"
 }

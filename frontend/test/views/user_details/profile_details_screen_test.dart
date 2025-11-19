@@ -171,6 +171,8 @@ void main() {
             'diet_type': 'muscle_gain',
             'muscle_percentage': null,
             'dietary_restrictions': [],
+            'daily_budget': 'medium',
+            'cooking_skills': 'advanced',
             'water_percentage': null,
             'user_id': uuidUserId.uuid,
             'diet_goal_kg': 53.0,

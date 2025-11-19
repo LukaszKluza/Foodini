@@ -443,11 +443,17 @@ abstract class AppLocalizations {
   /// **'Diet type is required'**
   String get requiredDietType;
 
-  /// No description provided for @dietaryRestrictions.
+  /// No description provided for @dietStyle.
   ///
   /// In en, this message translates to:
-  /// **'Dietary restrictions'**
-  String get dietaryRestrictions;
+  /// **'Diet style'**
+  String get dietStyle;
+
+  /// No description provided for @allergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get allergies;
 
   /// No description provided for @dietGoal.
   ///
@@ -514,6 +520,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calories prediction'**
   String get caloriesPrediction;
+
+  /// No description provided for @dailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget'**
+  String get dailyBudget;
+
+  /// No description provided for @requiredDailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget is required'**
+  String get requiredDailyBudget;
+
+  /// No description provided for @cookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills'**
+  String get cookingSkills;
+
+  /// No description provided for @requiredCookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills are required'**
+  String get requiredCookingSkills;
 
   /// No description provided for @activityLevel.
   ///
@@ -611,6 +641,12 @@ abstract class AppLocalizations {
   /// **'Fat % should be %'**
   String get fatPercentageShouldBeBetween;
 
+  /// No description provided for @advancedParametersValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sum of advanced parameters can\'t be higher than'**
+  String get advancedParametersValidation;
+
   /// No description provided for @generateWeeklyDiet.
   ///
   /// In en, this message translates to:
@@ -665,77 +701,77 @@ abstract class AppLocalizations {
   /// **'Weight Maintenance'**
   String get dietType_WeightMaintenance;
 
-  /// No description provided for @dietaryRestriction_Gluten.
+  /// No description provided for @allergies_Gluten.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get dietaryRestriction_Gluten;
+  String get allergies_Gluten;
 
-  /// No description provided for @dietaryRestriction_Peanuts.
+  /// No description provided for @allergies_Peanuts.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get dietaryRestriction_Peanuts;
+  String get allergies_Peanuts;
 
-  /// No description provided for @dietaryRestriction_Lactose.
+  /// No description provided for @allergies_Lactose.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get dietaryRestriction_Lactose;
+  String get allergies_Lactose;
 
-  /// No description provided for @dietaryRestriction_Fish.
+  /// No description provided for @allergies_Fish.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get dietaryRestriction_Fish;
+  String get allergies_Fish;
 
-  /// No description provided for @dietaryRestriction_Soy.
+  /// No description provided for @allergies_Soy.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get dietaryRestriction_Soy;
+  String get allergies_Soy;
 
-  /// No description provided for @dietaryRestriction_Wheat.
+  /// No description provided for @allergies_Wheat.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get dietaryRestriction_Wheat;
+  String get allergies_Wheat;
 
-  /// No description provided for @dietaryRestriction_Celery.
+  /// No description provided for @allergies_Celery.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get dietaryRestriction_Celery;
+  String get allergies_Celery;
 
-  /// No description provided for @dietaryRestriction_Sulphites.
+  /// No description provided for @allergies_Sulphites.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get dietaryRestriction_Sulphites;
+  String get allergies_Sulphites;
 
-  /// No description provided for @dietaryRestriction_Lupin.
+  /// No description provided for @allergies_Lupin.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get dietaryRestriction_Lupin;
+  String get allergies_Lupin;
 
-  /// No description provided for @dietaryRestriction_Vegetarian.
+  /// No description provided for @dietStyle_Vegetarian.
   ///
   /// In en, this message translates to:
   /// **'Vegetarian'**
-  String get dietaryRestriction_Vegetarian;
+  String get dietStyle_Vegetarian;
 
-  /// No description provided for @dietaryRestriction_Vegan.
+  /// No description provided for @dietStyle_Vegan.
   ///
   /// In en, this message translates to:
   /// **'Vegan'**
-  String get dietaryRestriction_Vegan;
+  String get dietStyle_Vegan;
 
-  /// No description provided for @dietaryRestriction_Keto.
+  /// No description provided for @dietStyle_Keto.
   ///
   /// In en, this message translates to:
   /// **'Keto'**
-  String get dietaryRestriction_Keto;
+  String get dietStyle_Keto;
 
   /// No description provided for @dietIntensity_Slow.
   ///
@@ -754,6 +790,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fast'**
   String get dietIntensity_Fast;
+
+  /// No description provided for @dailyBudget_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get dailyBudget_low;
+
+  /// No description provided for @dailyBudget_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get dailyBudget_medium;
+
+  /// No description provided for @dailyBudget_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get dailyBudget_high;
+
+  /// No description provided for @cookingSkills_beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get cookingSkills_beginner;
+
+  /// No description provided for @cookingSkills_advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get cookingSkills_advanced;
+
+  /// No description provided for @cookingSkills_professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get cookingSkills_professional;
 
   /// No description provided for @activityLevel_VeryLow.
   ///
@@ -1246,6 +1318,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
   String get valueOfCaloriesMacroShouldBeBetween;
+
+  /// No description provided for @chooseOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose option'**
+  String get chooseOption;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

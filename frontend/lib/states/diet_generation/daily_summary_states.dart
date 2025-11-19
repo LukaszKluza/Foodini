@@ -1,69 +1,83 @@
-import 'package:frontend/api_exception.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
+import 'package:frontend/models/processing_status.dart';
 
-/// Bazowy stan — wszystkie stany dziedziczą po tym
-abstract class DailySummaryState {}
+class DailySummaryState {
+  final DailySummary? dailySummary;
+  final ProcessingStatus gettingDailySummaryStatus;
+  final ProcessingStatus changingMealStatus;
+  final ProcessingStatus updatingMealStatus;
+  final DietGeneratingInfo dietGeneratingInfo;
+  final int? errorCode;
+  final String Function(BuildContext)? getMessage;
 
-/// Stan początkowy (np. zanim załadujemy dane)
-class DailySummaryInit extends DailySummaryState {}
-
-/// Stan ładowania danych (np. przy starcie ekranu)
-class DailySummaryLoading extends DailySummaryState {}
-
-/// Stan załadowanych danych
-class DailySummaryLoaded extends DailySummaryState {
-  final DailySummary dailySummary;
-  final bool isUpdatingMeal;
-  final bool isChangingMealStatus;
-
-  DailySummaryLoaded({
-    required this.dailySummary,
-    this.isUpdatingMeal = false,
-    this.isChangingMealStatus = false,
+  DailySummaryState({
+    this.dailySummary,
+    this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
+    this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
+    this.updatingMealStatus = ProcessingStatus.emptyProcessingStatus,
+    this.dietGeneratingInfo = const DietGeneratingInfo(),
+    this.errorCode,
+    this.getMessage,
   });
 
-  DailySummaryLoaded copyWith({
+  DailySummaryState copyWith({
     DailySummary? dailySummary,
-    bool? isUpdatingMeal,
-    bool? isChangingMealStatus,
+    ProcessingStatus? gettingDailySummaryStatus,
+    ProcessingStatus? changingMealStatus,
+    ProcessingStatus? updatingMealStatus,
+
+    DateTime? day,
+    ProcessingStatus? processingStatus,
+
+    int? errorCode,
+    String Function(BuildContext)? getMessage,
   }) {
-    return DailySummaryLoaded(
+    return DailySummaryState(
       dailySummary: dailySummary ?? this.dailySummary,
-      isUpdatingMeal: isUpdatingMeal ?? this.isUpdatingMeal,
-      isChangingMealStatus:
-          isChangingMealStatus ?? this.isChangingMealStatus,
+      gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
+      changingMealStatus: changingMealStatus ?? this.changingMealStatus,
+      updatingMealStatus: updatingMealStatus ?? this.updatingMealStatus,
+      dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
+      errorCode: errorCode ?? this.errorCode,
+      getMessage: getMessage ?? this.getMessage,
     );
+  }
+
+  @override
+  String toString() {
+    return 'DailySummaryState('
+        'dailySummary: $dailySummary, '
+        'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
+        'changingMealStatus: $changingMealStatus, '
+        'updatingMeal: $updatingMealStatus, '
+        'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
+        'errorCode: $errorCode'
+        ')';
   }
 }
 
-/// Stan błędu — np. nie udało się pobrać danych z backendu
-class DailySummaryError extends DailySummaryState {
-  final String? message;
-  final ApiException? error;
+class DietGeneratingInfo {
+  final DateTime? day;
+  final ProcessingStatus processingStatus;
 
-  DailySummaryError({this.message, this.error});
-}
-
-/// Stan sukcesu po akcji (np. po udanym update posiłku lub zmianie statusu)
-class DailySummaryUpdateSuccess extends DailySummaryState {
-  final DailySummary updatedSummary;
-  final String? successMessage;
-
-  DailySummaryUpdateSuccess({
-    required this.updatedSummary,
-    this.successMessage,
+  const DietGeneratingInfo({
+    this.day,
+    this.processingStatus = ProcessingStatus.emptyProcessingStatus,
   });
-}
 
-/// Stan błędu po akcji (np. update posiłku nieudany)
-class DailySummaryUpdateFailure extends DailySummaryState {
-  final DailySummary previousSummary;
-  final String? errorMessage;
-  final ApiException? error;
+  DietGeneratingInfo copyWith({
+    DateTime? day,
+    ProcessingStatus? processingStatus,
+  }) {
+    return DietGeneratingInfo(
+      day: day ?? this.day,
+      processingStatus: processingStatus ?? this.processingStatus,
+    );
+  }
 
-  DailySummaryUpdateFailure({
-    required this.previousSummary,
-    this.errorMessage,
-    this.error,
-  });
+  @override
+  String toString() {
+    return 'DietGeneratingInfo(day: $day, processingStatus: $processingStatus)';
+  }
 }
