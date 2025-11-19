@@ -120,7 +120,10 @@ class PlannerTool:
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
-        - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
+        "- Meals must not include any of the following dietary restrictions: [{targets.dietary_restriction}]
+        (e.g., peanuts, lactose — if any ingredient contains these allergens, it must not be used in the meal.
+        For dishes containing other types of nuts, ensure they do NOT contain peanuts or traces of peanuts
+        in any ingredient)."
         - Strictly follow the diet style if provided. If diet_style is:
           - vegan: absolutely no animal products (no meat, fish, dairy, eggs, honey, gelatin).
           - vegetarian: no meat or fish; dairy and eggs are allowed unless restricted elsewhere.
