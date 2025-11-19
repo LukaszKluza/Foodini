@@ -124,7 +124,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                       onPressed: generateOnPressed,
                       label: state.dailySummary!.isOutDated ?
                         AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
-                        'Regenerate Meals',
+                        AppLocalizations.of(context)!.regenerateMeals,
                     )
                   else if(isToDay && state.dailySummary!.isOutDated)
                     DietGenerationInfoButton(

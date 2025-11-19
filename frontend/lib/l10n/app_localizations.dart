@@ -1247,11 +1247,23 @@ abstract class AppLocalizations {
   /// **'Value of calories should be between'**
   String get valueOfCaloriesMacroShouldBeBetween;
 
+  /// No description provided for @generateNewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate New Plan'**
+  String get generateNewPlan;
+
   /// No description provided for @noMealData_contactSupport.
   ///
   /// In en, this message translates to:
   /// **'No data for this meal. Please refresh request or contact support at {email}.'**
   String noMealData_contactSupport(Object email);
+
+  /// No description provided for @regenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate Meals'**
+  String get regenerateMeals;
 
   /// No description provided for @dietOutdatedConsiderRegenerating.
   ///
@@ -1264,6 +1276,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your meal plan may be outdated.'**
   String get dietOutdated;
+
+  /// No description provided for @planDoesNotExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for given day does not exist.'**
+  String get planDoesNotExist;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

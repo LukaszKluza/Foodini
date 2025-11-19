@@ -214,7 +214,10 @@
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
   "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
 
+  "generateNewPlan": "Generate New Plan",
   "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",
+  "regenerateMeals": "Regenerate Meals",
   "dietOutdatedConsiderRegenerating": "Your meal plan may be outdated – consider regenerating it.",
-  "dietOutdated": "Your meal plan may be outdated."
+  "dietOutdated": "Your meal plan may be outdated.",
+  "planDoesNotExist": "Plan for given day does not exist."
 }
