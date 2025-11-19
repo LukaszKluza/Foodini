@@ -94,6 +94,9 @@ class PlannerTool:
         - Carbohydrates: {targets.carbs}g
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
+        - Diet style: {getattr(targets, "diet_style", None) or "none"}
+        - Cooking skill (soft constraint): {getattr(targets, "cooking_skills", None) or "unspecified"}
+        - Daily budget (soft constraint): {getattr(targets, "daily_budget", None) or "unspecified"}
         ---
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.
@@ -117,7 +120,22 @@ class PlannerTool:
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
-        - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
+        "- Meals must not include any of the following dietary restrictions: [{targets.dietary_restriction}]
+        (e.g., peanuts, lactose — if any ingredient contains these allergens, it must not be used in the meal.
+        For dishes containing other types of nuts, ensure they do NOT contain peanuts or traces of peanuts
+        in any ingredient)."
+        - Strictly follow the diet style if provided. If diet_style is:
+          - vegan: absolutely no animal products (no meat, fish, dairy, eggs, honey, gelatin).
+          - vegetarian: no meat or fish; dairy and eggs are allowed unless restricted elsewhere.
+          - keto: keep carbohydrates very low; prioritize high fat and moderate protein ingredients.
+        - Align the recipe complexity with cooking skill (softly, do not over-constrain):
+          - beginner: very simple, 3–6 ingredients, few steps, common techniques (stir, bake, boil), low prep time.
+          - advanced: moderate complexity, 5–10 ingredients, can include marinades/saute, reasonable prep time.
+          - professional: can include advanced techniques/longer prep, but keep reasonable for a single day plan.
+        - Prefer ingredients consistent with the daily budget (softly):
+          - low: prioritize affordable staples (rice, beans, oats, seasonal veggies, cheaper proteins like eggs/legumes)
+          - medium: mix of affordable and some premium items (chicken breast, salmon occasionally, Greek yogurt)
+          - high: allow premium ingredients more freely (salmon, steak cuts, specialty produce), avoid waste.
         - Avoid using any of the user’s previous meals, new meals must be completely different: {
             targets.previous_meals or "None"
         }.
@@ -128,6 +146,8 @@ class PlannerTool:
         Double-check **before finalizing**:
         - The sum of all calories == {targets.calories}
         - The sum of all macros == {targets.protein}/{targets.carbs}/{targets.fat} grams (±1g allowed)
+        - Diet style rules are not violated (e.g., vegan contains no animal-derived ingredients)
+        - Meals gently reflect cooking skill and budget preferences when possible
         - Meal names are realistic and type-consistent
         - JSON is strictly valid and matches schema.
         ---

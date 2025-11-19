@@ -1,5 +1,8 @@
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
@@ -12,10 +15,13 @@ class DietForm {
   final double weight;
   final DateTime dateOfBirth;
   final DietType dietType;
-  final List<DietaryRestriction> dietaryRestrictions;
+  final DietStyle? dietStyle;
+  final List<Allergies> allergies;
   final double dietGoal;
   final int mealsPerDay;
   final DietIntensity dietIntensity;
+  final DailyBudget dailyBudget;
+  final CookingSkills cookingSkills;
   final ActivityLevel activityLevel;
   final StressLevel stressLevel;
   final SleepQuality sleepQuality;
@@ -29,10 +35,13 @@ class DietForm {
     required this.weight,
     required this.dateOfBirth,
     required this.dietType,
-    required this.dietaryRestrictions,
+    this.dietStyle,
+    required this.allergies,
     required this.dietGoal,
     required this.mealsPerDay,
     required this.dietIntensity,
+    required this.dailyBudget,
+    required this.cookingSkills,
     required this.activityLevel,
     required this.stressLevel,
     required this.sleepQuality,
@@ -47,10 +56,13 @@ class DietForm {
     'weight_kg': weight,
     'date_of_birth': dateOfBirth.toIso8601String(),
     'diet_type': dietType.toJson(),
-    'dietary_restrictions': dietaryRestrictions.map((a) => a.toJson()).toList(),
+    'diet_style': dietStyle?.toJson(),
+    'dietary_restrictions': allergies.map((a) => a.toJson()).toList(),
     'diet_goal_kg': dietGoal,
     'meals_per_day': mealsPerDay,
     'diet_intensity': dietIntensity.toJson(),
+    'daily_budget': dailyBudget.toJson(),
+    'cooking_skills': cookingSkills.toJson(),
     'activity_level': activityLevel.toJson(),
     'stress_level': stressLevel.toJson(),
     'sleep_quality': sleepQuality.toJson(),
@@ -66,13 +78,18 @@ class DietForm {
       weight: (json['weight_kg'] as num).toDouble(),
       dateOfBirth: DateTime.parse(json['date_of_birth']),
       dietType: DietType.fromJson(json['diet_type']),
-      dietaryRestrictions:
+      dietStyle: json['diet_style'] != null
+          ? DietStyle.fromJson(json['diet_style'])
+          : null,
+      allergies:
           (json['dietary_restrictions'] as List<dynamic>)
-              .map((e) => DietaryRestriction.fromJson(e))
+              .map((e) => Allergies.fromJson(e))
               .toList(),
       dietGoal: (json['diet_goal_kg'] as num).toDouble(),
       mealsPerDay: json['meals_per_day'] as int,
       dietIntensity: DietIntensity.fromJson(json['diet_intensity']),
+      dailyBudget: DailyBudget.fromJson(json['daily_budget']),
+      cookingSkills: CookingSkills.fromJson(json['cooking_skills']),
       activityLevel: ActivityLevel.fromJson(json['activity_level']),
       stressLevel: StressLevel.fromJson(json['stress_level']),
       sleepQuality: SleepQuality.fromJson(json['sleep_quality']),
