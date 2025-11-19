@@ -105,7 +105,7 @@ class DailyMealsGeneratorService:
         saved_recipes = []
         meals_type_map = {}
 
-        for idx, complete_meal in enumerate(daily_diet):
+        for complete_meal in daily_diet:
             saved_meal = await self.meal_gateway.add_meal(
                 complete_meal_to_meal(complete_meal, meal_icons[complete_meal.meal_type])
             )
@@ -115,7 +115,7 @@ class DailyMealsGeneratorService:
 
             saved_meals.append(saved_meal)
             saved_recipes.append(meal_recipe)
-            status = MealStatus.PENDING if idx == 0 else MealStatus.TO_EAT
+            status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
             meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id, status=status)
 
         return saved_meals, saved_recipes, meals_type_map
