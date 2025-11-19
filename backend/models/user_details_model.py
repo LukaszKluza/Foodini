@@ -7,6 +7,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from backend.user_details.enums import (
     ActivityLevel,
+    CookingSkills,
+    DailyBudget,
     DietaryRestriction,
     DietIntensity,
     DietType,
@@ -17,6 +19,7 @@ from backend.user_details.enums import (
 from backend.user_details.mixins import DietGoalValidationMixin
 
 from ..core.db_listeners import register_timestamp_listeners
+from ..user_details.enums.diet_style import DietStyle
 from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
@@ -60,12 +63,15 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     weight_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)
     date_of_birth: date
     diet_type: DietType = Field(nullable=False)
+    diet_style: Optional[DietStyle] = Field(default=None)
     dietary_restrictions: List[DietaryRestriction] = Field(
         sa_column=Column(ARRAY(Enum(DietaryRestriction))), default=[]
     )
     diet_goal_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)
     meals_per_day: int = Field(ge=3, le=6)
     diet_intensity: DietIntensity = Field(nullable=False)
+    daily_budget: DailyBudget = Field(nullable=False)
+    cooking_skills: CookingSkills = Field(nullable=False)
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)
