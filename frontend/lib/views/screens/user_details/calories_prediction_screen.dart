@@ -212,6 +212,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ),
       if (_isChecked) ...[
         PercentageOptionSlider(
+          min: Constants.minimumMusclePercentage,
+          max: Constants.maximumMusclePercentage,
           initialValue: _selectedMusclePercentage,
           pupUpKey: 'muscle_percentage',
           propertiesName: AppLocalizations.of(context)!.musclePercentage,
@@ -232,6 +234,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumWaterPercentage,
+          max: Constants.maximumWaterPercentage,
           initialValue: _selectedWaterPercentage,
           pupUpKey: 'water_percentage',
           propertiesName: AppLocalizations.of(context)!.waterPercentage,
@@ -252,6 +256,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumFatPercentage,
+          max: Constants.maximumFatPercentage,
           initialValue: _selectedFatPercentage,
           pupUpKey: 'fat_percentage',
           propertiesName: AppLocalizations.of(context)!.fatPercentage,

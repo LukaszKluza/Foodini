@@ -282,6 +282,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fatPercentageShouldBeBetween => 'Fat % should be %';
 
   @override
+  String get advancedParametersValidation => 'Sum of advanced parameters can\'t be higher than';
+
+  @override
   String get generateWeeklyDiet => 'Generate weekly diet';
 
   @override

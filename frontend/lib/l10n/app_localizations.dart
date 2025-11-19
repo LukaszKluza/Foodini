@@ -641,6 +641,12 @@ abstract class AppLocalizations {
   /// **'Fat % should be %'**
   String get fatPercentageShouldBeBetween;
 
+  /// No description provided for @advancedParametersValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sum of advanced parameters can\'t be higher than'**
+  String get advancedParametersValidation;
+
   /// No description provided for @generateWeeklyDiet.
   ///
   /// In en, this message translates to:

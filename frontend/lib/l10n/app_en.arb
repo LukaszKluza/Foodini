@@ -91,6 +91,7 @@
   "fatPercentage": "Fat percentage",
   "enterFatPercentage": "Enter your fat percentage",
   "fatPercentageShouldBeBetween": "Fat % should be %",
+  "advancedParametersValidation": "Sum of advanced parameters can't be higher than",
   "generateWeeklyDiet": "Generate weekly diet",
   "predictedCalories": "Predicted calories",
   "bmr": "Basal Metabolic Rate (BMR)",

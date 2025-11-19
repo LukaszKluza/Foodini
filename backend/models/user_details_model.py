@@ -33,15 +33,15 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
         CheckConstraint("weight_kg >= 20 AND weight_kg <= 160", name="ck_weight_range"),
         CheckConstraint("meals_per_day >= 1 AND meals_per_day <= 6", name="ck_meals_per_day_range"),
         CheckConstraint(
-            "(muscle_percentage IS NULL OR (muscle_percentage >= 0 AND muscle_percentage <= 100))",
+            "(muscle_percentage IS NULL OR (muscle_percentage >= 0 AND muscle_percentage <= 60))",
             name="ck_muscle_percentage_range",
         ),
         CheckConstraint(
-            "(water_percentage IS NULL OR (water_percentage >= 0 AND water_percentage <= 100))",
+            "(water_percentage IS NULL OR (water_percentage >= 30 AND water_percentage <= 80))",
             name="ck_water_percentage_range",
         ),
         CheckConstraint(
-            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 100))",
+            "(fat_percentage IS NULL OR (fat_percentage >= 0 AND fat_percentage <= 45))",
             name="ck_fat_percentage_range",
         ),
     )
@@ -57,7 +57,7 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
             unique=True,
         )
     )
-    user: Optional["User"] = Relationship(back_populates="details", sa_relationship_kwargs={"cascade": "all, delete"})
+    user: Optional["User"] = Relationship(back_populates="details", sa_relationship_kwargs={"passive_deletes": True})
     gender: Gender = Field(nullable=False)
     height_cm: float = Field(sa_column=Column(FloatAsNumeric), ge=60, le=230)
     weight_kg: float = Field(sa_column=Column(FloatAsNumeric), ge=20, le=160)
@@ -75,9 +75,9 @@ class UserDetails(DietGoalValidationMixin, SQLModel, table=True):
     activity_level: ActivityLevel = Field(nullable=False)
     stress_level: StressLevel = Field(nullable=False)
     sleep_quality: SleepQuality = Field(nullable=False)
-    muscle_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
-    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
-    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=60)
+    water_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=30, le=80)
+    fat_percentage: Optional[float] = Field(sa_column=Column(FloatAsNumeric, default=None), ge=0, le=45)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

@@ -282,6 +282,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get fatPercentageShouldBeBetween => 'Procent tłuszczu powinien być pomiędzy';
 
   @override
+  String get advancedParametersValidation => 'Suma zaawansowanych parametrów nie może być wyższa niż';
+
+  @override
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
 
   @override
