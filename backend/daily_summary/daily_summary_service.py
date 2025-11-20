@@ -2,6 +2,8 @@ from datetime import date
 from typing import List, Type
 from uuid import UUID
 
+from fastapi import HTTPException, status
+
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
@@ -242,7 +244,7 @@ class DailySummaryService:
             )
             await self._update_daily_macros_summary(user.id, updated_macros)
 
-        await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_meal.id)
+        await self.daily_summary_repo.remove_meal_from_summary(existing_link)
         await self.daily_summary_repo.add_custom_meal(user.id, day, {new_meal.id: meal_info})
         return meal_info
 
@@ -255,7 +257,24 @@ class DailySummaryService:
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
         return meal
 
-    async def _get_meal_calories(self, meal_id: UUID) -> int:
+    async def remove_meal_from_summary(self, user: Type[User], day: date, meal_id: UUID):
+        daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user.id, day)
+        if not daily_meals:
+            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
+
+        link = next((link for link in daily_meals.daily_meals if link.meal_id == meal_id), None)
+        if not link:
+            raise NotFoundInDatabaseException(f"Meal with id {meal_id} does not exist in user's plan for this day.")
+
+        success = await self.daily_summary_repo.remove_meal_from_summary(link)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to remove meal from database",
+            )
+        return meal_id
+
+    async def _get_meal_calories(self, meal_id: UUID):
         calories = await self.meal_repo.get_meal_calories_by_id(meal_id)
         if calories is None:
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")

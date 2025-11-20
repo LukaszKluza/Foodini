@@ -103,3 +103,15 @@ async def get_meal_details(
 ):
     user, _ = await user_gateway.get_current_user()
     return await daily_summary_service.get_meal_details(meal_id)
+
+
+@daily_summary_router.delete("/meals/{day}/{meal_id}", status_code=status.HTTP_200_OK)
+async def remove_meal(
+    day: date,
+    meal_id: UUID,
+    daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
+    user_gateway: UserGateway = Depends(get_user_gateway),
+):
+    user, _ = await user_gateway.get_current_user()
+    await daily_summary_service.remove_meal_from_summary(user, day, meal_id)
+    return meal_id

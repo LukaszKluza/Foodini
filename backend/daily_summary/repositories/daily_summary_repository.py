@@ -162,11 +162,11 @@ class DailySummaryRepository:
             return user_daily_meals_summary
         return None
 
-    async def remove_meal_from_summary(self, user_id: UUID, day: date, meal_id: UUID):
-        user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
-        if user_daily_meals_summary:
-            link = next((link for link in user_daily_meals_summary.daily_meals if link.meal_id == meal_id), None)
-            if link:
-                await self.db.delete(link)
-                await self.db.commit()
-        return None
+    async def remove_meal_from_summary(self, link: MealDailySummary) -> bool:
+        try:
+            await self.db.delete(link)
+            await self.db.commit()
+            return True
+        except Exception:
+            await self.db.rollback()
+            return False
