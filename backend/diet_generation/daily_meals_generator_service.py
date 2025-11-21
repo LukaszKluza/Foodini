@@ -74,9 +74,7 @@ class DailyMealsGeneratorService:
             )
             await self._save_daily_summary(day, user_diet_predictions, meals_type_map)
             await self._translate_and_save_recipes(saved_meals, saved_recipes)
-        except NotFoundInDatabaseException:
-            raise
-        except HTTPException:
+        except (NotFoundInDatabaseException, HTTPException):
             raise
         except Exception as e:
             raise HTTPException(
