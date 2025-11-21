@@ -15,11 +15,13 @@ class BasicMealInfo(BaseModel):
     protein: float
     carbs: float
     fat: float
+    weight: int
 
 
 class MealInfo(BasicMealInfo):
     name: str
     description: str
+    explanation: Optional[str] = None
 
 
 class MealInfoWithIconPath(MealInfo):
