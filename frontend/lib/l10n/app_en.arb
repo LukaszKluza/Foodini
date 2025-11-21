@@ -230,5 +230,10 @@
   "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
 
   "chooseOption": "Choose option",
-  "statistics": "Statistics"
+  "statistics": "Statistics",
+
+  "mealsGeneratedSuccessfully": "Meals successfully generated",
+  "forSomething": "for",
+  "whileMealsGeneration": "while generating meals",
+  "error": "Error"
 }

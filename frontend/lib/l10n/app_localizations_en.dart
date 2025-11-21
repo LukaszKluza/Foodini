@@ -625,4 +625,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statistics => 'Statistics';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Meals successfully generated';
+
+  @override
+  String get forSomething => 'for';
+
+  @override
+  String get whileMealsGeneration => 'while generating meals';
+
+  @override
+  String get error => 'Error';
 }

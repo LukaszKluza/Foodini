@@ -230,5 +230,10 @@
   "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
   "chooseOption": "Wybierz opcję",
-  "statistics": "Statystyki"
+  "statistics": "Statystyki",
+
+  "mealsGeneratedSuccessfully": "Pomyślnie wygenerowano posiłki",
+  "forSomething": "dla",
+  "whileMealsGeneration": "podczas generowania posiłków",
+  "error": "Błąd"
 }

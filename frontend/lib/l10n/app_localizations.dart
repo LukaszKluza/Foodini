@@ -1330,6 +1330,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Statistics'**
   String get statistics;
+
+  /// No description provided for @mealsGeneratedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals successfully generated'**
+  String get mealsGeneratedSuccessfully;
+
+  /// No description provided for @forSomething.
+  ///
+  /// In en, this message translates to:
+  /// **'for'**
+  String get forSomething;
+
+  /// No description provided for @whileMealsGeneration.
+  ///
+  /// In en, this message translates to:
+  /// **'while generating meals'**
+  String get whileMealsGeneration;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

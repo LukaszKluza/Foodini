@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/processing_status.dart';
+import 'package:frontend/utils/diet_generation/meals_generation_notification.dart';
 
 class DailySummaryState {
   final DailySummary? dailySummary;
@@ -10,6 +11,7 @@ class DailySummaryState {
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
   final String Function(BuildContext)? getMessage;
+  final MealsGenerationNotification Function(BuildContext)? getNotification;
 
   DailySummaryState({
     this.dailySummary,
@@ -19,6 +21,7 @@ class DailySummaryState {
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
     this.getMessage,
+    this.getNotification,
   });
 
   DailySummaryState copyWith({
@@ -32,6 +35,7 @@ class DailySummaryState {
 
     int? errorCode,
     String Function(BuildContext)? getMessage,
+    MealsGenerationNotification Function(BuildContext)? getNotification,
   }) {
     return DailySummaryState(
       dailySummary: dailySummary ?? this.dailySummary,
@@ -41,6 +45,7 @@ class DailySummaryState {
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
       getMessage: getMessage ?? this.getMessage,
+      getNotification: getNotification ?? this.getNotification,
     );
   }
 

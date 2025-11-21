@@ -625,4 +625,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get statistics => 'Statystyki';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Pomyślnie wygenerowano posiłki';
+
+  @override
+  String get forSomething => 'dla';
+
+  @override
+  String get whileMealsGeneration => 'podczas generowania posiłków';
+
+  @override
+  String get error => 'Błąd';
 }

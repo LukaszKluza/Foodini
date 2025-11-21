@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
 from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -49,15 +50,15 @@ templates = Jinja2Templates(directory="backend/templates")
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     raise HTTPException(
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-        detail={"date": f"{request.query_params.get("day")}", "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later."},
+        detail={"date": f"{request.query_params.get("date")}", "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later."},
     )
 
 
 @app.exception_handler(NotFoundInDatabaseException)
 async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseException):
-    raise HTTPException(
+    return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=exc.detail,
+        content={"detail": exc.detail},
     )
 
 
