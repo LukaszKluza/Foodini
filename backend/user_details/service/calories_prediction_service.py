@@ -3,8 +3,8 @@ from uuid import UUID
 
 from pydantic import ValidationError
 
-from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.custom_exception_code import CustomExceptionCode
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User, UserDietPredictions
 from backend.settings import config
 from backend.user_details.calories_prediction_repository import CaloriesPredictionRepository
@@ -25,7 +25,9 @@ class CaloriesPredictionService:
             user_id_from_request
         )
         if not calories_prediction_result:
-            raise NotFoundInDatabaseException("No calorie prediction found for the user.", code=CustomExceptionCode.MISSING_DIET_PREDICTIONS)
+            raise NotFoundInDatabaseException(
+                "No calorie prediction found for the user.", code=CustomExceptionCode.MISSING_DIET_PREDICTIONS
+            )
         return PredictedCalories.from_user_diet_predictions(calories_prediction_result)
 
     async def get_date_of_last_update_user_calories_prediction(self, user_id_from_request: UUID):

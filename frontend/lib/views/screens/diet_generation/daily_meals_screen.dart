@@ -10,7 +10,6 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
-import 'package:frontend/utils/logger.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/missing_predictions_alert.dart';
