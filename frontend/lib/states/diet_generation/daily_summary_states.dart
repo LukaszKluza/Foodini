@@ -9,6 +9,7 @@ class DailySummaryState {
   final ProcessingStatus updatingMealDetails;
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
+  final dynamic errorData;
   final String Function(BuildContext)? getMessage;
 
   DailySummaryState({
@@ -18,6 +19,7 @@ class DailySummaryState {
     this.updatingMealDetails = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
+    this.errorData,
     this.getMessage,
   });
 
@@ -31,6 +33,7 @@ class DailySummaryState {
     ProcessingStatus? processingStatus,
 
     int? errorCode,
+    dynamic errorData,
     String Function(BuildContext)? getMessage,
   }) {
     return DailySummaryState(
@@ -40,6 +43,7 @@ class DailySummaryState {
       updatingMealDetails: updatingMealDetails ?? this.updatingMealDetails,
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
+      errorData: errorData ?? this.errorData,
       getMessage: getMessage ?? this.getMessage,
     );
   }

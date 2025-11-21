@@ -44,9 +44,14 @@ templates = Jinja2Templates(directory="backend/templates")
 
 @app.exception_handler(NotFoundInDatabaseException)
 async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseException):
+    code = getattr(exc, "code", None)
+    try:
+        code = code.value if hasattr(code, "value") else code
+    except Exception:
+        code = str(code) if code is not None else None
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        content={"detail": exc.detail},
+        content={"detail": exc.detail, "code": code},
     )
 
 

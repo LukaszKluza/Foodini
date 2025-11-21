@@ -45,6 +45,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         state.copyWith(
           gettingDailySummaryStatus: ProcessingStatus.gettingFailure,
           errorCode: error.statusCode,
+          errorData: error.data,
           getMessage: (context) {
             final message = ExceptionConverter.formatErrorMessage(error.data, context);
 
@@ -195,6 +196,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         state.copyWith(
           processingStatus: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
+          errorData: error.data,
           getMessage:
               (context) =>
                   ExceptionConverter.formatErrorMessage(error.data, context),
