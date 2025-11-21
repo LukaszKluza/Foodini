@@ -486,13 +486,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get breakfast => 'Śniadanie';
 
   @override
-  String get morningSnack => 'Przekąska poranna';
+  String get morningSnack => 'Drugie śniadanie';
 
   @override
   String get lunch => 'Obiad';
 
   @override
-  String get afternoonSnack => 'Przekąska popołudniowa';
+  String get afternoonSnack => 'Podwieczorek';
 
   @override
   String get dinner => 'Kolacja';
@@ -586,4 +586,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get valueOfCaloriesMacroShouldBeBetween => 'Wartość kalorii powinna mieścić się w przedziale';
+
+  @override
+  String get generateNewPlan => 'Generuj posiłki';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem $email.';
+  }
+
+  @override
+  String get regenerateMeals => 'Generuj posiłki ponownie';
+
+  @override
+  String get dietOutdatedConsiderRegenerating => 'Menu może być nieaktualne – rozważ regenerację.';
+
+  @override
+  String get dietOutdated => 'Menu może być nieaktualne.';
+
+  @override
+  String get planDoesNotExist => 'Plan na dany dzień nie istnieje.';
 }

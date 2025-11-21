@@ -101,7 +101,7 @@ void main() {
     expect(find.text('Change password'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
 

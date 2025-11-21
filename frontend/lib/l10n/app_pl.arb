@@ -174,9 +174,9 @@
   "optional": "Opcjonalnie",
 
   "breakfast": "Śniadanie",
-  "morningSnack": "Przekąska poranna",
+  "morningSnack": "Drugie śniadanie",
   "lunch": "Obiad",
-  "afternoonSnack": "Przekąska popołudniowa",
+  "afternoonSnack": "Podwieczorek",
   "dinner": "Kolacja",
   "eveningSnack": "Przekąska wieczorna",
 
@@ -213,5 +213,12 @@
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
-  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale"
+  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+
+  "generateNewPlan": "Generuj posiłki",
+  "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
+  "regenerateMeals": "Generuj posiłki ponownie",
+  "dietOutdatedConsiderRegenerating": "Menu może być nieaktualne – rozważ regenerację.",
+  "dietOutdated": "Menu może być nieaktualne.",
+  "planDoesNotExist": "Plan na dany dzień nie istnieje."
 }

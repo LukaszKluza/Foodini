@@ -27,6 +27,14 @@ class CaloriesPredictionService:
             raise NotFoundInDatabaseException("No calorie prediction found for the user.")
         return PredictedCalories.from_user_diet_predictions(calories_prediction_result)
 
+    async def get_date_of_last_update_user_calories_prediction(self, user_id_from_request: UUID):
+        last_update = await self.calories_prediction_repository.get_date_of_last_update_user_calories_prediction(
+            user_id_from_request
+        )
+        if not last_update:
+            raise NotFoundInDatabaseException("No date of last update calories predictions the user.")
+        return last_update
+
     async def add_calories_prediction(
         self,
         user: Type[User],

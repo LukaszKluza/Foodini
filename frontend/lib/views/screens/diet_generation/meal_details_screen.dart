@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/constants.dart';
+import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/cache_manager.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
+import 'package:frontend/views/widgets/diet_generation/error_box.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
 import 'package:go_router/go_router.dart';
@@ -43,42 +47,24 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
     return Scaffold(
       body: BlocBuilder<DailySummaryBloc, DailySummaryState>(
         builder: (context, state) {
-          if (state.dietGeneratingInfo.processingStatus.isOngoing
-              && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state.dailySummary != null &&  state.dailySummary!.day != widget.selectedDate) {
-            return Center(
-              child: Text('Błąd ładowania danych'),
-            );
-          } else if (state.changingMealStatus.isFailure) {
-            return Center(
-              child: Text(state.getMessage!(context)),
-            );
-          } else if (state.dailySummary != null &&
-              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-            final meal = state.dailySummary!.meals[widget.mealType];
-            if (meal == null) {
-              return const Center(child: Text('Brak danych dla tego posiłku'));
-            }
+          final meal = state.dailySummary?.meals[widget.mealType];
+          final List<MealInfo> mealItems = meal != null ? [meal] : [];
+          final calculatedMacrosSummary = mealItems.isNotEmpty &&
+              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? calculateTotalMacros(mealItems) : MealTypeMacrosSummary.zero();
 
-            final mealItems = [meal];
-
-            return Scaffold(
-              body: _MealDetails(mealType: widget.mealType, mealItems: mealItems, day: widget.selectedDate),
-              bottomNavigationBar: BottomNavBar(
-                currentRoute: GoRouterState.of(context).uri.path,
-                mode: NavBarMode.wizard,
-                prevRoute: '/daily-summary/${widget.selectedDate}',
-              ),
-              bottomSheet: CustomBottomSheet(
-                mealTypeMacrosSummary: calculateTotalMacros(mealItems),
-                selectedDate: widget.selectedDate,
-              ),
-            );
-          }
-
-          return const SizedBox.shrink();
-        },
+          return Scaffold(
+            body: _MealDetails(mealType: widget.mealType, state: state, widgetSelectedDate: widget.selectedDate),
+            bottomNavigationBar: BottomNavBar(
+              currentRoute: GoRouterState.of(context).uri.path,
+              mode: NavBarMode.wizard,
+              prevRoute: '/daily-summary/${widget.selectedDate}',
+            ),
+            bottomSheet: CustomBottomSheet(
+              mealTypeMacrosSummary: calculatedMacrosSummary,
+              selectedDate: widget.selectedDate,
+            ),
+          );
+         },
       ),
     );
   }
@@ -86,13 +72,16 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
 
 class _MealDetails extends StatelessWidget {
   final MealType mealType;
-  final List<MealInfo> mealItems;
-  final DateTime day;
+  final DailySummaryState state;
+  final DateTime widgetSelectedDate;
 
-  const _MealDetails({required this.mealType, required this.mealItems, required this.day});
+  const _MealDetails({required this.mealType, required this.state, required this.widgetSelectedDate});
 
   @override
   Widget build(BuildContext context) {
+    final meal = state.dailySummary?.meals[mealType];
+    final List<MealInfo> mealItems = meal != null ? [meal, meal, meal,meal] : [];
+
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 140),
       child: Align(
@@ -102,7 +91,26 @@ class _MealDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              generateMealDetails(context, mealType, mealItems),
+             if ((mealItems.isNotEmpty && dateComparator(state.dailySummary!.day, widgetSelectedDate) != 0) || mealItems.isEmpty)
+              buildErrorBox(
+                context,
+                AppLocalizations.of(context)!.noMealData_contactSupport(Constants.supportEmail),
+                buttonText:
+                AppLocalizations.of(context)!.refreshRequest,
+                onButtonPressed: () {
+                  context.read<CacheManager>().clearAllCache();
+                  context.read<DailySummaryBloc>().add(GetDailySummary(widgetSelectedDate));
+                },
+              ) else
+                generateMealDetails(context, mealType, mealItems),
+              if (state.updatingMealDetails. isFailure)
+                Text(
+                  state.getMessage!(context),
+                  style: Styles.errorStyle,
+                  textAlign: TextAlign.center,
+                ),
+              if ((state.dietGeneratingInfo.processingStatus.isOngoing && dateComparator(state.dietGeneratingInfo.day!, widgetSelectedDate) == 0) || state.gettingDailySummaryStatus.isOngoing || state.updatingMealDetails. isOngoing)
+                const Center(child: CircularProgressIndicator()),
               const SizedBox(height: 24),
             ],
           ),
@@ -130,7 +138,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, day, mealItems[0].mealId!),
+                    onPressed: showPopUp(context, widgetSelectedDate, mealItems[0].mealId!),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -172,7 +180,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, day, mealInfo.mealId!, mealInfo: mealInfo),
+                onPressed: showPopUp(context, widgetSelectedDate, mealInfo.mealId!, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
@@ -214,7 +222,6 @@ class _MealDetails extends StatelessWidget {
       );
   }
 }
-
 
 BoxShadow getShadowBox() =>
     BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4));

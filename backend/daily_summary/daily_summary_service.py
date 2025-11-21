@@ -21,6 +21,7 @@ from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
 from backend.models import DailyMealsSummary, Ingredient, Ingredients, MealRecipe, User
+from backend.user_details.user_details_gateway import UserDetailsGateway
 
 
 class DailySummaryService:
@@ -30,11 +31,13 @@ class DailySummaryService:
         meal_repo: MealRepository,
         last_generated_meals_repo: LastGeneratedMealsRepository,
         meal_gateway: MealGateway,
+        user_details_gateway: UserDetailsGateway,
     ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
         self.last_generated_meals_repo = last_generated_meals_repo
         self.meal_gateway = meal_gateway
+        self.user_details_gateway = user_details_gateway
 
     async def get_daily_summary(self, user: Type[User], day: date):
         daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day, user.language)
@@ -58,6 +61,8 @@ class DailySummaryService:
         }
 
         macros_summary = await self.get_daily_macros_summary(user.id, day)
+        last_diet_prediction = await self.user_details_gateway.get_date_of_last_update_user_calories_prediction(user)
+        last_user_details = await self.user_details_gateway.get_date_of_last_update_user_details(user)
 
         return DailySummary(
             day=daily_meals.day,
@@ -70,6 +75,8 @@ class DailySummaryService:
             eaten_protein=macros_summary.protein,
             eaten_carbs=macros_summary.carbs,
             eaten_fat=macros_summary.fat,
+            is_out_dated=(daily_meals.updated_at <= last_diet_prediction or daily_meals.updated_at <= last_user_details)
+            and daily_meals.day >= date.today(),
         )
 
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):

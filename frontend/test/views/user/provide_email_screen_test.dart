@@ -72,7 +72,7 @@ void main() {
 
     // Then
     expect(find.byKey(Key('e-mail')), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
     expect(find.byType(BottomNavBar), findsOneWidget);
     expect(find.byIcon(Icons.translate_rounded), findsOneWidget);
 

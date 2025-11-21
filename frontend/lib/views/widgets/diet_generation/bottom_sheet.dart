@@ -38,7 +38,7 @@ class CustomBottomSheet extends StatelessWidget {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Column(
               children: [
                 Row(
@@ -50,7 +50,7 @@ class CustomBottomSheet extends StatelessWidget {
                     buildCaloriesItem(context, mealTypeMacrosSummary.calories)
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     ActionButton(onPressed: () {}, color: Colors.redAccent, label: AppLocalizations.of(context)!.skipMeal)

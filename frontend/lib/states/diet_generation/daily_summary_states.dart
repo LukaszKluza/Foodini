@@ -6,7 +6,7 @@ class DailySummaryState {
   final DailySummary? dailySummary;
   final ProcessingStatus gettingDailySummaryStatus;
   final ProcessingStatus changingMealStatus;
-  final ProcessingStatus updatingMealStatus;
+  final ProcessingStatus updatingMealDetails;
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
   final String Function(BuildContext)? getMessage;
@@ -15,7 +15,7 @@ class DailySummaryState {
     this.dailySummary,
     this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
     this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
-    this.updatingMealStatus = ProcessingStatus.emptyProcessingStatus,
+    this.updatingMealDetails = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
     this.getMessage,
@@ -25,7 +25,7 @@ class DailySummaryState {
     DailySummary? dailySummary,
     ProcessingStatus? gettingDailySummaryStatus,
     ProcessingStatus? changingMealStatus,
-    ProcessingStatus? updatingMealStatus,
+    ProcessingStatus? updatingMealDetails,
 
     DateTime? day,
     ProcessingStatus? processingStatus,
@@ -37,7 +37,7 @@ class DailySummaryState {
       dailySummary: dailySummary ?? this.dailySummary,
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
       changingMealStatus: changingMealStatus ?? this.changingMealStatus,
-      updatingMealStatus: updatingMealStatus ?? this.updatingMealStatus,
+      updatingMealDetails: updatingMealDetails ?? this.updatingMealDetails,
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
       getMessage: getMessage ?? this.getMessage,
@@ -50,7 +50,7 @@ class DailySummaryState {
         'dailySummary: $dailySummary, '
         'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
         'changingMealStatus: $changingMealStatus, '
-        'updatingMeal: $updatingMealStatus, '
+        'updatingMeal: $updatingMealDetails, '
         'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
         'errorCode: $errorCode'
         ')';
