@@ -50,7 +50,10 @@ templates = Jinja2Templates(directory="backend/templates")
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     raise HTTPException(
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-        detail={"date": f"{request.query_params.get("date")}", "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later."},
+        detail={
+            "date": f"{request.query_params.get('date')}",
+            "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later.",
+        },
     )
 
 
