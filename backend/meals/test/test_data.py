@@ -21,31 +21,31 @@ EVENING_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "evening-snack-icon")
 BREAKFAST_MEAL_ICON = MealIcon(
     id=BREAKFAST_ICON_ID,
     meal_type=MealType.BREAKFAST,
-    icon_path="/black-coffee-fried-egg-with-toasts.jpg",
+    icon_path="/black-coffee-fried-egg-with-toasts.webp",
 )
 
 MEAL_ICONS = [
-    {"id": BREAKFAST_ICON_ID, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.jpg"},
+    {"id": BREAKFAST_ICON_ID, "meal_type": MealType.BREAKFAST, "icon_path": "/black-coffee-fried-egg-with-toasts.webp"},
     {
         "id": MORNING_SNACK_ICON_ID,
         "meal_type": MealType.MORNING_SNACK,
-        "icon_path": "/high-angle-tasty-breakfast-bed.jpg",
+        "icon_path": "/high-angle-tasty-breakfast-bed.webp",
     },
-    {"id": LUNCH_ICON_ID, "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.jpg"},
+    {"id": LUNCH_ICON_ID, "meal_type": MealType.LUNCH, "icon_path": "/noodle-soup-winter-meals-seeds.webp"},
     {
         "id": AFTERNOON_SNACK_ICON_ID,
         "meal_type": MealType.AFTERNOON_SNACK,
-        "icon_path": "/top-view-tasty-salad-with-vegetables.jpg",
+        "icon_path": "/top-view-tasty-salad-with-vegetables.webp",
     },
     {
         "id": DINNER_ICON_ID,
         "meal_type": MealType.DINNER,
-        "icon_path": "/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.jpg",
+        "icon_path": "/seafood-salad-with-salmon-shrimp-mussels-herbs-tomatoes.webp",
     },
     {
         "id": EVENING_SNACK_ICON_ID,
         "meal_type": MealType.EVENING_SNACK,
-        "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.jpg",
+        "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.webp",
     },
 ]
 

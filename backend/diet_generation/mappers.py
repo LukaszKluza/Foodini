@@ -2,6 +2,7 @@ from datetime import date
 from typing import Dict
 from uuid import UUID
 
+from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import BasicMealInfo, DailyMealsCreate
 from backend.diet_generation.schemas import CompleteMeal, IngredientCreate, MealRecipeTranslation, StepCreate
 from backend.meals.enums.meal_type import MealType
@@ -71,9 +72,10 @@ def to_daily_meals_create(
     )
 
 
-def to_empty_basic_meal_info(meal_id: UUID) -> BasicMealInfo:
+def to_empty_basic_meal_info(meal_id: UUID, status: MealStatus = MealStatus.TO_EAT) -> BasicMealInfo:
     return BasicMealInfo(
         meal_id=meal_id,
+        status=status,
         calories=0,
         protein=0,
         fat=0,

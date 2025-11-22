@@ -13,6 +13,8 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/error_message.dart';
+import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -61,6 +63,16 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
+            if (state.gettingDailySummaryStatus.isFailure) {
+              return Center(
+                child: ErrorMessage(
+                  message: state.getMessage != null
+                      ? state.getMessage!(context)
+                      : AppLocalizations.of(context)!.unknownError,
+                ),
+              );
+            }
+
             if (state.dietGeneratingInfo.processingStatus.isOngoing
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
@@ -72,12 +84,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               return Stack(
                 children: [
                   Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 100.0),
-                      child: Text(
-                        state.getMessage!(context),
-                        style: const TextStyle(fontSize: 16, color: Colors.red),
-                      ),
+                    child: ErrorMessage(
+                      message: state.getMessage!(context),
                     ),
                   ),
                 ],

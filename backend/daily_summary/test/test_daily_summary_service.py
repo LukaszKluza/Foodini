@@ -327,6 +327,10 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
 
     result = await daily_summary_service.add_custom_meal(user=user, custom_meal=custom)
 
+    mock_summary.daily_meals = [MockDailyMealLink(meal_id=new_meal.id)]
+    mock_summary.daily_meals[0].meal = new_meal
+    mock_summary.daily_meals[0].status = MealStatus.EATEN
+
     mock_meal_repository.add_meal.assert_awaited_once()
 
     assert isinstance(result, MealInfo)
@@ -335,6 +339,9 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
     assert result.protein == float(updated_plan.target_protein)
     assert result.carbs == float(updated_plan.target_carbs)
     assert result.fat == float(updated_plan.target_fat)
+
+    remaining_meal_ids = [link.meal.id for link in mock_summary.daily_meals]
+    assert remaining_meal_ids == [new_meal.id]
 
 
 @pytest.mark.asyncio

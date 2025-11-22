@@ -3,11 +3,13 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
+from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
@@ -39,7 +41,20 @@ app.add_middleware(
 
 app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
 
+app.state.limiter = limiter
+
 templates = Jinja2Templates(directory="backend/templates")
+
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    raise HTTPException(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        detail={
+            "date": f"{request.query_params.get('date')}",
+            "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later.",
+        },
+    )
 
 
 @app.exception_handler(NotFoundInDatabaseException)

@@ -3,11 +3,13 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
+import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/utils/diet_generation/meals_generation_notification.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
@@ -171,6 +173,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       state.copyWith(
         day: event.day,
         processingStatus: ProcessingStatus.submittingOnGoing,
+        getNotification: null,
       ),
     );
 
@@ -182,6 +185,18 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       emit(
         state.copyWith(
           processingStatus: ProcessingStatus.submittingSuccess,
+        ),
+      );
+
+     emit(
+        currentState.copyWith(
+          dailySummary: summary,
+          processingStatus: ProcessingStatus.submittingSuccess,
+          getNotification: (context) =>  MealsGenerationNotification(
+            message: '${AppLocalizations.of(context)!.mealsGeneratedSuccessfully} '
+                '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}',
+            isError: false,
+          ),
         ),
       );
 
@@ -200,6 +215,11 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
           getMessage:
               (context) =>
                   ExceptionConverter.formatErrorMessage(error.data, context),
+          getNotification: (context) => MealsGenerationNotification(
+            message: '${AppLocalizations.of(context)!.error} ${AppLocalizations.of(context)!.whileMealsGeneration} '
+                '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.data}',
+            isError: true,
+          ),
         ),
       );
     } catch (error) {
@@ -207,6 +227,11 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         state.copyWith(
           processingStatus: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
+          getNotification: (context) => MealsGenerationNotification(
+            message: '${AppLocalizations.of(context)!.unknownError} ${AppLocalizations.of(context)!.whileMealsGeneration} '
+                '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.toString()}',
+            isError: true,
+          ),
         ),
       );
     }
