@@ -1,31 +1,38 @@
 # Foodini
 
-### 1. Running migration
+### 1. Setting project dependencies
+
+``` bash
+cd Foodini/backend
+uv sync
+```
+
+### 2. Running migration
 
 ``` bash
 cd Foodini
 python -m backend.core.migrate
 ```
 
-### 2. Running the backend
+### 3. Running the backend
 
 ``` bash
 cd Foodini
 $env:ENV=".env.local"; uvicorn backend.main:app --reload --log-config backend/logging_config.yaml --port 8000
 ```
-#### 2.1. Running the backend tests
+#### 3.1. Running the backend tests
 ``` bash
 $env:ENV=".env"; coverage run -m pytest
 ```
 
-### 3. Running the frontend
+### 4. Running the frontend
 
 ``` bash
 cd Foodini/frontend
 python ./run.py
 ```
 
-#### 3.1. Running the frontend tests
+#### 4.1. Running the frontend tests
 
 ``` bash
 cd Foodini/frontend
