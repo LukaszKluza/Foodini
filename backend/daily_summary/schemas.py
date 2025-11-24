@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -30,7 +30,7 @@ class MealInfoWithIconPath(MealInfo):
 
 class DailyMealsCreate(BaseModel):
     day: date
-    meals: Dict[MealType, BasicMealInfo]
+    meals: Dict[MealType, List[BasicMealInfo]]
     target_calories: int
     target_protein: float
     target_carbs: float
@@ -38,7 +38,7 @@ class DailyMealsCreate(BaseModel):
 
 
 class DailySummary(DailyMealsCreate):
-    meals: Dict[MealType, MealInfoWithIconPath]
+    meals: Dict[MealType, List[MealInfoWithIconPath]]
     eaten_calories: int
     eaten_protein: float
     eaten_carbs: float
@@ -55,15 +55,17 @@ class DailyMacrosSummaryCreate(BaseModel):
 
 class MealInfoUpdateRequest(BaseModel):
     day: date
-    meal_id: UUID
+    meal_type: MealType
     status: MealStatus
 
 
 class CustomMealUpdateRequest(BaseModel):
     day: date
-    meal_id: UUID
+    meal_type: MealType
+    meal_id: Optional[UUID] = None
     custom_name: Optional[str] = None
     custom_calories: Optional[int] = Field(default=None, ge=0)
     custom_protein: Optional[float] = Field(default=None, ge=0)
     custom_carbs: Optional[float] = Field(default=None, ge=0)
     custom_fat: Optional[float] = Field(default=None, ge=0)
+    custom_weight: Optional[int] = Field(default=None, ge=0, le=1250)

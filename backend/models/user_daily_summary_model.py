@@ -6,37 +6,11 @@ from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, UniqueConstrain
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
 from ..core.db_listeners import register_timestamp_listeners
-from ..daily_summary.enums.meal_status import MealStatus
+from .meals_daily_summary import MealDailySummary
 from .types import FloatAsNumeric
 
 if TYPE_CHECKING:
-    from .meal_recipe_model import Meal
     from .user_model import User
-
-
-class MealDailySummary(SQLModel, table=True):
-    __tablename__ = "meal_daily_summary"
-    daily_summary_id: uuid.UUID = Field(
-        sa_column=Column(
-            UUID(as_uuid=True),
-            ForeignKey("daily_meals_summaries.id", ondelete="CASCADE"),
-            primary_key=True,
-            nullable=False,
-        )
-    )
-    meal_id: uuid.UUID = Field(
-        sa_column=Column(
-            UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), primary_key=True, nullable=False
-        )
-    )
-    status: MealStatus = Field(default=MealStatus.TO_EAT, nullable=False)
-
-    daily_summary: Optional["DailyMealsSummary"] = Relationship(
-        back_populates="daily_meals", sa_relationship_kwargs={"passive_deletes": True}
-    )
-    meal: Optional["Meal"] = Relationship(
-        back_populates="daily_meals", sa_relationship_kwargs={"passive_deletes": True, "overlaps": "daily_summary"}
-    )
 
 
 class DailyMealsSummary(SQLModel, table=True):
@@ -72,11 +46,11 @@ class DailyMealsSummary(SQLModel, table=True):
     daily_meals: List["MealDailySummary"] = Relationship(
         back_populates="daily_summary", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
-    meals: List["Meal"] = Relationship(
-        back_populates="daily_summary",
-        link_model=MealDailySummary,
-        sa_relationship_kwargs={"lazy": "selectin", "overlaps": "daily_meals,daily_summary,meal"},
-    )
+    # meals: List["Meal"] = Relationship(
+    #     back_populates="daily_summary",
+    #     link_model=MealDailySummary,
+    #     sa_relationship_kwargs={"lazy": "selectin", "overlaps": "daily_meals,daily_summary,meal"},
+    # )
 
 
 class DailyMacrosSummary(SQLModel, table=True):

@@ -114,12 +114,14 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= meals.entries.firstWhere(
-                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
-                orElse: () => meals.entries.last,
-              ).key;
+              selectedMealType ??= meals.entries
+                .firstWhere(
+                  (entry) => entry.value.any((meal) => meal.status == MealStatus.pending),
+                  orElse: () => meals.entries.last,
+                )
+                .key;
               final activeMeal = selectedMealType!;
-              final activeMealInfo = meals[activeMeal]!;
+              final activeMealInfo = meals[activeMeal]!.first;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
 
@@ -329,7 +331,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     bool isActive,
     MealType activeMealType,
     MealInfo activeMealInfo,
-    Map<MealType, MealInfo> allMeals,
+    Map<MealType, List<MealInfo>> allMeals,
     DateTime selectedDay,
   ) {
     final bool isEaten = activeMealInfo.status == MealStatus.eaten;
@@ -417,7 +419,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                           context.read<DailySummaryBloc>().add(
                             ChangeMealStatus(
                               day: selectedDay,
-                              mealId: activeMealInfo.mealId as UuidValue,
+                              mealType: activeMealType,
                               status: nextStatus,
                             ),
                           );

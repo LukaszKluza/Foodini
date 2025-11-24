@@ -71,6 +71,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
             } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
+                state.dietGeneratingInfo.day != null &&
                 dateComparator(
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
                 state.gettingDailySummaryStatus.isFailure
@@ -118,11 +119,11 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                             title:
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
                             color: _getMealColor(entry.key),
-                            imageUrl: entry.value.iconPath!,
-                            mealName: entry.value.name ?? '',
-                            description: entry.value.description ?? '',
-                            explanation: entry.value.explanation,
-                            mealId: entry.value.mealId!,
+                            imageUrl: entry.value[0].iconPath!,
+                            mealName: entry.value[0].name ?? '',
+                            description: entry.value[0].description ?? '',
+                            explanation: entry.value[0].explanation,
+                            mealId: entry.value[0].mealId!,
                             context: context,
                           ),
                         const SizedBox(height: 40),
@@ -209,7 +210,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
-                        "Informacja",
+                        'Informacja',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,

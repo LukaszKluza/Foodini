@@ -79,7 +79,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     try {
       final request = MealInfoUpdateRequest(
         day: event.day,
-        mealId: event.mealId,
+        mealType: event.mealType,
         mealStatus: event.status,
       );
 

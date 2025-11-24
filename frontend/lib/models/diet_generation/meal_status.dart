@@ -25,9 +25,9 @@ enum MealStatus {
 
   static MealStatus getNextStatus(
       MealType currentType,
-      Map<MealType, MealInfo> allMeals,
+      Map<MealType, List<MealInfo>> allMeals,
   ) {
-      final currentStatus = allMeals[currentType]!.status;
+      final currentStatus = allMeals[currentType]![0].status;
       final statusCycle = [MealStatus.toEat, MealStatus.eaten, MealStatus.skipped];
       int currentIndex = statusCycle.indexOf(currentStatus);
 

@@ -57,11 +57,11 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
           } else if (state.dailySummary != null &&
               dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
             final meal = state.dailySummary!.meals[widget.mealType];
-            if (meal == null) {
+            if (meal == null || meal.isEmpty) {
               return const Center(child: Text('Brak danych dla tego posiłku'));
             }
 
-            final mealItems = [meal];
+            final mealItems = meal;
 
             return Scaffold(
               body: _MealDetails(mealType: widget.mealType, mealItems: mealItems, day: widget.selectedDate),
@@ -130,7 +130,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, day, mealItems[0].mealId!),
+                    onPressed: showPopUp(context, day, mealType, mealItems[0].mealId!),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -172,7 +172,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, day, mealInfo.mealId!, mealInfo: mealInfo),
+                onPressed: showPopUp(context, day, mealType, mealInfo.mealId!, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
