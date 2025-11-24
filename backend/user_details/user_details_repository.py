@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
@@ -23,6 +24,11 @@ class UserDetailsRepository:
 
     async def get_user_details_by_user_id(self, user_id: UUID) -> UserDetails:
         query = select(UserDetails).where(UserDetails.user_id == user_id)
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
+
+    async def get_date_of_last_update_user_details(self, user_id: UUID) -> datetime:
+        query = select(UserDetails.updated_at).where(UserDetails.user_id == user_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 

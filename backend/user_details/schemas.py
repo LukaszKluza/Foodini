@@ -1,5 +1,6 @@
 from datetime import date
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -92,6 +93,7 @@ class PredictedMacros(BaseModel):
 
 
 class PredictedCalories(BaseModel):
+    user_id: UUID
     bmr: int
     tdee: int
     target_calories: int
@@ -101,6 +103,7 @@ class PredictedCalories(BaseModel):
     @staticmethod
     def from_user_diet_predictions(user_diet_predictions: UserDietPredictions):
         return PredictedCalories(
+            user_id=user_diet_predictions.user_id,
             bmr=user_diet_predictions.bmr,
             tdee=user_diet_predictions.tdee,
             target_calories=user_diet_predictions.target_calories,

@@ -89,7 +89,7 @@ async def test_get_meal_icon_info_when_info_not_exist(
         await diet_generation_service.get_meal_icon(MealType.DINNER)
 
     # Then
-    assert exc_info.value.detail == "Meal icon not found"
+    assert exc_info.value.detail == "Meal icon for type: dinner not found"
 
 
 @pytest.mark.asyncio
@@ -139,7 +139,7 @@ async def test_get_meal_recipe_by_meal_id_when_not_exist(
         await diet_generation_service.get_meal_recipes_by_meal_recipe_id(1)
 
     # Then
-    assert exc_info.value.detail == "Meal recipes not found"
+    assert exc_info.value.detail == "Meal recipes for mealId: 1 not found"
 
 
 @pytest.mark.asyncio
@@ -197,4 +197,4 @@ async def test_get_meal_recipe_by_meal_recipe_id_and_language_when_not_exist(
         await diet_generation_service.get_meal_recipe_by_meal_recipe_id_and_language(1, Language.PL)
 
     # Then
-    assert exc_info.value.detail == "Meal recipe not found"
+    assert exc_info.value.detail == "Meal recipe for mealId: 1 and language: Language.PL not found"

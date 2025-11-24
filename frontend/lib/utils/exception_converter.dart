@@ -7,6 +7,10 @@ class ExceptionConverter extends RegisterState {
   static String formatErrorMessage(dynamic error, BuildContext context) {
     if (error == null || (error is ApiException && error.data == null)) return AppLocalizations.of(context)!.unknownError;
 
+    if (error is ApiException && (error.statusCode ?? 0) >= 500) {
+      return AppLocalizations.of(context)!.unknownError;
+    }
+
     if (error is String) return error;
 
     if (error is List) {

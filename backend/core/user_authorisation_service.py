@@ -16,6 +16,7 @@ from itsdangerous import (
     URLSafeTimedSerializer,
 )
 
+from backend.core.logger import logger
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
@@ -27,6 +28,7 @@ security = HTTPBearer()
 class AuthorizationService:
     def __init__(self, redis: aioredis):
         if not redis:
+            logger.error("Redis connection error")
             raise HTTPException(500, "Redis connection error")
         self.redis = redis
 
@@ -121,6 +123,8 @@ class AuthorizationService:
         linked_jti = token.get("linked_jti")
 
         if token_type != expected_type:
+            logger.debug(f"Invalid token type. Expected {expected_type}.")
+
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -132,6 +136,8 @@ class AuthorizationService:
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
+            logger.debug("Invalid token")
+
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
@@ -144,6 +150,7 @@ class AuthorizationService:
             revoked_results = await pipe.execute()
 
         if any(revoked_results):
+            logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -165,6 +172,7 @@ class AuthorizationService:
                 algorithms=[config.ALGORITHM],
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
+            logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -219,6 +227,7 @@ class AuthorizationService:
         try:
             return serializer.loads(token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60)
         except (SignatureExpired, BadTimeSignature, BadSignature, BadData) as e:
+            logger.debug("Token verification failed")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",

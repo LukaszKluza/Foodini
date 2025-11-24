@@ -212,6 +212,7 @@
   "markedAs": "marked as",
 
   "dailySummary": "Daily Summary",
+  "fillFormToGenerateMeals": "Please fill out the form to be able to generate meals",
   "dailyMeals": "Daily Menu",
   "dailyMealsFor": "Daily Meals for ",
 
@@ -229,6 +230,18 @@
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
   "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
 
+  "generateNewPlan": "Generate New Plan",
+  "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",
+  "regenerateMeals": "Regenerate Meals",
+  "dietOutdatedConsiderRegenerating": "Your meal plan may be outdated – consider regenerating it.",
+  "dietOutdated": "Your meal plan may be outdated.",
+  "planDoesNotExist": "Plan for given day does not exist.",
+
   "chooseOption": "Choose option",
-  "statistics": "Statistics"
+  "statistics": "Statistics",
+
+  "mealsGeneratedSuccessfully": "Meals successfully generated",
+  "forSomething": "for",
+  "whileMealsGeneration": "while generating meals",
+  "error": "Error"
 }
