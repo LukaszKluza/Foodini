@@ -86,7 +86,7 @@ jobs:
       - name: Test with pytest
         run: |
           cd backend
-          coverage run -m pytest
+          ./.venv/bin/python -m coverage run -m pytest
 
       - name: Backend test coverage
         run: |
