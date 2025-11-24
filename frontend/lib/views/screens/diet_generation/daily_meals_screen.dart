@@ -57,12 +57,13 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                 context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
             }
             if (state.dietGeneratingInfo.processingStatus.isOngoing
+                && state.dietGeneratingInfo.day != null
                 && dateComparator(
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
             } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
-                dateComparator(
-                    state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
+                (state.dietGeneratingInfo.day == null ||
+                    dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)) ||
                 state.gettingDailySummaryStatus.isFailure
             ) {
               final errorCode = state.errorCode;
