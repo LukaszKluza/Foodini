@@ -40,7 +40,6 @@ app.add_middleware(
 
 
 app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
-
 app.state.limiter = limiter
 
 templates = Jinja2Templates(directory="backend/templates")

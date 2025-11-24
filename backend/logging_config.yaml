@@ -8,32 +8,32 @@ formatters:
     datefmt: "%Y-%m-%d %H:%M:%S"
 
 handlers:
-  default:
+  console:
     class: logging.StreamHandler
     formatter: default
     stream: ext://sys.stdout
 
 loggers:
+  app:
+    handlers: [console]
+    level: DEBUG
+    propagate: false
+
   uvicorn:
-    handlers: [default]
+    handlers: [console]
     level: INFO
     propagate: false
 
   uvicorn.error:
+    handlers: [console]
     level: INFO
-    handlers: [default]
     propagate: false
 
   uvicorn.access:
+    handlers: [console]
     level: INFO
-    handlers: [default]
-    propagate: false
-
-  watchfiles:
-    level: WARNING
-    handlers: [ default ]
     propagate: false
 
 root:
-  level: INFO
-  handlers: [default]
+  level: WARNING
+  handlers: [console]

@@ -3,7 +3,6 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
-import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
@@ -184,13 +183,6 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
 
       emit(
         state.copyWith(
-          processingStatus: ProcessingStatus.submittingSuccess,
-        ),
-      );
-
-     emit(
-        currentState.copyWith(
-          dailySummary: summary,
           processingStatus: ProcessingStatus.submittingSuccess,
           getNotification: (context) =>  MealsGenerationNotification(
             message: '${AppLocalizations.of(context)!.mealsGeneratedSuccessfully} '

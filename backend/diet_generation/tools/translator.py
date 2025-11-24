@@ -5,6 +5,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_ollama import OllamaLLM
 
+from backend.core.logger import logger
 from backend.diet_generation.schemas import MealRecipeTranslation
 from backend.settings import config
 
@@ -65,4 +66,5 @@ class TranslatorTool:
             return MealRecipeTranslation.model_validate(result_dict)
 
         except Exception as e:
+            logger.error(f"Error while translating {meal_recipe.meal_name} recipe to polish")
             raise RuntimeError(f"Error while translating {meal_recipe.meal_name} recipe to polish") from e

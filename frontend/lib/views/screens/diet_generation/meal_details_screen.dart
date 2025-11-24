@@ -47,8 +47,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
     return Scaffold(
       body: BlocBuilder<DailySummaryBloc, DailySummaryState>(
         builder: (context, state) {
-          final meal = state.dailySummary?.meals[widget.mealType];
-          final List<MealInfo> mealItems = meal != null ? [meal] : [];
+          final List<MealInfo> mealItems = state.getMealsByMealType(widget.mealType);
           final calculatedMacrosSummary = mealItems.isNotEmpty &&
               dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? calculateTotalMacros(mealItems) : MealTypeMacrosSummary.zero();
 
@@ -79,8 +78,7 @@ class _MealDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final meal = state.dailySummary?.meals[mealType];
-    final List<MealInfo> mealItems = meal != null ? [meal, meal, meal,meal] : [];
+    final List<MealInfo> mealItems = state.getMealsByMealType(mealType);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 140),

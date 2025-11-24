@@ -1235,6 +1235,12 @@ abstract class AppLocalizations {
   /// **'Daily Summary'**
   String get dailySummary;
 
+  /// No description provided for @fillFormToGenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to be able to generate meals'**
+  String get fillFormToGenerateMeals;
+
   /// No description provided for @dailyMeals.
   ///
   /// In en, this message translates to:
@@ -1318,6 +1324,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
   String get valueOfCaloriesMacroShouldBeBetween;
+
+  /// No description provided for @generateNewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate New Plan'**
+  String get generateNewPlan;
+
+  /// No description provided for @noMealData_contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
+  String noMealData_contactSupport(Object email);
+
+  /// No description provided for @regenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate Meals'**
+  String get regenerateMeals;
+
+  /// No description provided for @dietOutdatedConsiderRegenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated – consider regenerating it.'**
+  String get dietOutdatedConsiderRegenerating;
+
+  /// No description provided for @dietOutdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated.'**
+  String get dietOutdated;
+
+  /// No description provided for @planDoesNotExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for given day does not exist.'**
+  String get planDoesNotExist;
 
   /// No description provided for @chooseOption.
   ///

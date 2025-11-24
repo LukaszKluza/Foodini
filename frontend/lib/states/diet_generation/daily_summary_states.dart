@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
+import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/utils/diet_generation/meals_generation_notification.dart';
 
@@ -51,6 +53,10 @@ class DailySummaryState {
       getMessage: getMessage ?? this.getMessage,
       getNotification: getNotification ?? this.getNotification,
     );
+  }
+
+  List<MealInfo> getMealsByMealType(MealType type) {
+    return [if (dailySummary?.meals[type] != null) dailySummary!.meals[type]!];
   }
 
   @override

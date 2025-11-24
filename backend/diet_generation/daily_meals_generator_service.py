@@ -91,9 +91,14 @@ class DailyMealsGeneratorService:
             )
             await self._save_daily_summary(day, user_diet_predictions, meals_type_map)
             await self._translate_and_save_recipes(saved_meals, saved_recipes)
-        except (NotFoundInDatabaseException, HTTPException):
+        except NotFoundInDatabaseException:
+            logger.debug("Diet not found in database")
+            raise
+        except HTTPException as e:
+            logger.error(f"Error while generating meal plan: {str(e)}")
             raise
         except Exception as e:
+            logger.error(f"Error while generating meal plan: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error generating diet plan for user {user.id}",
@@ -126,8 +131,8 @@ class DailyMealsGeneratorService:
 
             saved_meals.append(saved_meal)
             saved_recipes.append(meal_recipe)
-            status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
-            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id, status=status)
+            _status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
+            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id, status=_status)
 
         return saved_meals, saved_recipes, meals_type_map
 

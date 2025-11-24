@@ -31,7 +31,7 @@ class CaloriesPredictionRepository:
         else:
             user_diet_predictions = UserDietPredictions(
                 user_id=user_id,
-                **predicted_calories.model_dump(exclude={"predicted_macros"}),
+                **predicted_calories.model_dump(exclude={"predicted_macros", "user_id"}),
                 **predicted_calories.predicted_macros.model_dump(),
             )
             self.db.add(user_diet_predictions)
