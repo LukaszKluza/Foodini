@@ -28,7 +28,7 @@ class DailySummaryRepository:
             if not meal_infos:
                 continue
 
-            is_generated = True    # Only used by AI so we can assume it is True
+            is_generated = True  # Only used by AI so we can assume it is True
 
             meal_daily_summary_link = MealDailySummary(
                 daily_summary_id=user_daily_meals.id,

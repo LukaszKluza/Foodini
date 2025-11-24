@@ -60,9 +60,7 @@ class ComposedMealItem(SQLModel, table=True):
         )
     )
     meal_id: uuid.UUID = Field(
-        sa_column=Column(
-            UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False
-        )
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False)
     )
     weight_eaten: int = Field(nullable=False, ge=0, le=1250)
 
