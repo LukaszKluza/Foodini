@@ -6,6 +6,8 @@ from pydantic import BaseModel, Field
 from backend.models import UserDietPredictions
 from backend.user_details.enums import (
     ActivityLevel,
+    CookingSkills,
+    DailyBudget,
     DietaryRestriction,
     DietIntensity,
     DietType,
@@ -13,6 +15,7 @@ from backend.user_details.enums import (
     SleepQuality,
     StressLevel,
 )
+from backend.user_details.enums.diet_style import DietStyle
 from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
 from backend.user_details.mixins.float_field_validator_mixin import FloatFieldValidatorMixin
 
@@ -23,10 +26,13 @@ class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     weight_kg: float = Field(..., ge=20, le=160)
     date_of_birth: date
     diet_type: DietType
+    diet_style: Optional[DietStyle]
     dietary_restrictions: List[DietaryRestriction]
     diet_goal_kg: float = Field(..., ge=20, le=160)
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
+    daily_budget: DailyBudget
+    cooking_skills: CookingSkills
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
@@ -41,10 +47,13 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
     date_of_birth: Optional[date] = None
     diet_type: Optional[DietType] = None
+    diet_style: Optional[DietStyle] = None
     dietary_restrictions: Optional[List[DietaryRestriction]] = None
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
     meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
+    daily_budget: Optional[DailyBudget] = None
+    cooking_skills: Optional[CookingSkills] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None
@@ -60,10 +69,13 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
             weight_kg=data.weight_kg,
             date_of_birth=data.date_of_birth,
             diet_type=data.diet_type,
+            diet_style=data.diet_style,
             dietary_restrictions=data.dietary_restrictions,
             diet_goal_kg=data.diet_goal_kg,
             meals_per_day=data.meals_per_day,
             diet_intensity=data.diet_intensity,
+            daily_budget=data.daily_budget,
+            cooking_skills=data.cooking_skills,
             activity_level=data.activity_level,
             stress_level=data.stress_level,
             sleep_quality=data.sleep_quality,

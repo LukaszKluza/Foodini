@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
@@ -34,9 +36,11 @@ void main() {
       weight: 75.0,
       dateOfBirth: DateTime.now(),
       dietType: DietType.fatLoss,
-      dietaryRestrictions: [],
+      allergies: [],
       dietGoal: 70.0,
       mealsPerDay: 4,
+      dailyBudget: DailyBudget.medium,
+      cookingSkills: CookingSkills.advanced,
       dietIntensity: DietIntensity.medium,
       activityLevel: ActivityLevel.moderate,
       stressLevel: StressLevel.high,
