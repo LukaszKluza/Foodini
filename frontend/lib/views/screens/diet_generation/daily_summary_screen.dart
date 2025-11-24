@@ -17,7 +17,6 @@ import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:uuid/uuid_value.dart';
 
 class DailySummaryScreen extends StatefulWidget {
   final DateTime selectedDate;

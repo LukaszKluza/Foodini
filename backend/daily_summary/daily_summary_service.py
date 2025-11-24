@@ -226,7 +226,7 @@ class DailySummaryService:
             carbs=float(total_carbs),
             fat=float(total_fat),
             meal_id=slot.meal_items[0].meal_id,
-            weight=slot.meal_items[0].meal.weight,
+            weight=slot.meal_items[0].meal.weight,    # Doesnt matter. We can think of optional weight here and in model on front
         )
 
         await self.daily_summary_repo.update_meal_status(user.id, day, meal_type, new_status)

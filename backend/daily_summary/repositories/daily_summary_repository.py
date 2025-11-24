@@ -28,9 +28,7 @@ class DailySummaryRepository:
             if not meal_infos:
                 continue
 
-            is_generated = True
-            if len(meal_infos) > 1:
-                is_generated = False
+            is_generated = True    # Only used by AI so we can assume it is True
 
             meal_daily_summary_link = MealDailySummary(
                 daily_summary_id=user_daily_meals.id,
@@ -84,7 +82,7 @@ class DailySummaryRepository:
             .options(
                 selectinload(DailyMealsSummary.daily_meals)
                 .selectinload(MealDailySummary.meal_items)
-                .joinedload(ComposedMealItem.meal)
+                .selectinload(ComposedMealItem.meal)
                 .selectinload(Meal.recipes)
             )
         )

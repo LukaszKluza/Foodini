@@ -48,22 +48,22 @@ class MealDailySummary(SQLModel, table=True):
 class ComposedMealItem(SQLModel, table=True):
     __tablename__ = "composed_meal_items"
 
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    )
     meal_daily_summary_id: uuid.UUID = Field(
         sa_column=Column(
             UUID(as_uuid=True),
             ForeignKey("meal_daily_summary.id", ondelete="CASCADE"),
-            primary_key=True,
             nullable=False,
             index=True,
         )
     )
-
     meal_id: uuid.UUID = Field(
         sa_column=Column(
-            UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), primary_key=True, nullable=False
+            UUID(as_uuid=True), ForeignKey("meals.id", ondelete="CASCADE"), nullable=False
         )
     )
-
     weight_eaten: int = Field(nullable=False, ge=0, le=1250)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

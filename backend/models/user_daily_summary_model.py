@@ -46,11 +46,6 @@ class DailyMealsSummary(SQLModel, table=True):
     daily_meals: List["MealDailySummary"] = Relationship(
         back_populates="daily_summary", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
-    # meals: List["Meal"] = Relationship(
-    #     back_populates="daily_summary",
-    #     link_model=MealDailySummary,
-    #     sa_relationship_kwargs={"lazy": "selectin", "overlaps": "daily_meals,daily_summary,meal"},
-    # )
 
 
 class DailyMacrosSummary(SQLModel, table=True):
