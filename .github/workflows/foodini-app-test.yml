@@ -85,7 +85,6 @@ jobs:
 
       - name: Test with pytest
         run: |
-          cd backend
           coverage run -m pytest
 
       - name: Backend test coverage
