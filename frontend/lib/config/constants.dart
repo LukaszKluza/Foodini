@@ -40,4 +40,5 @@ class Constants {
   static const int maxNameLength = 124;
   static const int maxMacroValue = 1000;
   static const int maxCaloriesValue = 10_000;
+  static const String supportEmail = 'foodini.app.dev@gmail.com';
 }

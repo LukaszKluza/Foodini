@@ -579,6 +579,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailySummary => 'Daily Summary';
 
   @override
+  String get fillFormToGenerateMeals => 'Please fill out the form to be able to generate meals';
+
+  @override
   String get dailyMeals => 'Daily Menu';
 
   @override
@@ -621,8 +624,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
 
   @override
+  String get generateNewPlan => 'Generate New Plan';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'No data for this meal. Please refresh request or contact support at $email.';
+  }
+
+  @override
+  String get regenerateMeals => 'Regenerate Meals';
+
+  @override
+  String get dietOutdatedConsiderRegenerating => 'Your meal plan may be outdated – consider regenerating it.';
+
+  @override
+  String get dietOutdated => 'Your meal plan may be outdated.';
+
+  @override
+  String get planDoesNotExist => 'Plan for given day does not exist.';
+
+  @override
   String get chooseOption => 'Choose option';
 
   @override
   String get statistics => 'Statistics';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Meals successfully generated';
+
+  @override
+  String get forSomething => 'for';
+
+  @override
+  String get whileMealsGeneration => 'while generating meals';
+
+  @override
+  String get error => 'Error';
 }

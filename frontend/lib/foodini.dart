@@ -17,6 +17,7 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/cache_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -103,6 +104,28 @@ class Foodini extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               routerConfig: router,
+              builder: (context, child) {
+                return BlocListener<DailySummaryBloc, DailySummaryState>(
+                  listenWhen: (previous, current) =>
+                  previous.getNotification != current.getNotification &&
+                      current.getNotification != null,
+                  listener: (context, state) {
+                    final notification = state.getNotification!(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(notification.message),
+                        backgroundColor: notification.isError
+                            ? Colors.red
+                            : Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                        margin: const EdgeInsets.all(16),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                  child: child!,
+                );
+              },
             );
           },
         ),

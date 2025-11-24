@@ -6,6 +6,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_ollama import OllamaLLM
 
+from backend.core.logger import logger
 from backend.diet_generation.schemas import AgentState, CompleteMeal, DietGenerationOutput
 from backend.settings import config
 
@@ -175,6 +176,7 @@ class PlannerTool:
             }
 
         except Exception as e:
+            logger.error(f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)})")
             return {
                 "validation_report": f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)}"
             }

@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/custom_exception_code.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
@@ -32,11 +34,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
   }
 
-  String formatForUrl(DateTime date) =>
-      '${date.year.toString().padLeft(4, '0')}-'
-      '${date.month.toString().padLeft(2, '0')}-'
-      '${date.day.toString().padLeft(2, '0')}';
-
   @override
   Widget build(BuildContext context) {
     final displayDate =
@@ -49,15 +46,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
     final now = DateTime.now();
-
-    final isActiveDay = (
-        widget.selectedDate.isAfter(now) ||
-            (
-                now.year == widget.selectedDate.year &&
-                now.month == widget.selectedDate.month &&
-                now.day == widget.selectedDate.day
-            )
-    );
+    final isToDay = isSameDay(now, widget.selectedDate);
+    final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
       body: SafeArea(
@@ -76,16 +66,24 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)) ||
                 state.gettingDailySummaryStatus.isFailure
             ) {
+              final errorCode = state.errorCode;
+              final errorData = state.errorData;
+              final isMissingPredictions =
+                  errorCode == 404 &&
+                  errorData is Map &&
+                  (errorData['code'] == CustomExceptionCode.missingDietPredictions.toJson());
+
               return Stack(
                 children: [
                   Center(
-                    child: Text(
-                      (state.getMessage?.call(context)) ?? AppLocalizations.of(context)!.unknownError,
-                      style: const TextStyle(fontSize: 16, color: Colors.red),
+                    child: ErrorMessage(
+                      message: state.getMessage != null
+                          ? state.getMessage!(context)
+                          : AppLocalizations.of(context)!.unknownError,
                     ),
                   ),
-                  if (isActiveDay)
-                    GenerateMealsButton(
+                  if (isActiveDay && !isMissingPredictions)
+                    DietGenerationInfoButton(
                       selectedDay: widget.selectedDate,
                       isRegenerateMode: false,
                       onPressed: generateOnPressed,
@@ -93,7 +91,6 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                 ],
               );
               }
-
             if (state.dailySummary != null &&
                 dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
               final meals = state.dailySummary!.meals;
@@ -130,12 +127,21 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ),
                   ),
                   _buildHeader(displayDate),
-                  if (isActiveDay && widget.selectedDate.isAfter(now))
-                      GenerateMealsButton(
-                        selectedDay: widget.selectedDate,
-                        isRegenerateMode: isRegenerate,
-                        onPressed: generateOnPressed,
-                      ),
+                  if (widget.selectedDate.isAfter(now))
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: isRegenerate,
+                      onPressed: generateOnPressed,
+                      label: state.dailySummary!.isOutDated ?
+                        AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
+                        AppLocalizations.of(context)!.regenerateMeals,
+                    )
+                  else if(isToDay && state.dailySummary!.isOutDated)
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: false,
+                      label: AppLocalizations.of(context)!.dietOutdated
+                    )
                 ],
               );
             }

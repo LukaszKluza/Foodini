@@ -51,6 +51,10 @@ class ActionButton extends StatelessWidget {
           ),
           child: Text(
             label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            softWrap: true,
+            overflow: TextOverflow.visible,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,

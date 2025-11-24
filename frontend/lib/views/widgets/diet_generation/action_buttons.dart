@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-typedef OnPressedCallback = void Function();
-
 Center customCenterButton(
   Key buttonKey,
   VoidCallback onPressed,

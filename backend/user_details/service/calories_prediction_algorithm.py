@@ -25,6 +25,7 @@ class CaloriesPredictionAlgorithm:
         )
 
         return PredictedCalories(
+            user_id=self.user_details.user_id,
             bmr=int(self.bmr),
             tdee=int(self.tdee),
             target_calories=int(self.target_calories),
