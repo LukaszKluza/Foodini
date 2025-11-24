@@ -16,6 +16,7 @@ from itsdangerous import (
     URLSafeTimedSerializer,
 )
 
+from backend.core.logger import logger
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
@@ -27,6 +28,7 @@ security = HTTPBearer()
 class AuthorizationService:
     def __init__(self, redis: aioredis):
         if not redis:
+            logger.error("Redis connection error")
             raise HTTPException(500, "Redis connection error")
         self.redis = redis
 
@@ -121,6 +123,8 @@ class AuthorizationService:
         linked_jti = token.get("linked_jti")
 
         if token_type != expected_type:
+            logger.debug(f"Invalid token type. Expected {expected_type}.")
+
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -128,10 +132,12 @@ class AuthorizationService:
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
-        redis_key = token_jti if expected_type == "refresh" else linked_jti
+        redis_key = token_jti if expected_type == Token.REFRESH.value else linked_jti
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
+            logger.debug("Invalid token")
+
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
@@ -144,6 +150,7 @@ class AuthorizationService:
             revoked_results = await pipe.execute()
 
         if any(revoked_results):
+            logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -165,6 +172,7 @@ class AuthorizationService:
                 algorithms=[config.ALGORITHM],
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
+            logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
                 if Token.ACCESS.value == token_type
@@ -174,15 +182,28 @@ class AuthorizationService:
 
     async def extract_email_from_base64(self, token: str) -> str | None:
         try:
-            padding = len(token) % 4
-            if padding:
-                token += "=" * (4 - padding)
+            decoded = await self.decode_token(token)
+            email = re.search(rb"[\w.-]+@[\w.-]+", decoded)
 
-            decoded = base64.urlsafe_b64decode(token)
-            match = re.search(rb"[\w.-]+@[\w.-]+", decoded)
-            return match.group(0).decode("utf-8")
+            return email.group(0).decode("utf-8")
         except Exception:
             return None
+
+    async def extract_language_from_base64(self, token: str) -> str | None:
+        try:
+            decoded = await self.decode_token(token)
+            language = re.search(rb'"language":"(.*?)"', decoded)
+
+            return language.group(0).decode("utf-8")['"language":"'.__len__() : -1]
+        except Exception:
+            return None
+
+    async def decode_token(self, token):
+        padding = len(token) % 4
+        if padding:
+            token += "=" * (4 - padding)
+        decoded = base64.urlsafe_b64decode(token)
+        return decoded
 
     async def get_serializer(self, salt: str = config.NEW_ACCOUNT_SALT):
         await self.verify_salt(salt)
@@ -206,6 +227,7 @@ class AuthorizationService:
         try:
             return serializer.loads(token, max_age=config.VERIFICATION_TOKEN_EXPIRE_MINUTES * 60)
         except (SignatureExpired, BadTimeSignature, BadSignature, BadData) as e:
+            logger.debug("Token verification failed")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Token verification failed",

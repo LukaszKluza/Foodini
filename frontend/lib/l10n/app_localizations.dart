@@ -137,16 +137,10 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home;
 
-  /// No description provided for @homePage.
-  ///
-  /// In en, this message translates to:
-  /// **'Foodini Home Page'**
-  String get homePage;
-
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome in Foodini'**
+  /// **'Welcome'**
   String get welcome;
 
   /// No description provided for @requiredName.
@@ -155,11 +149,23 @@ abstract class AppLocalizations {
   /// **'Name is required'**
   String get requiredName;
 
+  /// No description provided for @requiredLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Lastname is required'**
+  String get requiredLastname;
+
   /// No description provided for @provideCorrectName.
   ///
   /// In en, this message translates to:
   /// **'Provide correct name'**
   String get provideCorrectName;
+
+  /// No description provided for @provideCorrectLastname.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide correct lastname'**
+  String get provideCorrectLastname;
 
   /// No description provided for @requiredCountry.
   ///
@@ -437,6 +443,12 @@ abstract class AppLocalizations {
   /// **'Diet type is required'**
   String get requiredDietType;
 
+  /// No description provided for @dietStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet style'**
+  String get dietStyle;
+
   /// No description provided for @allergies.
   ///
   /// In en, this message translates to:
@@ -508,6 +520,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calories prediction'**
   String get caloriesPrediction;
+
+  /// No description provided for @dailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget'**
+  String get dailyBudget;
+
+  /// No description provided for @requiredDailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget is required'**
+  String get requiredDailyBudget;
+
+  /// No description provided for @cookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills'**
+  String get cookingSkills;
+
+  /// No description provided for @requiredCookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills are required'**
+  String get requiredCookingSkills;
 
   /// No description provided for @activityLevel.
   ///
@@ -605,6 +641,12 @@ abstract class AppLocalizations {
   /// **'Fat % should be %'**
   String get fatPercentageShouldBeBetween;
 
+  /// No description provided for @advancedParametersValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Sum of advanced parameters can\'t be higher than'**
+  String get advancedParametersValidation;
+
   /// No description provided for @generateWeeklyDiet.
   ///
   /// In en, this message translates to:
@@ -659,77 +701,77 @@ abstract class AppLocalizations {
   /// **'Weight Maintenance'**
   String get dietType_WeightMaintenance;
 
-  /// No description provided for @dietType_Vegetarian.
-  ///
-  /// In en, this message translates to:
-  /// **'Vegetarian'**
-  String get dietType_Vegetarian;
-
-  /// No description provided for @dietType_Vegan.
-  ///
-  /// In en, this message translates to:
-  /// **'Vegan'**
-  String get dietType_Vegan;
-
-  /// No description provided for @dietType_Keto.
-  ///
-  /// In en, this message translates to:
-  /// **'Keto'**
-  String get dietType_Keto;
-
-  /// No description provided for @allergy_Gluten.
+  /// No description provided for @allergies_Gluten.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get allergy_Gluten;
+  String get allergies_Gluten;
 
-  /// No description provided for @allergy_Peanuts.
+  /// No description provided for @allergies_Peanuts.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get allergy_Peanuts;
+  String get allergies_Peanuts;
 
-  /// No description provided for @allergy_Lactose.
+  /// No description provided for @allergies_Lactose.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get allergy_Lactose;
+  String get allergies_Lactose;
 
-  /// No description provided for @allergy_Fish.
+  /// No description provided for @allergies_Fish.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get allergy_Fish;
+  String get allergies_Fish;
 
-  /// No description provided for @allergy_Soy.
+  /// No description provided for @allergies_Soy.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get allergy_Soy;
+  String get allergies_Soy;
 
-  /// No description provided for @allergy_Wheat.
+  /// No description provided for @allergies_Wheat.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get allergy_Wheat;
+  String get allergies_Wheat;
 
-  /// No description provided for @allergy_Celery.
+  /// No description provided for @allergies_Celery.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get allergy_Celery;
+  String get allergies_Celery;
 
-  /// No description provided for @allergy_Sulphites.
+  /// No description provided for @allergies_Sulphites.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get allergy_Sulphites;
+  String get allergies_Sulphites;
 
-  /// No description provided for @allergy_Lupin.
+  /// No description provided for @allergies_Lupin.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get allergy_Lupin;
+  String get allergies_Lupin;
+
+  /// No description provided for @dietStyle_Vegetarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetarian'**
+  String get dietStyle_Vegetarian;
+
+  /// No description provided for @dietStyle_Vegan.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegan'**
+  String get dietStyle_Vegan;
+
+  /// No description provided for @dietStyle_Keto.
+  ///
+  /// In en, this message translates to:
+  /// **'Keto'**
+  String get dietStyle_Keto;
 
   /// No description provided for @dietIntensity_Slow.
   ///
@@ -748,6 +790,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fast'**
   String get dietIntensity_Fast;
+
+  /// No description provided for @dailyBudget_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get dailyBudget_low;
+
+  /// No description provided for @dailyBudget_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get dailyBudget_medium;
+
+  /// No description provided for @dailyBudget_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get dailyBudget_high;
+
+  /// No description provided for @cookingSkills_beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get cookingSkills_beginner;
+
+  /// No description provided for @cookingSkills_advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get cookingSkills_advanced;
+
+  /// No description provided for @cookingSkills_professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get cookingSkills_professional;
 
   /// No description provided for @activityLevel_VeryLow.
   ///
@@ -989,17 +1067,335 @@ abstract class AppLocalizations {
   /// **'Save predicted calories'**
   String get savePredictedCalories;
 
+  /// No description provided for @changeCaloriesPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change calories prediction'**
+  String get changeCaloriesPrediction;
+
   /// No description provided for @refreshRequest.
   ///
   /// In en, this message translates to:
   /// **'Refresh request'**
   String get refreshRequest;
 
-  /// No description provided for @changeCaloriesPrediction.
+  /// No description provided for @goToMainPage.
   ///
   /// In en, this message translates to:
-  /// **'Change calories prediction'**
-  String get changeCaloriesPrediction;
+  /// **'Go to main page'**
+  String get goToMainPage;
+
+  /// No description provided for @errorWhileFetchingMealIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while fetching meal icon'**
+  String get errorWhileFetchingMealIcon;
+
+  /// No description provided for @mealDescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal description'**
+  String get mealDescriptions;
+
+  /// No description provided for @groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get groceries;
+
+  /// No description provided for @recipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe'**
+  String get recipe;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
+
+  /// No description provided for @breakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get breakfast;
+
+  /// No description provided for @morningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning snack'**
+  String get morningSnack;
+
+  /// No description provided for @lunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get lunch;
+
+  /// No description provided for @afternoonSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon snack'**
+  String get afternoonSnack;
+
+  /// No description provided for @dinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dinner;
+
+  /// No description provided for @eveningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening snack'**
+  String get eveningSnack;
+
+  /// No description provided for @toEat.
+  ///
+  /// In en, this message translates to:
+  /// **'To eat'**
+  String get toEat;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @eaten.
+  ///
+  /// In en, this message translates to:
+  /// **'Eaten'**
+  String get eaten;
+
+  /// No description provided for @skipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get skipped;
+
+  /// No description provided for @f_fat.
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get f_fat;
+
+  /// No description provided for @p_protein.
+  ///
+  /// In en, this message translates to:
+  /// **'P'**
+  String get p_protein;
+
+  /// No description provided for @c_carbs.
+  ///
+  /// In en, this message translates to:
+  /// **'C'**
+  String get c_carbs;
+
+  /// No description provided for @g_grams.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get g_grams;
+
+  /// No description provided for @cal_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Cal'**
+  String get cal_calories;
+
+  /// No description provided for @of_calories.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get of_calories;
+
+  /// No description provided for @cannotEditPastMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit past meals'**
+  String get cannotEditPastMeals;
+
+  /// No description provided for @noMealsForToday.
+  ///
+  /// In en, this message translates to:
+  /// **'There aren\'t any meals planned for today'**
+  String get noMealsForToday;
+
+  /// No description provided for @markedAs.
+  ///
+  /// In en, this message translates to:
+  /// **'marked as'**
+  String get markedAs;
+
+  /// No description provided for @dailySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Summary'**
+  String get dailySummary;
+
+  /// No description provided for @fillFormToGenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to be able to generate meals'**
+  String get fillFormToGenerateMeals;
+
+  /// No description provided for @dailyMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Menu'**
+  String get dailyMeals;
+
+  /// No description provided for @dailyMealsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Meals for '**
+  String get dailyMealsFor;
+
+  /// No description provided for @macrosSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros summary'**
+  String get macrosSummary;
+
+  /// No description provided for @calories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get calories;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @skipMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Meal'**
+  String get skipMeal;
+
+  /// No description provided for @addNewMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new meal'**
+  String get addNewMeal;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @scanProductBarCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan product bar code'**
+  String get scanProductBarCode;
+
+  /// No description provided for @mealName.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal name'**
+  String get mealName;
+
+  /// No description provided for @mealItemNameShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal item name should be between'**
+  String get mealItemNameShouldBeBetween;
+
+  /// No description provided for @valueOfThisMacroShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of this macro should be between'**
+  String get valueOfThisMacroShouldBeBetween;
+
+  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of calories should be between'**
+  String get valueOfCaloriesMacroShouldBeBetween;
+
+  /// No description provided for @generateNewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate New Plan'**
+  String get generateNewPlan;
+
+  /// No description provided for @noMealData_contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
+  String noMealData_contactSupport(Object email);
+
+  /// No description provided for @regenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate Meals'**
+  String get regenerateMeals;
+
+  /// No description provided for @dietOutdatedConsiderRegenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated – consider regenerating it.'**
+  String get dietOutdatedConsiderRegenerating;
+
+  /// No description provided for @dietOutdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated.'**
+  String get dietOutdated;
+
+  /// No description provided for @planDoesNotExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for given day does not exist.'**
+  String get planDoesNotExist;
+
+  /// No description provided for @chooseOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose option'**
+  String get chooseOption;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// No description provided for @mealsGeneratedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals successfully generated'**
+  String get mealsGeneratedSuccessfully;
+
+  /// No description provided for @forSomething.
+  ///
+  /// In en, this message translates to:
+  /// **'for'**
+  String get forSomething;
+
+  /// No description provided for @whileMealsGeneration.
+  ///
+  /// In en, this message translates to:
+  /// **'while generating meals'**
+  String get whileMealsGeneration;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

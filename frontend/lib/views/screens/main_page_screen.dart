@@ -20,15 +20,23 @@ class _LoginScreenState extends State<MainPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    final date = DateTime.now();
+    final formattedDate =
+        '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+
     final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.foodini,
-            style: Styles.titleStyle,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Image.asset(
+              Constants.mainFoodiniIcon, width: 124,
+            ),
           ),
         ),
       ),
@@ -70,11 +78,11 @@ class _LoginScreenState extends State<MainPageScreen> {
                       Column(
                         children: [
                           rectangularButton(
-                            AppLocalizations.of(context)!.myAccount,
-                            Icons.person,
+                            AppLocalizations.of(context)!.dailySummary,
+                            Icons.list_alt,
                             screenWidth,
                             screenHeight,
-                            () => context.push('/account'),
+                            () => context.push('/daily-summary/$formattedDate'),
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
@@ -87,10 +95,26 @@ class _LoginScreenState extends State<MainPageScreen> {
                               extra: {'from': 'main-page'},
                             ),
                           ),
+                          const SizedBox(height: 16),
+                          rectangularButton(
+                            AppLocalizations.of(context)!.statistics,
+                            Icons.show_chart_rounded,
+                            screenWidth,
+                            screenHeight,
+                                () => context.push('/statistics'),
+                          ),
                         ],
                       ),
                       Column(
                         children: [
+                          rectangularButton(
+                            AppLocalizations.of(context)!.dailyMeals,
+                            Icons.fastfood,
+                            screenWidth,
+                            screenHeight,
+                            () => context.push('/daily-meals/$formattedDate'),
+                          ),
+                          const SizedBox(height: 16),
                           rectangularButton(
                             AppLocalizations.of(context)!.changeCaloriesPrediction,
                             Icons.change_circle_outlined,
@@ -100,11 +124,11 @@ class _LoginScreenState extends State<MainPageScreen> {
                           ),
                           const SizedBox(height: 16),
                           rectangularButton(
-                            'Button 4',
-                            Icons.do_not_disturb,
+                            AppLocalizations.of(context)!.myAccount,
+                            Icons.person,
                             screenWidth,
                             screenHeight,
-                            null,
+                                () => context.push('/account'),
                           ),
                         ],
                       ),

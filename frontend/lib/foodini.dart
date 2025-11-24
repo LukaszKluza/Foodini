@@ -1,16 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/app_router.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
+import 'package:frontend/repository/api_client.dart';
+import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
+import 'package:frontend/utils/cache_manager.dart';
 import 'package:provider/provider.dart';
 
 class LanguageCubit extends Cubit<Locale> {
@@ -32,21 +40,35 @@ class LanguageCubit extends Cubit<Locale> {
 }
 
 class Foodini extends StatelessWidget {
-  const Foodini({super.key});
+  final Directory? appDir;
+
+  const Foodini(this.appDir, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<ApiClient>(create: (_) => ApiClient()),
-        Provider<TokenStorageRepository>(
-          create: (_) => TokenStorageRepository(),
+        Provider<TokenStorageService>(
+          create: (_) => TokenStorageService(),
+        ),
+        ProxyProvider<ApiClient, CacheManager>(
+          update: (_, apiClient, __) => CacheManager(apiClient, appDir),
         ),
         ProxyProvider<ApiClient, UserRepository>(
           update: (_, apiClient, __) => UserRepository(apiClient),
         ),
         ProxyProvider<ApiClient, UserDetailsRepository>(
           update: (_, apiClient, __) => UserDetailsRepository(apiClient),
+        ),
+        ProxyProvider2<ApiClient, CacheManager, MealsRepository>(
+          update: (_, apiClient, cacheManager, __) => MealsRepository(apiClient, cacheManager),
+        ),
+        ProxyProvider2<ApiClient, CacheManager, DietGenerationRepository>(
+          update: (_, apiClient, cacheManager, __) => DietGenerationRepository(apiClient, cacheManager),
+        ),
+        ProxyProvider2<ApiClient, CacheManager, DietPredictionRepository>(
+          update: (_, apiClient, cacheManager, __) => DietPredictionRepository(apiClient, cacheManager),
         ),
       ],
       child: MultiBlocProvider(
@@ -56,6 +78,10 @@ class Foodini extends StatelessWidget {
             create:
                 (context) =>
                     DietFormBloc(context.read<UserDetailsRepository>()),
+          ),
+          BlocProvider(
+            create:
+                (context) => DailySummaryBloc(context.read<DietGenerationRepository>()),
           ),
           BlocProvider(
             create:
@@ -78,6 +104,28 @@ class Foodini extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               routerConfig: router,
+              builder: (context, child) {
+                return BlocListener<DailySummaryBloc, DailySummaryState>(
+                  listenWhen: (previous, current) =>
+                  previous.getNotification != current.getNotification &&
+                      current.getNotification != null,
+                  listener: (context, state) {
+                    final notification = state.getNotification!(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(notification.message),
+                        backgroundColor: notification.isError
+                            ? Colors.red
+                            : Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                        margin: const EdgeInsets.all(16),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                  child: child!,
+                );
+              },
             );
           },
         ),

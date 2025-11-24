@@ -137,7 +137,7 @@ void main() {
 
       expect(
         validatePassword('12345', context),
-        equals('Password length must be between'),
+        equals('Password length must be between (8, 64)'),
       );
     });
 
@@ -148,7 +148,7 @@ void main() {
 
       expect(
         validatePassword('a' * 70, context),
-        equals('Password length must be between'),
+        equals('Password length must be between (8, 64)'),
       );
     });
 

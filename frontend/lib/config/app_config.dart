@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/meal_status.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
@@ -14,21 +19,24 @@ class AppConfig {
     DietType.muscleGain: AppLocalizations.of(context)!.dietType_MuscleGain,
     DietType.weightMaintenance:
         AppLocalizations.of(context)!.dietType_WeightMaintenance,
-    DietType.vegetarian: AppLocalizations.of(context)!.dietType_Vegetarian,
-    DietType.vegan: AppLocalizations.of(context)!.dietType_Vegan,
-    DietType.keto: AppLocalizations.of(context)!.dietType_Keto,
   };
 
-  static Map<Allergy, String> allergyLabels(BuildContext context) => {
-    Allergy.gluten: AppLocalizations.of(context)!.allergy_Gluten,
-    Allergy.peanuts: AppLocalizations.of(context)!.allergy_Peanuts,
-    Allergy.lactose: AppLocalizations.of(context)!.allergy_Lactose,
-    Allergy.fish: AppLocalizations.of(context)!.allergy_Fish,
-    Allergy.soy: AppLocalizations.of(context)!.allergy_Soy,
-    Allergy.wheat: AppLocalizations.of(context)!.allergy_Wheat,
-    Allergy.celery: AppLocalizations.of(context)!.allergy_Celery,
-    Allergy.sulphites: AppLocalizations.of(context)!.allergy_Sulphites,
-    Allergy.lupin: AppLocalizations.of(context)!.allergy_Lupin,
+  static Map<DietStyle, String> dietStyleLabels(BuildContext context) => {
+    DietStyle.vegetarian: AppLocalizations.of(context)!.dietStyle_Vegetarian,
+    DietStyle.vegan: AppLocalizations.of(context)!.dietStyle_Vegan,
+    DietStyle.keto: AppLocalizations.of(context)!.dietStyle_Keto,
+  };
+
+  static Map<Allergies, String> allergiesLabels(BuildContext context) => {
+    Allergies.gluten: AppLocalizations.of(context)!.allergies_Gluten,
+    Allergies.peanuts: AppLocalizations.of(context)!.allergies_Peanuts,
+    Allergies.lactose: AppLocalizations.of(context)!.allergies_Lactose,
+    Allergies.fish: AppLocalizations.of(context)!.allergies_Fish,
+    Allergies.soy: AppLocalizations.of(context)!.allergies_Soy,
+    Allergies.wheat: AppLocalizations.of(context)!.allergies_Wheat,
+    Allergies.celery: AppLocalizations.of(context)!.allergies_Celery,
+    Allergies.sulphites: AppLocalizations.of(context)!.allergies_Sulphites,
+    Allergies.lupin: AppLocalizations.of(context)!.allergies_Lupin
   };
 
   static Map<DietIntensity, String> dietIntensityLabels(
@@ -37,6 +45,18 @@ class AppConfig {
     DietIntensity.slow: AppLocalizations.of(context)!.dietIntensity_Slow,
     DietIntensity.medium: AppLocalizations.of(context)!.dietIntensity_Medium,
     DietIntensity.fast: AppLocalizations.of(context)!.dietIntensity_Fast,
+  };
+
+  static Map<DailyBudget, String> dailyBudgetLabels(BuildContext context) => {
+    DailyBudget.low: AppLocalizations.of(context)!.dailyBudget_low,
+    DailyBudget.medium: AppLocalizations.of(context)!.dailyBudget_medium,
+    DailyBudget.high: AppLocalizations.of(context)!.dailyBudget_high,
+  };
+
+  static Map<CookingSkills, String> cookingSkillsLabels(BuildContext context) => {
+    CookingSkills.beginner: AppLocalizations.of(context)!.cookingSkills_beginner,
+    CookingSkills.advanced: AppLocalizations.of(context)!.cookingSkills_advanced,
+    CookingSkills.professional: AppLocalizations.of(context)!.cookingSkills_professional,
   };
 
   static Map<ActivityLevel, String> activityLevelLabels(
@@ -69,5 +89,21 @@ class AppConfig {
   static Map<Gender, String> genderLabels(BuildContext context) => {
     Gender.male: AppLocalizations.of(context)!.gender_Male,
     Gender.female: AppLocalizations.of(context)!.gender_Female,
+  };
+
+  static Map<MealType, String> mealTypeLabels(BuildContext context) => {
+    MealType.breakfast: AppLocalizations.of(context)!.breakfast,
+    MealType.morningSnack: AppLocalizations.of(context)!.morningSnack,
+    MealType.lunch: AppLocalizations.of(context)!.lunch,
+    MealType.afternoonSnack: AppLocalizations.of(context)!.afternoonSnack,
+    MealType.dinner: AppLocalizations.of(context)!.dinner,
+    MealType.eveningSnack: AppLocalizations.of(context)!.eveningSnack,
+  };
+
+  static Map<MealStatus, String> mealStatusLabels(BuildContext context) => {
+    MealStatus.toEat: AppLocalizations.of(context)!.toEat,
+    MealStatus.pending: AppLocalizations.of(context)!.pending,
+    MealStatus.eaten: AppLocalizations.of(context)!.eaten,
+    MealStatus.skipped: AppLocalizations.of(context)!.skipped,
   };
 }

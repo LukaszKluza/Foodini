@@ -1,55 +1,66 @@
 from datetime import date
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from backend.models import UserDietPredictions
 from backend.user_details.enums import (
     ActivityLevel,
-    Allergies,
+    CookingSkills,
+    DailyBudget,
+    DietaryRestriction,
     DietIntensity,
     DietType,
     Gender,
     SleepQuality,
     StressLevel,
 )
+from backend.user_details.enums.diet_style import DietStyle
 from backend.user_details.mixins import DateOfBirthValidationMixin, DietGoalValidationMixin
+from backend.user_details.mixins.float_field_validator_mixin import FloatFieldValidatorMixin
 
 
-class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, BaseModel):
+class UserDetailsCreate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Gender
     height_cm: float = Field(..., ge=60, le=230)
     weight_kg: float = Field(..., ge=20, le=160)
     date_of_birth: date
     diet_type: DietType
-    allergies: List[Allergies]
+    diet_style: Optional[DietStyle]
+    dietary_restrictions: List[DietaryRestriction]
     diet_goal_kg: float = Field(..., ge=20, le=160)
     meals_per_day: int = Field(ge=1, le=6)
     diet_intensity: DietIntensity
+    daily_budget: DailyBudget
+    cooking_skills: CookingSkills
     activity_level: ActivityLevel
     stress_level: StressLevel
     sleep_quality: SleepQuality
-    muscle_percentage: Optional[float] = Field(default=None, ge=0, le=100)
-    water_percentage: Optional[float] = Field(default=None, ge=0, le=100)
-    fat_percentage: Optional[float] = Field(default=None, ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(default=None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(default=None, ge=30, le=80)
+    fat_percentage: Optional[float] = Field(default=None, ge=0, le=45)
 
 
-class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
+class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, FloatFieldValidatorMixin, BaseModel):
     gender: Optional[Gender] = None
     height_cm: Optional[float] = Field(None, ge=60, le=230)
     weight_kg: Optional[float] = Field(None, ge=20, le=160)
     date_of_birth: Optional[date] = None
     diet_type: Optional[DietType] = None
-    allergies: Optional[List[Allergies]] = None
+    diet_style: Optional[DietStyle] = None
+    dietary_restrictions: Optional[List[DietaryRestriction]] = None
     diet_goal_kg: Optional[float] = Field(None, ge=20, le=160)
     meals_per_day: Optional[int] = Field(None, ge=1, le=6)
     diet_intensity: Optional[DietIntensity] = None
+    daily_budget: Optional[DailyBudget] = None
+    cooking_skills: Optional[CookingSkills] = None
     activity_level: Optional[ActivityLevel] = None
     stress_level: Optional[StressLevel] = None
     sleep_quality: Optional[SleepQuality] = None
-    muscle_percentage: Optional[float] = Field(None, ge=0, le=100)
-    water_percentage: Optional[float] = Field(None, ge=0, le=100)
-    fat_percentage: Optional[float] = Field(None, ge=0, le=100)
+    muscle_percentage: Optional[float] = Field(None, ge=0, le=60)
+    water_percentage: Optional[float] = Field(None, ge=30, le=80)
+    fat_percentage: Optional[float] = Field(None, ge=0, le=45)
 
     @staticmethod
     def map(data: UserDetailsCreate) -> "UserDetailsUpdate":
@@ -59,10 +70,13 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
             weight_kg=data.weight_kg,
             date_of_birth=data.date_of_birth,
             diet_type=data.diet_type,
-            allergies=data.allergies,
+            diet_style=data.diet_style,
+            dietary_restrictions=data.dietary_restrictions,
             diet_goal_kg=data.diet_goal_kg,
             meals_per_day=data.meals_per_day,
             diet_intensity=data.diet_intensity,
+            daily_budget=data.daily_budget,
+            cooking_skills=data.cooking_skills,
             activity_level=data.activity_level,
             stress_level=data.stress_level,
             sleep_quality=data.sleep_quality,
@@ -73,12 +87,13 @@ class UserDetailsUpdate(DateOfBirthValidationMixin, BaseModel):
 
 
 class PredictedMacros(BaseModel):
-    protein: int
-    fat: int
-    carbs: int
+    protein: float
+    fat: float
+    carbs: float
 
 
 class PredictedCalories(BaseModel):
+    user_id: UUID
     bmr: int
     tdee: int
     target_calories: int
@@ -88,6 +103,7 @@ class PredictedCalories(BaseModel):
     @staticmethod
     def from_user_diet_predictions(user_diet_predictions: UserDietPredictions):
         return PredictedCalories(
+            user_id=user_diet_predictions.user_id,
             bmr=user_diet_predictions.bmr,
             tdee=user_diet_predictions.tdee,
             target_calories=user_diet_predictions.target_calories,

@@ -6,6 +6,7 @@ import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/foodini.dart';
+import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/views/screens/user/register_screen.dart';
@@ -13,16 +14,19 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid_value.dart';
 
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
+
+late UuidValue uuidUserId;
 
 late MockDio mockDio;
 late RegisterBloc registerBloc;
 late MockApiClient mockApiClient;
 late UserRepository authRepository;
 late MockLanguageCubit mockLanguageCubit;
-late MockTokenStorageRepository mockTokenStorageRepository;
+late MockTokenStorageService mockTokenStorageService;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +42,7 @@ void main() {
         .addProviders([
           Provider<LanguageCubit>.value(value: mockLanguageCubit),
           Provider<AccountBloc>.value(
-            value: AccountBloc(authRepository, mockTokenStorageRepository),
+            value: AccountBloc(authRepository, mockTokenStorageService),
           ),
         ])
         .setInitialLocation(initialLocation)
@@ -51,8 +55,11 @@ void main() {
     mockLanguageCubit = MockLanguageCubit();
     authRepository = UserRepository(mockApiClient);
     registerBloc = RegisterBloc(authRepository);
-    mockTokenStorageRepository = MockTokenStorageRepository();
+    mockTokenStorageService = MockTokenStorageService();
+    uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+
     when(mockDio.interceptors).thenReturn(Interceptors());
+    when(mockLanguageCubit.state).thenReturn(Locale(Language.pl.code));
   });
 
   testWidgets('Register screen elements are displayed', (
@@ -75,7 +82,7 @@ void main() {
     when(mockApiClient.register(any)).thenAnswer(
       (_) async => Response<dynamic>(
         data: {
-          'id': 1,
+          'id': uuidUserId.uuid,
           'email': 'jan4@example.com',
           'name': 'Jan',
           'language': 'pl',
@@ -136,7 +143,8 @@ void main() {
     await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Name is required'), findsNWidgets(2));
+    expect(find.text('Name is required'), findsOneWidget);
+    expect(find.text('Lastname is required'), findsOneWidget);
     expect(find.text('E-mail is required'), findsOneWidget);
     expect(find.text('Password is required'), findsOneWidget);
     expect(find.text('Select your country'), findsOneWidget);

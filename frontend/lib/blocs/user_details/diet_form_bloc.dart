@@ -47,6 +47,13 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       }
     });
 
+    on<UpdateDietStyle>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(dietStyle: event.dietStyle));
+      }
+    });
+
     on<UpdateAllergies>((event, emit) {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
@@ -65,6 +72,20 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       if (state is DietFormSubmit) {
         final currentState = state as DietFormSubmit;
         emit(currentState.copyWith(mealsPerDay: event.mealsPerDay));
+      }
+    });
+
+    on<UpdateDailyBudget>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(dailyBudget: event.dailyBudget));
+      }
+    });
+
+    on<UpdateCookingSkills>((event, emit) {
+      if (state is DietFormSubmit) {
+        final currentState = state as DietFormSubmit;
+        emit(currentState.copyWith(cookingSkills: event.cookingSkills));
       }
     });
 
@@ -168,6 +189,8 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
       currentState.allergies,
       currentState.dietGoal,
       currentState.mealsPerDay,
+      currentState.dailyBudget,
+      currentState.cookingSkills,
       currentState.dietIntensity,
       currentState.activityLevel,
       currentState.stressLevel,
@@ -192,10 +215,13 @@ class DietFormBloc extends Bloc<DietFormEvent, DietFormState> {
         weight: currentState.weight!,
         dateOfBirth: currentState.dateOfBirth!,
         dietType: currentState.dietType!,
+        dietStyle: currentState.dietStyle,
         allergies: currentState.allergies!,
         dietGoal: currentState.dietGoal!,
         mealsPerDay: currentState.mealsPerDay!,
         dietIntensity: currentState.dietIntensity!,
+        dailyBudget: currentState.dailyBudget!,
+        cookingSkills: currentState.cookingSkills!,
         activityLevel: currentState.activityLevel!,
         stressLevel: currentState.stressLevel!,
         sleepQuality: currentState.sleepQuality!,

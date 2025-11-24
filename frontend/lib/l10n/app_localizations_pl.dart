@@ -30,16 +30,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get home => 'Strona główna';
 
   @override
-  String get homePage => 'Strona główna Foodini';
-
-  @override
-  String get welcome => 'Witamy w Foodini';
+  String get welcome => 'Witamy';
 
   @override
   String get requiredName => 'Imię jest wymagane';
 
   @override
+  String get requiredLastname => 'Nazwisko jest wymagane';
+
+  @override
   String get provideCorrectName => 'Podaj poprawne imię';
+
+  @override
+  String get provideCorrectLastname => 'Podaj poprawne nazwisko';
 
   @override
   String get requiredCountry => 'Wybierz kraj';
@@ -177,7 +180,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietType => 'Typ diety';
 
   @override
-  String get requiredDietType => 'Wymagany typ diety';
+  String get requiredDietType => 'Typ diety jest wymagany';
+
+  @override
+  String get dietStyle => 'Styl diety';
 
   @override
   String get allergies => 'Alergie';
@@ -195,12 +201,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
-  String get muscleGainGoalCantBeLower =>
-      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+  String get muscleGainGoalCantBeLower => 'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
 
   @override
-  String get fatLossGoalCantBeHigher =>
-      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+  String get fatLossGoalCantBeHigher => 'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
 
   @override
   String get kg => 'kg';
@@ -216,6 +220,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get caloriesPrediction => 'Prognoza zapotrzebowania kalorycznego';
+
+  @override
+  String get dailyBudget => 'Dzienny budżet';
+
+  @override
+  String get requiredDailyBudget => 'Dzienny budżet jest wymagany';
+
+  @override
+  String get cookingSkills => 'Umiejętności kulinarne';
+
+  @override
+  String get requiredCookingSkills => 'Umiejętności kulinarne są wymagane';
 
   @override
   String get activityLevel => 'Poziom aktywności';
@@ -266,6 +282,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get fatPercentageShouldBeBetween => 'Procent tłuszczu powinien być pomiędzy';
 
   @override
+  String get advancedParametersValidation => 'Suma zaawansowanych parametrów nie może być wyższa niż';
+
+  @override
   String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
 
   @override
@@ -293,40 +312,40 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Utrzymanie wagi';
 
   @override
-  String get dietType_Vegetarian => 'Wegetariańska';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietType_Vegan => 'Wegańska';
+  String get allergies_Peanuts => 'Orzeszki ziemne';
 
   @override
-  String get dietType_Keto => 'Keto';
+  String get allergies_Lactose => 'Laktoza';
 
   @override
-  String get allergy_Gluten => 'Gluten';
+  String get allergies_Fish => 'Ryby';
 
   @override
-  String get allergy_Peanuts => 'Orzeszki ziemne';
+  String get allergies_Soy => 'Soja';
 
   @override
-  String get allergy_Lactose => 'Laktoza';
+  String get allergies_Wheat => 'Pszenica';
 
   @override
-  String get allergy_Fish => 'Ryby';
+  String get allergies_Celery => 'Seler';
 
   @override
-  String get allergy_Soy => 'Soja';
+  String get allergies_Sulphites => 'Siarczyny';
 
   @override
-  String get allergy_Wheat => 'Pszenica';
+  String get allergies_Lupin => 'Łubin';
 
   @override
-  String get allergy_Celery => 'Seler';
+  String get dietStyle_Vegetarian => 'Wegetariańska';
 
   @override
-  String get allergy_Sulphites => 'Siarczyny';
+  String get dietStyle_Vegan => 'Wegańska';
 
   @override
-  String get allergy_Lupin => 'Łubin';
+  String get dietStyle_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Powolna';
@@ -336,6 +355,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Szybka';
+
+  @override
+  String get dailyBudget_low => 'Niski';
+
+  @override
+  String get dailyBudget_medium => 'Średni';
+
+  @override
+  String get dailyBudget_high => 'Wysoki';
+
+  @override
+  String get cookingSkills_beginner => 'Początkujący';
+
+  @override
+  String get cookingSkills_advanced => 'Zaawansowany';
+
+  @override
+  String get cookingSkills_professional => 'Profesjonalista';
 
   @override
   String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
@@ -425,7 +462,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get formSuccessfullySubmitted => 'Formularz został pomyślnie wysłany';
 
   @override
-  String get fillAllNecessaryFields => 'Wypełnij wszystki wymagane pola';
+  String get fillAllNecessaryFields => 'Wypełnij wszystkie wymagane pola';
 
   @override
   String get macros => 'Makro';
@@ -458,8 +495,169 @@ class AppLocalizationsPl extends AppLocalizations {
   String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
 
   @override
+  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+
+  @override
   String get refreshRequest => 'Odśwież żądanie';
 
   @override
-  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+  String get goToMainPage => 'Idź na stronę główną';
+
+  @override
+  String get errorWhileFetchingMealIcon => 'Błąd podczas pobierania ikony posiłku';
+
+  @override
+  String get mealDescriptions => 'Opis posiłku';
+
+  @override
+  String get groceries => 'Produkty spożywcze';
+
+  @override
+  String get recipe => 'Przepis';
+
+  @override
+  String get optional => 'Opcjonalnie';
+
+  @override
+  String get breakfast => 'Śniadanie';
+
+  @override
+  String get morningSnack => 'Drugie śniadanie';
+
+  @override
+  String get lunch => 'Obiad';
+
+  @override
+  String get afternoonSnack => 'Podwieczorek';
+
+  @override
+  String get dinner => 'Kolacja';
+
+  @override
+  String get eveningSnack => 'Przekąska wieczorna';
+
+  @override
+  String get toEat => 'Do zjedzenia';
+
+  @override
+  String get pending => 'Oczekujący';
+
+  @override
+  String get eaten => 'Zjedzony';
+
+  @override
+  String get skipped => 'Pominięty';
+
+  @override
+  String get f_fat => 'T';
+
+  @override
+  String get p_protein => 'B';
+
+  @override
+  String get c_carbs => 'W';
+
+  @override
+  String get g_grams => 'g';
+
+  @override
+  String get cal_calories => 'Kal';
+
+  @override
+  String get of_calories => 'z';
+
+  @override
+  String get cannotEditPastMeals => 'Nie można edytować posiłków z przeszłości';
+
+  @override
+  String get noMealsForToday => 'Nie masz zaplanowanych żadnych posiłków na dziś';
+
+  @override
+  String get markedAs => 'oznaczone jako';
+
+  @override
+  String get dailySummary => 'Dzienne podsumowanie';
+
+  @override
+  String get fillFormToGenerateMeals => 'Proszę wypełnić formularz, aby móc generować posiłki';
+
+  @override
+  String get dailyMeals => 'Dzienne menu';
+
+  @override
+  String get dailyMealsFor => 'Posiłki na dzień ';
+
+  @override
+  String get macrosSummary => 'Podsumowanie makroskładników';
+
+  @override
+  String get calories => 'Kalorie';
+
+  @override
+  String get submit => 'Zatwierdź';
+
+  @override
+  String get edit => 'Edytuj';
+
+  @override
+  String get skipMeal => 'Pomiń posiłek';
+
+  @override
+  String get addNewMeal => 'Dodaj nowy posiłek';
+
+  @override
+  String get save => 'Zapisz';
+
+  @override
+  String get scanProductBarCode => 'Zeskanuj kod kreskowy produktu';
+
+  @override
+  String get mealName => 'Nazwa posiłku';
+
+  @override
+  String get mealItemNameShouldBeBetween => 'Nazwa posiłku powinna mieć długość pomiędzy';
+
+  @override
+  String get valueOfThisMacroShouldBeBetween => 'Wartość tego makroskładnika powinna mieścić się w przedziale';
+
+  @override
+  String get valueOfCaloriesMacroShouldBeBetween => 'Wartość kalorii powinna mieścić się w przedziale';
+
+  @override
+  String get generateNewPlan => 'Generuj posiłki';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem $email.';
+  }
+
+  @override
+  String get regenerateMeals => 'Generuj posiłki ponownie';
+
+  @override
+  String get dietOutdatedConsiderRegenerating => 'Menu może być nieaktualne – rozważ regenerację.';
+
+  @override
+  String get dietOutdated => 'Menu może być nieaktualne.';
+
+  @override
+  String get planDoesNotExist => 'Plan na dany dzień nie istnieje.';
+
+  @override
+  String get chooseOption => 'Wybierz opcję';
+
+  @override
+  String get statistics => 'Statystyki';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Pomyślnie wygenerowano posiłki';
+
+  @override
+  String get forSomething => 'dla';
+
+  @override
+  String get whileMealsGeneration => 'podczas generowania posiłków';
+
+  @override
+  String get error => 'Błąd';
 }

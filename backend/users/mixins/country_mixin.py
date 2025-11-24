@@ -1,5 +1,3 @@
-from typing import List
-
 import pycountry
 from pydantic import field_validator
 
@@ -7,10 +5,6 @@ from backend.core.value_error_exception import ValueErrorException
 
 
 class CountryValidationMixin:
-    @classmethod
-    def get_available_countries(cls) -> List[str]:
-        return [country.name for country in pycountry.countries]
-
     @field_validator("country")
     def validate_country(cls, value: str) -> str:
         try:

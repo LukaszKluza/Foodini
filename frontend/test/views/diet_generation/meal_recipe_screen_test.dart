@@ -1,0 +1,264 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/api_exception.dart';
+import 'package:frontend/blocs/diet_generation/meal_recipe_bloc.dart';
+import 'package:frontend/foodini.dart';
+import 'package:frontend/models/diet_generation/ingredient.dart';
+import 'package:frontend/models/diet_generation/ingredients.dart';
+import 'package:frontend/models/diet_generation/meal_recipe.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/step.dart';
+import 'package:frontend/models/user/language.dart';
+import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
+import 'package:frontend/repository/diet_generation/meals_repository.dart';
+import 'package:frontend/repository/user/user_storage.dart';
+import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid_value.dart';
+import '../../mocks/mocks.mocks.dart';
+import '../../wrapper/test_wrapper_builder.dart';
+
+MockDietPredictionRepository mockDietPredictionRepository = MockDietPredictionRepository();
+MockMealsRepository mockMealsRepository = MockMealsRepository();
+
+void main() {
+  late MealRecipeBloc mealRecipeBloc;
+  late MealRecipe mealRecipe;
+  late LanguageCubit languageCubit;
+  late UuidValue uuidUserId;
+  late UuidValue uuidMealId;
+
+  Widget buildTestWidget(
+    Widget child, {
+    String initialLocation = '/meal-recipe/meal78c3-bb44-5b37-90d9-5b0c9a4f1b87/EN',
+  }) {
+    return TestWrapperBuilder(child)
+        .withRouter()
+        .addProvider(Provider<LanguageCubit>.value(value: languageCubit))
+        .addProvider(BlocProvider<MealRecipeBloc>.value(value: mealRecipeBloc))
+        .addProvider(Provider<MealsRepository>.value(value: mockMealsRepository))
+        .addProvider(
+          Provider<DietPredictionRepository>.value(value: mockDietPredictionRepository),
+        )
+        .setInitialLocation(initialLocation)
+        .build();
+  }
+
+  setUp(() {
+    languageCubit = LanguageCubit();
+    SharedPreferences.setMockInitialValues({});
+    mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository, mockMealsRepository);
+    uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
+    uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
+
+    mealRecipe = MealRecipe(
+      id: uuidUserId,
+      mealId: uuidMealId,
+      language: Language.en,
+      mealName: 'Cornflakes with soy milk',
+      iconPath: '/black-coffee-fried-egg-with-toasts.jpg',
+      mealType: MealType.breakfast,
+      mealDescription: 'Cornflakes with soy milk; Meal description',
+      ingredients: Ingredients(
+        ingredients: [
+          Ingredient(
+            volume: 1,
+            unit: 'cup',
+            name: 'Soy milk',
+            optionalNote: 'cold or warm, as preferred',
+          ),
+          Ingredient(volume: 1, unit: 'cup', name: 'Cornflakes'),
+          Ingredient(volume: 1, unit: 'spoon', name: 'Sugar'),
+        ],
+        foodAdditives: 'Honey, fruits',
+      ),
+      steps: [
+        MealRecipeStep(
+          description: 'Pour the cornflakes into a bowl.',
+          optional: false,
+        ),
+        MealRecipeStep(
+          description: 'Add the milk over the cornflakes.',
+          optional: false,
+        ),
+        MealRecipeStep(
+          description: 'Sweeten with sugar or honey.',
+          optional: true,
+        ),
+        MealRecipeStep(
+          description: 'Top with sliced fruits or nuts.',
+          optional: true,
+        ),
+        MealRecipeStep(
+          description: 'Serve immediately before it gets soggy.',
+          optional: false,
+        ),
+      ],
+    );
+
+    UserStorage().setUser(
+      UserResponse(
+        id: uuidUserId,
+        name: 'Jan',
+        language: Language.en,
+        email: 'jan4@example.com',
+      ),
+    );
+  });
+
+  tearDown(() {
+    mealRecipeBloc.close();
+  });
+
+  testWidgets('Meal recipe screen elements are displayed', (
+    WidgetTester tester,
+  ) async {
+    // Given
+    when(
+      mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
+    ).thenAnswer((_) async => mealRecipe);
+
+    // When
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Then
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.text('Cornflakes with soy milk'), findsOneWidget);
+    expect(find.text('Meal description'), findsOneWidget);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsOneWidget,
+    );
+    expect(find.text('Groceries'), findsOneWidget);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsOneWidget,
+    );
+    expect(find.text('• 1.0 cup Cornflakes'), findsOneWidget);
+    expect(find.text('• 1.0 spoon Sugar'), findsOneWidget);
+    expect(find.text('Optional: Honey, fruits'), findsOneWidget);
+    expect(find.text('Recipe'), findsOneWidget);
+    expect(find.text('1. Pour the cornflakes into a bowl.'), findsOneWidget);
+    expect(find.text('2. Add the milk over the cornflakes.'), findsOneWidget);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsOneWidget,
+    );
+
+    expect(find.byKey(const Key('refresh_request_button')), findsNothing);
+    expect(find.byKey(const Key('redirect_to_main_page_button')), findsNothing);
+  });
+
+  testWidgets('Meal recipe screen, server error', (WidgetTester tester) async {
+    // Given
+    when(
+      mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
+    ).thenThrow(ApiException({'detail': 'Server error'}, statusCode: 500));
+
+    // When
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(const Key('refresh_request_button')), findsOneWidget);
+
+    expect(find.text('Cornflakes with soy milk'), findsNothing);
+    expect(find.text('Meal description'), findsNothing);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsNothing,
+    );
+    expect(find.text('Groceries'), findsNothing);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsNothing,
+    );
+    expect(find.text('• 1.0 cup Cornflakes'), findsNothing);
+    expect(find.text('• 1.0 spoon Sugar'), findsNothing);
+    expect(find.text('Optional: Honey, fruits'), findsNothing);
+    expect(find.text('Recipe'), findsNothing);
+    expect(find.text('1. Pour the cornflakes into a bowl.'), findsNothing);
+    expect(find.text('2. Add the milk over the cornflakes.'), findsNothing);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsNothing,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsNothing,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsNothing,
+    );
+    expect(find.byKey(const Key('redirect_to_main_page_button')), findsNothing);
+  });
+
+  testWidgets('Meal recipe screen, 404 error', (WidgetTester tester) async {
+    // Given
+    when(mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en)).thenThrow(
+      ApiException({'detail': 'Meal recipe not found'}, statusCode: 404),
+    );
+
+    // When
+    await tester.pumpWidget(buildTestWidget(MealRecipeScreen(mealId: uuidMealId)));
+    await tester.pumpAndSettle();
+
+    // Then
+    expect(find.byKey(Key('bloc_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(find.byKey(Key('body_${uuidMealId.uuid}_EN')), findsOneWidget);
+    expect(
+      find.byKey(const Key('redirect_to_main_page_button')),
+      findsOneWidget,
+    );
+    expect(find.text('Go to main page'), findsOneWidget);
+    expect(find.text('Meal recipe not found'), findsOneWidget);
+
+    expect(find.text('Cornflakes with soy milk'), findsNothing);
+    expect(find.text('Meal description'), findsNothing);
+    expect(
+      find.text('Cornflakes with soy milk; Meal description'),
+      findsNothing,
+    );
+    expect(find.text('Groceries'), findsNothing);
+    expect(
+      find.text('• 1.0 cup Soy milk (cold or warm, as preferred)'),
+      findsNothing,
+    );
+    expect(find.text('• 1.0 cup Cornflakes'), findsNothing);
+    expect(find.text('• 1.0 spoon Sugar'), findsNothing);
+    expect(find.text('Optional: Honey, fruits'), findsNothing);
+    expect(find.text('Recipe'), findsNothing);
+    expect(find.text('1. Pour the cornflakes into a bowl.'), findsNothing);
+    expect(find.text('2. Add the milk over the cornflakes.'), findsNothing);
+    expect(
+      find.text('3. (Optional) Sweeten with sugar or honey.'),
+      findsNothing,
+    );
+    expect(
+      find.text('4. (Optional) Top with sliced fruits or nuts.'),
+      findsNothing,
+    );
+    expect(
+      find.text('5. Serve immediately before it gets soggy.'),
+      findsNothing,
+    );
+    expect(find.byKey(const Key('refresh_request_button')), findsNothing);
+  });
+}

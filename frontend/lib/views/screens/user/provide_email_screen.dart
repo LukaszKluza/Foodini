@@ -6,11 +6,13 @@ import 'package:frontend/events/user/provide_email_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/listeners/user/provide_email_listener.dart';
 import 'package:frontend/models/user/provide_email_request.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +32,7 @@ class ProvideEmailScreen extends StatelessWidget {
           create:
               (_) => ProvideEmailBloc(
                 Provider.of<UserRepository>(context, listen: false),
+                apiClient: Provider.of<ApiClient>(context, listen: false),
               ),
           child: _buildScaffold(context),
         );
@@ -39,18 +42,21 @@ class ProvideEmailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.changePassword,
-            style: Styles.titleStyle,
-          ),
+        title: Stack(
+          alignment: Alignment.center,
+          children: [
+            TitleTextWidgets.scaledTitle(
+              AppLocalizations.of(context)!.changePassword,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.translate_rounded),
+                onPressed: () => LanguagePicker.show(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.translate_rounded),
-            onPressed: () => LanguagePicker.show(context),
-          ),
-        ],
       ),
       body: _ProvideEmailForm(),
       bottomNavigationBar: BottomNavBar(
@@ -99,10 +105,9 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                   ProvideEmailListenerHelper.onProvideEmailListener(
                     context: context,
                     state: state,
-                    setState: setState,
                     mounted: mounted,
-                    setMessage: (msg) => _message = msg,
-                    setMessageStyle: (style) => _messageStyle = style,
+                    setMessage: (msg) => setState(() => _message = msg),
+                    setMessageStyle: (style) => setState(() => _messageStyle = style),
                   );
                 },
                 builder: (context, state) {

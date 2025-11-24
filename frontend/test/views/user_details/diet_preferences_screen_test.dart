@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/user_details/allergy.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -46,11 +46,11 @@ void main() {
 
     // Then
     expect(find.byKey(const Key('diet_type')), findsOneWidget);
-    expect(find.byKey(const Key('diet_intensity')), findsOneWidget);
+    expect(find.byKey(const Key('diet_intensity'), skipOffstage: false), findsOneWidget);
     expect(find.text('Allergies'), findsOneWidget);
     expect(find.textContaining('Diet goal'), findsOneWidget);
     expect(find.text('Meals per day'), findsOneWidget);
-    expect(find.text('Diet intensity'), findsOneWidget);
+    expect(find.text('Diet intensity', skipOffstage: false), findsOneWidget);
   });
 
   testWidgets('Diet type enums are displayed after tap', (
@@ -68,9 +68,6 @@ void main() {
     expect(find.text('Fat Loss'), findsOneWidget);
     expect(find.text('Muscle Gain'), findsOneWidget);
     expect(find.text('Weight Maintenance'), findsOneWidget);
-    expect(find.text('Vegetarian'), findsOneWidget);
-    expect(find.text('Vegan'), findsOneWidget);
-    expect(find.text('Keto'), findsOneWidget);
 
     await tester.tap(find.text('Weight Maintenance'));
     await tester.pumpAndSettle();
@@ -99,6 +96,9 @@ void main() {
     expect(find.text('Celery'), findsOneWidget);
     expect(find.text('Sulphites'), findsOneWidget);
     expect(find.text('Lupin', skipOffstage: false), findsOneWidget);
+    expect(find.text('Vegetarian', skipOffstage: false), findsOneWidget);
+    expect(find.text('Vegan', skipOffstage: false), findsOneWidget);
+    expect(find.text('Keto', skipOffstage: false), findsOneWidget);
 
     expect(find.text('Ok'.toUpperCase(), skipOffstage: false), findsOneWidget);
     expect(
@@ -165,8 +165,6 @@ void main() {
 
     // Then
     expect(find.text('Meals per day'), findsOneWidget);
-    expect(find.textContaining('1'), findsOneWidget);
-    expect(find.textContaining('2'), findsOneWidget);
     expect(find.textContaining('3'), findsOneWidget);
     expect(find.textContaining('4'), findsOneWidget);
     expect(find.textContaining('5'), findsAtLeastNWidgets(2));
@@ -188,13 +186,13 @@ void main() {
 
     // Then
     expect(find.text('Slow'), findsOneWidget);
-    expect(find.text('Medium'), findsOneWidget);
-    expect(find.text('Fast'), findsOneWidget);
+    expect(find.text('Medium', skipOffstage: false), findsWidgets);
+    expect(find.text('Fast', skipOffstage: false), findsWidgets);
 
-    await tester.tap(find.text('Medium'));
+    await tester.tap(find.text('Medium', skipOffstage: false).last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Medium'), findsOneWidget);
+    expect(find.text('Medium'), findsWidgets);
   });
 
   testWidgets('Weight slider is hidden when diet type is Weight Maintenance', (
@@ -223,7 +221,7 @@ void main() {
       DietFormSubmit(
         dietType: DietType.muscleGain,
         dietGoal: 50,
-        allergies: [Allergy.gluten],
+        allergies: [Allergies.gluten],
         dietIntensity: DietIntensity.medium,
         mealsPerDay: 3,
         weight: 80,

@@ -14,6 +14,7 @@ import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
@@ -24,9 +25,9 @@ class CaloriesPredictionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
+          child: TitleTextWidgets.scaledTitle(
             AppLocalizations.of(context)!.caloriesPrediction,
-            style: Styles.titleStyle,
+            longText: true,
           ),
         ),
       ),
@@ -102,6 +103,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
     final fields = [
       DropdownButtonFormField<ActivityLevel>(
         key: Key('activity_level'),
+        isExpanded: true,
         value: _selectedActivityLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.activityLevel,
@@ -126,6 +128,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ),
       DropdownButtonFormField<StressLevel>(
         key: Key('stress_level'),
+        isExpanded: true,
         value: _selectedStressLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.stressLevel,
@@ -150,6 +153,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ),
       DropdownButtonFormField<SleepQuality>(
         key: Key('sleep_quality'),
+        isExpanded: true,
         value: _selectedSleepQuality,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
@@ -208,6 +212,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       ),
       if (_isChecked) ...[
         PercentageOptionSlider(
+          min: Constants.minimumMusclePercentage,
+          max: Constants.maximumMusclePercentage,
           initialValue: _selectedMusclePercentage,
           pupUpKey: 'muscle_percentage',
           propertiesName: AppLocalizations.of(context)!.musclePercentage,
@@ -228,6 +234,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumWaterPercentage,
+          max: Constants.maximumWaterPercentage,
           initialValue: _selectedWaterPercentage,
           pupUpKey: 'water_percentage',
           propertiesName: AppLocalizations.of(context)!.waterPercentage,
@@ -248,6 +256,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
           },
         ),
         PercentageOptionSlider(
+          min: Constants.minimumFatPercentage,
+          max: Constants.maximumFatPercentage,
           initialValue: _selectedFatPercentage,
           pupUpKey: 'fat_percentage',
           propertiesName: AppLocalizations.of(context)!.fatPercentage,

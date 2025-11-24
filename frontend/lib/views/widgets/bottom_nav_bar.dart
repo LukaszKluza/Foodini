@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:frontend/views/widgets/circle_button.dart';
 import 'package:go_router/go_router.dart';
 
 enum NavBarMode { normal, wizard }
@@ -21,71 +23,57 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildBackButton(context),
-          _buildHomeButton(context),
-          _buildNextButton(context),
-        ],
+    return  ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(72),
+            border: Border.all(color: Colors.white.withAlpha(78)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(30),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              circleButton(
+                context,
+                icon: Icons.arrow_back_rounded,
+                onTap: (mode == NavBarMode.normal ? Navigator.of(context).canPop() : prevRoute != null) ? () {
+                  if (mode == NavBarMode.normal) {
+                    context.pop();
+                  } else if (prevRoute != null) {
+                    context.go(prevRoute!);
+                  }
+                } : null,
+              ),
+              circleButton(
+                context,
+                icon: Icons.home_rounded,
+                onTap: currentRoute != '/main-page'
+                    ? () => context.go('/main-page')
+                    : null,
+                iconSize: 40.0
+              ),
+              circleButton(
+                context,
+                icon: Icons.arrow_forward_rounded,
+                onTap: (mode == NavBarMode.wizard &&
+                    nextRoute != null &&
+                    isNextRouteEnabled)
+                    ? () => context.go(nextRoute!)
+                    : null,
+              ),
+            ],
+          ),
+        ),
       ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    final canPop = Navigator.of(context).canPop();
-    final isActive = mode == NavBarMode.normal ? canPop : prevRoute != null;
-
-    return _buildNavButton(
-      icon: Icons.arrow_back,
-      isActive: isActive,
-      onPressed:
-          isActive
-              ? () {
-                if (mode == NavBarMode.normal) {
-                  context.pop();
-                } else if (prevRoute != null) {
-                  context.go(prevRoute!);
-                }
-              }
-              : null,
-    );
-  }
-
-  Widget _buildHomeButton(BuildContext context) {
-    final isActive = currentRoute != '/main-page';
-    return _buildNavButton(
-      icon: Icons.home,
-      isActive: isActive,
-      onPressed: isActive ? () => context.go('/main-page') : null,
-    );
-  }
-
-  Widget _buildNextButton(BuildContext context) {
-    final isActive =
-        mode == NavBarMode.wizard && nextRoute != null && isNextRouteEnabled;
-    return _buildNavButton(
-      icon: Icons.arrow_forward,
-      isActive: isActive,
-      onPressed: isActive ? () => context.go(nextRoute!) : null,
-    );
-  }
-
-  Widget _buildNavButton({
-    required IconData icon,
-    required bool isActive,
-    required VoidCallback? onPressed,
-  }) {
-    return IconButton(
-      icon: Icon(icon),
-      iconSize: 24,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      color: isActive ? Colors.blue : Colors.grey,
-      onPressed: onPressed,
     );
   }
 }

@@ -30,16 +30,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
-  String get homePage => 'Foodini Home Page';
-
-  @override
-  String get welcome => 'Welcome in Foodini';
+  String get welcome => 'Welcome';
 
   @override
   String get requiredName => 'Name is required';
 
   @override
+  String get requiredLastname => 'Lastname is required';
+
+  @override
   String get provideCorrectName => 'Provide correct name';
+
+  @override
+  String get provideCorrectLastname => 'Provide correct lastname';
 
   @override
   String get requiredCountry => 'Select your country';
@@ -180,6 +183,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredDietType => 'Diet type is required';
 
   @override
+  String get dietStyle => 'Diet style';
+
+  @override
   String get allergies => 'Allergies';
 
   @override
@@ -195,12 +201,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
-  String get muscleGainGoalCantBeLower =>
-      'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
+  String get muscleGainGoalCantBeLower => 'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
 
   @override
-  String get fatLossGoalCantBeHigher =>
-      'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
+  String get fatLossGoalCantBeHigher => 'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
 
   @override
   String get kg => 'kg';
@@ -216,6 +220,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get caloriesPrediction => 'Calories prediction';
+
+  @override
+  String get dailyBudget => 'Daily budget';
+
+  @override
+  String get requiredDailyBudget => 'Daily budget is required';
+
+  @override
+  String get cookingSkills => 'Cooking skills';
+
+  @override
+  String get requiredCookingSkills => 'Cooking skills are required';
 
   @override
   String get activityLevel => 'Activity level';
@@ -266,6 +282,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fatPercentageShouldBeBetween => 'Fat % should be %';
 
   @override
+  String get advancedParametersValidation => 'Sum of advanced parameters can\'t be higher than';
+
+  @override
   String get generateWeeklyDiet => 'Generate weekly diet';
 
   @override
@@ -293,40 +312,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietType_Vegetarian => 'Vegetarian';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietType_Vegan => 'Vegan';
+  String get allergies_Peanuts => 'Peanuts';
 
   @override
-  String get dietType_Keto => 'Keto';
+  String get allergies_Lactose => 'Lactose';
 
   @override
-  String get allergy_Gluten => 'Gluten';
+  String get allergies_Fish => 'Fish';
 
   @override
-  String get allergy_Peanuts => 'Peanuts';
+  String get allergies_Soy => 'Soy';
 
   @override
-  String get allergy_Lactose => 'Lactose';
+  String get allergies_Wheat => 'Wheat';
 
   @override
-  String get allergy_Fish => 'Fish';
+  String get allergies_Celery => 'Celery';
 
   @override
-  String get allergy_Soy => 'Soy';
+  String get allergies_Sulphites => 'Sulphites';
 
   @override
-  String get allergy_Wheat => 'Wheat';
+  String get allergies_Lupin => 'Lupin';
 
   @override
-  String get allergy_Celery => 'Celery';
+  String get dietStyle_Vegetarian => 'Vegetarian';
 
   @override
-  String get allergy_Sulphites => 'Sulphites';
+  String get dietStyle_Vegan => 'Vegan';
 
   @override
-  String get allergy_Lupin => 'Lupin';
+  String get dietStyle_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Slow';
@@ -336,6 +355,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Fast';
+
+  @override
+  String get dailyBudget_low => 'Low';
+
+  @override
+  String get dailyBudget_medium => 'Medium';
+
+  @override
+  String get dailyBudget_high => 'High';
+
+  @override
+  String get cookingSkills_beginner => 'Beginner';
+
+  @override
+  String get cookingSkills_advanced => 'Advanced';
+
+  @override
+  String get cookingSkills_professional => 'Professional';
 
   @override
   String get activityLevel_VeryLow => 'Very Low (1–2 days a week or less)';
@@ -458,8 +495,169 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savePredictedCalories => 'Save predicted calories';
 
   @override
+  String get changeCaloriesPrediction => 'Change calories prediction';
+
+  @override
   String get refreshRequest => 'Refresh request';
 
   @override
-  String get changeCaloriesPrediction => 'Change calories prediction';
+  String get goToMainPage => 'Go to main page';
+
+  @override
+  String get errorWhileFetchingMealIcon => 'Error while fetching meal icon';
+
+  @override
+  String get mealDescriptions => 'Meal description';
+
+  @override
+  String get groceries => 'Groceries';
+
+  @override
+  String get recipe => 'Recipe';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get breakfast => 'Breakfast';
+
+  @override
+  String get morningSnack => 'Morning snack';
+
+  @override
+  String get lunch => 'Lunch';
+
+  @override
+  String get afternoonSnack => 'Afternoon snack';
+
+  @override
+  String get dinner => 'Dinner';
+
+  @override
+  String get eveningSnack => 'Evening snack';
+
+  @override
+  String get toEat => 'To eat';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get eaten => 'Eaten';
+
+  @override
+  String get skipped => 'Skipped';
+
+  @override
+  String get f_fat => 'F';
+
+  @override
+  String get p_protein => 'P';
+
+  @override
+  String get c_carbs => 'C';
+
+  @override
+  String get g_grams => 'g';
+
+  @override
+  String get cal_calories => 'Cal';
+
+  @override
+  String get of_calories => 'of';
+
+  @override
+  String get cannotEditPastMeals => 'Cannot edit past meals';
+
+  @override
+  String get noMealsForToday => 'There aren\'t any meals planned for today';
+
+  @override
+  String get markedAs => 'marked as';
+
+  @override
+  String get dailySummary => 'Daily Summary';
+
+  @override
+  String get fillFormToGenerateMeals => 'Please fill out the form to be able to generate meals';
+
+  @override
+  String get dailyMeals => 'Daily Menu';
+
+  @override
+  String get dailyMealsFor => 'Daily Meals for ';
+
+  @override
+  String get macrosSummary => 'Macros summary';
+
+  @override
+  String get calories => 'Calories';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get skipMeal => 'Skip Meal';
+
+  @override
+  String get addNewMeal => 'Add new meal';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get scanProductBarCode => 'Scan product bar code';
+
+  @override
+  String get mealName => 'Meal name';
+
+  @override
+  String get mealItemNameShouldBeBetween => 'Meal item name should be between';
+
+  @override
+  String get valueOfThisMacroShouldBeBetween => 'Value of this macro should be between';
+
+  @override
+  String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
+
+  @override
+  String get generateNewPlan => 'Generate New Plan';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'No data for this meal. Please refresh request or contact support at $email.';
+  }
+
+  @override
+  String get regenerateMeals => 'Regenerate Meals';
+
+  @override
+  String get dietOutdatedConsiderRegenerating => 'Your meal plan may be outdated – consider regenerating it.';
+
+  @override
+  String get dietOutdated => 'Your meal plan may be outdated.';
+
+  @override
+  String get planDoesNotExist => 'Plan for given day does not exist.';
+
+  @override
+  String get chooseOption => 'Choose option';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Meals successfully generated';
+
+  @override
+  String get forSomething => 'for';
+
+  @override
+  String get whileMealsGeneration => 'while generating meals';
+
+  @override
+  String get error => 'Error';
 }

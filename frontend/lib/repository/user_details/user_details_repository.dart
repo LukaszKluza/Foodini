@@ -3,14 +3,15 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
-import 'package:frontend/services/api_client.dart';
+import 'package:frontend/repository/api_client.dart';
+import 'package:uuid/uuid_value.dart';
 
 class UserDetailsRepository {
   final ApiClient apiClient;
 
   UserDetailsRepository(this.apiClient);
 
-  Future<DietForm> getDietPreferences(int userId) async {
+  Future<DietForm> getDietPreferences(UuidValue userId) async {
     try {
       final response = await apiClient.getDietPreferences(userId);
       return DietForm.fromJson(response.data);
@@ -21,7 +22,7 @@ class UserDetailsRepository {
     }
   }
 
-  Future<void> submitDietForm(DietForm request, int userId) async {
+  Future<void> submitDietForm(DietForm request, UuidValue userId) async {
     try {
       await apiClient.submitDietForm(request, userId);
     } on DioException catch (e) {
@@ -33,7 +34,7 @@ class UserDetailsRepository {
 
   Future<PredictedCalories> submitMacrosChange(
     Macros request,
-    int userId,
+      UuidValue userId,
   ) async {
     try {
       final response = await apiClient.submitMacrosChange(request, userId);
@@ -45,7 +46,7 @@ class UserDetailsRepository {
     }
   }
 
-  Future<PredictedCalories> addCaloriesPrediction(int userId) async {
+  Future<PredictedCalories> addCaloriesPrediction(UuidValue userId) async {
     try {
       final response = await apiClient.addCaloriesPrediction(userId);
       return PredictedCalories.fromJson(response.data);
@@ -56,7 +57,7 @@ class UserDetailsRepository {
     }
   }
 
-  Future<PredictedCalories> getCaloriesPrediction(int userId) async {
+  Future<PredictedCalories> getCaloriesPrediction(UuidValue userId) async {
     try {
       final response = await apiClient.getCaloriesPrediction(userId);
       return PredictedCalories.fromJson(response.data);

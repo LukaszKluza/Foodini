@@ -4,9 +4,9 @@ from sqlalchemy.orm import sessionmaker
 
 from backend.settings import config
 
-engine = create_async_engine(config.DATABASE_URL, echo=True)
+engine = create_async_engine(config.DATABASE_URL, echo=False)
 
-SessionLocal = sessionmaker(bind=engine, class_=AsyncSession, autoflush=False, autocommit=False)
+SessionLocal = sessionmaker(bind=engine, class_=AsyncSession, autoflush=False, autocommit=False, expire_on_commit=False)
 
 redis_tokens = aioredis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=0)
 

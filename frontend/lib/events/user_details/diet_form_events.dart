@@ -1,7 +1,10 @@
 import 'package:frontend/models/user_details/activity_level.dart';
-import 'package:frontend/models/user_details/allergy.dart';
+import 'package:frontend/models/user_details/cooking_skills.dart';
+import 'package:frontend/models/user_details/daily_budget.dart';
 import 'package:frontend/models/user_details/diet_intensity.dart';
+import 'package:frontend/models/user_details/diet_style.dart';
 import 'package:frontend/models/user_details/diet_type.dart';
+import 'package:frontend/models/user_details/dietary_restriction.dart';
 import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
@@ -39,8 +42,14 @@ class UpdateDietType extends DietFormEvent {
   UpdateDietType(this.dietType);
 }
 
+class UpdateDietStyle extends DietFormEvent {
+  final DietStyle? dietStyle;
+
+  UpdateDietStyle(this.dietStyle);
+}
+
 class UpdateAllergies extends DietFormEvent {
-  final List<Allergy> allergies;
+  final List<Allergies> allergies;
 
   UpdateAllergies(this.allergies);
 }
@@ -61,6 +70,18 @@ class UpdateDietIntensity extends DietFormEvent {
   final DietIntensity dietIntensity;
 
   UpdateDietIntensity(this.dietIntensity);
+}
+
+class UpdateDailyBudget extends DietFormEvent {
+  final DailyBudget dailyBudget;
+
+  UpdateDailyBudget(this.dailyBudget);
+}
+
+class UpdateCookingSkills extends DietFormEvent {
+  final CookingSkills cookingSkills;
+
+  UpdateCookingSkills(this.cookingSkills);
 }
 
 class UpdateActivityLevel extends DietFormEvent {
@@ -104,5 +125,3 @@ class InitForm extends DietFormEvent {}
 class SubmitForm extends DietFormEvent {}
 
 class DietFormResetRequested extends DietFormEvent {}
-
-class CalculateCalories extends DietFormEvent {}

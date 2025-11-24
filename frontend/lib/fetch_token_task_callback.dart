@@ -1,20 +1,21 @@
 import 'package:frontend/app_router.dart';
 import 'package:frontend/models/user/refreshed_tokens_response.dart';
 import 'package:frontend/models/user/user_response.dart';
+import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
-import 'package:frontend/services/api_client.dart';
 import 'package:frontend/services/token_storage_service.dart';
 
-Future<void> fetchTokenTaskCallback([
-  TokenStorageRepository? tokenStorage,
-]) async {
+Future<void> fetchTokenTaskCallback({
+  ApiClient? apiClientWithCache,
+  TokenStorageService? tokenStorage,
+}) async {
   final UserStorage userStorage = UserStorage();
   final String? refreshToken =
-      await (tokenStorage ?? TokenStorageRepository()).getAccessToken();
+      await (tokenStorage ?? TokenStorageService()).getAccessToken();
 
   if (refreshToken != null) {
-    final apiClient = ApiClient();
+    final apiClient = apiClientWithCache ?? ApiClient();
     final authRepository = UserRepository(apiClient);
     RefreshedTokensResponse refreshedTokens;
     UserResponse userResponse;
@@ -24,22 +25,20 @@ Future<void> fetchTokenTaskCallback([
 
       if (userId != null) {
         refreshedTokens = await authRepository.refreshTokens(userId);
-        await TokenStorageRepository().saveAccessToken(
+        await TokenStorageService().saveAccessToken(
           refreshedTokens.accessToken,
         );
-        await TokenStorageRepository().saveRefreshToken(
+        await TokenStorageService().saveRefreshToken(
           refreshedTokens.refreshToken,
         );
 
         userResponse = await authRepository.getUser(userId);
         userStorage.setUser(userResponse);
-
-        router.go('/account');
       }
     } catch (e) {
       userStorage.removeUser();
-      await TokenStorageRepository().deleteAccessToken();
-      await TokenStorageRepository().deleteRefreshToken();
+      await TokenStorageService().deleteAccessToken();
+      await TokenStorageService().deleteRefreshToken();
 
       router.go('/');
     }

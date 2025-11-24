@@ -8,24 +8,19 @@ class ProvideEmailListenerHelper {
   static void onProvideEmailListener({
     required BuildContext context,
     required ProvideEmailState state,
-    required void Function(void Function()) setState,
     required bool mounted,
     required void Function(String) setMessage,
     required void Function(TextStyle) setMessageStyle,
   }) {
     if (state is ProvideEmailSuccess) {
-      setState(() {
-        setMessage(
-          AppLocalizations.of(context)!.checkEmailAddressToSetNewPassword,
-        );
-        setMessageStyle(Styles.successStyle);
-      });
+      setMessage(
+        AppLocalizations.of(context)!.checkEmailAddressToSetNewPassword,
+      );
+      setMessageStyle(Styles.successStyle);
     } else if (state is ProvideEmailFailure) {
-      setState(() {
-        setMessage(
-          ExceptionConverter.formatErrorMessage(state.error.data, context),
-        );
-      });
+      setMessage(
+          ExceptionConverter.formatErrorMessage(state.error.data, context)
+      );
     }
   }
 }

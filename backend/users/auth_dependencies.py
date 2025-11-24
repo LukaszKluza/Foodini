@@ -1,4 +1,5 @@
 from typing import Type
+from uuid import UUID
 
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -13,7 +14,7 @@ security = HTTPBearer()
 class AuthDependency:
     def __init__(
         self,
-        user_id: int,
+        user_id: UUID,
         credentials: HTTPAuthorizationCredentials,
         user_validators: UserValidationService,
         authorization_service: AuthorizationService,

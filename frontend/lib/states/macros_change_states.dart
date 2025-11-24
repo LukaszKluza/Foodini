@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/models/submitting_status.dart';
+import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
 
@@ -33,12 +33,6 @@ class MacrosChangeState extends Equatable{
       getMessage: getMessage ?? this.getMessage,
       processingStatus: processingStatus ?? this.processingStatus,
     );
-  }
-
-  @override
-  String toString() {
-    return 'MacrosChangeState(macros: $macros, predictedCalories: $predictedCalories, '
-        'errorCode: $errorCode, processingStatus: $processingStatus)';
   }
 
   @override
