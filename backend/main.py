@@ -90,6 +90,16 @@ async def redis_connection_error_handler(request: Request, exc: Exception):
     )
 
 
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.exception(f"Unhandled exception: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Internal Server Error",
+    )
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
