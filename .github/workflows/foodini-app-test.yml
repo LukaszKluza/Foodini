@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.12.10"
 
       - name: Install pre-commit
         run: pip install pre-commit
@@ -57,16 +57,20 @@ jobs:
       # Python Setup Steps
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.12.10
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.12.10"
 
-      - name: Install dependencies
+      - name: Install UV
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
+          pip install uv
+
+      - name: Sync dependencies with UV
+        run: |
+          cd backend
+          uv sync
 
       - name: Check critical errors with flake8
         run: |
