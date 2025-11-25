@@ -11,6 +11,3 @@ class DietaryRestriction(str, Enum):
     CELERY = "celery"
     SULPHITES = "sulphites"
     LUPIN = "lupin"
-    VEGETARIAN = "vegetarian"
-    VEGAN = "vegan"
-    KETO = "keto"

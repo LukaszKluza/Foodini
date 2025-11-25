@@ -2,7 +2,8 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from backend.user_details.enums import DietaryRestriction
+from backend.user_details.enums import CookingSkills, DailyBudget, DietaryRestriction
+from backend.user_details.enums.diet_style import DietStyle
 
 
 class IngredientCreate(BaseModel):
@@ -43,6 +44,9 @@ class DietGenerationInput(BaseModel):
     carbs: float = Field(default=0, ge=0)
     fat: float = Field(default=0, ge=0)
     previous_meals: List[str] = ([],)
+    diet_style: Optional[DietStyle] = None
+    daily_budget: Optional[DailyBudget] = None
+    cooking_skills: Optional[CookingSkills] = None
 
 
 class MealRecipeTranslation(BaseModel):

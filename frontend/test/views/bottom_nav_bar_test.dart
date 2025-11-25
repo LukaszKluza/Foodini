@@ -30,9 +30,9 @@ void main() {
       );
 
       // Then
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.home), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.home_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_forward_rounded), findsOneWidget);
     });
 
     testWidgets('Home button navigates to /main_page', (tester) async {
@@ -57,7 +57,7 @@ void main() {
       // Then
       expect(find.text('Profile'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.home));
+      await tester.tap(find.byIcon(Icons.home_rounded));
       await tester.pumpAndSettle();
 
       expect(find.text('Main Page'), findsOneWidget);
@@ -104,8 +104,7 @@ void main() {
       await tester.tap(
         find.byWidgetPredicate((widget) {
           return widget is Icon &&
-              widget.icon == Icons.arrow_back &&
-              widget.semanticLabel == 'Back';
+              widget.icon == Icons.arrow_back_rounded;
         }),
       );
 
@@ -146,7 +145,7 @@ void main() {
       // Then
       expect(find.text('Wizard Step 1'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_forward));
+      await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
       await tester.pumpAndSettle();
 
       expect(find.text('Wizard Step 2'), findsOneWidget);
@@ -184,7 +183,7 @@ void main() {
       // Then
       expect(find.text('Wizard Step 2'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.tap(find.byIcon(Icons.arrow_back_rounded));
       await tester.pumpAndSettle();
 
       expect(find.text('Wizard Step 1'), findsOneWidget);

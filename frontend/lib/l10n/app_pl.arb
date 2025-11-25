@@ -57,8 +57,9 @@
   "wrongChangePasswordUrl": "Nie możesz otworzyć formularza zmiany hasła",
   "dietPreferences": "Preferencje dietetyczne",
   "dietType": "Typ diety",
-  "requiredDietType": "Wymagany typ diety",
-  "dietaryRestrictions": "Restrykcje żywieniowe",
+  "requiredDietType": "Typ diety jest wymagany",
+  "dietStyle": "Styl diety",
+  "allergies": "Alergie",
   "dietGoal": "Cel diety",
   "enterYourDietGoal": "Wprowadź swój cel diety",
   "weightKg": "Waga (kg)",
@@ -69,6 +70,10 @@
   "mealsPerDay": "Liczba posiłków dziennie",
   "dietIntensity": "Intensywność diety",
   "requiredDietIntensity": "Wybierz intensywność diety",
+  "dailyBudget": "Dzienny budżet",
+  "requiredDailyBudget": "Dzienny budżet jest wymagany",
+  "cookingSkills": "Umiejętności kulinarne",
+  "requiredCookingSkills": "Umiejętności kulinarne są wymagane",
   "caloriesPrediction": "Prognoza zapotrzebowania kalorycznego",
   "activityLevel": "Poziom aktywności",
   "requiredActivityLevel": "Wskaż poziom swojej aktywności",
@@ -98,18 +103,27 @@
   "dietType_MuscleGain": "Przyrost masy mięśniowej",
   "dietType_WeightMaintenance": "Utrzymanie wagi",
 
-  "dietaryRestriction_Gluten": "Gluten",
-  "dietaryRestriction_Peanuts": "Orzeszki ziemne",
-  "dietaryRestriction_Lactose": "Laktoza",
-  "dietaryRestriction_Fish": "Ryby",
-  "dietaryRestriction_Soy": "Soja",
-  "dietaryRestriction_Wheat": "Pszenica",
-  "dietaryRestriction_Celery": "Seler",
-  "dietaryRestriction_Sulphites": "Siarczyny",
-  "dietaryRestriction_Lupin": "Łubin",
-  "dietaryRestriction_Vegetarian": "Wegetariańska",
-  "dietaryRestriction_Vegan": "Wegańska",
-  "dietaryRestriction_Keto": "Keto",
+  "allergies_Gluten": "Gluten",
+  "allergies_Peanuts": "Orzeszki ziemne",
+  "allergies_Lactose": "Laktoza",
+  "allergies_Fish": "Ryby",
+  "allergies_Soy": "Soja",
+  "allergies_Wheat": "Pszenica",
+  "allergies_Celery": "Seler",
+  "allergies_Sulphites": "Siarczyny",
+  "allergies_Lupin": "Łubin",
+
+  "dietStyle_Vegetarian": "Wegetariańska",
+  "dietStyle_Vegan": "Wegańska",
+  "dietStyle_Keto": "Keto",
+
+  "dailyBudget_low": "Niski",
+  "dailyBudget_medium": "Średni",
+  "dailyBudget_high": "Wysoki",
+
+  "cookingSkills_beginner": "Początkujący",
+  "cookingSkills_advanced": "Zaawansowany",
+  "cookingSkills_professional": "Profesjonalista",
 
   "dietIntensity_Slow": "Powolna",
   "dietIntensity_Medium": "Średnia",
@@ -175,9 +189,9 @@
   "optional": "Opcjonalnie",
 
   "breakfast": "Śniadanie",
-  "morningSnack": "Przekąska poranna",
+  "morningSnack": "Drugie śniadanie",
   "lunch": "Obiad",
-  "afternoonSnack": "Przekąska popołudniowa",
+  "afternoonSnack": "Podwieczorek",
   "dinner": "Kolacja",
   "eveningSnack": "Przekąska wieczorna",
 
@@ -198,6 +212,7 @@
   "markedAs": "oznaczone jako",
 
   "dailySummary": "Dzienne podsumowanie",
+  "fillFormToGenerateMeals": "Proszę wypełnić formularz, aby móc generować posiłki",
   "dailyMeals": "Dzienne menu",
   "dailyMealsFor": "Posiłki na dzień ",
 
@@ -213,5 +228,20 @@
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
-  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale"
+  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+
+  "generateNewPlan": "Generuj posiłki",
+  "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
+  "regenerateMeals": "Generuj posiłki ponownie",
+  "dietOutdatedConsiderRegenerating": "Menu może być nieaktualne – rozważ regenerację.",
+  "dietOutdated": "Menu może być nieaktualne.",
+  "planDoesNotExist": "Plan na dany dzień nie istnieje.",
+
+  "chooseOption": "Wybierz opcję",
+  "statistics": "Statystyki",
+
+  "mealsGeneratedSuccessfully": "Pomyślnie wygenerowano posiłki",
+  "forSomething": "dla",
+  "whileMealsGeneration": "podczas generowania posiłków",
+  "error": "Błąd"
 }

@@ -4,6 +4,7 @@ from typing import Type
 from fastapi import HTTPException, Response, status
 from starlette.responses import RedirectResponse
 
+from backend.core.logger import logger
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.models import User
 from backend.settings import config
@@ -41,6 +42,7 @@ class UserService:
     async def register(self, user: UserCreate):
         existing_user = await self.user_repository.get_user_by_email(user.email)
         if existing_user:
+            logger.debug("User already exists with this email")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User already exists",
@@ -59,6 +61,7 @@ class UserService:
         self.user_validators.ensure_verified_user(user_)
 
         if not await PasswordService.verify_password(user_login.password, user_.password):
+            logger.debug("Incorrect password provided for user login")
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
@@ -133,6 +136,7 @@ class UserService:
             await self.user_repository.verify_user(user_email)
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=success"
         except (HTTPException, TypeError):
+            logger.debug("User verification failed. Redirecting to error page.")
             redirect_url = f"{config.FRONTEND_URL}/#/login?status=error"
 
         if email:
