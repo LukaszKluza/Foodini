@@ -3,11 +3,13 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import ConnectionError as RedisConnectionError
+from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
@@ -38,15 +40,32 @@ app.add_middleware(
 
 
 app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
+app.state.limiter = limiter
 
 templates = Jinja2Templates(directory="backend/templates")
 
 
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    raise HTTPException(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        detail={
+            "date": f"{request.query_params.get('date')}",
+            "message": f"Rate limit exceeded, only {exc.limit.limit} request allowed. Try again later.",
+        },
+    )
+
+
 @app.exception_handler(NotFoundInDatabaseException)
 async def db_not_found_handler(request: Request, exc: NotFoundInDatabaseException):
+    code = getattr(exc, "code", None)
+    try:
+        code = code.value if hasattr(code, "value") else code
+    except Exception:
+        code = str(code) if code is not None else None
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        content={"detail": exc.detail},
+        content={"detail": exc.detail, "code": code},
     )
 
 
@@ -87,6 +106,16 @@ async def redis_connection_error_handler(request: Request, exc: Exception):
     raise HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail="Server connection failed",
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.exception(f"Unhandled exception: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Internal Server Error",
     )
 
 

@@ -111,7 +111,9 @@ final GoRouter router = GoRouter(
       path: '/daily-summary/:date',
       builder: (context, state) {
         final date = DateTime.tryParse(state.pathParameters['date']!)!;
-        return DailySummaryScreen(selectedDate: date);
+        return DailySummaryScreen(
+          selectedDate: DateTime(date.year, date.month, date.day),
+        );
       },
       redirect: (context, state) {
         try {

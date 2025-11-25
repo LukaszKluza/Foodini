@@ -119,11 +119,27 @@ def mock_meal_gateway():
 
 
 @pytest.fixture
+def mock_user_details_gateway():
+    gateway = AsyncMock()
+    gateway.get_date_of_last_update_user_details = AsyncMock()
+    gateway.get_date_of_last_update_user_calories_prediction = AsyncMock()
+    return gateway
+
+
+@pytest.fixture
 def daily_summary_service(
-    mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+    mock_daily_summary_repository,
+    mock_meal_repository,
+    mock_last_generated_meals_repository,
+    mock_meal_gateway,
+    mock_user_details_gateway,
 ):
     return DailySummaryService(
-        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+        mock_daily_summary_repository,
+        mock_meal_repository,
+        mock_last_generated_meals_repository,
+        mock_meal_gateway,
+        mock_user_details_gateway,
     )
 
 

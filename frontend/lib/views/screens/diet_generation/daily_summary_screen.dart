@@ -11,9 +11,9 @@ import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
-import 'package:frontend/views/widgets/generate_meals_button.dart';
+import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -30,11 +30,6 @@ class DailySummaryScreen extends StatefulWidget {
 
 class _DailySummaryScreenState extends State<DailySummaryScreen> {
   MealType? selectedMealType;
-
-  String formatForUrl(DateTime date) =>
-      '${date.year.toString().padLeft(4, '0')}-'
-      '${date.month.toString().padLeft(2, '0')}-'
-      '${date.day.toString().padLeft(2, '0')}';
 
   @override
   void initState() {
@@ -53,14 +48,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
 
     final now = DateTime.now();
 
-    final isActiveDay = (
-        widget.selectedDate.isAfter(now) ||
-            (
-                now.year == widget.selectedDate.year &&
-                now.month == widget.selectedDate.month &&
-                now.day == widget.selectedDate.day
-            )
-    );
+    final isToDay = isSameDay(now, widget.selectedDate);
+    final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,31 +61,31 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: SafeArea(
         child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
           builder: (context, state) {
+            if (state.gettingDailySummaryStatus.isFailure) {
+              return Center(
+                child: ErrorMessage(
+                  message: state.getMessage != null
+                      ? state.getMessage!(context)
+                      : AppLocalizations.of(context)!.unknownError,
+                ),
+              );
+            }
+
             if (state.dietGeneratingInfo.processingStatus.isOngoing
                 && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state.dietGeneratingInfo.processingStatus.isFailure
-                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0
+            } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
+                dateComparator(
+                    state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
+                state.gettingDailySummaryStatus.isFailure
             ) {
               return Stack(
                 children: [
                   Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 100.0),
-                      child: Text(
-                        state.getMessage!(context),
-                        style: const TextStyle(fontSize: 16, color: Colors.red),
-                      ),
+                    child: ErrorMessage(
+                      message: state.getMessage!(context),
                     ),
                   ),
-                  if (isActiveDay)
-                    GenerateMealsButton(
-                      selectedDay: widget.selectedDate,
-                      isRegenerateMode: false,
-                      onPressed: () {
-                        context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
-                      },
-                    ),
                 ],
               );
             } else if (state.dailySummary != null && dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
@@ -373,12 +362,17 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    AppConfig.mealTypeLabels(context)[activeMealType]!,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.grey[600],
+                  Expanded(
+                    child: AutoSizeText(
+                      AppConfig.mealTypeLabels(context)[activeMealType]!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.grey[600],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      minFontSize: 12,
                     ),
                   ),
                   Builder(
