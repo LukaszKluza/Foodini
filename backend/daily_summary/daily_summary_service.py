@@ -132,6 +132,7 @@ class DailySummaryService:
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None

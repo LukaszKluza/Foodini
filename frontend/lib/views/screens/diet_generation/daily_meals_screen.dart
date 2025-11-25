@@ -216,7 +216,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
-                        "Informacja",
+                        'Informacja',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
