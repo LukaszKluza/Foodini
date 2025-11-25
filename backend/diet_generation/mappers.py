@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict
+from typing import Dict, List
 from uuid import UUID
 
 from backend.daily_summary.enums.meal_status import MealStatus
@@ -20,6 +20,7 @@ def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
         protein=meal_data.protein,
         fat=meal_data.fat,
         carbs=meal_data.carbs,
+        weight=meal_data.weight,
     )
 
 
@@ -33,6 +34,7 @@ def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: UUID, language: La
             ingredients=[Ingredient(**i.model_dump()) for i in meal_data.ingredients_list]
         ).model_dump(),
         steps=[Step(**s.model_dump()).model_dump() for s in meal_data.steps],
+        meal_explanation=meal_data.explanation,
     )
 
 
@@ -48,6 +50,7 @@ def meal_recipe_translation_to_recipe(
             ingredients=[Ingredient(**i.model_dump()) for i in translated_recipe.ingredients_list]
         ).model_dump(),
         steps=[Step(**s.model_dump()).model_dump() for s in translated_recipe.steps],
+        meal_explanation=translated_recipe.explanation,
     )
 
 
@@ -57,11 +60,12 @@ def recipe_to_meal_recipe_translation(recipe: MealRecipe) -> MealRecipeTranslati
         meal_description=recipe.meal_description,
         ingredients_list=[IngredientCreate(**ingredient) for ingredient in recipe.ingredients["ingredients"]],
         steps=[StepCreate(**step) for step in recipe.steps],
+        explanation=recipe.meal_explanation,
     )
 
 
 def to_daily_meals_create(
-    day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, BasicMealInfo]
+    day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, List[BasicMealInfo]]
 ) -> DailyMealsCreate:
     return DailyMealsCreate(
         day=day,

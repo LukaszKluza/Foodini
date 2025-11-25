@@ -71,7 +71,7 @@ class DietGenerationRepository {
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while getting daily summary meals: $e');
+      throw Exception('Error while getting daily summary macros: $e');
     }
   }
 

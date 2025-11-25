@@ -16,15 +16,14 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.meals.enums.meal_type import MealType
+from backend.models.meals_daily_summary import ComposedMealItem
 from backend.users.enums.language import Language
 
 from ..core.db_listeners import register_timestamp_listeners
 from .types import FloatAsNumeric
-from .user_daily_summary_model import MealDailySummary
 
 if TYPE_CHECKING:
     from .meal_icon_model import MealIcon
-    from .user_daily_summary_model import DailyMealsSummary
 
 
 class Ingredient(SQLModel):
@@ -52,6 +51,7 @@ class Meal(SQLModel, table=True):
         CheckConstraint("protein >= 0", name="ck_protein_nonnegative"),
         CheckConstraint("carbs >= 0", name="ck_carbs_nonnegative"),
         CheckConstraint("fat >= 0", name="ck_fat_nonnegative"),
+        CheckConstraint("weight >= 0", name="ck_weight_nonnegative"),
     )
 
     id: uuid.UUID = Field(
@@ -64,6 +64,8 @@ class Meal(SQLModel, table=True):
     protein: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     carbs: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    weight: int = Field(nullable=False, ge=0, le=1250)
+    is_generated: bool = Field(default=True, nullable=False)
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -73,13 +75,8 @@ class Meal(SQLModel, table=True):
         back_populates="meal", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
     icon: Optional["MealIcon"] = Relationship(back_populates="meals", sa_relationship_kwargs={"cascade": "save-update"})
-    daily_meals: List["MealDailySummary"] = Relationship(
-        back_populates="meal", sa_relationship_kwargs={"passive_deletes": True}
-    )
-    daily_summary: List["DailyMealsSummary"] = Relationship(
-        back_populates="meals",
-        link_model=MealDailySummary,
-        sa_relationship_kwargs={"overlaps": "daily_meals,daily_summary"},
+    composed_meal_items: List["ComposedMealItem"] = Relationship(
+        back_populates="meal", sa_relationship_kwargs={"cascade": "all, delete-orphan", "passive_deletes": True}
     )
 
 
@@ -100,6 +97,7 @@ class MealRecipe(SQLModel, table=True):
     language: Language = Field(default=Language.EN, nullable=False)
     meal_name: str = Field(nullable=False)
     meal_description: str = Field(nullable=False)
+    meal_explanation: str = Field(nullable=True)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
     steps: List[Step] = Field(sa_column=Column(JSONB, nullable=False))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

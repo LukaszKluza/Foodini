@@ -17,7 +17,6 @@ import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:uuid/uuid_value.dart';
 
 class DailySummaryScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -103,12 +102,14 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= meals.entries.firstWhere(
-                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
-                orElse: () => meals.entries.last,
-              ).key;
+              selectedMealType ??= meals.entries
+                .firstWhere(
+                  (entry) => entry.value.any((meal) => meal.status == MealStatus.pending),
+                  orElse: () => meals.entries.last,
+                )
+                .key;
               final activeMeal = selectedMealType!;
-              final activeMealInfo = meals[activeMeal]!;
+              final activeMealInfo = meals[activeMeal]!.first;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
 
@@ -318,7 +319,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     bool isActive,
     MealType activeMealType,
     MealInfo activeMealInfo,
-    Map<MealType, MealInfo> allMeals,
+    Map<MealType, List<MealInfo>> allMeals,
     DateTime selectedDay,
   ) {
     final bool isEaten = activeMealInfo.status == MealStatus.eaten;
@@ -411,7 +412,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                           context.read<DailySummaryBloc>().add(
                             ChangeMealStatus(
                               day: selectedDay,
-                              mealId: activeMealInfo.mealId as UuidValue,
+                              mealType: activeMealType,
                               status: nextStatus,
                             ),
                           );

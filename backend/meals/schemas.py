@@ -16,6 +16,7 @@ class MealCreate(BaseModel):
     protein: float = Field(default=0, ge=0)
     fat: float = Field(default=0, ge=0)
     carbs: float = Field(default=0, ge=0)
+    weight: int = Field(default=0, ge=0, le=1250)
 
 
 class MealRecipeResponse(BaseModel):

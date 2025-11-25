@@ -116,10 +116,11 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                             title:
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
                             color: _getMealColor(entry.key),
-                            imageUrl: entry.value.iconPath!,
-                            mealName: entry.value.name ?? '',
-                            description: entry.value.description ?? '',
-                            mealId: entry.value.mealId!,
+                            imageUrl: entry.value[0].iconPath!,
+                            mealName: entry.value[0].name ?? '',
+                            description: entry.value[0].description ?? '',
+                            explanation: entry.value[0].explanation,
+                            mealId: entry.value[0].mealId!,
                             context: context,
                           ),
                         const SizedBox(height: 40),
@@ -190,6 +191,65 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         return const Color(0xFFCBE3A8);
       }
   }
+  void showInfoPopup(BuildContext context, String content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color(0xFFFFF6E0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: Color(0xFFE68A00),
+                      size: 26,
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Informacja',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(
+                        Icons.close,
+                        size: 24,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  content,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.4,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildMealSection({
     required BuildContext context,
@@ -198,6 +258,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     required String imageUrl,
     required String mealName,
     required String description,
+    String? explanation,
     required UuidValue mealId,
   }) {
     return Padding(
@@ -217,18 +278,33 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.fromLTRB(10,0,10,0),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showInfoPopup(context, explanation!);
+                        },
+                        icon: const Icon(
+                          Icons.info_outline,
+                          size: 24,
+                          color: Colors.black87,
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),
