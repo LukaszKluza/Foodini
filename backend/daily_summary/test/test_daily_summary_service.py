@@ -375,7 +375,7 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
     custom = CustomMealUpdateRequest(
         day=today,
         meal_id=meal_id,
-        custom_name=None,
+        custom_name="custom_name",
         custom_calories=350,
         custom_protein=25,
         custom_carbs=10,
