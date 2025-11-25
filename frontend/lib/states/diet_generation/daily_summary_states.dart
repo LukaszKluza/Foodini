@@ -56,7 +56,7 @@ class DailySummaryState {
   }
 
   List<MealInfo> getMealsByMealType(MealType type) {
-    return [if (dailySummary?.meals[type] != null) dailySummary!.meals[type]!];
+    return [if (dailySummary?.meals[type] != null) ...dailySummary!.meals[type]!];
   }
 
   @override
