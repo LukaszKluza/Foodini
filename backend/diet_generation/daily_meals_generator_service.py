@@ -1,10 +1,15 @@
 import asyncio
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Dict, List
 from uuid import UUID
 
+from fastapi import HTTPException, status
+
 from backend.core.logger import logger
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
+from backend.core.value_error_exception import ValueErrorException
 from backend.daily_summary.daily_summary_gateway import DailySummaryGateway
+from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import (
@@ -19,7 +24,9 @@ from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, c
 from backend.diet_generation.tools.translator import TranslatorTool
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
-from backend.models import Meal, MealRecipe, User, UserDetails, UserDietPredictions
+from backend.models import Meal, MealRecipe, User, UserDetails
+from backend.settings import config
+from backend.user_details.schemas import PredictedCalories
 from backend.user_details.user_details_gateway import UserDetailsGateway
 from backend.users.enums.language import Language
 
@@ -38,20 +45,34 @@ class DailyMealsGeneratorService:
 
     @staticmethod
     def _prepare_input(
-        details: UserDetails, predictions: UserDietPredictions, previous_meals: List[str]
+        details: UserDetails, predictions: PredictedCalories, previous_meals: List[str]
     ) -> DietGenerationInput:
         return DietGenerationInput(
             dietary_restriction=[restriction for restriction in details.dietary_restrictions],
             meals_per_day=details.meals_per_day,
             meal_types=MealType.daily_meals(details.meals_per_day),
             calories=predictions.target_calories,
-            protein=predictions.protein,
-            carbs=predictions.carbs,
-            fat=predictions.fat,
+            protein=predictions.predicted_macros.protein,
+            carbs=predictions.predicted_macros.carbs,
+            fat=predictions.predicted_macros.fat,
             previous_meals=previous_meals,
+            diet_style=details.diet_style,
+            daily_budget=details.daily_budget,
+            cooking_skills=details.cooking_skills,
         )
 
     async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
+        today = datetime.now(config.TIMEZONE).date()
+        if day < today:
+            raise ValueErrorException("Cannot generate diet for past days.")
+
+        if day == today:
+            try:
+                await self.daily_summary_gateway.get_daily_meals(user.id, day)
+                raise ValueErrorException("Diet for today has already been generated.")
+            except NotFoundInDatabaseException:
+                pass
+
         try:
             user_details, user_diet_predictions, user_latest_meals, meal_icons = await self._get_required_arguments(
                 user, day
@@ -70,8 +91,18 @@ class DailyMealsGeneratorService:
             )
             await self._save_daily_summary(day, user_diet_predictions, meals_type_map)
             await self._translate_and_save_recipes(saved_meals, saved_recipes)
+        except NotFoundInDatabaseException:
+            logger.debug("Diet not found in database")
+            raise
+        except HTTPException as e:
+            logger.error(f"Error while generating meal plan: {str(e)}")
+            raise
         except Exception as e:
-            raise RuntimeError(f"Error generating diet plan for user {user.id}: {e}") from e
+            logger.error(f"Error while generating meal plan: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error generating diet plan for user {user.id}",
+            ) from e
         return saved_recipes
 
     async def _get_required_arguments(self, user: User, day: date):
@@ -100,12 +131,13 @@ class DailyMealsGeneratorService:
 
             saved_meals.append(saved_meal)
             saved_recipes.append(meal_recipe)
-            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id)
+            _status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
+            meals_type_map[saved_meal.meal_type.value] = to_empty_basic_meal_info(meal_id=saved_meal.id, status=_status)
 
         return saved_meals, saved_recipes, meals_type_map
 
     async def _save_daily_summary(
-        self, day: date, user_diet_predictions: UserDietPredictions, meals_type_map: Dict[MealType, BasicMealInfo]
+        self, day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, BasicMealInfo]
     ):
         await self.daily_summary_gateway.add_daily_meals(
             to_daily_meals_create(day, user_diet_predictions, meals_type_map), user_diet_predictions.user_id
