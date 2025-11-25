@@ -57,6 +57,7 @@ class Meal(SQLModel, table=True):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
+    meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)
     icon_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meal_icons.id"), nullable=False))
     calories: int = Field(nullable=False, ge=0)

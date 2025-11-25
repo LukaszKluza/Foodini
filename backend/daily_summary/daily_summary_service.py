@@ -294,6 +294,7 @@ class DailySummaryService:
             existing_meal = None
 
         new_meal = MealCreate(
+            meal_name=custom_meal.custom_name,
             meal_type=existing_link.meal_type,
             icon_id=existing_meal.icon_id if existing_meal else None,
             calories=custom_meal.custom_calories or (existing_meal.calories if existing_meal else 0),

@@ -460,6 +460,7 @@ async def test_update_meal_status_adds_macros_when_eaten(
 @pytest.mark.asyncio
 async def test_add_meal_details_add_new(daily_summary_service, mock_meal_repository):
     meal_data = MealCreate(
+        meal_name="Test_name",
         calories=300,
         protein=20,
         carbs=5,
@@ -479,6 +480,7 @@ async def test_add_meal_details_add_new(daily_summary_service, mock_meal_reposit
 @pytest.mark.asyncio
 async def test_get_meal_details_success(daily_summary_service, mock_meal_repository):
     meal_data = MealCreate(
+        meal_name="Test_name",
         calories=300,
         protein=20,
         carbs=5,
