@@ -40,7 +40,7 @@ class MockDailyMealLink:
         mock_recipe = MagicMock()
         mock_recipe.meal_name = "Test meal"
         mock_recipe.meal_description = "Delicious mock meal"
-        mock_recipe.meal_explanation = "Mock explanation"  # <- string, nie MagicMock
+        mock_recipe.meal_explanation = "Mock explanation"
         mock_meal.recipes = [mock_recipe]
 
         composed_item = MagicMock()
