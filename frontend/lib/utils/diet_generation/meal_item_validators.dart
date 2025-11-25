@@ -30,3 +30,18 @@ String? validateCalories(String? rawValue, BuildContext context) {
   }
   return null;
 }
+
+String? validateBarcode(String? barcode, BuildContext context) {
+  if (barcode == null || barcode.isEmpty) {
+    return AppLocalizations.of(context)!.barcodeCannotBeEmpty;
+  }
+
+  if (barcode.length != Constants.barcodeLength) {
+    return '${AppLocalizations.of(context)!.barcodeMustBeLength} ${Constants.barcodeLength}';
+  }
+
+  if (!RegExp(r'^\d+$').hasMatch(barcode)) {
+    return AppLocalizations.of(context)!.barcodeMustContainOnlyDigits;
+  }
+  return null;
+}

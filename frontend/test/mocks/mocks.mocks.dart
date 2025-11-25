@@ -70,6 +70,7 @@ import 'package:uuid/uuid_value.dart' as _i24;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeApiClient_0 extends _i1.SmartFake implements _i2.ApiClient {
   _FakeApiClient_0(Object parent, Invocation parentInvocation)
@@ -210,19 +211,19 @@ class _FakeBaseOptions_25 extends _i1.SmartFake implements _i19.BaseOptions {
     : super(parent, parentInvocation);
 }
 
-class _FakeHttpClientAdapter_26 extends _i1.SmartFake
+class _FakeInterceptors_26 extends _i1.SmartFake implements _i19.Interceptors {
+  _FakeInterceptors_26(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeHttpClientAdapter_27 extends _i1.SmartFake
     implements _i19.HttpClientAdapter {
-  _FakeHttpClientAdapter_26(Object parent, Invocation parentInvocation)
+  _FakeHttpClientAdapter_27(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeTransformer_27 extends _i1.SmartFake implements _i19.Transformer {
-  _FakeTransformer_27(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeInterceptors_28 extends _i1.SmartFake implements _i19.Interceptors {
-  _FakeInterceptors_28(Object parent, Invocation parentInvocation)
+class _FakeTransformer_28 extends _i1.SmartFake implements _i19.Transformer {
+  _FakeTransformer_28(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -446,6 +447,16 @@ class MockRegisterBloc extends _i1.Mock implements _i30.RegisterBloc {
     _i32.Transition<_i31.RegisterEvent?, _i8.RegisterState>? transition,
   ) => super.noSuchMethod(
     Invocation.method(#onTransition, [transition]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void onDone(
+    _i31.RegisterEvent? event, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) => super.noSuchMethod(
+    Invocation.method(#onDone, [event, error, stackTrace]),
     returnValueForMissingStub: null,
   );
 
@@ -1640,10 +1651,21 @@ class MockDio extends _i1.Mock implements _i19.Dio {
           as _i19.BaseOptions);
 
   @override
+  _i19.Interceptors get interceptors =>
+      (super.noSuchMethod(
+            Invocation.getter(#interceptors),
+            returnValue: _FakeInterceptors_26(
+              this,
+              Invocation.getter(#interceptors),
+            ),
+          )
+          as _i19.Interceptors);
+
+  @override
   _i19.HttpClientAdapter get httpClientAdapter =>
       (super.noSuchMethod(
             Invocation.getter(#httpClientAdapter),
-            returnValue: _FakeHttpClientAdapter_26(
+            returnValue: _FakeHttpClientAdapter_27(
               this,
               Invocation.getter(#httpClientAdapter),
             ),
@@ -1654,7 +1676,7 @@ class MockDio extends _i1.Mock implements _i19.Dio {
   _i19.Transformer get transformer =>
       (super.noSuchMethod(
             Invocation.getter(#transformer),
-            returnValue: _FakeTransformer_27(
+            returnValue: _FakeTransformer_28(
               this,
               Invocation.getter(#transformer),
             ),
@@ -1662,32 +1684,20 @@ class MockDio extends _i1.Mock implements _i19.Dio {
           as _i19.Transformer);
 
   @override
-  _i19.Interceptors get interceptors =>
-      (super.noSuchMethod(
-            Invocation.getter(#interceptors),
-            returnValue: _FakeInterceptors_28(
-              this,
-              Invocation.getter(#interceptors),
-            ),
-          )
-          as _i19.Interceptors);
-
-  @override
-  set options(_i19.BaseOptions? _options) => super.noSuchMethod(
-    Invocation.setter(#options, _options),
+  set options(_i19.BaseOptions? value) => super.noSuchMethod(
+    Invocation.setter(#options, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set httpClientAdapter(_i19.HttpClientAdapter? _httpClientAdapter) =>
-      super.noSuchMethod(
-        Invocation.setter(#httpClientAdapter, _httpClientAdapter),
-        returnValueForMissingStub: null,
-      );
+  set httpClientAdapter(_i19.HttpClientAdapter? value) => super.noSuchMethod(
+    Invocation.setter(#httpClientAdapter, value),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  set transformer(_i19.Transformer? _transformer) => super.noSuchMethod(
-    Invocation.setter(#transformer, _transformer),
+  set transformer(_i19.Transformer? value) => super.noSuchMethod(
+    Invocation.setter(#transformer, value),
     returnValueForMissingStub: null,
   );
 
@@ -2400,14 +2410,14 @@ class MockCacheManager extends _i1.Mock implements _i11.CacheManager {
           as _i22.CacheOptions);
 
   @override
-  set cacheStore(_i22.CacheStore? _cacheStore) => super.noSuchMethod(
-    Invocation.setter(#cacheStore, _cacheStore),
+  set cacheStore(_i22.CacheStore? value) => super.noSuchMethod(
+    Invocation.setter(#cacheStore, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set cacheOptions(_i22.CacheOptions? _cacheOptions) => super.noSuchMethod(
-    Invocation.setter(#cacheOptions, _cacheOptions),
+  set cacheOptions(_i22.CacheOptions? value) => super.noSuchMethod(
+    Invocation.setter(#cacheOptions, value),
     returnValueForMissingStub: null,
   );
 

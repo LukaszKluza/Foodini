@@ -224,6 +224,13 @@
   "addNewMeal": "Dodaj nowy posiłek",
   "save": "Zapisz",
   "scanProductBarCode": "Zeskanuj kod kreskowy produktu",
+  "productBarCode": "Kod kreskowy",
+  "addProduct": "Dodaj produkt",
+  "uploadBarCodeImage": "Dodaj zdjęcie kodu kreskowego",
+  "readFile": "Wczytano plik:",
+  "barcodeCannotBeEmpty": "Kod kreskowy nie może być pusty",
+  "barcodeMustBeLength": "Kod kreskowy musi mieć długość",
+  "barcodeMustContainOnlyDigits": "Kod kreskowy może zawierać tylko cyfry",
   "mealName": "Nazwa posiłku",
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",

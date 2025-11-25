@@ -10,6 +10,7 @@ class DailySummaryState {
   final ProcessingStatus gettingDailySummaryStatus;
   final ProcessingStatus changingMealStatus;
   final ProcessingStatus updatingMealDetails;
+  final ProcessingStatus addingScannedProduct;
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
   final dynamic errorData;
@@ -21,6 +22,7 @@ class DailySummaryState {
     this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
     this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
     this.updatingMealDetails = ProcessingStatus.emptyProcessingStatus,
+    this.addingScannedProduct = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
     this.errorData,
@@ -33,6 +35,7 @@ class DailySummaryState {
     ProcessingStatus? gettingDailySummaryStatus,
     ProcessingStatus? changingMealStatus,
     ProcessingStatus? updatingMealDetails,
+    ProcessingStatus? addingScannedProduct,
 
     DateTime? day,
     ProcessingStatus? processingStatus,
@@ -47,6 +50,7 @@ class DailySummaryState {
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
       changingMealStatus: changingMealStatus ?? this.changingMealStatus,
       updatingMealDetails: updatingMealDetails ?? this.updatingMealDetails,
+      addingScannedProduct: addingScannedProduct ?? this.addingScannedProduct,
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
       errorData: errorData ?? this.errorData,
@@ -66,6 +70,7 @@ class DailySummaryState {
         'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
         'changingMealStatus: $changingMealStatus, '
         'updatingMeal: $updatingMealDetails, '
+        'addingScannedProduct: $addingScannedProduct, '
         'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
         'errorCode: $errorCode'
         ')';

@@ -1,5 +1,7 @@
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid_value.dart';
 
 abstract class DailySummaryEvent {}
@@ -35,6 +37,18 @@ class GenerateMealPlan extends DailySummaryEvent {
 
   GenerateMealPlan({
     required this.day
+  });
+}
+
+class AddScannedProduct extends DailySummaryEvent {
+  final String? barcode;
+  final XFile? uploadedFile;
+  final MealType mealType;
+
+  AddScannedProduct({
+    this.barcode,
+    this.uploadedFile,
+    required this.mealType
   });
 }
 

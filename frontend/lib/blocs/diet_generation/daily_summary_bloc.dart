@@ -22,6 +22,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       emit(DailySummaryState());
     });
     on<GenerateMealPlan>(_onGenerateMealPlan);
+    on<AddScannedProduct>(_onAddScannedProduct);
   }
 
   Future<void> _onGetDailySummary(
@@ -224,6 +225,47 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
                 '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.toString()}',
             isError: true,
           ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAddScannedProduct(
+    AddScannedProduct event,
+    Emitter<DailySummaryState> emit,
+  ) async {
+    emit(
+      state.copyWith(addingScannedProduct: ProcessingStatus.submittingOnGoing),
+    );
+
+    try {
+      await dietGenerationRepository.addScannedProduct(
+        barcode: event.barcode,
+        uploadedFile: event.uploadedFile,
+        mealType: event.mealType,
+        userId: UserStorage().getUserId!,
+      );
+
+      emit(
+        state.copyWith(
+          addingScannedProduct: ProcessingStatus.submittingSuccess,
+        ),
+      );
+    } on ApiException catch (error) {
+      emit(
+        state.copyWith(
+          addingScannedProduct: ProcessingStatus.submittingFailure,
+          errorCode: error.statusCode,
+          getMessage:
+              (context) =>
+              ExceptionConverter.formatErrorMessage(error.data, context),
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          addingScannedProduct: ProcessingStatus.submittingFailure,
+          getMessage: (context) => error.toString(),
         ),
       );
     }
