@@ -243,5 +243,6 @@
   "mealsGeneratedSuccessfully": "Pomyślnie wygenerowano posiłki",
   "forSomething": "dla",
   "whileMealsGeneration": "podczas generowania posiłków",
-  "error": "Błąd"
+  "error": "Błąd",
+  "information": "Informacja"
 }

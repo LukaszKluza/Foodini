@@ -214,10 +214,10 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                       size: 26,
                     ),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Informacja',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.information,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.black87,
@@ -278,6 +278,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               children: [
                 Container(
                   width: double.infinity,
+                  height: 40,
                   padding: const EdgeInsets.fromLTRB(10,0,10,0),
                   decoration: BoxDecoration(
                     color: color,
@@ -294,16 +295,17 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          showInfoPopup(context, explanation!);
-                        },
-                        icon: const Icon(
-                          Icons.info_outline,
-                          size: 24,
-                          color: Colors.black87,
-                        ),
-                      )
+                      if (explanation != null)
+                        IconButton(
+                          onPressed: () {
+                            showInfoPopup(context, explanation);
+                          },
+                          icon: const Icon(
+                            Icons.info_outline,
+                            size: 24,
+                            color: Colors.black87,
+                          ),
+                        )
                     ],
                   ),
                 ),

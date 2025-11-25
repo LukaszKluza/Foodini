@@ -597,7 +597,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailySummary => 'Dzienne podsumowanie';
 
   @override
-  String get fillFormToGenerateMeals => 'Proszę wypełnić formularz, aby móc generować posiłki';
+  String get fillFormToGenerateMeals =>
+      'Proszę wypełnić formularz, aby móc generować posiłki';
 
   @override
   String get dailyMeals => 'Dzienne menu';
@@ -656,7 +657,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get regenerateMeals => 'Generuj posiłki ponownie';
 
   @override
-  String get dietOutdatedConsiderRegenerating => 'Menu może być nieaktualne – rozważ regenerację.';
+  String get dietOutdatedConsiderRegenerating =>
+      'Menu może być nieaktualne – rozważ regenerację.';
 
   @override
   String get dietOutdated => 'Menu może być nieaktualne.';
@@ -681,4 +683,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get error => 'Błąd';
+
+  @override
+  String get information => 'Informacja';
 }

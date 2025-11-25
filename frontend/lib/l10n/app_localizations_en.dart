@@ -591,7 +591,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailySummary => 'Daily Summary';
 
   @override
-  String get fillFormToGenerateMeals => 'Please fill out the form to be able to generate meals';
+  String get fillFormToGenerateMeals =>
+      'Please fill out the form to be able to generate meals';
 
   @override
   String get dailyMeals => 'Daily Menu';
@@ -649,7 +650,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regenerateMeals => 'Regenerate Meals';
 
   @override
-  String get dietOutdatedConsiderRegenerating => 'Your meal plan may be outdated – consider regenerating it.';
+  String get dietOutdatedConsiderRegenerating =>
+      'Your meal plan may be outdated – consider regenerating it.';
 
   @override
   String get dietOutdated => 'Your meal plan may be outdated.';
@@ -674,4 +676,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get information => 'Information';
 }
