@@ -9,6 +9,7 @@ from backend.users.enums.language import Language
 
 
 class MealCreate(BaseModel):
+    meal_name: str
     meal_type: MealType
     icon_id: UUID
     calories: int = Field(default=0, ge=0)

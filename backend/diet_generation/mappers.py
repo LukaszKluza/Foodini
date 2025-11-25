@@ -13,6 +13,7 @@ from backend.users.enums.language import Language
 
 def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
     return Meal(
+        meal_name=meal_data.meal_name,
         meal_type=MealType(meal_data.meal_type),
         icon_id=icon_id,
         calories=meal_data.calories,

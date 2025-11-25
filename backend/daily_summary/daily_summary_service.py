@@ -213,6 +213,7 @@ class DailySummaryService:
         existing_meal = existing_link.meal
 
         new_meal = MealCreate(
+            meal_name=custom_meal.custom_name,
             meal_type=existing_meal.meal_type,
             icon_id=existing_meal.icon_id,
             calories=custom_meal.custom_calories or existing_meal.calories,
