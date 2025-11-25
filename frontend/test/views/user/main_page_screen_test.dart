@@ -51,11 +51,13 @@ void main() {
     expect(find.byIcon(Icons.food_bank_rounded), findsOneWidget);
     expect(find.text('Change calories prediction'), findsOneWidget);
     expect(find.byIcon(Icons.change_circle_outlined), findsOneWidget);
-    expect(find.text('Button 4'), findsOneWidget);
-    expect(find.byIcon(Icons.do_not_disturb), findsOneWidget);
+    expect(find.text('Statistics'), findsOneWidget);
+    expect(find.byIcon(Icons.show_chart_rounded), findsOneWidget);
   });
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
+    tester.view.devicePixelRatio = 1.5;
+
     // Given, When
     await tester.pumpWidget(
       buildTestWidget(

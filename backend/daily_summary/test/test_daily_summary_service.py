@@ -33,11 +33,13 @@ class MockDailyMealLink:
         self.meal.protein = 10
         self.meal.carbs = 20
         self.meal.fat = 5
+        self.meal.weight = 150
         self.status = status
         self.meal.custom_name = None
         mock_recipe = MagicMock()
         mock_recipe.meal_name = "Test meal"
         mock_recipe.meal_description = "Delicious mock meal"
+        mock_recipe.meal_explanation = "Meal explanation"
         self.meal.recipes = [mock_recipe]
 
 
@@ -108,11 +110,27 @@ def mock_meal_gateway():
 
 
 @pytest.fixture
+def mock_user_details_gateway():
+    gateway = AsyncMock()
+    gateway.get_date_of_last_update_user_details = AsyncMock()
+    gateway.get_date_of_last_update_user_calories_prediction = AsyncMock()
+    return gateway
+
+
+@pytest.fixture
 def daily_summary_service(
-    mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+    mock_daily_summary_repository,
+    mock_meal_repository,
+    mock_last_generated_meals_repository,
+    mock_meal_gateway,
+    mock_user_details_gateway,
 ):
     return DailySummaryService(
-        mock_daily_summary_repository, mock_meal_repository, mock_last_generated_meals_repository, mock_meal_gateway
+        mock_daily_summary_repository,
+        mock_meal_repository,
+        mock_last_generated_meals_repository,
+        mock_meal_gateway,
+        mock_user_details_gateway,
     )
 
 
@@ -288,7 +306,6 @@ async def test_add_custom_meal_success(daily_summary_service, mock_daily_summary
         custom_protein=20,
         custom_carbs=5,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     mock_summary = MockDailyMealsSummary()
@@ -342,7 +359,6 @@ async def test_add_custom_meal_not_found(daily_summary_service, mock_daily_summa
         custom_protein=20,
         custom_carbs=5,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     mock_daily_summary_repository.get_daily_summary = AsyncMock(return_value=None)
@@ -366,7 +382,6 @@ async def test_add_custom_meal_without_name(daily_summary_service, mock_daily_su
         custom_protein=25,
         custom_carbs=10,
         custom_fat=15,
-        status=MealStatus.EATEN,
     )
 
     existing_recipe = AsyncMock()

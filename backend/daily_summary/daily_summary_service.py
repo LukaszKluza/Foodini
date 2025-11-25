@@ -2,6 +2,7 @@ from datetime import date
 from typing import List, Type
 from uuid import UUID
 
+from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
@@ -21,6 +22,7 @@ from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
 from backend.models import DailyMealsSummary, Ingredient, Ingredients, MealRecipe, User
+from backend.user_details.user_details_gateway import UserDetailsGateway
 
 
 class DailySummaryService:
@@ -30,15 +32,18 @@ class DailySummaryService:
         meal_repo: MealRepository,
         last_generated_meals_repo: LastGeneratedMealsRepository,
         meal_gateway: MealGateway,
+        user_details_gateway: UserDetailsGateway,
     ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
         self.last_generated_meals_repo = last_generated_meals_repo
         self.meal_gateway = meal_gateway
+        self.user_details_gateway = user_details_gateway
 
     async def get_daily_summary(self, user: Type[User], day: date):
         daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day, user.language)
         if not daily_meals:
+            logger.debug(f"No daily meals for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals_dict = {
@@ -60,6 +65,8 @@ class DailySummaryService:
         }
 
         macros_summary = await self.get_daily_macros_summary(user.id, day)
+        last_diet_prediction = await self.user_details_gateway.get_date_of_last_update_user_calories_prediction(user)
+        last_user_details = await self.user_details_gateway.get_date_of_last_update_user_details(user)
 
         return DailySummary(
             day=daily_meals.day,
@@ -72,6 +79,8 @@ class DailySummaryService:
             eaten_protein=macros_summary.protein,
             eaten_carbs=macros_summary.carbs,
             eaten_fat=macros_summary.fat,
+            is_out_dated=(daily_meals.updated_at <= last_diet_prediction or daily_meals.updated_at <= last_user_details)
+            and daily_meals.day >= date.today(),
         )
 
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
@@ -89,10 +98,12 @@ class DailySummaryService:
                 status=link.status,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                explanation=link.meal.recipes[0].meal_explanation,
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None
@@ -110,6 +121,7 @@ class DailySummaryService:
     async def get_daily_meals(self, user_id: UUID, day: date):
         daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, day)
         if not daily_meals:
+            logger.debug(f"No plan for {day} for user {user_id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals_dict = {
@@ -117,11 +129,13 @@ class DailySummaryService:
                 meal_id=link.meal.id,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                explanation=link.meal.recipes[0].meal_explanation,
                 status=link.status,
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None
@@ -145,6 +159,7 @@ class DailySummaryService:
     async def get_daily_macros_summary(self, user_id: UUID, day: date):
         macros_summary = await self.daily_summary_repo.get_daily_macros_summary(user_id, day)
         if not macros_summary:
+            logger.debug(f"No plan for {day} for user {user_id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
         return macros_summary
 
@@ -158,10 +173,12 @@ class DailySummaryService:
 
         user_daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user.id, day)
         if not user_daily_meals:
+            logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         link_to_update = next((link for link in user_daily_meals.daily_meals if link.meal_id == meal_id), None)
         if not link_to_update:
+            logger.debug(f"Meal does not exist in {user.id} plan for {day}")
             raise NotFoundInDatabaseException("Meal does not exist in user's plan for the given day.")
 
         previous_status = link_to_update.status
@@ -187,6 +204,7 @@ class DailySummaryService:
         day = custom_meal.day
         daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day, user.language)
         if not daily_meals:
+            logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         existing_link = next(
@@ -195,6 +213,7 @@ class DailySummaryService:
         )
 
         if not existing_link:
+            logger.debug(f"No meal {custom_meal.meal_id} for {day} for user {user.id}")
             raise NotFoundInDatabaseException(f"No meal of id: {custom_meal.meal_id} for this day.")
 
         previous_status = MealStatus(existing_link.status)
@@ -256,12 +275,14 @@ class DailySummaryService:
     async def get_meal_details(self, meal_id: UUID):
         meal = await self.meal_repo.get_meal_by_id(meal_id)
         if not meal:
+            logger.debug(f"Meal with id {meal_id} not found.")
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
         return meal
 
     async def _get_meal_calories(self, meal_id: UUID) -> int:
         calories = await self.meal_repo.get_meal_calories_by_id(meal_id)
         if calories is None:
+            logger.debug(f"Meal with id {meal_id} not found.")
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
         return calories
 
@@ -271,6 +292,7 @@ class DailySummaryService:
         carbs = await self.meal_repo.get_meal_carbs_by_id(meal_id)
 
         if None in (protein, fat, carbs):
+            logger.debug(f"Meal with id {meal_id} not found.")
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
         return {
             "protein": protein,
@@ -281,6 +303,7 @@ class DailySummaryService:
     async def _update_daily_macros_summary(self, user_id: UUID, data: DailyMacrosSummaryCreate):
         user_daily_macros = await self.daily_summary_repo.get_daily_macros_summary(user_id, data.day)
         if not user_daily_macros:
+            logger.debug(f"No plan for {data.day} for user {user_id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         data.calories += user_daily_macros.calories

@@ -3,6 +3,7 @@ from fastapi_mail import MessageType
 from pydantic import EmailStr
 from starlette.templating import Jinja2Templates
 
+from backend.core.logger import logger
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
 from backend.users.mail import MailService
@@ -47,6 +48,7 @@ class EmailVerificationService:
     async def process_new_account_verification(self, email: EmailStr, token: str):
         user = await self.user_repository.get_user_by_email(email)
         if user and user.is_verified:
+            logger.debug("User is already verified")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User is already verified",
@@ -59,6 +61,7 @@ class EmailVerificationService:
 
     async def resend_verification(self, email: EmailStr):
         if email is None:
+            logger.debug("Email is required")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email is required",

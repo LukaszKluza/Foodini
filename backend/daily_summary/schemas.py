@@ -43,6 +43,7 @@ class DailySummary(DailyMealsCreate):
     eaten_protein: float
     eaten_carbs: float
     eaten_fat: float
+    is_out_dated: bool
 
 
 class DailyMacrosSummaryCreate(BaseModel):

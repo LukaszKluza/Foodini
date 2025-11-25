@@ -16,6 +16,9 @@ class DailySummaryGateway:
     async def get_last_generated_meals(self, user_id: UUID, from_date: date, to_date: date) -> List[str]:
         return await self.daily_summary_service.get_last_generated_meals(user_id, from_date, to_date)
 
+    async def get_daily_meals(self, user_id: UUID, day: date):
+        return await self.daily_summary_service.get_daily_meals(user_id, day)
+
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
         await self.daily_summary_service.add_daily_meals(daily_meals_data, user_id)
 
