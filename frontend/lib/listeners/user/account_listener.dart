@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
 import 'package:frontend/config/constants.dart';
+import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/events/user_details/macros_change_events.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -27,6 +29,7 @@ class AccountListenerHelper {
         ),
       );
       context.read<MacrosChangeBloc>().add(ResetMacrosChangeBloc());
+      context.read<DailySummaryBloc>().add(ResetDailySummary());
       unawaited(context.read<CacheManager>().clearAllCache());
       goHome(mounted, context);
     } else if (state is AccountLogoutSuccess) {
@@ -36,6 +39,7 @@ class AccountListenerHelper {
         ),
       );
       context.read<MacrosChangeBloc>().add(ResetMacrosChangeBloc());
+      context.read<DailySummaryBloc>().add(ResetDailySummary());
       unawaited(context.read<CacheManager>().clearAllCache());
       goHome(mounted, context);
     } else if (state is AccountChangeLanguageSuccess) {

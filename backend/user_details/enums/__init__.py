@@ -1,4 +1,6 @@
 from .activity_level import ActivityLevel
+from .cooking_skills import CookingSkills
+from .daily_budget import DailyBudget
 from .diet_intensity import DietIntensity
 from .diet_type import DietType
 from .dietary_restriction import DietaryRestriction
@@ -14,4 +16,6 @@ __all__ = [
     "SleepQuality",
     "StressLevel",
     "DietaryRestriction",
+    "DailyBudget",
+    "CookingSkills",
 ]

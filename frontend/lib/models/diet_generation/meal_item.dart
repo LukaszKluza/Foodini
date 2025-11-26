@@ -11,6 +11,12 @@ class MealTypeMacrosSummary {
     required this.calories,
   });
 
+  MealTypeMacrosSummary.zero()
+      : carbs = 0,
+        fat = 0,
+        protein = 0,
+        calories = 0;
+
   Map<String, dynamic> toJson() => {
     'carbs': carbs,
     'fat': fat,

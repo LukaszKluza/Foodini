@@ -58,7 +58,8 @@
   "dietPreferences": "Diet preferences",
   "dietType": "Diet type",
   "requiredDietType": "Diet type is required",
-  "dietaryRestrictions": "Dietary restrictions",
+  "dietStyle": "Diet style",
+  "allergies": "Allergies",
   "dietGoal": "Diet goal",
   "enterYourDietGoal": "Enter your diet goal",
   "weightKg": "Weight (kg)",
@@ -70,6 +71,10 @@
   "dietIntensity": "Diet intensity",
   "requiredDietIntensity": "Diet intensity is required",
   "caloriesPrediction": "Calories prediction",
+  "dailyBudget": "Daily budget",
+  "requiredDailyBudget": "Daily budget is required",
+  "cookingSkills": "Cooking skills",
+  "requiredCookingSkills": "Cooking skills are required",
   "activityLevel": "Activity level",
   "requiredActivityLevel": "Activity level is required",
   "stressLevel": "Stress level",
@@ -98,22 +103,31 @@
   "dietType_MuscleGain": "Muscle Gain",
   "dietType_WeightMaintenance": "Weight Maintenance",
 
-  "dietaryRestriction_Gluten": "Gluten",
-  "dietaryRestriction_Peanuts": "Peanuts",
-  "dietaryRestriction_Lactose": "Lactose",
-  "dietaryRestriction_Fish": "Fish",
-  "dietaryRestriction_Soy": "Soy",
-  "dietaryRestriction_Wheat": "Wheat",
-  "dietaryRestriction_Celery": "Celery",
-  "dietaryRestriction_Sulphites": "Sulphites",
-  "dietaryRestriction_Lupin": "Lupin",
-  "dietaryRestriction_Vegetarian": "Vegetarian",
-  "dietaryRestriction_Vegan": "Vegan",
-  "dietaryRestriction_Keto": "Keto",
+  "allergies_Gluten": "Gluten",
+  "allergies_Peanuts": "Peanuts",
+  "allergies_Lactose": "Lactose",
+  "allergies_Fish": "Fish",
+  "allergies_Soy": "Soy",
+  "allergies_Wheat": "Wheat",
+  "allergies_Celery": "Celery",
+  "allergies_Sulphites": "Sulphites",
+  "allergies_Lupin": "Lupin",
+
+  "dietStyle_Vegetarian": "Vegetarian",
+  "dietStyle_Vegan": "Vegan",
+  "dietStyle_Keto": "Keto",
 
   "dietIntensity_Slow": "Slow",
   "dietIntensity_Medium": "Medium",
   "dietIntensity_Fast": "Fast",
+
+  "dailyBudget_low": "Low",
+  "dailyBudget_medium": "Medium",
+  "dailyBudget_high": "High",
+
+  "cookingSkills_beginner": "Beginner",
+  "cookingSkills_advanced": "Advanced",
+  "cookingSkills_professional": "Professional",
 
   "activityLevel_VeryLow": "Very Low (1–2 days a week or less)",
   "activityLevel_Light": "Low (2–3 days a week)",
@@ -198,6 +212,7 @@
   "markedAs": "marked as",
 
   "dailySummary": "Daily Summary",
+  "fillFormToGenerateMeals": "Please fill out the form to be able to generate meals",
   "dailyMeals": "Daily Menu",
   "dailyMealsFor": "Daily Meals for ",
 
@@ -213,5 +228,20 @@
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
-  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between"
+  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
+
+  "generateNewPlan": "Generate New Plan",
+  "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",
+  "regenerateMeals": "Regenerate Meals",
+  "dietOutdatedConsiderRegenerating": "Your meal plan may be outdated – consider regenerating it.",
+  "dietOutdated": "Your meal plan may be outdated.",
+  "planDoesNotExist": "Plan for given day does not exist.",
+
+  "chooseOption": "Choose option",
+  "statistics": "Statistics",
+
+  "mealsGeneratedSuccessfully": "Meals successfully generated",
+  "forSomething": "for",
+  "whileMealsGeneration": "while generating meals",
+  "error": "Error"
 }

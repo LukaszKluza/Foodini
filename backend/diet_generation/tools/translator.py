@@ -5,6 +5,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_ollama import OllamaLLM
 
+from backend.core.logger import logger
 from backend.diet_generation.schemas import MealRecipeTranslation
 from backend.settings import config
 
@@ -30,9 +31,12 @@ class TranslatorTool:
             "- The translation could not be word-for-word; prefer fluent, natural phrasing with correct Polish grammar "
             "and diacritics.\n"
             "- Use imperative mood for steps (e.g., 'Pokrój', 'Wymieszaj', 'Podsmaż', 'Dopraw').\n"
-            "- Keep units as in input (e.g., 'g', 'ml', 'cup') → do not translate them!.\n"
+            "- Translate units only if needed!.\n"
             "- Preserve brand names or proper nouns in original if present.\n"
             "- Ensure names and descriptions are concise, appetizing, and grammatically correct.\n"
+            "- When translating, always use natural, idiomatic Polish suitable for recipes. \n"
+            "- Avoid literal word-for-word translations that sound awkward. "
+            "For example, translate 'hummus for dipping' as 'hummus do maczania', not 'hummus do macania'."
             "STRICT INVARIANTS (must never be violated):\n"
             "1) Return ONLY valid JSON conforming EXACTLY to the TranslatedMealRecipe schema. No extra text.\n"
             "2) Do NOT change any numeric values anywhere (e.g., ingredient volumes).\n"
@@ -62,4 +66,5 @@ class TranslatorTool:
             return MealRecipeTranslation.model_validate(result_dict)
 
         except Exception as e:
+            logger.error(f"Error while translating {meal_recipe.meal_name} recipe to polish")
             raise RuntimeError(f"Error while translating {meal_recipe.meal_name} recipe to polish") from e
