@@ -314,7 +314,14 @@ class DailySummaryService:
             is_generated=existing_meal.is_generated if existing_meal else False,
         )
 
-        new_meal = await self.meal_repo.add_meal(new_meal)
+        if existing_meal:
+            new_meal = await self.meal_repo.update_meal_by_id(existing_meal.id, new_meal)
+        else:
+            new_meal = await self.meal_repo.add_meal(new_meal)
+
+        if not new_meal:
+            logger.debug(f"No existing meal for update in database or failure in adding new meal.")
+            raise NotFoundInDatabaseException("Error while adding new meal/editing existing one in database.")
 
         meal_info = MealInfo(
             status=previous_status,
