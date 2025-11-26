@@ -1,5 +1,4 @@
 import 'package:frontend/models/diet_generation/meal.dart';
-import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 
 enum MealStatus {
