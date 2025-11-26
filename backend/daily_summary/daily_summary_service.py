@@ -13,6 +13,7 @@ from backend.daily_summary.schemas import (
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
     DailySummary,
+    Meal,
     MealInfo,
     MealInfoUpdateRequest,
     MealInfoWithIconPath,
@@ -76,7 +77,7 @@ class DailySummaryService:
         )
 
     async def fetch_daily_meals(self, daily_meals):
-        meals_dict: Dict[MealType, List[MealInfoWithIconPath]] = {}
+        meals_dict: Dict[MealType, Meal] = {}
         for link in daily_meals.daily_meals:
             if link.is_active:
                 meal_items_info: List[MealInfoWithIconPath] = []
@@ -87,7 +88,6 @@ class DailySummaryService:
                         meal_items_info.append(
                             MealInfoWithIconPath(
                                 meal_id=meal.id,
-                                status=link.status,
                                 name=meal.recipes[0].meal_name if meal.recipes else meal.meal_name,
                                 description=meal.recipes[0].meal_description if meal.recipes else None,
                                 explanation=meal.recipes[0].meal_explanation if meal.recipes else None,
@@ -100,7 +100,7 @@ class DailySummaryService:
                             )
                         )
 
-                meals_dict[link.meal_type] = meal_items_info
+                meals_dict[link.meal_type] = Meal(meal_items=meal_items_info, status=link.status)
         return meals_dict
 
     async def fetch_generated_meals(self, daily_meals):

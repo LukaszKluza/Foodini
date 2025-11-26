@@ -1,9 +1,10 @@
+import 'package:frontend/models/diet_generation/meal.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 
 class DailySummary {
   final DateTime day;
-  final Map<MealType, List<MealInfo>> meals;
+  final Map<MealType, Meal> meals;
   final Map<MealType, MealInfo> generatedMeals;
   final int targetCalories;
   final double targetProtein;
@@ -33,14 +34,11 @@ class DailySummary {
   });
 
   factory DailySummary.fromJson(Map<String, dynamic> json) {
-    final mealsMap = <MealType, List<MealInfo>>{};
+    final mealsMap = <MealType, Meal>{};
     if (json['meals'] != null) {
       (json['meals'] as Map<String, dynamic>).forEach((key, value) {
         final mealType = MealType.fromJson(key);
-        final mealList = (value as List)
-          .map((mealJson) => MealInfo.fromJson(mealJson))
-          .toList();
-        mealsMap[mealType] = mealList;
+        mealsMap[mealType] = Meal.fromJson(value);
       });
     }
 
@@ -71,7 +69,7 @@ class DailySummary {
   Map<String, dynamic> toJson() {
     final mealsJson = meals.map((key, value) => MapEntry(
       key.toJson(),
-      value.map((meal) => meal.toJson()).toList(),
+      value.toJson(),
     ));
     final generatedMealsJson = generatedMeals.map((key, value) =>
         MapEntry(key.toJson(), value.toJson()));

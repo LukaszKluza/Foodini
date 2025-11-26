@@ -8,6 +8,7 @@ import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/macros_summary.dart';
+import 'package:frontend/models/diet_generation/meal.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
@@ -105,12 +106,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= meals.entries
-                .firstWhere(
-                  (entry) => entry.value.any((meal) => meal.status == MealStatus.pending),
-                  orElse: () => meals.entries.last,
-                )
-                .key;
+              selectedMealType ??= meals.entries.firstWhere(
+                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
+                orElse: () => meals.entries.last,
+              ).key;
               final activeMeal = selectedMealType!;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
@@ -319,12 +318,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     double widgetWidth,
     bool isActive,
     MealType activeMealType,
-    Map<MealType, List<MealInfo>> allMeals,
+    Map<MealType, Meal> allMeals,
     DateTime selectedDay,
   ) {
-    final List<MealInfo> activeMealsInfo = allMeals[activeMealType]!;
-    final bool isEaten = activeMealsInfo[0].status == MealStatus.eaten;
-    final bool isSkipped = activeMealsInfo[0].status == MealStatus.skipped;
+    final List<MealInfo> activeMealsInfo = allMeals[activeMealType]!.mealItems;
+    final bool isEaten = allMeals[activeMealType]!.status == MealStatus.eaten;
+    final bool isSkipped = allMeals[activeMealType]!.status == MealStatus.skipped;
     final MacrosSummary calculatedTotalMacros = MacrosSummary.calculateTotalMacros(activeMealsInfo);
 
     return Container(
@@ -431,7 +430,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                         ? const Icon(Icons.remove_circle_outline)
                         : const Icon(Icons.fastfood),
                 label: Text(
-                  AppConfig.mealStatusLabels(context)[activeMealsInfo[0].status]!,
+                  AppConfig.mealStatusLabels(context)[allMeals[activeMealType]!.status]!,
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
@@ -457,7 +456,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               ],
             )).toList(),
           ),
-          MealNutrientsRow(macrosSummary: calculatedTotalMacros, breakpoint: 325),
+          if (activeMealsInfo.length > 1)
+            MealNutrientsRow(macrosSummary: calculatedTotalMacros, breakpoint: 325),
         ],
       ),
     );
