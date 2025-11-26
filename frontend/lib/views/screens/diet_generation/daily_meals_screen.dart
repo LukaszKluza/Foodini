@@ -37,7 +37,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
   @override
   Widget build(BuildContext context) {
     final displayDate =
-        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
+        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}";
 
     final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
     final nextDate = widget.selectedDate.add(const Duration(days: 1));
@@ -93,8 +93,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               }
             if (state.dailySummary != null &&
                 dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-              final meals = state.dailySummary!.meals;
-
+              final meals = state.dailySummary!.generatedMeals;
               final bool isRegenerate = meals.isNotEmpty;
               final sortedEntries =
                   meals.entries.toList()
@@ -116,11 +115,11 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                             title:
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
                             color: _getMealColor(entry.key),
-                            imageUrl: entry.value[0].iconPath!,
-                            mealName: entry.value[0].name ?? '',
-                            description: entry.value[0].description ?? '',
-                            explanation: entry.value[0].explanation,
-                            mealId: entry.value[0].mealId!,
+                            imageUrl: entry.value.iconPath!,
+                            mealName: entry.value.name!,
+                            description: entry.value.description!,
+                            explanation: entry.value.explanation,
+                            mealId: entry.value.mealId!,
                             context: context,
                           ),
                         const SizedBox(height: 40),
@@ -168,7 +167,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: TitleTextWidgets.scaledTitle(
-              '${AppLocalizations.of(context)!.dailyMealsFor}$displayDate',
+              '${AppLocalizations.of(context)!.plannedMealsFor} $displayDate',
           ),
         ),
       ),

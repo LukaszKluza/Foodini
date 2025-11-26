@@ -66,6 +66,7 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         daily_summary = result.unique().scalar_one_or_none()
 
+        # TODO Optimize filtering recipes, move it to service
         if daily_summary:
             for daily_meal in daily_summary.daily_meals:
                 for item in daily_meal.meal_items:

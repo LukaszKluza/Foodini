@@ -214,7 +214,7 @@
   "dailySummary": "Daily Summary",
   "fillFormToGenerateMeals": "Please fill out the form to be able to generate meals",
   "dailyMeals": "Daily Menu",
-  "dailyMealsFor": "Daily Meals for ",
+  "plannedMealsFor": "Planned meals for",
 
   "macrosSummary": "Macros summary",
   "calories": "Calories",

@@ -598,7 +598,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyMeals => 'Daily Menu';
 
   @override
-  String get dailyMealsFor => 'Daily Meals for ';
+  String get plannedMealsFor => 'Planned meals for';
 
   @override
   String get macrosSummary => 'Macros summary';

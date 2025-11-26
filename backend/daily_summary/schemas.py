@@ -8,6 +8,7 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.meals.enums.meal_type import MealType
 
 
+# TODO Review and refine the schemas
 class BasicMealInfo(BaseModel):
     meal_id: UUID
     status: MealStatus = Field(default=MealStatus.TO_EAT)
@@ -44,6 +45,7 @@ class DailySummary(DailyMealsCreate):
     eaten_carbs: float
     eaten_fat: float
     is_out_dated: bool
+    generated_meals: Dict[MealType, MealInfoWithIconPath]
 
 
 class DailyMacrosSummaryCreate(BaseModel):
