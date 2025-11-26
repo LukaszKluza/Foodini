@@ -21,12 +21,12 @@ class BasicMealInfo(BaseModel):
 
 class MealInfo(BasicMealInfo):
     name: str
-    description: str
+    description: Optional[str] = None
     explanation: Optional[str] = None
 
 
 class MealInfoWithIconPath(MealInfo):
-    icon_path: str
+    icon_path: Optional[str] = None
 
 
 class DailyMealsCreate(BaseModel):

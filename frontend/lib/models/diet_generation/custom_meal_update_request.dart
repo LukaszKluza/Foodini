@@ -4,7 +4,7 @@ import 'package:uuid/uuid_value.dart';
 class CustomMealUpdateRequest {
   final DateTime day;
   final MealType mealType;
-  final UuidValue mealId;
+  final UuidValue? mealId;
   final String? customName;
   final int? customCalories;
   final double? customProtein;
@@ -15,7 +15,7 @@ class CustomMealUpdateRequest {
   CustomMealUpdateRequest({
     required this.day,
     required this.mealType,
-    required this.mealId,
+    this.mealId,
     this.customName,
     required this.customCalories,
     required this.customProtein,
@@ -28,7 +28,7 @@ class CustomMealUpdateRequest {
     return {
       'day': day.toIso8601String().split('T').first,
       'meal_type': mealType.toJson(),
-      'meal_id': mealId.uuid,
+      'meal_id': mealId?.uuid,
       'custom_name': customName,
       'custom_calories': customCalories,
       'custom_protein': customProtein,

@@ -83,15 +83,14 @@ class DailySummaryService:
 
                 for item in link.meal_items:
                     meal = item.meal
-                    if meal and meal.recipes:
-                        recipe = meal.recipes[0]
+                    if meal:
                         meal_items_info.append(
                             MealInfoWithIconPath(
                                 meal_id=meal.id,
                                 status=link.status,
-                                name=recipe.meal_name,
-                                description=recipe.meal_description,
-                                explanation=recipe.meal_explanation,
+                                name=meal.recipes[0].meal_name if meal.recipes else meal.meal_name,
+                                description=meal.recipes[0].meal_description if meal.recipes else None,
+                                explanation=meal.recipes[0].meal_explanation if meal.recipes else None,
                                 icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
                                 calories=int(meal.calories),
                                 protein=float(meal.protein),
@@ -115,7 +114,7 @@ class DailySummaryService:
     async def find_generated_meal(self, link):
         for item in link.meal_items:
             meal = item.meal
-            if meal and meal.recipes and link.is_generated:
+            if meal and meal.recipes and meal.is_generated:
                 recipe = meal.recipes[0]
 
                 return MealInfoWithIconPath(
@@ -289,8 +288,6 @@ class DailySummaryService:
             existing_meal = existing_item.meal
 
         else:
-            # Jeśli meal_id nie ma to dodajemy nowy posiłek do konkretnego meal_type
-            # Nie testowane. Front wysyła id na razie zawsze
             existing_link = next(
                 (link for link in daily_meals.daily_meals if link.meal_type == custom_meal.meal_type),
                 None,
@@ -303,8 +300,10 @@ class DailySummaryService:
             previous_status = MealStatus(existing_link.status)
             existing_meal = None
 
+        new_meal_name = custom_meal.custom_name or (existing_meal.meal_name if existing_meal else "Custom Meal")
+
         new_meal = MealCreate(
-            meal_name=custom_meal.custom_name,
+            meal_name=new_meal_name,
             meal_type=existing_link.meal_type,
             icon_id=existing_meal.icon_id if existing_meal else None,
             calories=custom_meal.custom_calories or (existing_meal.calories if existing_meal else 0),
@@ -312,31 +311,21 @@ class DailySummaryService:
             carbs=custom_meal.custom_carbs or (existing_meal.carbs if existing_meal else 0),
             fat=custom_meal.custom_fat or (existing_meal.fat if existing_meal else 0),
             weight=custom_meal.custom_weight or (existing_meal.weight if existing_meal else 0),
+            is_generated=existing_meal.is_generated if existing_meal else False,
         )
 
-        new_meal = await self.meal_repo.add_meal(new_meal)
-
-        if custom_meal.custom_name:
-            new_name = custom_meal.custom_name
-        elif existing_meal and existing_meal.recipes:
-            new_name = existing_meal.recipes[0].meal_name
+        if existing_meal:
+            new_meal = await self.meal_repo.update_meal_by_id(existing_meal.id, new_meal)
         else:
-            new_name = "Custom Meal"
+            new_meal = await self.meal_repo.add_meal(new_meal)
 
-        await self.meal_gateway.add_meal_recipe(
-            MealRecipe(
-                meal_id=new_meal.id,
-                language=user.language,
-                meal_name=new_name,
-                meal_description="",
-                ingredients=Ingredients(ingredients=[Ingredient(volume=0, unit="", name="")]).model_dump(),
-                steps=[],
-            )
-        )
+        if not new_meal:
+            logger.debug(f"No existing meal for update in database or failure in adding new meal.")
+            raise NotFoundInDatabaseException("Error while adding new meal/editing existing one in database.")
 
         meal_info = MealInfo(
             status=previous_status,
-            name=new_name,
+            name=new_meal_name,
             description="",
             calories=new_meal.calories,
             protein=new_meal.protein,

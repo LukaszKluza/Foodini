@@ -59,7 +59,7 @@ class Meal(SQLModel, table=True):
     )
     meal_name: str = Field(nullable=False)
     meal_type: MealType = Field(nullable=False)
-    icon_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meal_icons.id"), nullable=False))
+    icon_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("meal_icons.id")))
     calories: int = Field(nullable=False, ge=0)
     protein: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
