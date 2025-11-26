@@ -244,5 +244,11 @@
   "forSomething": "for",
   "whileMealsGeneration": "while generating meals",
   "error": "Error",
-  "information": "Information"
+  "information": "Information",
+
+  "yourStatistics": "Your statistics",
+  "statisticsLoadFailure": "Failed to load statistics",
+  "statistsMissing": "No statistics available",
+  "calorieConsumptionChartTitle": "Calorie consumption",
+  "calorieGoalChartTitle": "Calorie Goal vs Actual"
 }

@@ -19,6 +19,7 @@ from backend.meals.meal_router import meal_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
+from backend.user_statistics.user_statistics_router import user_statistics_router
 from backend.users.user_router import user_router
 
 app = FastAPI()
@@ -28,6 +29,7 @@ app.include_router(calories_prediction_router)
 app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
 app.include_router(meal_router)
+app.include_router(user_statistics_router)
 
 
 app.add_middleware(

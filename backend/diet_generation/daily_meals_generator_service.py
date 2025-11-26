@@ -101,7 +101,7 @@ class DailyMealsGeneratorService:
             logger.error(f"Error while generating meal plan: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error generating diet plan for user {user.id}",
+                detail="Error while generating meal plan",
             ) from e
         return saved_recipes
 
