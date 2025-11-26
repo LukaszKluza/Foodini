@@ -83,26 +83,23 @@ class DailySummaryService:
 
                 for item in link.meal_items:
                     meal = item.meal
-                    if not meal or not meal.recipes:
-                        continue
-
-                    recipe = meal.recipes[0]
-
-                    meal_items_info.append(
-                        MealInfoWithIconPath(
-                            meal_id=meal.id,
-                            status=link.status,
-                            name=recipe.meal_name,
-                            description=recipe.meal_description,
-                            explanation=recipe.meal_explanation,
-                            icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
-                            calories=int(meal.calories),
-                            protein=float(meal.protein),
-                            carbs=float(meal.carbs),
-                            fat=float(meal.fat),
-                            weight=item.weight_eaten if item.weight_eaten is not None else int(meal.weight),
+                    if meal and meal.recipes:
+                        recipe = meal.recipes[0]
+                        meal_items_info.append(
+                            MealInfoWithIconPath(
+                                meal_id=meal.id,
+                                status=link.status,
+                                name=recipe.meal_name,
+                                description=recipe.meal_description,
+                                explanation=recipe.meal_explanation,
+                                icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
+                                calories=int(meal.calories),
+                                protein=float(meal.protein),
+                                carbs=float(meal.carbs),
+                                fat=float(meal.fat),
+                                weight=item.weight_eaten if item.weight_eaten is not None else int(meal.weight),
+                            )
                         )
-                    )
 
                 meals_dict[link.meal_type] = meal_items_info
         return meals_dict

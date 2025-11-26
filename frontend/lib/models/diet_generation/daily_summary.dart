@@ -78,8 +78,8 @@ class DailySummary {
 
     return {
       'day': day.toIso8601String().split('T').first,
-      'meals': generatedMealsJson,
-      'generated_meals': mealsJson,
+      'meals': mealsJson,
+      'generated_meals': generatedMealsJson,
       'target_calories': targetCalories,
       'target_protein': targetProtein,
       'target_carbs': targetCarbs,
