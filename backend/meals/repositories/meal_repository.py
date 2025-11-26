@@ -25,11 +25,7 @@ class MealRepository:
 
         update_data = meal_data.model_dump(exclude_unset=True)
 
-        await self.db.execute(
-            update(Meal)
-            .where(Meal.id == meal_id)
-            .values(**update_data)
-        )
+        await self.db.execute(update(Meal).where(Meal.id == meal_id).values(**update_data))
         await self.db.commit()
 
         await self.db.refresh(meal)

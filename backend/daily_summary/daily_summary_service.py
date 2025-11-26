@@ -21,7 +21,7 @@ from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
 from backend.meals.schemas import MealCreate
-from backend.models import DailyMealsSummary, Ingredient, Ingredients, MealRecipe, User
+from backend.models import DailyMealsSummary, User
 from backend.user_details.user_details_gateway import UserDetailsGateway
 
 
@@ -320,7 +320,7 @@ class DailySummaryService:
             new_meal = await self.meal_repo.add_meal(new_meal)
 
         if not new_meal:
-            logger.debug(f"No existing meal for update in database or failure in adding new meal.")
+            logger.debug("No existing meal for update in database or failure in adding new meal.")
             raise NotFoundInDatabaseException("Error while adding new meal/editing existing one in database.")
 
         meal_info = MealInfo(
