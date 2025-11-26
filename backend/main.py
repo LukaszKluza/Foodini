@@ -16,6 +16,7 @@ from backend.core.value_error_exception import ValueErrorException
 from backend.daily_summary.daily_summary_router import daily_summary_router
 from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.meals.meal_router import meal_router
+from backend.open_food_facts.open_food_facts_router import open_food_facts_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
@@ -28,6 +29,7 @@ app.include_router(calories_prediction_router)
 app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
 app.include_router(meal_router)
+app.include_router(open_food_facts_router)
 
 
 app.add_middleware(

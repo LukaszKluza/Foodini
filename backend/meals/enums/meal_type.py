@@ -46,5 +46,6 @@ class MealType(str, Enum):
             6: [cls.BREAKFAST, cls.MORNING_SNACK, cls.LUNCH, cls.AFTERNOON_SNACK, cls.DINNER, cls.EVENING_SNACK],
         }
         if count not in mapping:
+            # ValueErrorException?
             raise ValueError("Supported daily meals count: 3,4,5,6")
         return mapping[count]
