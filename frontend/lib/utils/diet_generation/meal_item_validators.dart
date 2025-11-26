@@ -26,7 +26,17 @@ String? validateCalories(String? rawValue, BuildContext context) {
   if (value == null ||
       value < 0 ||
       value > Constants.maxCaloriesValue) {
-    return '${AppLocalizations.of(context)!.valueOfCaloriesMacroShouldBeBetween} [0, ${Constants.maxCaloriesValue}]';
+    return '${AppLocalizations.of(context)!.valueOfCaloriesShouldBeBetween} [0, ${Constants.maxCaloriesValue}]';
+  }
+  return null;
+}
+
+String? validateWeight(String? rawValue, BuildContext context) {
+  final value = int.tryParse(rawValue ?? '');
+  if (value == null ||
+      value < 0 ||
+      value > Constants.maxWeightValue) {
+    return '${AppLocalizations.of(context)!.valueOfWeightShouldBeBetween} [1, ${Constants.maxWeightValue}]';
   }
   return null;
 }

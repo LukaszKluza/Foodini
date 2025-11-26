@@ -47,8 +47,8 @@ class DailySummaryService:
             logger.debug(f"No daily meals for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
-        meals_dict = await self.fetch_daily_meals(daily_meals)
-        generated_meals_dict = await self.fetch_generated_meals(daily_meals)
+        meals_dict = await self.fetch_daily_meals(daily_meals, user)
+        generated_meals_dict = await self.fetch_generated_meals(daily_meals, user)
         macros_summary = await self.get_daily_macros_summary(user.id, day)
         last_diet_prediction = await self.user_details_gateway.get_date_of_last_update_user_calories_prediction(user)
         last_user_details = await self.user_details_gateway.get_date_of_last_update_user_details(user)
@@ -76,7 +76,7 @@ class DailySummaryService:
             and daily_meals.day >= date.today()
         )
 
-    async def fetch_daily_meals(self, daily_meals):
+    async def fetch_daily_meals(self, daily_meals, user):
         meals_dict: Dict[MealType, Meal] = {}
         for link in daily_meals.daily_meals:
             if link.is_active:
@@ -85,12 +85,16 @@ class DailySummaryService:
                 for item in link.meal_items:
                     meal = item.meal
                     if meal:
+                        recipe = None
+                        if meal.is_generated:
+                            recipe = await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(meal.id, user.language)
+
                         meal_items_info.append(
                             MealInfoWithIconPath(
                                 meal_id=meal.id,
-                                name=meal.recipes[0].meal_name if meal.recipes else meal.meal_name,
-                                description=meal.recipes[0].meal_description if meal.recipes else None,
-                                explanation=meal.recipes[0].meal_explanation if meal.recipes else None,
+                                name=recipe.meal_name if recipe else meal.meal_name,
+                                description=recipe.meal_description if recipe else None,
+                                explanation=recipe.meal_explanation if recipe else None,
                                 icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
                                 calories=int(meal.calories),
                                 protein=float(meal.protein),
@@ -103,19 +107,19 @@ class DailySummaryService:
                 meals_dict[link.meal_type] = Meal(meal_items=meal_items_info, status=link.status)
         return meals_dict
 
-    async def fetch_generated_meals(self, daily_meals):
+    async def fetch_generated_meals(self, daily_meals, user):
         meals_dict: Dict[MealType, MealInfoWithIconPath] = {}
         for link in daily_meals.daily_meals:
-            meal_items_info = await self.find_generated_meal(link)
+            meal_items_info = await self.find_generated_meal(link, user)
             if meal_items_info:
                 meals_dict[link.meal_type] = meal_items_info
         return meals_dict
 
-    async def find_generated_meal(self, link):
+    async def find_generated_meal(self, link, user):
         for item in link.meal_items:
             meal = item.meal
-            if meal and meal.recipes and meal.is_generated:
-                recipe = meal.recipes[0]
+            if meal and meal.is_generated:
+                recipe = await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(meal.id, user.language)
 
                 return MealInfoWithIconPath(
                     meal_id=meal.id,
@@ -139,7 +143,6 @@ class DailySummaryService:
             await self.daily_summary_repo.add_daily_meals_summary(daily_meals_data, user_id)
 
         daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, daily_meals_data.day)
-
         meals_dict: Dict[MealType, List[BasicMealInfo]] = {}
 
         for link in daily_meals.daily_meals:
@@ -172,13 +175,13 @@ class DailySummaryService:
         )
 
     # TODO Simplify it
-    async def get_daily_meals(self, user_id: UUID, day: date):
-        daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, day)
+    async def get_daily_meals(self, user: Type[User], day: date):
+        daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user.id, day)
         if not daily_meals:
-            logger.debug(f"No plan for {day} for user {user_id}")
+            logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
-        meals_dict = await self.fetch_daily_meals(daily_meals)
+        meals_dict = await self.fetch_daily_meals(daily_meals, user)
 
         return DailyMealsCreate(
             day=daily_meals.day,
@@ -310,7 +313,7 @@ class DailySummaryService:
             protein=custom_meal.custom_protein or (existing_meal.protein if existing_meal else 0),
             carbs=custom_meal.custom_carbs or (existing_meal.carbs if existing_meal else 0),
             fat=custom_meal.custom_fat or (existing_meal.fat if existing_meal else 0),
-            weight=custom_meal.custom_weight or (existing_meal.weight if existing_meal else 0),
+            weight=custom_meal.custom_weight,
             is_generated=existing_meal.is_generated if existing_meal else False,
         )
 

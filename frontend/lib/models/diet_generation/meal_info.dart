@@ -1,8 +1,8 @@
 import 'package:uuid/uuid_value.dart';
 
 class MealInfo {
-  final UuidValue? mealId;
-  final String? name;
+  final UuidValue mealId;
+  final String name;
   final String? description;
   final String? explanation;
   final String? iconPath;
@@ -13,8 +13,8 @@ class MealInfo {
   final double? fat;
 
   MealInfo({
-    this.mealId,
-    this.name,
+    required this.mealId,
+    required this.name,
     this.description,
     this.explanation,
     this.iconPath,
@@ -42,8 +42,8 @@ class MealInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      if (mealId != null) 'meal_id': mealId.toString(),
-      if (name != null) 'name': name,
+      'meal_id': mealId.toString(),
+      'name': name,
       if (description != null) 'description': description,
       if (explanation != null) 'explanation': explanation,
       if (iconPath != null) 'icon_path': iconPath,
