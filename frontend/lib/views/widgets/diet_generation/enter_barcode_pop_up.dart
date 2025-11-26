@@ -92,6 +92,7 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
 
                         setState(() {
                           uploadedFile = picked;
+                          formKey.currentState!.reset();
                         });
                       },
                       color: Colors.orangeAccent,

@@ -1,8 +1,11 @@
 from typing import List, Optional
 from uuid import UUID
 
+import cv2
+import numpy as np
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 
+from backend.barcode_scanning.barcode_scanning_service import decode_ean13_from_image
 from backend.meals.dependencies import get_meal_service
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_service import MealService
@@ -49,4 +52,14 @@ async def add_scanned_product(
     if barcode:
         return {"message": f"Processed barcode: {barcode}"}
     if image:
-        return {"message": f"Processed image: {image.filename}"}
+        content = await image.read()
+        nparr = np.frombuffer(content, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+        if img is None:
+            return {"error": "Invalid image file"}
+
+        try:
+            decoded = decode_ean13_from_image(img)
+        except Exception as e:
+            return {"error": f"Failed to decode barcode: {str(e)}"}
+        return {"message": f"Processed image barcode: {decoded}"}

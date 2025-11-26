@@ -79,7 +79,6 @@ class DietGenerationRepository {
         barcode = await barcodeScannerService.scanBarcodeFromGallery(uploadedFile);
       }
       final response = await apiClient.addScannedProduct(barcode: barcode, uploadedFile: uploadedFile, mealType: mealType, userId: userId);
-      print(response);
       return MealInfo.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while adding scanned product:', statusCode: e.response?.statusCode);
