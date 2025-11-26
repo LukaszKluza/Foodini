@@ -653,6 +653,9 @@ class AppLocalizationsPl extends AppLocalizations {
       'Kod kreskowy może zawierać tylko cyfry';
 
   @override
+  String get barcodeUploaded => 'Kod kreskowy dodany';
+
+  @override
   String get mealName => 'Nazwa posiłku';
 
   @override

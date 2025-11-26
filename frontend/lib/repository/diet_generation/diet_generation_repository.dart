@@ -7,8 +7,8 @@ import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/repository/api_client.dart';
+import 'package:frontend/services/barcode_scanner_service.dart';
 import 'package:frontend/utils/cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid_value.dart';
@@ -74,7 +74,12 @@ class DietGenerationRepository {
     required UuidValue userId
   }) async {
     try {
+      final barcodeScannerService = BarcodeScannerService();
+      if (uploadedFile != null) {
+        barcode = await barcodeScannerService.scanBarcodeFromGallery(uploadedFile);
+      }
       final response = await apiClient.addScannedProduct(barcode: barcode, uploadedFile: uploadedFile, mealType: mealType, userId: userId);
+      print(response);
       return MealInfo.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while adding scanned product:', statusCode: e.response?.statusCode);

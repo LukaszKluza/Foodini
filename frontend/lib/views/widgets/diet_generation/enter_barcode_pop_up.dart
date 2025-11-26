@@ -25,6 +25,7 @@ class EnterBarcodePopup extends StatefulWidget {
 class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
   final formKey = GlobalKey<FormState>();
   XFile? uploadedFile;
+  bool productAdded = false;
 
   late TextEditingController barcodeController;
 
@@ -98,12 +99,17 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                     ),
                   ],
                 ),
-                if (uploadedFile != null)
+                if (uploadedFile != null || productAdded)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}',
-                      style: TextStyle(fontSize: 14, color: Colors.green[900]),
+                      uploadedFile != null
+                          ? '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}'
+                          : AppLocalizations.of(context)!.barcodeUploaded,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.green[900],
+                      ),
                     ),
                   ),
                 const SizedBox(height: 12),
@@ -120,6 +126,20 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                         if (uploadedFile != null || formKey.currentState!.validate()) {
                           var event = AddScannedProduct(barcode: barcodeController.text, uploadedFile: uploadedFile, mealType: widget.mealType);
                           context.read<DailySummaryBloc>().add(event);
+
+                          setState(() {
+                            uploadedFile = null;
+                            barcodeController.clear();
+                            productAdded = true;
+                          });
+
+                          Future.delayed(Duration(seconds: 3), () {
+                            if (mounted) {
+                              setState(() {
+                                productAdded = false;
+                              });
+                            }
+                          });
                         }
                       },
                       color: Colors.lightGreen,

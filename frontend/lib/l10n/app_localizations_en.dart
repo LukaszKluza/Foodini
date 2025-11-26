@@ -646,6 +646,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get barcodeMustContainOnlyDigits => 'Barcode must contain only digits';
 
   @override
+  String get barcodeUploaded => 'Barcode uploaded';
+
+  @override
   String get mealName => 'Meal name';
 
   @override
