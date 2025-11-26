@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/models/diet_generation/meal_item.dart';
+import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 
 class CustomBottomSheet extends StatelessWidget {
-  final MealTypeMacrosSummary mealTypeMacrosSummary;
+  final MacrosSummary mealTypeMacrosSummary;
   final DateTime selectedDate;
 
   const CustomBottomSheet({super.key, required this.mealTypeMacrosSummary, required this.selectedDate});
