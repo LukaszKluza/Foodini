@@ -21,7 +21,7 @@ class BasicMealInfo(BaseModel):
 
 class MealInfo(BasicMealInfo):
     name: str
-    description: str
+    description: Optional[str] = None
     explanation: Optional[str] = None
 
 

@@ -28,13 +28,10 @@ class DailySummaryRepository:
             if not meal_infos:
                 continue
 
-            is_generated = True  # Only used by AI so we can assume it is True
-
             meal_daily_summary_link = MealDailySummary(
                 daily_summary_id=user_daily_meals.id,
                 status=meal_infos[0].status,
                 meal_type=meal_type,
-                is_generated=is_generated,
             )
             self.db.add(meal_daily_summary_link)
             await self.db.flush()
@@ -184,7 +181,6 @@ class DailySummaryRepository:
                         meal_type=meal_info.meal_type,
                         status=meal_info.status,
                         is_active=True,
-                        is_generated=False,
                     )
                     self.db.add(meal_daily_summary)
                     await self.db.flush()

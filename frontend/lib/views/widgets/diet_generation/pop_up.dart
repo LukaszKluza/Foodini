@@ -140,7 +140,8 @@ VoidCallback showPopUp(
                                 CustomMealUpdateRequest(
                                   day: day,
                                   mealType: updatedMealType, 
-                                  mealId: updatedMealId,
+                                  mealId:
+                                    mealInfo != null ? updatedMealId : null,
                                   customName:
                                     mealInfo == null ? nameController.text : null,
                                   customCalories: int.tryParse(caloriesController.text),
