@@ -3,19 +3,19 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/macros_summary.dart';
 
 Widget fatChip(BuildContext context, MacrosSummary macrosSummary){
-  return _macroChip(macrosSummary.fat ?? 0 ,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28), label: AppLocalizations.of(context)!.f_fat);
+  return _macroChip(macrosSummary.fat ,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28), label: AppLocalizations.of(context)!.f_fat);
 }
 
 Widget proteinChip(BuildContext context, MacrosSummary macrosSummary){
-  return _macroChip(macrosSummary.protein ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6), label: AppLocalizations.of(context)!.p_protein);
+  return _macroChip(macrosSummary.protein, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6), label: AppLocalizations.of(context)!.p_protein);
 }
 
 Widget carbsChip(BuildContext context, MacrosSummary macrosSummary){
-  return _macroChip(macrosSummary.carbs ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43), label: AppLocalizations.of(context)!.c_carbs);
+  return _macroChip(macrosSummary.carbs, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43), label: AppLocalizations.of(context)!.c_carbs);
 }
 
 Widget caloriesChip(BuildContext context, MacrosSummary macrosSummary, {double? width}){
-  return _macroChip(macrosSummary.calories ?? 0, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8), width: width);
+  return _macroChip(macrosSummary.calories, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8), width: width);
 }
 
 Widget _macroChip(
