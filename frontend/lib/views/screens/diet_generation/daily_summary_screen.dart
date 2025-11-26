@@ -7,17 +7,19 @@ import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/diet_generation/meal_info_card.dart';
+import 'package:frontend/views/widgets/diet_generation/meal_nutrients_row.dart';
 import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:uuid/uuid_value.dart';
 
 class DailySummaryScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -103,12 +105,13 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                 );
               }
 
-              selectedMealType ??= meals.entries.firstWhere(
-                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
-                orElse: () => meals.entries.last,
-              ).key;
+              selectedMealType ??= meals.entries
+                .firstWhere(
+                  (entry) => entry.value.any((meal) => meal.status == MealStatus.pending),
+                  orElse: () => meals.entries.last,
+                )
+                .key;
               final activeMeal = selectedMealType!;
-              final activeMealInfo = meals[activeMeal]!;
               final dailyGoal = summary.targetCalories;
               final eatenCalories = summary.eatenCalories;
 
@@ -135,7 +138,6 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                         screenWidth,
                         isActiveDay,
                         activeMeal,
-                        activeMealInfo,
                         meals,
                         widget.selectedDate,
                       ),
@@ -317,52 +319,45 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     double widgetWidth,
     bool isActive,
     MealType activeMealType,
-    MealInfo activeMealInfo,
-    Map<MealType, MealInfo> allMeals,
+    Map<MealType, List<MealInfo>> allMeals,
     DateTime selectedDay,
   ) {
-    final bool isEaten = activeMealInfo.status == MealStatus.eaten;
-    final bool isSkipped = activeMealInfo.status == MealStatus.skipped;
+    final List<MealInfo> activeMealsInfo = allMeals[activeMealType]!;
+    final bool isEaten = activeMealsInfo[0].status == MealStatus.eaten;
+    final bool isSkipped = activeMealsInfo[0].status == MealStatus.skipped;
+    final MacrosSummary calculatedTotalMacros = MacrosSummary.calculateTotalMacros(activeMealsInfo);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
+    return Container(
+      width: widgetWidth,
+      padding: EdgeInsets.symmetric(
+        vertical: 15,
+        horizontal: max(10, widgetWidth / 30),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orange.shade300, Colors.deepOrange.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          final mealId = activeMealInfo.mealId;
-          if (mealId != null) {
-            context.push('/meal-recipe/$mealId');
-          }
-        },
-        child: Container(
-          width: widgetWidth,
-          padding: EdgeInsets.symmetric(
-            vertical: 15,
-            horizontal: max(10, widgetWidth / 30),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 5),
           ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.orange.shade300, Colors.deepOrange.shade400],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: AutoSizeText(
+              Expanded(
+                child: Row(
+                  children: [
+                    AutoSizeText(
                       AppConfig.mealTypeLabels(context)[activeMealType]!,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -373,179 +368,99 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       overflow: TextOverflow.ellipsis,
                       minFontSize: 12,
                     ),
-                  ),
-                  Builder(
-                      builder: (ctx) => ElevatedButton.icon(
-                      onPressed: () {
-                        if (!isActive) {
-                          final overlay = Overlay.of(ctx);
-                          final renderBox = ctx.findRenderObject() as RenderBox;
-                          final position = renderBox.localToGlobal(Offset.zero);
-
-                          OverlayEntry entry = OverlayEntry(
-                            builder: (_) => Positioned(
-                              left: position.dx - renderBox.size.width * 0.2,
-                              top: position.dy - 60,
-                              width: renderBox.size.width * 1.4,
-                              child: Material(
-                                color: Colors.transparent,
-                                child: Container(
-                                  padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black87,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    AppLocalizations.of(context)!.cannotEditPastMeals,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-
-                          overlay.insert(entry);
-                          Future.delayed(const Duration(milliseconds: 800), () => entry.remove());
-                        } else {
-                          final nextStatus = MealStatus.getNextStatus(activeMealType, allMeals);
-                          context.read<DailySummaryBloc>().add(
-                            ChangeMealStatus(
-                              day: selectedDay,
-                              mealId: activeMealInfo.mealId as UuidValue,
-                              status: nextStatus,
-                            ),
-                          );
-                        }
-                      },
-                      icon: isEaten
-                          ? const Icon(Icons.check_circle_outline)
-                          : isSkipped
-                              ? const Icon(Icons.remove_circle_outline)
-                              : const Icon(Icons.fastfood),
-                      label: Text(
-                        AppConfig.mealStatusLabels(context)[activeMealInfo.status]!,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 8),
+                    if (!isSkipped && isActive)
+                      GestureDetector(
+                        onTap: () => context.push('/meal-details/${activeMealType.nameStr}/$selectedDay'),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.black54,
+                          size: 25,
                         ),
                       ),
-                    ),
-                  )
-                ],
+                  ],
+                ),
               ),
 
-              const SizedBox(height: 8),
+              Builder(
+                builder: (ctx) => ElevatedButton.icon(
+                onPressed: () {
+                  if (!isActive) {
+                    final overlay = Overlay.of(ctx);
+                    final renderBox = ctx.findRenderObject() as RenderBox;
+                    final position = renderBox.localToGlobal(Offset.zero);
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: AutoSizeText(
-                      activeMealInfo.name!,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      minFontSize: 12,
-                    ),
-                  ),
-                  if (!isSkipped && isActive)
-                    GestureDetector(
-                      onTap: () => context.push('/meal-details/${activeMealType.nameStr}/$selectedDay'),
-                      child: const Icon(
-                        Icons.edit,
-                        color: Colors.black54,
-                        size: 25,
-                      ),
-                    ),
-                ],
-            ),
-
-              const SizedBox(height: 12),
-
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth >= 380) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            _carbsChip(activeMealInfo),
-                            const SizedBox(width: 8),
-                            _fatChip(activeMealInfo),
-                            const SizedBox(width: 8),
-                            _proteinChip(activeMealInfo),
-                          ],
+                    OverlayEntry entry = OverlayEntry(
+                      builder: (_) => Positioned(
+                        left: position.dx - renderBox.size.width * 0.2,
+                        top: position.dy - 60,
+                        width: renderBox.size.width * 1.4,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cannotEditPastMeals,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
                         ),
-                        Row(children: [_caloriesChip(activeMealInfo)]),
-                      ],
+                      ),
                     );
+
+                    overlay.insert(entry);
+                    Future.delayed(const Duration(milliseconds: 800), () => entry.remove());
                   } else {
-                    return Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _carbsChip(activeMealInfo),
-                        _fatChip(activeMealInfo),
-                        _proteinChip(activeMealInfo),
-                        _caloriesChip(activeMealInfo, width: double.infinity)
-                      ],
+                    final nextStatus = MealStatus.getNextStatus(activeMealType, allMeals);
+                    context.read<DailySummaryBloc>().add(
+                      ChangeMealStatus(
+                        day: selectedDay,
+                        mealType: activeMealType,
+                        status: nextStatus,
+                      ),
                     );
                   }
                 },
-              ),
+                icon: isEaten
+                    ? const Icon(Icons.check_circle_outline)
+                    : isSkipped
+                        ? const Icon(Icons.remove_circle_outline)
+                        : const Icon(Icons.fastfood),
+                label: Text(
+                  AppConfig.mealStatusLabels(context)[activeMealsInfo[0].status]!,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                ),
+              )
             ],
           ),
-        ),
+          const SizedBox(height: 12),
+          Column(
+            children: activeMealsInfo.map((meal) => Column(
+              children: [
+                MealInfoCard(context: context, activeMealInfo: meal),
+                const SizedBox(height: 12),
+              ],
+            )).toList(),
+          ),
+          MealNutrientsRow(macrosSummary: calculatedTotalMacros, breakpoint: 325),
+        ],
       ),
     );
-  }
-
-  Widget _macroChip(
-      String label, num value, String unitName, Color color,
-      {double? width}) {
-    return Container(
-      width: width,
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      decoration: BoxDecoration(
-        color: color.withAlpha(200),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        '$label: $value $unitName',
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _fatChip(MealInfo activeMealInfo){
-    return _macroChip(AppLocalizations.of(context)!.f_fat, activeMealInfo.fat ?? 0 ,AppLocalizations.of(context)!.g_grams , Color(0xFFFFCA28));
-  }
-
-  Widget _proteinChip(MealInfo activeMealInfo){
-    return _macroChip(AppLocalizations.of(context)!.p_protein, activeMealInfo.protein ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF0687F6));
-  }
-
-  Widget _carbsChip(MealInfo activeMealInfo){
-    return _macroChip(AppLocalizations.of(context)!.c_carbs, activeMealInfo.carbs ?? 0, AppLocalizations.of(context)!.g_grams, Color(0xFF3DAF43));
-  }
-
-  Widget _caloriesChip(MealInfo activeMealInfo, {double? width}){
-    return _macroChip(AppLocalizations.of(context)!.cal_calories, activeMealInfo.calories ?? 0, AppLocalizations.of(context)!.kcal, Color(0xFFBA68C8), width: width);
   }
 
   Widget _buildNutritionRings(

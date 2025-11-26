@@ -604,7 +604,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailyMeals => 'Dzienne menu';
 
   @override
-  String get dailyMealsFor => 'Posiłki na dzień ';
+  String get plannedMealsFor => 'Planowane posiłki na';
 
   @override
   String get macrosSummary => 'Podsumowanie makroskładników';
@@ -708,4 +708,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get error => 'Błąd';
+
+  @override
+  String get information => 'Informacja';
 }

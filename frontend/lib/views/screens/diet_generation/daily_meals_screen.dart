@@ -37,7 +37,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
   @override
   Widget build(BuildContext context) {
     final displayDate =
-        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
+        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}";
 
     final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
     final nextDate = widget.selectedDate.add(const Duration(days: 1));
@@ -93,8 +93,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               }
             if (state.dailySummary != null &&
                 dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-              final meals = state.dailySummary!.meals;
-
+              final meals = state.dailySummary!.generatedMeals;
               final bool isRegenerate = meals.isNotEmpty;
               final sortedEntries =
                   meals.entries.toList()
@@ -117,8 +116,9 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
                             color: _getMealColor(entry.key),
                             imageUrl: entry.value.iconPath!,
-                            mealName: entry.value.name ?? '',
-                            description: entry.value.description ?? '',
+                            mealName: entry.value.name!,
+                            description: entry.value.description!,
+                            explanation: entry.value.explanation,
                             mealId: entry.value.mealId!,
                             context: context,
                           ),
@@ -167,7 +167,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: TitleTextWidgets.scaledTitle(
-              '${AppLocalizations.of(context)!.dailyMealsFor}$displayDate',
+              '${AppLocalizations.of(context)!.plannedMealsFor} $displayDate',
           ),
         ),
       ),
@@ -190,6 +190,65 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         return const Color(0xFFCBE3A8);
       }
   }
+  void showInfoPopup(BuildContext context, String content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color(0xFFFFF6E0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: Color(0xFFE68A00),
+                      size: 26,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.information,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(
+                        Icons.close,
+                        size: 24,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  content,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.4,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildMealSection({
     required BuildContext context,
@@ -198,6 +257,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     required String imageUrl,
     required String mealName,
     required String description,
+    String? explanation,
     required UuidValue mealId,
   }) {
     return Padding(
@@ -217,18 +277,35 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(10),
+                  height: 40,
+                  padding: const EdgeInsets.fromLTRB(10,0,10,0),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (explanation != null)
+                        IconButton(
+                          onPressed: () {
+                            showInfoPopup(context, explanation);
+                          },
+                          icon: const Icon(
+                            Icons.info_outline,
+                            size: 24,
+                            color: Colors.black87,
+                          ),
+                        )
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),

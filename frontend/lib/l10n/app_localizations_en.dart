@@ -598,7 +598,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyMeals => 'Daily Menu';
 
   @override
-  String get dailyMealsFor => 'Daily Meals for ';
+  String get plannedMealsFor => 'Planned meals for';
 
   @override
   String get macrosSummary => 'Macros summary';
@@ -700,4 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get information => 'Information';
 }

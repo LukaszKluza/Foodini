@@ -1250,11 +1250,11 @@ abstract class AppLocalizations {
   /// **'Daily Menu'**
   String get dailyMeals;
 
-  /// No description provided for @dailyMealsFor.
+  /// No description provided for @plannedMealsFor.
   ///
   /// In en, this message translates to:
-  /// **'Daily Meals for '**
-  String get dailyMealsFor;
+  /// **'Planned meals for'**
+  String get plannedMealsFor;
 
   /// No description provided for @macrosSummary.
   ///
@@ -1447,6 +1447,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @information.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get information;
 }
 
 class _AppLocalizationsDelegate

@@ -14,7 +14,7 @@ import 'package:uuid/uuid.dart';
 VoidCallback showPopUp(
   BuildContext context,
   DateTime day,
-  MealType mealType,
+  MealType updatedMealType,
   UuidValue updatedMealId, {
   MealInfo? mealInfo,
 }) {
@@ -48,7 +48,7 @@ VoidCallback showPopUp(
       context: context,
       builder: (_) => EnterBarcodePopup(
         day: day,
-        mealType: mealType,
+        mealType: updatedMealType,
       ),
     );
   }
@@ -160,7 +160,9 @@ VoidCallback showPopUp(
                               var customMealUpdateRequest =
                                 CustomMealUpdateRequest(
                                   day: day,
-                                  mealId: updatedMealId,
+                                  mealType: updatedMealType,
+                                  mealId:
+                                    mealInfo != null ? updatedMealId : null,
                                   customName:
                                     mealInfo == null ? nameController.text : null,
                                   customCalories: int.tryParse(caloriesController.text),

@@ -18,15 +18,18 @@ class MealRepository:
         await self.db.refresh(meal)
         return meal
 
-    async def update_meal(self, meal_data: MealCreate) -> Meal | None:
-        meal_name = meal_data.meal_name
-        meal = await self.get_meal_by_name(meal_name)
-        if meal:
-            await self.db.execute(update(Meal).where(Meal.meal_name == meal_name).values(**meal_data.model_dump()))
-            await self.db.commit()
-            await self.db.refresh(meal)
-            return meal
-        return None
+    async def update_meal_by_id(self, meal_id: UUID, meal_data: MealCreate) -> Meal | None:
+        meal = await self.get_meal_by_id(meal_id)
+        if not meal:
+            return None
+
+        update_data = meal_data.model_dump(exclude_unset=True)
+
+        await self.db.execute(update(Meal).where(Meal.id == meal_id).values(**update_data))
+        await self.db.commit()
+
+        await self.db.refresh(meal)
+        return meal
 
     async def get_meal_by_id(self, meal_id: UUID) -> Meal | None:
         query = select(Meal).where(Meal.id == meal_id)

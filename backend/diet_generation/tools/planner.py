@@ -39,6 +39,29 @@ class PlannerTool:
             "4. Every meal except of correct structure must have:\n"
             "   - Ingredients that make nutritional sense.\n"
             "   - Macronutrient and calorie values that sum up correctly.\n\n"
+            "5. For each ingredient, include its weight as a number (in grams) without units.\n"
+            "6. You **must calculate the total weight of the prepared meal**. Base it on the sum of all ingredient "
+            "weights and account for any expected changes during cooking or preparation (e.g., water loss, absorption,"
+            " mixing). Include this total weight as a numeric value in grams in the output. Example:"
+            "Ingredients: Chicken breast: 150 g, Broccoli: 80 g  Carrots: 50 g  Olive oil: 10 g   Quinoa (dry): 60 g"
+            "Cooking: roasting chicken and steaming vegetables, quinoa boiled."
+            "Expected weight change: chicken loses ~15 g water, quinoa absorbs ~120 g water.  "
+            "Total meal weight = 150 - 15 + 80 + 50 + 10 + 60 + 120 = 455 g  Return in response as `weight': 455` \n"
+            "7. for each meal remember to generate a user-friendly explanation of adjustments made to a meal plan. \n"
+            "- For each meal, mention its name and main ingredient(s)."
+            "- Explain in a clear, natural way why adjustments were made, e.g.: \n"
+            "* The portion of fish at lunch was increased to meet your protein target."
+            "* Dinner included more vegetables to balance carbs and fiber."
+            "- Make the explanation conversational, as if a dietitian were giving tips."
+            "- Refer to the plan_name and diet_type in the introduction."
+            "- Avoid mentioning that the plan was adjusted, corrected, or generated multiple times."
+            "- Mention per-meal calorie and macro targets if relevant."
+            "- Vary phrasing and style, do not repeat the same sentences every day. "
+            "- Example phrasing for meals:"
+            "   * Breakfast includes a mix of protein-rich foods to start your day with steady energy. "
+            "   * Lunch offers a balanced combination of carbs and protein to keep you satisfied through the afternoon."
+            "   * Dinner provides a variety of nutrients with lean protein and healthy fats for a well-rounded "
+            "evening meal."
             "### CALORIE & MACRO REQUIREMENTS\n"
             "Ensure that the **sum of all meals’ calories and macros matches exactly** the input targets.\n"
             "Calories and macros should not exceed or fall short of the targets by more than rounding error (±1%).\n"
@@ -116,6 +139,9 @@ class PlannerTool:
         5. Recalculate each meal’s calories from macros using:
            - Calories = 4 × (Protein + Carbs) + 9 × Fat
            Adjust slightly if needed to make the totals exact.
+        6. Calculate the total weight of the meal** by summing the weights of all ingredients the AI proposes,
+        accounting for any expected changes during preparation (e.g., water loss, absorption, mixing). Include this
+        total weight as a numeric value in grams. Adjust slightly if needed to make the totals exact.
         ---
         ## MEAL CREATION RULES
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
