@@ -4,6 +4,7 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 class DailySummary {
   final DateTime day;
   final Map<MealType, List<MealInfo>> meals;
+  final Map<MealType, MealInfo> generatedMeals;
   final int targetCalories;
   final double targetProtein;
   final double targetCarbs;
@@ -19,6 +20,7 @@ class DailySummary {
   DailySummary({
     required this.day,
     required this.meals,
+    required this.generatedMeals,
     required this.targetCalories,
     required this.targetProtein,
     required this.targetCarbs,
@@ -42,9 +44,18 @@ class DailySummary {
       });
     }
 
+    final generatedMealsMap = <MealType, MealInfo>{};
+    if (json['generated_meals'] != null) {
+      (json['generated_meals'] as Map<String, dynamic>).forEach((key, value) {
+        final mealType = MealType.fromJson(key);
+        generatedMealsMap[mealType] = MealInfo.fromJson(value);
+      });
+    }
+
     return DailySummary(
       day: DateTime.parse(json['day']),
       meals: mealsMap,
+      generatedMeals: generatedMealsMap,
       targetCalories: json['target_calories'] as int,
       targetProtein: (json['target_protein'] as num).toDouble(),
       targetCarbs: (json['target_carbs'] as num).toDouble(),
@@ -62,10 +73,13 @@ class DailySummary {
       key.toJson(),
       value.map((meal) => meal.toJson()).toList(),
     ));
+    final generatedMealsJson = generatedMeals.map((key, value) =>
+        MapEntry(key.toJson(), value.toJson()));
 
     return {
       'day': day.toIso8601String().split('T').first,
-      'meals': mealsJson,
+      'meals': generatedMealsJson,
+      'generated_meals': mealsJson,
       'target_calories': targetCalories,
       'target_protein': targetProtein,
       'target_carbs': targetCarbs,
