@@ -56,22 +56,11 @@ class DailySummaryRepository:
                 selectinload(DailyMealsSummary.daily_meals)
                 .selectinload(MealDailySummary.meal_items)
                 .selectinload(ComposedMealItem.meal)
-                .selectinload(Meal.recipes)
             )
         )
 
         result = await self.db.execute(query)
-        daily_summary = result.unique().scalar_one_or_none()
-
-        # TODO Optimize filtering recipes, move it to service
-        if daily_summary:
-            for daily_meal in daily_summary.daily_meals:
-                for item in daily_meal.meal_items:
-                    meal = item.meal
-                    if meal:
-                        meal.recipes = [r for r in meal.recipes if r.language == language]
-
-        return daily_summary
+        return result.unique().scalar_one_or_none()
 
     async def get_daily_meals_summary(self, user_id: UUID, day: date) -> DailyMealsSummary | None:
         query = (

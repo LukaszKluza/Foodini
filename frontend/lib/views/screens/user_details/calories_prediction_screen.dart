@@ -104,7 +104,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<ActivityLevel>(
         key: Key('activity_level'),
         isExpanded: true,
-        value: _selectedActivityLevel,
+        initialValue: _selectedActivityLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.activityLevel,
         ),
@@ -129,7 +129,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<StressLevel>(
         key: Key('stress_level'),
         isExpanded: true,
-        value: _selectedStressLevel,
+        initialValue: _selectedStressLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.stressLevel,
         ),
@@ -154,7 +154,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<SleepQuality>(
         key: Key('sleep_quality'),
         isExpanded: true,
-        value: _selectedSleepQuality,
+        initialValue: _selectedSleepQuality,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
         ),

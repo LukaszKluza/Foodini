@@ -63,6 +63,7 @@
   "dietGoal": "Cel diety",
   "enterYourDietGoal": "Wprowadź swój cel diety",
   "weightKg": "Waga (kg)",
+  "weightG": "Waga (g)",
   "dietGoalShouldBeBetween": "Cel diety powinien być pomiędzy",
   "muscleGainGoalCantBeLower": "Cel diety dla 'Przyrostu masy mięśniowej' nie może być mniejszy niż obecna waga",
   "fatLossGoalCantBeHigher": "Cel diety dla 'Utraty tłuszczu' nie może być większy niż obecna waga",
@@ -228,7 +229,8 @@
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
-  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+  "valueOfCaloriesShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+  "valueOfWeightShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
   "generateNewPlan": "Generuj posiłki",
   "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",

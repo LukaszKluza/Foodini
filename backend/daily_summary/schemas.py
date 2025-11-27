@@ -36,7 +36,7 @@ class Meal(BaseModel):
 
 class DailyMealsCreate(BaseModel):
     day: date
-    meals: Dict[MealType, Meal]
+    meals: Dict[MealType, List[BasicMealInfo]]
     target_calories: int
     target_protein: float
     target_carbs: float
@@ -76,4 +76,4 @@ class CustomMealUpdateRequest(BaseModel):
     custom_protein: Optional[float] = Field(default=None, ge=0)
     custom_carbs: Optional[float] = Field(default=None, ge=0)
     custom_fat: Optional[float] = Field(default=None, ge=0)
-    custom_weight: Optional[int] = Field(default=None, ge=0, le=1250)
+    custom_weight: int = Field(default=None, ge=1, le=1250)
