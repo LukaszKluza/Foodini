@@ -43,11 +43,13 @@ class AddScannedProduct extends DailySummaryEvent {
   final String? barcode;
   final XFile? uploadedFile;
   final MealType mealType;
+  final DateTime day;
 
   AddScannedProduct({
     this.barcode,
     this.uploadedFile,
-    required this.mealType
+    required this.mealType,
+    required this.day
   });
 }
 

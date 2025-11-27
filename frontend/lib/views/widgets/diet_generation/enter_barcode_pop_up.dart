@@ -125,7 +125,7 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                     ActionButton(
                       onPressed: () {
                         if (uploadedFile != null || formKey.currentState!.validate()) {
-                          var event = AddScannedProduct(barcode: barcodeController.text, uploadedFile: uploadedFile, mealType: widget.mealType);
+                          var event = AddScannedProduct(barcode: barcodeController.text, uploadedFile: uploadedFile, mealType: widget.mealType, day: widget.day);
                           context.read<DailySummaryBloc>().add(event);
 
                           setState(() {

@@ -243,6 +243,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         barcode: event.barcode,
         uploadedFile: event.uploadedFile,
         mealType: event.mealType,
+        day: event.day,
         userId: UserStorage().getUserId!,
       );
 

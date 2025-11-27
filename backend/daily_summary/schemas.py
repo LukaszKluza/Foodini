@@ -72,3 +72,4 @@ class CustomMealUpdateRequest(BaseModel):
     custom_carbs: Optional[float] = Field(default=None, ge=0)
     custom_fat: Optional[float] = Field(default=None, ge=0)
     custom_weight: Optional[int] = Field(default=None, ge=0, le=1250)
+    eaten_weight: Optional[int] = Field(default=None, ge=0, le=1250)

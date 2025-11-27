@@ -1,8 +1,32 @@
+import re
+
 import openfoodfacts
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
 from backend.open_food_facts.schemas import ProductDetails
+
+
+def parse_weight(weight_str: str) -> float:
+    if not weight_str:
+        return 0.0
+
+    weight_str = weight_str.replace(" ", "").lower()
+
+    match = re.match(r"([\d.,]+)(g|kg|ml|l)", weight_str)
+    if not match:
+        return 0.0
+
+    value, unit = match.groups()
+    value = float(value.replace(",", "."))
+
+    if unit == "kg":
+        return value * 1000
+    if unit == "l":
+        return value * 1000
+    if unit == "ml":
+        return value
+    return value
 
 
 class OpenFoodFactsService:
@@ -23,6 +47,8 @@ class OpenFoodFactsService:
                 "nutriments.energy-kcal_100g",
                 "nutriments.fat_100g",
                 "nutriments.proteins_100g",
+                "serving_size",
+                "quantity",
             ],
         )
 
@@ -32,6 +58,8 @@ class OpenFoodFactsService:
         name = response.get("product_name", "")
         brands = response.get("brands", "")
         nutriments = response.get("nutriments", {})
+        weight = response.get("quantity") or response.get("serving_size") or "0"
+        eaten_weight = response.get("serving_size") or response.get("quantity") or "0"
 
         return ProductDetails(
             name=name if brands in name else f"{name} ({brands})",
@@ -39,6 +67,8 @@ class OpenFoodFactsService:
             protein=round(float(nutriments.get("proteins_100g", 0)), 2),
             fat=round(float(nutriments.get("fat_100g", 0)), 2),
             carbs=round(float(nutriments.get("carbohydrates_100g", 0)), 2),
+            weight=round(parse_weight(weight)),
+            eaten_weight=round(parse_weight(eaten_weight)),
         )
 
     @classmethod

@@ -12,6 +12,7 @@ class OpenFoodFactsGateway:
     async def get_product_details_by_barcode(self, barcode: str) -> ProductDetails:
         return await self.open_food_facts_service.get_product_details_by_barcode(barcode)
 
+
 def get_open_food_facts_gateway(
     open_food_facts_service: OpenFoodFactsService = Depends(get_open_food_facts_service),
 ) -> OpenFoodFactsGateway:

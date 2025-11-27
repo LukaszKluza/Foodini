@@ -1,5 +1,15 @@
+from datetime import date
+from typing import Optional, Type
+
 import cv2
 import numpy as np
+from fastapi import UploadFile
+
+from backend.core.logger import logger
+from backend.core.value_error_exception import ValueErrorException
+from backend.daily_summary.schemas import CustomMealUpdateRequest
+from backend.meals.enums.meal_type import MealType
+from backend.models import User
 
 A_CODE = {
     "0001101": "0",
@@ -54,12 +64,24 @@ FIRST_DIGIT_PATTERNS = {
 }
 
 
-def decode_first_digit(left_types):
+def _decode_first_digit(left_types):
     pattern = "".join(left_types)
     return FIRST_DIGIT_PATTERNS.get(pattern)
 
 
-def decode_ean13_from_image(img: np.ndarray):
+def _validate_check_sum(barcode: str) -> bool:
+    if len(barcode) != 13 or not barcode.isdigit():
+        return False
+
+    digits = [int(d) for d in barcode]
+    odd_digits = digits[-3::-2]
+    even_digits = digits[-2::-2]
+
+    checksum = sum(odd_digits) + 3 * sum(even_digits)
+    return (checksum + digits[-1]) % 10 == 0
+
+
+def _decode_ean13_from_image(img: np.ndarray) -> str:
     _, thresh = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
     row = thresh[thresh.shape[0] // 2, :]
@@ -89,19 +111,80 @@ def decode_ean13_from_image(img: np.ndarray):
             left_digits.append(B_CODE[pattern])
             left_types.append("B")
         else:
-            left_digits.append("?")
-            left_types.append("?")
+            logger.debug("Decode image: invalid left side pattern")
+            raise ValueErrorException("Failed to decode barcode")
 
-    first_digit = decode_first_digit(left_types)
+    first_digit = _decode_first_digit(left_types)
+    if first_digit is None:
+        logger.debug("Decode image: cannot decode first EAN digit")
+        raise ValueErrorException("Failed to decode barcode")
 
     right_digits = []
-
     for i in range(50, 92, 7):
         pattern = "".join(map(str, modules[i : i + 7]))
         if pattern in C_CODE:
             right_digits.append(C_CODE[pattern])
         else:
-            right_digits.append("?")
+            logger.debug("Decode image: invalid right side pattern")
+            raise ValueErrorException("Failed to decode barcode")
 
-    ean13 = first_digit + "".join(left_digits) + "".join(right_digits)
-    return ean13
+    return first_digit + "".join(left_digits) + "".join(right_digits)
+
+
+class BarcodeScanningService:
+    def __init__(self, open_food_facts_gateway, daily_summary_gateway):
+        self.open_food_facts_gateway = open_food_facts_gateway
+        self.daily_summary_gateway = daily_summary_gateway
+
+    async def process_scan(
+        self, user: Type[User], day: date, meal_type: MealType, barcode: Optional[str], image: Optional[UploadFile]
+    ):
+        product = None
+        if barcode:
+            product = await self._process_barcode(barcode)
+        if image:
+            product = await self._process_image(image)
+
+        if not product:
+            logger.debug("Decode image: product not found")
+            raise ValueErrorException("Product not found")
+
+        custom_meal = CustomMealUpdateRequest(
+            day=day,
+            meal_type=meal_type,
+            custom_name=product.name,
+            custom_calories=product.calories,
+            custom_protein=product.protein,
+            custom_carbs=product.carbs,
+            custom_fat=product.fat,
+            custom_weight=product.weight,
+            eaten_weight=product.eaten_weight,
+        )
+        meal_info = await self.daily_summary_gateway.add_custom_meal(user, custom_meal)
+        return meal_info
+
+    async def _process_barcode(self, barcode: str):
+        if not _validate_check_sum(barcode):
+            logger.debug("Decode image: check sum failed")
+            raise ValueErrorException("Invalid barcode")
+
+        product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        return product
+
+    async def _process_image(self, image: UploadFile):
+        content = await image.read()
+        nparr = np.frombuffer(content, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+
+        if img is None:
+            logger.debug("Invalid barcode: img is None")
+            raise ValueErrorException("Invalid barcode")
+
+        barcode = _decode_ean13_from_image(img)
+
+        if not barcode or not _validate_check_sum(barcode):
+            logger.debug("Invalid barcode: barcode is None or check sum failed")
+            raise ValueErrorException("Invalid barcode")
+
+        product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        return product

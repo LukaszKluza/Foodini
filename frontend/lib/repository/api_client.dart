@@ -273,10 +273,12 @@ class ApiClient {
     String? barcode,
     XFile? uploadedFile,
     required MealType mealType,
+    required DateTime day,
     required UuidValue userId
   }) async {
     final data = <String, dynamic>{
-      'meal_type': mealType,
+      'meal_type': mealType.toJson(),
+      'day': day.toIso8601String().split('T').first,
     };
 
     if (barcode != null) data['barcode'] = barcode;

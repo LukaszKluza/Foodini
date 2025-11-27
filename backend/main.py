@@ -9,6 +9,7 @@ from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from backend.barcode_scanning.barcode_scanning_router import barcode_scanning_router
 from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
@@ -30,6 +31,7 @@ app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
 app.include_router(meal_router)
 app.include_router(open_food_facts_router)
+app.include_router(barcode_scanning_router)
 
 
 app.add_middleware(
