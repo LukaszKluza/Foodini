@@ -64,9 +64,7 @@ class MealService:
 
         return await self._enhance_meal_response_by_icon(meal_recipe)
 
-    async def get_meal_recipe_by_meal_and_language_safe(
-        self, meal_id: UUID, language: Language
-    ) -> MealRecipeResponse:
+    async def get_meal_recipe_by_meal_and_language_safe(self, meal_id: UUID, language: Language) -> MealRecipeResponse:
         meal_recipes = await self.get_meal_recipes_by_meal_id(meal_id)
 
         meal_recipes_by_language = {mr.language: mr for mr in meal_recipes}

@@ -3,7 +3,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Request
 
-from backend.core.limiter import user_target_date_key, limiter
+from backend.core.limiter import limiter, user_target_date_key
 from backend.diet_generation.daily_meals_generator_service import DailyMealsGeneratorService
 from backend.diet_generation.dependencies import get_prompt_service
 from backend.models import MealRecipe
