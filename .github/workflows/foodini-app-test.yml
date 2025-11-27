@@ -97,7 +97,7 @@ jobs:
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.1"
+          flutter-version: "3.38.3"
 
       - name: Build frontend
         run: |

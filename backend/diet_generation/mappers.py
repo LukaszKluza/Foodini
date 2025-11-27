@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict
+from typing import Dict, List
 from uuid import UUID
 
 from backend.daily_summary.enums.meal_status import MealStatus
@@ -13,6 +13,7 @@ from backend.users.enums.language import Language
 
 def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
     return Meal(
+        meal_name=meal_data.meal_name,
         meal_type=MealType(meal_data.meal_type),
         icon_id=icon_id,
         calories=meal_data.calories,
@@ -64,7 +65,7 @@ def recipe_to_meal_recipe_translation(recipe: MealRecipe) -> MealRecipeTranslati
 
 
 def to_daily_meals_create(
-    day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, BasicMealInfo]
+    day: date, user_diet_predictions: PredictedCalories, meals_type_map: Dict[MealType, List[BasicMealInfo]]
 ) -> DailyMealsCreate:
     return DailyMealsCreate(
         day=day,

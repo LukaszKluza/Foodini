@@ -38,10 +38,9 @@ class DietGenerationRepository {
     }
   }
 
-  Future<MealInfo> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, UuidValue userId) async {
+  Future<void> updateDailySummaryMeals(MealInfoUpdateRequest mealInfoUpdateRequest, UuidValue userId) async {
     try {
-      final response = await apiClient.updateDailySummaryMeals(mealInfoUpdateRequest, userId);
-      return MealInfo.fromJson(response.data);
+      await apiClient.updateDailySummaryMeals(mealInfoUpdateRequest, userId);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
@@ -71,7 +70,7 @@ class DietGenerationRepository {
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while getting daily summary meals: $e');
+      throw Exception('Error while getting daily summary macros: $e');
     }
   }
 
