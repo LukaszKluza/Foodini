@@ -6,11 +6,11 @@ class CustomMealUpdateRequest {
   final MealType mealType;
   final UuidValue? mealId;
   final String? customName;
-  final int? customCalories;
-  final double? customProtein;
-  final double? customCarbs;
-  final double? customFat;
-  final int? customWeight;
+  final int customCalories;
+  final double customProtein;
+  final double customCarbs;
+  final double customFat;
+  final int? eatenWeight;
 
   CustomMealUpdateRequest({
     required this.day,
@@ -21,7 +21,7 @@ class CustomMealUpdateRequest {
     required this.customProtein,
     required this.customCarbs,
     required this.customFat,
-    this.customWeight,
+    required this.eatenWeight,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,7 +34,7 @@ class CustomMealUpdateRequest {
       'custom_protein': customProtein,
       'custom_carbs': customCarbs,
       'custom_fat': customFat,
-      'custom_weight': customWeight,
+      'custom_weight': eatenWeight,
     };
   }
 
@@ -48,6 +48,7 @@ class CustomMealUpdateRequest {
       customProtein: (json['custom_protein'] as num).toDouble(),
       customCarbs: (json['custom_carbs'] as num).toDouble(),
       customFat: (json['custom_fat'] as num).toDouble(),
+      eatenWeight: json['custom_weight'] as int,
     );
   }
 }

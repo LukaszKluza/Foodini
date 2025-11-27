@@ -16,11 +16,7 @@ class MealRecipesRepository:
     async def get_meal_recipes_by_meal_id(self, meal_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
         query = select(MealRecipe).where(MealRecipe.meal_id == meal_id)
         result = await self.db.execute(query)
-
-        rows = result.scalars().all()
-        for row in rows:
-            await self._map_meal_recipe(row)
-        return rows
+        return result.scalars().all()
 
     async def get_meal_recipe_by_meal_id_and_language(self, meal_id: UUID, language: Language) -> MealRecipe | None:
         query = select(MealRecipe).where((MealRecipe.meal_id == meal_id) & (MealRecipe.language == language))

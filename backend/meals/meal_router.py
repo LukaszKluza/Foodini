@@ -44,4 +44,4 @@ async def get_safe_meal_recipe_by_meal_id(
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     await user_gateway.get_current_user()
-    return await meal_service.get_meal_recipe_by_meal_recipe_id_and_language_safe(meal_id, language)
+    return await meal_service.get_meal_recipe_by_meal_and_language_safe(meal_id, language)
