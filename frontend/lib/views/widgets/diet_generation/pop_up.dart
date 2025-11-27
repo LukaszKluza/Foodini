@@ -170,7 +170,7 @@ VoidCallback showPopUp(
                               var customMealUpdateRequest =
                                 CustomMealUpdateRequest(
                                   day: day,
-                                  mealType: updatedMealType,
+                                  mealType: mealType,
                                   mealId:
                                     mealInfo != null ? updatedMealId : null,
                                   customName:
