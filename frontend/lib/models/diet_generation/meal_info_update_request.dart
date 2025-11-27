@@ -1,21 +1,21 @@
 import 'package:frontend/models/diet_generation/meal_status.dart';
-import 'package:uuid/uuid_value.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 
 class MealInfoUpdateRequest {
   final DateTime day;
-  final UuidValue mealId;
+  final MealType mealType;
   final MealStatus mealStatus;
 
   MealInfoUpdateRequest({
     required this.day,
-    required this.mealId,
+    required this.mealType,
     required this.mealStatus,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'day': day.toIso8601String().split('T').first,
-      'meal_id': mealId.uuid,
+      'meal_type': mealType.toJson(),
       'status': mealStatus.toJson(),
     };
   }
@@ -23,7 +23,7 @@ class MealInfoUpdateRequest {
   factory MealInfoUpdateRequest.fromJson(Map<String, dynamic> json) {
     return MealInfoUpdateRequest(
       day: DateTime.parse(json['day']),
-      mealId: UuidValue.fromString(json['meal_id']),
+      mealType: MealType.fromJson(json['meal_type']),
       mealStatus: MealStatus.fromJson(json['status']),
     );
   }

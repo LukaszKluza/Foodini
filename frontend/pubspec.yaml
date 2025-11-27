@@ -42,9 +42,7 @@ dependencies:
   build_runner: ^2.10.4
   provider: ^6.1.1
   flutter_secure_storage: ^9.2.4
-  bloc: 9.1.0
-  flutter_bloc: ^9.1.1
-  build_daemon: ^4.1.1
+  flutter_bloc: ^9.1.0
   workmanager:
     git:
       url: https://github.com/fluttercommunity/flutter_workmanager.git

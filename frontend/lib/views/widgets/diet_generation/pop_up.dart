@@ -74,6 +74,9 @@ VoidCallback showPopUp(
         final caloriesController = TextEditingController(
           text: mealInfo?.calories.toString() ?? '',
         );
+        final weightController = TextEditingController(
+          text: mealInfo?.weight.toString() ?? '',
+        );
 
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -125,6 +128,13 @@ VoidCallback showPopUp(
                       (value) => validateCalories(value, context),
                       AppLocalizations.of(context)!.calories,
                     ),
+                    const SizedBox(height: 12),
+                    editableTextFormField(
+                      context,
+                      weightController,
+                          (value) => validateCalories(value, context),
+                      AppLocalizations.of(context)!.weightG,
+                    ),
                     const SizedBox(height: 18),
                     if (mealInfo == null) ...[
                       Row(
@@ -160,13 +170,16 @@ VoidCallback showPopUp(
                               var customMealUpdateRequest =
                                 CustomMealUpdateRequest(
                                   day: day,
-                                  mealId: updatedMealId,
+                                  mealType: updatedMealType,
+                                  mealId:
+                                    mealInfo != null ? updatedMealId : null,
                                   customName:
                                     mealInfo == null ? nameController.text : null,
-                                  customCalories: int.tryParse(caloriesController.text),
-                                  customProtein: double.tryParse(proteinController.text),
-                                  customCarbs: double.tryParse(carbsController.text),
-                                  customFat: double.tryParse(fatController.text)
+                                  customCalories: int.tryParse(caloriesController.text)!,
+                                  customProtein: double.tryParse(proteinController.text)!,
+                                  customCarbs: double.tryParse(carbsController.text)!,
+                                  customFat: double.tryParse(fatController.text)!,
+                                  eatenWeight: int.tryParse(weightController.text)!,
                                 );
                               context.read<DailySummaryBloc>().add(
                                 UpdateMeal(

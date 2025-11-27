@@ -206,6 +206,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weightKg => 'Waga (kg)';
 
   @override
+  String get weightG => 'Waga (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
@@ -604,7 +607,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailyMeals => 'Dzienne menu';
 
   @override
-  String get dailyMealsFor => 'Posiłki na dzień ';
+  String get plannedMealsFor => 'Planowane posiłki na';
 
   @override
   String get macrosSummary => 'Podsumowanie makroskładników';
@@ -664,7 +667,11 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wartość tego makroskładnika powinna mieścić się w przedziale';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween =>
+  String get valueOfCaloriesShouldBeBetween =>
+      'Wartość kalorii powinna mieścić się w przedziale';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
       'Wartość kalorii powinna mieścić się w przedziale';
 
   @override

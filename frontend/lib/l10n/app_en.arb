@@ -63,6 +63,7 @@
   "dietGoal": "Diet goal",
   "enterYourDietGoal": "Enter your diet goal",
   "weightKg": "Weight (kg)",
+  "weightG": "Weight (g)",
   "dietGoalShouldBeBetween": "Diet goal should be between",
   "muscleGainGoalCantBeLower": "Diet goal for 'Muscle Gain' can't be lower than current weight",
   "fatLossGoalCantBeHigher": "Diet goal for 'Fat Loss' cant't be higher than current weight",
@@ -214,7 +215,7 @@
   "dailySummary": "Daily Summary",
   "fillFormToGenerateMeals": "Please fill out the form to be able to generate meals",
   "dailyMeals": "Daily Menu",
-  "dailyMealsFor": "Daily Meals for ",
+  "plannedMealsFor": "Planned meals for",
 
   "macrosSummary": "Macros summary",
   "calories": "Calories",
@@ -235,7 +236,8 @@
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",
   "valueOfThisMacroShouldBeBetween": "Value of this macro should be between",
-  "valueOfCaloriesMacroShouldBeBetween": "Value of calories should be between",
+  "valueOfCaloriesShouldBeBetween": "Value of calories should be between",
+  "valueOfWeightShouldBeBetween": "Value of weight should be between",
 
   "generateNewPlan": "Generate New Plan",
   "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",

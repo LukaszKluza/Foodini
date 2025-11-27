@@ -206,6 +206,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightKg => 'Weight (kg)';
 
   @override
+  String get weightG => 'Weight (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
@@ -598,7 +601,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyMeals => 'Daily Menu';
 
   @override
-  String get dailyMealsFor => 'Daily Meals for ';
+  String get plannedMealsFor => 'Planned meals for';
 
   @override
   String get macrosSummary => 'Macros summary';
@@ -656,8 +659,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Value of this macro should be between';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween =>
+  String get valueOfCaloriesShouldBeBetween =>
       'Value of calories should be between';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
+      'Value of weight should be between';
 
   @override
   String get generateNewPlan => 'Generate New Plan';
