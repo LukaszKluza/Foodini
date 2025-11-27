@@ -232,6 +232,7 @@
   "barcodeCannotBeEmpty": "Kod kreskowy nie może być pusty",
   "barcodeMustBeLength": "Kod kreskowy musi mieć długość",
   "barcodeMustContainOnlyDigits": "Kod kreskowy może zawierać tylko cyfry",
+  "barcodeUploaded": "Kod kreskowy dodany",
   "mealName": "Nazwa posiłku",
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",

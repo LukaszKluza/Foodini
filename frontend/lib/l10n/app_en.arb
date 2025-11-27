@@ -232,6 +232,7 @@
   "barcodeCannotBeEmpty": "Barcode cannot be empty",
   "barcodeMustBeLength": "Barcode must be exactly",
   "barcodeMustContainOnlyDigits": "Barcode must contain only digits",
+  "barcodeUploaded": "Barcode uploaded",
   "mealName": "Meal name",
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",

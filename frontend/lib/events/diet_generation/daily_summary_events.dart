@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 
 abstract class DailySummaryEvent {}
 
+class ClearScannedProductStatus extends DailySummaryEvent {}
+
 class GetDailySummary extends DailySummaryEvent {
   final DateTime day;
 
@@ -43,11 +45,13 @@ class AddScannedProduct extends DailySummaryEvent {
   final String? barcode;
   final XFile? uploadedFile;
   final MealType mealType;
+  final DateTime day;
 
   AddScannedProduct({
     this.barcode,
     this.uploadedFile,
-    required this.mealType
+    required this.mealType,
+    required this.day
   });
 }
 

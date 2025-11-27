@@ -207,6 +207,8 @@ class DietFormSubmitSuccess extends DietFormState {
   final PredictedCalories predictedCalories;
 
   DietFormSubmitSuccess(this.predictedCalories);
+
+  int? get targetCalories => null;
 }
 
 class DietFormSubmitFailure extends DietFormState {

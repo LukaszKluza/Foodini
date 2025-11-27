@@ -4,6 +4,8 @@ import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/processing_status.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +27,7 @@ class EnterBarcodePopup extends StatefulWidget {
 class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
   final formKey = GlobalKey<FormState>();
   XFile? uploadedFile;
+  bool productAdded = false;
 
   late TextEditingController barcodeController;
 
@@ -32,6 +35,11 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
   void initState() {
     super.initState();
     barcodeController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<DailySummaryBloc>().add(ClearScannedProductStatus());
+      }
+    });
   }
 
   @override
@@ -91,6 +99,7 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
 
                         setState(() {
                           uploadedFile = picked;
+                          formKey.currentState!.reset();
                         });
                       },
                       color: Colors.orangeAccent,
@@ -98,14 +107,36 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                     ),
                   ],
                 ),
-                if (uploadedFile != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}',
-                      style: TextStyle(fontSize: 14, color: Colors.green[900]),
-                    ),
-                  ),
+                BlocBuilder<DailySummaryBloc, DailySummaryState>(
+                  builder: (context, state) {
+                    String? message;
+                    Color? color;
+
+                    if (state.addingScannedProduct == ProcessingStatus.submittingFailure) {
+                      message = state.getMessage?.call(context) ?? AppLocalizations.of(context)!.unknownError;
+                      color = Colors.red[900];
+                    } else if (uploadedFile != null) {
+                      message = '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}';
+                      color = Colors.green[900];
+                    } else if (productAdded) {
+                      message = AppLocalizations.of(context)!.barcodeUploaded;
+                      color = Colors.green[900];
+                    }
+
+                    if (message == null) return const SizedBox.shrink();
+
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: color,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -118,8 +149,22 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                     ActionButton(
                       onPressed: () {
                         if (uploadedFile != null || formKey.currentState!.validate()) {
-                          var event = AddScannedProduct(barcode: barcodeController.text, uploadedFile: uploadedFile, mealType: widget.mealType);
+                          var event = AddScannedProduct(barcode: barcodeController.text, uploadedFile: uploadedFile, mealType: widget.mealType, day: widget.day);
                           context.read<DailySummaryBloc>().add(event);
+
+                          setState(() {
+                            uploadedFile = null;
+                            barcodeController.clear();
+                            productAdded = true;
+                          });
+
+                          Future.delayed(Duration(seconds: 3), () {
+                            if (mounted) {
+                              setState(() {
+                                productAdded = false;
+                              });
+                            }
+                          });
                         }
                       },
                       color: Colors.lightGreen,

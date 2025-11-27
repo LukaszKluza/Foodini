@@ -459,6 +459,16 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
   );
 
   @override
+  void onDone(
+    _i32.RegisterEvent? event, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) => super.noSuchMethod(
+    Invocation.method(#onDone, [event, error, stackTrace]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   _i24.Future<void> close() =>
       (super.noSuchMethod(
             Invocation.method(#close, []),
@@ -798,6 +808,7 @@ class MockDietGenerationRepository extends _i1.Mock
     String? barcode,
     _i42.XFile? uploadedFile,
     required _i43.MealType? mealType,
+    required DateTime? day,
     required _i25.UuidValue? userId,
   }) =>
       (super.noSuchMethod(
@@ -805,6 +816,7 @@ class MockDietGenerationRepository extends _i1.Mock
               #barcode: barcode,
               #uploadedFile: uploadedFile,
               #mealType: mealType,
+              #day: day,
               #userId: userId,
             }),
             returnValue: _i24.Future<_i16.MealInfo>.value(
@@ -814,6 +826,7 @@ class MockDietGenerationRepository extends _i1.Mock
                   #barcode: barcode,
                   #uploadedFile: uploadedFile,
                   #mealType: mealType,
+                  #day: day,
                   #userId: userId,
                 }),
               ),
@@ -1575,6 +1588,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
     String? barcode,
     _i42.XFile? uploadedFile,
     required _i43.MealType? mealType,
+    required DateTime? day,
     required _i25.UuidValue? userId,
   }) =>
       (super.noSuchMethod(
@@ -1582,6 +1596,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               #barcode: barcode,
               #uploadedFile: uploadedFile,
               #mealType: mealType,
+              #day: day,
               #userId: userId,
             }),
             returnValue: _i24.Future<_i20.Response<dynamic>>.value(
@@ -1591,6 +1606,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
                   #barcode: barcode,
                   #uploadedFile: uploadedFile,
                   #mealType: mealType,
+                  #day: day,
                   #userId: userId,
                 }),
               ),

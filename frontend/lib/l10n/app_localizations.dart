@@ -1352,6 +1352,12 @@ abstract class AppLocalizations {
   /// **'Barcode must contain only digits'**
   String get barcodeMustContainOnlyDigits;
 
+  /// No description provided for @barcodeUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode uploaded'**
+  String get barcodeUploaded;
+
   /// No description provided for @mealName.
   ///
   /// In en, this message translates to:

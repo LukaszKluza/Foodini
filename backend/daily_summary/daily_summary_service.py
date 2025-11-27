@@ -342,7 +342,7 @@ class DailySummaryService:
             protein=new_meal.protein,
             carbs=new_meal.carbs,
             fat=new_meal.fat,
-            weight=new_meal.weight,
+            weight=custom_meal.eaten_weight or new_meal.weight,
             meal_id=new_meal.id,
         )
 
