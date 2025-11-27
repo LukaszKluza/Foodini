@@ -68,6 +68,13 @@ class MockDailyMealsSummary:
         self.user_id = user.id
 
 
+class MockMealRecipe:
+    def __init__(self):
+        self.meal_name = "Meal name"
+        self.meal_description = "Meal description"
+        self.meal_explanation = "Meal explanation"
+
+
 class MockDailyBaseInfo:
     def __init__(self):
         self.calories = 100
@@ -117,6 +124,7 @@ def mock_last_generated_meals_repository():
 def mock_meal_gateway():
     gateway = AsyncMock()
     gateway.add_meal_recipe = AsyncMock()
+    gateway.get_meal_recipe_by_meal_and_language_safe = AsyncMock()
     return gateway
 
 
@@ -151,10 +159,12 @@ user = User(id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"))
 @pytest.mark.asyncio
 async def test_get_daily_meals_success(daily_summary_service, mock_daily_summary_repository, mock_meal_gateway):
     mock_summary = MockDailyMealsSummary()
+    mock_recipe = MockMealRecipe()
     mock_daily_summary_repository.get_daily_meals_summary.return_value = mock_summary
     mock_meal_gateway.get_meal_icon_path_by_id.return_value = "mock_icon_path.png"
+    mock_meal_gateway.get_meal_recipe_by_meal_and_language_safe.return_value = mock_recipe
 
-    result = await daily_summary_service.get_daily_meals(user_id=uuid.uuid4(), day=date.today())
+    result = await daily_summary_service.get_daily_meals(user=user, day=date.today())
 
     assert result.day == mock_summary.day
     assert result.target_calories == mock_summary.target_calories
@@ -167,7 +177,7 @@ async def test_get_daily_meals_not_found(daily_summary_service, mock_daily_summa
     mock_daily_summary_repository.get_daily_meals_summary.return_value = None
 
     with pytest.raises(NotFoundInDatabaseException):
-        await daily_summary_service.get_daily_meals(user_id=uuid.uuid4(), day=date.today())
+        await daily_summary_service.get_daily_meals(user=user, day=date.today())
 
 
 @pytest.mark.asyncio

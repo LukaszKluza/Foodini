@@ -85,9 +85,13 @@ class DailySummaryService:
                 for item in link.meal_items:
                     meal = item.meal
                     if meal:
-                        recipe = None
-                        if meal.is_generated:
-                            recipe = await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(meal.id, user.language)
+                        recipe = (
+                            None
+                            if not meal.is_generated
+                            else await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(
+                                meal.id, user.language
+                            )
+                        )
 
                         meal_items_info.append(
                             MealInfoWithIconPath(
