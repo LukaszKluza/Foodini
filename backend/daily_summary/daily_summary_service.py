@@ -245,12 +245,10 @@ class DailySummaryService:
             meal = item.meal
             if not meal:
                 continue
-            weight_multiplier = (item.weight_eaten or meal.weight) / meal.weight
-
-            total_calories += meal.calories * weight_multiplier
-            total_protein += meal.protein * weight_multiplier
-            total_carbs += meal.carbs * weight_multiplier
-            total_fat += meal.fat * weight_multiplier
+            total_calories += meal.calories
+            total_protein += meal.protein
+            total_carbs += meal.carbs
+            total_fat += meal.fat
 
         meal_info = BasicMealInfo(
             status=new_status,
@@ -346,22 +344,32 @@ class DailySummaryService:
             meal_id=new_meal.id,
         )
 
-        # Jeśli istniejący był zjedzony to aktualizujemy makro
-        if previous_status == MealStatus.EATEN and existing_meal:
-            updated_macros = DailyMacrosSummaryCreate(
-                day=day,
-                calories=meal_info.calories - existing_meal.calories,
-                protein=meal_info.protein - existing_meal.protein,
-                carbs=meal_info.carbs - existing_meal.carbs,
-                fat=meal_info.fat - existing_meal.fat,
-            )
-            await self._update_daily_macros_summary(user.id, updated_macros)
+        if previous_status == MealStatus.EATEN:
+            new_c = int(new_meal.calories or 0)
+            new_p = float(new_meal.protein or 0)
+            new_cb = float(new_meal.carbs or 0)
+            new_f = float(new_meal.fat or 0)
 
-        # Usuwamy stary z ComposedMealItem (to do aktualizacji)
+            if existing_meal and existing_item:
+                old_c = int(existing_meal.calories or 0)
+                old_p = float(existing_meal.protein or 0)
+                old_cb = float(existing_meal.carbs or 0)
+                old_f = float(existing_meal.fat or 0)
+                delta = DailyMacrosSummaryCreate(
+                    day=day,
+                    calories=new_c - old_c,
+                    protein=new_p - old_p,
+                    carbs=new_cb - old_cb,
+                    fat=new_f - old_f,
+                )
+            else:
+                delta = DailyMacrosSummaryCreate(day=day, calories=new_c, protein=new_p, carbs=new_cb, fat=new_f)
+
+            await self._update_daily_macros_summary(user.id, delta)
+
         if existing_item:
             await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_item.meal_id)
 
-        # Dodajemy do ComposedMealItem
         await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
 
         return meal_info
