@@ -41,7 +41,7 @@ class DailySummaryRepository:
                 composed_meal = ComposedMealItem(
                     meal_daily_summary_id=meal_daily_summary_link.id,
                     meal_id=meal.meal_id,
-                    weight_eaten=meal.weight,
+                    weight_eaten=meal.target_weight,
                 )
                 self.db.add(composed_meal)
 
@@ -85,10 +85,7 @@ class DailySummaryRepository:
         if daily_summary is None:
             raise NotFoundInDatabaseException(f"DailyMealsSummary with ID {daily_summary_id} not found.")
 
-
-        meal_summary_stmt = select(MealDailySummary.id).where(
-            MealDailySummary.daily_summary_id == daily_summary_id
-        )
+        meal_summary_stmt = select(MealDailySummary.id).where(MealDailySummary.daily_summary_id == daily_summary_id)
         meal_summary_ids_result = await self.db.execute(meal_summary_stmt)
         meal_summary_ids = meal_summary_ids_result.scalars().all()
 
@@ -208,7 +205,7 @@ class DailySummaryRepository:
                 composed_item = ComposedMealItem(
                     meal_daily_summary_id=meal_daily_summary.id,
                     meal_id=meal_info.meal_id,
-                    weight_eaten=meal_info.weight,
+                    weight_eaten=meal_info.target_weight,
                 )
                 self.db.add(composed_item)
             await self.db.commit()

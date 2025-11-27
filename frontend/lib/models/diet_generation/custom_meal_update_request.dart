@@ -10,7 +10,7 @@ class CustomMealUpdateRequest {
   final double customProtein;
   final double customCarbs;
   final double customFat;
-  final int? eatenWeight;
+  final int eatenWeight;
 
   CustomMealUpdateRequest({
     required this.day,

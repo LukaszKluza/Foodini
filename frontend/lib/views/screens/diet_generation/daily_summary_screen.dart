@@ -480,7 +480,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     var backgroundColor1 = Colors.grey.shade300;
     var backgroundColor2 = colors[0];
     int integer = percent.floor();
-    double fraction = percent - integer;
+    double fraction = (integer >= 2) ? 1.0 : (percent - integer);
 
     return Center(
       child: Tooltip(
