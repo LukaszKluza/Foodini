@@ -23,6 +23,21 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     });
     on<GenerateMealPlan>(_onGenerateMealPlan);
     on<AddScannedProduct>(_onAddScannedProduct);
+    on<ClearScannedProductStatus>(_onClearScannedProductStatus);
+  }
+
+  void _onClearScannedProductStatus(
+    ClearScannedProductStatus event,
+    Emitter<DailySummaryState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        addingScannedProduct: ProcessingStatus.emptyProcessingStatus,
+        errorCode: null,
+        errorData: null,
+        getMessage: null,
+      ),
+    );
   }
 
   Future<void> _onGetDailySummary(
@@ -247,8 +262,14 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         userId: UserStorage().getUserId!,
       );
 
+      final updatedSummary = await dietGenerationRepository.getDailySummary(
+        event.day,
+        UserStorage().getUserId!,
+      );
+
       emit(
         state.copyWith(
+          dailySummary: updatedSummary,
           addingScannedProduct: ProcessingStatus.submittingSuccess,
         ),
       );

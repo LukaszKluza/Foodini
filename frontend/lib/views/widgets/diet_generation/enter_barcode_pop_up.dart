@@ -4,6 +4,8 @@ import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/processing_status.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,6 +35,11 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
   void initState() {
     super.initState();
     barcodeController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<DailySummaryBloc>().add(ClearScannedProductStatus());
+      }
+    });
   }
 
   @override
@@ -100,19 +107,36 @@ class _EnterBarcodePopupState extends State<EnterBarcodePopup> {
                     ),
                   ],
                 ),
-                if (uploadedFile != null || productAdded)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      uploadedFile != null
-                          ? '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}'
-                          : AppLocalizations.of(context)!.barcodeUploaded,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green[900],
+                BlocBuilder<DailySummaryBloc, DailySummaryState>(
+                  builder: (context, state) {
+                    String? message;
+                    Color? color;
+
+                    if (state.addingScannedProduct == ProcessingStatus.submittingFailure) {
+                      message = state.getMessage?.call(context) ?? AppLocalizations.of(context)!.unknownError;
+                      color = Colors.red[900];
+                    } else if (uploadedFile != null) {
+                      message = '${AppLocalizations.of(context)!.readFile} ${uploadedFile!.name}';
+                      color = Colors.green[900];
+                    } else if (productAdded) {
+                      message = AppLocalizations.of(context)!.barcodeUploaded;
+                      color = Colors.green[900];
+                    }
+
+                    if (message == null) return const SizedBox.shrink();
+
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: color,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [

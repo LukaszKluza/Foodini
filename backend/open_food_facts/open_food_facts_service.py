@@ -53,7 +53,7 @@ class OpenFoodFactsService:
         )
 
         if not response:
-            raise NotFoundInDatabaseException("Scanned product not found in database")
+            raise NotFoundInDatabaseException("We couldn't find this product in our database. You can add it manually.")
 
         name = response.get("product_name", "")
         brands = response.get("brands", "")
@@ -63,7 +63,9 @@ class OpenFoodFactsService:
 
         return ProductDetails(
             name=name if brands in name else f"{name} ({brands})",
-            calories=round(int(response.get("energy_100g", 0) * 0.23900573614)), #this multiplication is const from open food facts docs
+            calories=round(
+                int(response.get("energy_100g", 0) * 0.23900573614)
+            ),  # this multiplication is const from open food facts docs
             protein=round(float(nutriments.get("proteins_100g", 0)), 2),
             fat=round(float(nutriments.get("fat_100g", 0)), 2),
             carbs=round(float(nutriments.get("carbohydrates_100g", 0)), 2),

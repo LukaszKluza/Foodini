@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 
 abstract class DailySummaryEvent {}
 
+class ClearScannedProductStatus extends DailySummaryEvent {}
+
 class GetDailySummary extends DailySummaryEvent {
   final DateTime day;
 

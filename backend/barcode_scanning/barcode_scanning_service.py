@@ -6,6 +6,7 @@ import numpy as np
 from fastapi import UploadFile
 
 from backend.core.logger import logger
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
 from backend.daily_summary.schemas import CustomMealUpdateRequest
 from backend.meals.enums.meal_type import MealType
@@ -112,12 +113,14 @@ def _decode_ean13_from_image(img: np.ndarray) -> str:
             left_types.append("B")
         else:
             logger.debug("Decode image: invalid left side pattern")
-            raise ValueErrorException("Failed to decode barcode")
+            raise ValueErrorException(
+                "We couldn't read that barcode. Please type the code manually or try scanning again."
+            )
 
     first_digit = _decode_first_digit(left_types)
     if first_digit is None:
         logger.debug("Decode image: cannot decode first EAN digit")
-        raise ValueErrorException("Failed to decode barcode")
+        raise ValueErrorException("We couldn't read that barcode. Please type the code manually or try scanning again.")
 
     right_digits = []
     for i in range(50, 92, 7):
@@ -126,7 +129,9 @@ def _decode_ean13_from_image(img: np.ndarray) -> str:
             right_digits.append(C_CODE[pattern])
         else:
             logger.debug("Decode image: invalid right side pattern")
-            raise ValueErrorException("Failed to decode barcode")
+            raise ValueErrorException(
+                "We couldn't read that barcode. Please type the code manually or try scanning again."
+            )
 
     return first_digit + "".join(left_digits) + "".join(right_digits)
 
@@ -142,12 +147,13 @@ class BarcodeScanningService:
         product = None
         if barcode:
             product = await self._process_barcode(barcode)
-        if image:
+        if image and not product:
+            # Only try image if barcode flow didn't already succeed
             product = await self._process_image(image)
 
         if not product:
             logger.debug("Decode image: product not found")
-            raise ValueErrorException("Product not found")
+            raise ValueErrorException("We couldn't find this product in our database. You can add it manually.")
 
         custom_meal = CustomMealUpdateRequest(
             day=day,
@@ -166,9 +172,14 @@ class BarcodeScanningService:
     async def _process_barcode(self, barcode: str):
         if not _validate_check_sum(barcode):
             logger.debug("Decode image: check sum failed")
-            raise ValueErrorException("Invalid barcode")
+            raise ValueErrorException(
+                "Provided barcode is invalid. Please type the code again or add product manually."
+            )
 
-        product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        try:
+            product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        except NotFoundInDatabaseException as e:
+            raise ValueErrorException(str(e)) from e
         return product
 
     async def _process_image(self, image: UploadFile):
@@ -178,13 +189,20 @@ class BarcodeScanningService:
 
         if img is None:
             logger.debug("Invalid barcode: img is None")
-            raise ValueErrorException("Invalid barcode")
+            raise ValueErrorException(
+                "We couldn't read that barcode. Please type the code manually or try scanning again."
+            )
 
         barcode = _decode_ean13_from_image(img)
 
         if not barcode or not _validate_check_sum(barcode):
             logger.debug("Invalid barcode: barcode is None or check sum failed")
-            raise ValueErrorException("Invalid barcode")
+            raise ValueErrorException(
+                "We couldn't read that barcode. Please type the code manually or try scanning again."
+            )
 
-        product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        try:
+            product = await self.open_food_facts_gateway.get_product_details_by_barcode(barcode)
+        except NotFoundInDatabaseException as e:
+            raise ValueErrorException(str(e)) from e
         return product
