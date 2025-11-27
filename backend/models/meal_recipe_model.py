@@ -52,6 +52,7 @@ class Meal(SQLModel, table=True):
         CheckConstraint("protein >= 0", name="ck_protein_nonnegative"),
         CheckConstraint("carbs >= 0", name="ck_carbs_nonnegative"),
         CheckConstraint("fat >= 0", name="ck_fat_nonnegative"),
+        CheckConstraint("weight >= 0", name="ck_weight_nonnegative"),
     )
 
     id: uuid.UUID = Field(
@@ -63,6 +64,7 @@ class Meal(SQLModel, table=True):
     protein: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
     carbs: float = Field(sa_column=Column(FloatAsNumeric), ge=0)
+    weight: int = Field(nullable=False, ge=0, le=1250)
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -99,6 +101,7 @@ class MealRecipe(SQLModel, table=True):
     language: Language = Field(default=Language.EN, nullable=False)
     meal_name: str = Field(nullable=False)
     meal_description: str = Field(nullable=False)
+    meal_explanation: str = Field(nullable=True)
     ingredients: Ingredients = Field(sa_column=Column(JSONB, nullable=False))
     steps: List[Step] = Field(sa_column=Column(JSONB, nullable=False))
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))

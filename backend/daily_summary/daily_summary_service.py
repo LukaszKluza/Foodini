@@ -52,11 +52,13 @@ class DailySummaryService:
                 status=link.status,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                explanation=link.meal.recipes[0].meal_explanation,
                 icon_path=await self.meal_gateway.get_meal_icon_path_by_id(link.meal.icon_id),
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None
@@ -96,10 +98,12 @@ class DailySummaryService:
                 status=link.status,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                explanation=link.meal.recipes[0].meal_explanation,
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None
@@ -125,11 +129,13 @@ class DailySummaryService:
                 meal_id=link.meal.id,
                 name=link.meal.recipes[0].meal_name,
                 description=link.meal.recipes[0].meal_description,
+                explanation=link.meal.recipes[0].meal_explanation,
                 status=link.status,
                 calories=int(link.meal.calories),
                 protein=float(link.meal.protein),
                 carbs=float(link.meal.carbs),
                 fat=float(link.meal.fat),
+                weight=int(link.meal.weight),
             )
             for link in daily_meals.daily_meals
             if link.meal is not None
@@ -186,6 +192,7 @@ class DailySummaryService:
             carbs=float(link_to_update.meal.carbs),
             fat=float(link_to_update.meal.fat),
             meal_id=meal_id,
+            weight=link_to_update.meal.weight,
         )
 
         await self._update_macros_after_status_change(user.id, day, meal_info, new_status, previous_status)
@@ -244,6 +251,7 @@ class DailySummaryService:
             protein=new_meal.protein,
             carbs=new_meal.carbs,
             fat=new_meal.fat,
+            weight=new_meal.weight,
             meal_id=new_meal.id,
         )
 
