@@ -26,6 +26,9 @@ class DailySummaryGateway:
     async def add_daily_macros_summary(self, user_id: UUID, data: DailyMacrosSummaryCreate):
         await self.daily_summary_service.add_daily_macros_summary(user_id, data)
 
+    async def get_daily_macros_summary(self, user_id: UUID, day: date):
+        return await self.daily_summary_service.get_daily_macros_summary(user_id, day)
+
 
 def get_daily_summary_gateway(
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),

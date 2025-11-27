@@ -253,5 +253,11 @@
   "forSomething": "dla",
   "whileMealsGeneration": "podczas generowania posiłków",
   "error": "Błąd",
-  "information": "Informacja"
+  "information": "Informacja",
+
+  "yourStatistics": "Twoje statystyki",
+  "statisticsLoadFailure": "Nie udało się załadować statystyk",
+  "statistsMissing": "Statystyki niedostępne",
+  "calorieConsumptionChartTitle": "Spożyte kalorie",
+  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie"
 }
