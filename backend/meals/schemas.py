@@ -26,6 +26,7 @@ class MealRecipeResponse(BaseModel):
     language: Language
     meal_name: str
     meal_description: str
+    meal_explanation: str
     ingredients: Ingredients
     steps: List[Step]
     meal_type: MealType

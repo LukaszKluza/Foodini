@@ -473,6 +473,12 @@ abstract class AppLocalizations {
   /// **'Weight (kg)'**
   String get weightKg;
 
+  /// No description provided for @weightG.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (g)'**
+  String get weightG;
+
   /// No description provided for @dietGoalShouldBeBetween.
   ///
   /// In en, this message translates to:
@@ -1319,11 +1325,17 @@ abstract class AppLocalizations {
   /// **'Value of this macro should be between'**
   String get valueOfThisMacroShouldBeBetween;
 
-  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  /// No description provided for @valueOfCaloriesShouldBeBetween.
   ///
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
-  String get valueOfCaloriesMacroShouldBeBetween;
+  String get valueOfCaloriesShouldBeBetween;
+
+  /// No description provided for @valueOfWeightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of weight should be between'**
+  String get valueOfWeightShouldBeBetween;
 
   /// No description provided for @generateNewPlan.
   ///
