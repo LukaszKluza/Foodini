@@ -52,7 +52,7 @@ class TestWrapperBuilder {
       designSize: const Size(1170, 2532),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (_, __) => child,
+      builder: (_, _) => child,
     );
 
     if (_config.useRouter) {
@@ -61,7 +61,7 @@ class TestWrapperBuilder {
         routes: [
           GoRoute(
             path: _config.initialRoute,
-            builder: (_, __) => screenUtilWrapper,
+            builder: (_, _) => screenUtilWrapper,
           ),
           ..._config.routes,
         ],

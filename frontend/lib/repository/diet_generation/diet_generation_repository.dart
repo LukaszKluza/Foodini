@@ -7,7 +7,6 @@ import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/user_details/diet_type.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/utils/cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
