@@ -142,9 +142,9 @@ class DailySummaryService:
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
         daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, daily_meals_data.day)
         if daily_meals:
-            await self.daily_summary_repo.update_daily_meals(user_id, daily_meals_data, daily_meals_data.day)
-        else:
-            await self.daily_summary_repo.add_daily_meals_summary(daily_meals_data, user_id)
+            await self.daily_summary_repo.remove_daily_meals_summary(daily_meals.id)
+
+        await self.daily_summary_repo.add_daily_meals_summary(daily_meals_data, user_id)
 
         daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user_id, daily_meals_data.day)
         meals_dict: Dict[MealType, List[BasicMealInfo]] = {}

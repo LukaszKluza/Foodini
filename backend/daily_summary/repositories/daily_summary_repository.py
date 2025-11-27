@@ -5,6 +5,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
 from backend.meals.enums.meal_type import MealType
@@ -75,6 +76,36 @@ class DailySummaryRepository:
         )
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
+
+    async def remove_daily_meals_summary(self, daily_summary_id: UUID) -> None:
+        stmt = select(DailyMealsSummary).where(DailyMealsSummary.id == daily_summary_id)
+        result = await self.db.execute(stmt)
+        daily_summary = result.scalars().first()
+
+        if daily_summary is None:
+            raise NotFoundInDatabaseException(f"DailyMealsSummary with ID {daily_summary_id} not found.")
+
+
+        meal_summary_stmt = select(MealDailySummary.id).where(
+            MealDailySummary.daily_summary_id == daily_summary_id
+        )
+        meal_summary_ids_result = await self.db.execute(meal_summary_stmt)
+        meal_summary_ids = meal_summary_ids_result.scalars().all()
+
+        if meal_summary_ids:
+            delete_composed_stmt = delete(ComposedMealItem).where(
+                ComposedMealItem.meal_daily_summary_id.in_(meal_summary_ids)
+            )
+            await self.db.execute(delete_composed_stmt)
+
+            delete_meal_summary_stmt = delete(MealDailySummary).where(
+                MealDailySummary.daily_summary_id == daily_summary_id
+            )
+            await self.db.execute(delete_meal_summary_stmt)
+
+        await self.db.delete(daily_summary)
+
+        await self.db.commit()
 
     async def update_daily_meals(
         self, user_id: UUID, daily_meals_data: DailyMealsCreate, day: date
