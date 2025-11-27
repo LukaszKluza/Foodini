@@ -44,7 +44,7 @@ class OpenFoodFactsService:
                 "product_name",
                 "brands",
                 "nutriments.carbohydrates_100g",
-                "nutriments.energy-kcal_100g",
+                "energy_100g",
                 "nutriments.fat_100g",
                 "nutriments.proteins_100g",
                 "serving_size",
@@ -63,7 +63,7 @@ class OpenFoodFactsService:
 
         return ProductDetails(
             name=name if brands in name else f"{name} ({brands})",
-            calories=round(int(response.get("energy-kcal_100g", 0))),
+            calories=round(int(response.get("energy_100g", 0) * 0.23900573614)), #this multiplication is const from open food facts docs
             protein=round(float(nutriments.get("proteins_100g", 0)), 2),
             fat=round(float(nutriments.get("fat_100g", 0)), 2),
             carbs=round(float(nutriments.get("carbohydrates_100g", 0)), 2),
