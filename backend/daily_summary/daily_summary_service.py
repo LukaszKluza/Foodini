@@ -179,10 +179,14 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         meals_dict = await self.fetch_daily_meals(daily_meals)
+        flatten_meals_dict = {}
+
+        for meal_type, meal in meals_dict.items():
+            flatten_meals_dict[meal_type] = meal.meal_items
 
         return DailyMealsCreate(
             day=daily_meals.day,
-            meals=meals_dict,
+            meals=flatten_meals_dict,
             target_calories=daily_meals.target_calories,
             target_protein=daily_meals.target_protein,
             target_carbs=daily_meals.target_carbs,

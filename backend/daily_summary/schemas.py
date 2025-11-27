@@ -36,7 +36,7 @@ class Meal(BaseModel):
 
 class DailyMealsCreate(BaseModel):
     day: date
-    meals: Dict[MealType, Meal]
+    meals: Dict[MealType, List[BasicMealInfo]]
     target_calories: int
     target_protein: float
     target_carbs: float
