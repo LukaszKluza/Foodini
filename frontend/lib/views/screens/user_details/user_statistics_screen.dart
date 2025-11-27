@@ -274,7 +274,7 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
             barWidth: 3,
             dotData: FlDotData(show: true),
             belowBarData:
-                BarAreaData(show: true, color: Colors.orange.withValues()),
+                BarAreaData(show: true, color: Colors.orange.withAlpha(77)),
           ),
         ],
       ),
