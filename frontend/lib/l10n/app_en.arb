@@ -250,5 +250,6 @@
   "mealsGeneratedSuccessfully": "Meals successfully generated",
   "forSomething": "for",
   "whileMealsGeneration": "while generating meals",
-  "error": "Error"
+  "error": "Error",
+  "information": "Information"
 }

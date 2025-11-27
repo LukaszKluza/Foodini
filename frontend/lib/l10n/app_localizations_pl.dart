@@ -705,4 +705,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get error => 'Błąd';
+
+  @override
+  String get information => 'Informacja';
 }

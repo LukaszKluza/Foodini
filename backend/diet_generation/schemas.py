@@ -26,9 +26,11 @@ class CompleteMeal(BaseModel):
     protein: float = Field(default=0, ge=0)
     carbs: float = Field(default=0, ge=0)
     fat: float = Field(default=0, ge=0)
+    weight: int = Field(default=0, ge=0)
 
     ingredients_list: List[IngredientCreate]
     steps: List[StepCreate]
+    explanation: Optional[str] = None
 
 
 class DietGenerationOutput(BaseModel):
@@ -54,6 +56,7 @@ class MealRecipeTranslation(BaseModel):
     meal_description: str = Field(min_length=1)
     ingredients_list: List[IngredientCreate]
     steps: List[StepCreate]
+    explanation: Optional[str] = None
 
 
 class AgentState(BaseModel):
