@@ -1,6 +1,6 @@
 import asyncio
 from datetime import date, datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Type
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -61,14 +61,15 @@ class DailyMealsGeneratorService:
             cooking_skills=details.cooking_skills,
         )
 
-    async def generate_meal_plan(self, user: User, day: date) -> List[MealRecipe]:
+    async def generate_meal_plan(self, user: Type[User], day: date) -> List[MealRecipe]:
         today = datetime.now(config.TIMEZONE).date()
         if day < today:
             raise ValueErrorException("Cannot generate diet for past days.")
 
         if day == today:
             try:
-                await self.daily_summary_gateway.get_daily_meals(user.id, day)
+                # TODO Simplify it
+                await self.daily_summary_gateway.get_daily_meals(user, day)
                 raise ValueErrorException("Diet for today has already been generated.")
             except NotFoundInDatabaseException:
                 pass
@@ -101,11 +102,11 @@ class DailyMealsGeneratorService:
             logger.error(f"Error while generating meal plan: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error generating diet plan for user {user.id}",
+                detail="Error while generating meal plan",
             ) from e
         return saved_recipes
 
-    async def _get_required_arguments(self, user: User, day: date):
+    async def _get_required_arguments(self, user: Type[User], day: date):
         user_details = await self.user_details_gateway.get_user_details(user)
         user_diet_predictions = await self.user_details_gateway.get_user_diet_predictions(user)
         user_latest_meals = await self.daily_summary_gateway.get_last_generated_meals(

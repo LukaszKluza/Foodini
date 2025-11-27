@@ -21,6 +21,7 @@ from backend.open_food_facts.open_food_facts_router import open_food_facts_route
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
+from backend.user_statistics.user_statistics_router import user_statistics_router
 from backend.users.user_router import user_router
 
 app = FastAPI()
@@ -30,6 +31,7 @@ app.include_router(calories_prediction_router)
 app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
 app.include_router(meal_router)
+app.include_router(user_statistics_router)
 app.include_router(open_food_facts_router)
 app.include_router(barcode_scanning_router)
 

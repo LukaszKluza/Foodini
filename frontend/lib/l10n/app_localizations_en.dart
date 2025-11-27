@@ -206,6 +206,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightKg => 'Weight (kg)';
 
   @override
+  String get weightG => 'Weight (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
@@ -659,8 +662,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Value of this macro should be between';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween =>
+  String get valueOfCaloriesShouldBeBetween =>
       'Value of calories should be between';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
+      'Value of weight should be between';
 
   @override
   String get generateNewPlan => 'Generate New Plan';
@@ -703,4 +710,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get information => 'Information';
+
+  @override
+  String get yourStatistics => 'Your statistics';
+
+  @override
+  String get statisticsLoadFailure => 'Failed to load statistics';
+
+  @override
+  String get statistsMissing => 'No statistics available';
+
+  @override
+  String get calorieConsumptionChartTitle => 'Calorie consumption';
+
+  @override
+  String get calorieGoalChartTitle => 'Calorie Goal vs Actual';
 }

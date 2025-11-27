@@ -23,7 +23,7 @@ class MealInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         onTap: () {
           final mealId = activeMealInfo.mealId;
-          if (activeMealInfo.mealId != null && activeMealInfo.description != null) {
+          if (activeMealInfo.description != null) {
             context.push('/meal-recipe/$mealId');
           }
         },
@@ -41,7 +41,7 @@ class MealInfoCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AutoSizeText(
-                      activeMealInfo.name!,
+                      activeMealInfo.name,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,

@@ -140,6 +140,14 @@ class ApiClient {
   }
 
   // user details
+  Future<Response> getUserStatistics(UuidValue userId) {
+    return _client.get(
+      Endpoints.userStatistics,
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
   Future<Response> getDietPreferences(UuidValue userId) {
     return _client.get(
       Endpoints.dietPreferences,

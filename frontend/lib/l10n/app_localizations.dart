@@ -476,6 +476,12 @@ abstract class AppLocalizations {
   /// **'Weight (kg)'**
   String get weightKg;
 
+  /// No description provided for @weightG.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (g)'**
+  String get weightG;
+
   /// No description provided for @dietGoalShouldBeBetween.
   ///
   /// In en, this message translates to:
@@ -1370,11 +1376,17 @@ abstract class AppLocalizations {
   /// **'Value of this macro should be between'**
   String get valueOfThisMacroShouldBeBetween;
 
-  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  /// No description provided for @valueOfCaloriesShouldBeBetween.
   ///
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
-  String get valueOfCaloriesMacroShouldBeBetween;
+  String get valueOfCaloriesShouldBeBetween;
+
+  /// No description provided for @valueOfWeightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of weight should be between'**
+  String get valueOfWeightShouldBeBetween;
 
   /// No description provided for @generateNewPlan.
   ///
@@ -1453,6 +1465,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Information'**
   String get information;
+
+  /// No description provided for @yourStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistics'**
+  String get yourStatistics;
+
+  /// No description provided for @statisticsLoadFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load statistics'**
+  String get statisticsLoadFailure;
+
+  /// No description provided for @statistsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics available'**
+  String get statistsMissing;
+
+  /// No description provided for @calorieConsumptionChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie consumption'**
+  String get calorieConsumptionChartTitle;
+
+  /// No description provided for @calorieGoalChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie Goal vs Actual'**
+  String get calorieGoalChartTitle;
 }
 
 class _AppLocalizationsDelegate

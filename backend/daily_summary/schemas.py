@@ -8,7 +8,7 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.meals.enums.meal_type import MealType
 
 
-# TODO Review and refine the schemas
+# TODO Review and refine the schemas, rename meal to mealItem
 class BasicMealInfo(BaseModel):
     meal_id: UUID
     status: MealStatus = Field(default=MealStatus.TO_EAT)
@@ -27,6 +27,11 @@ class MealInfo(BasicMealInfo):
 
 class MealInfoWithIconPath(MealInfo):
     icon_path: Optional[str] = None
+
+
+class Meal(BaseModel):
+    meal_items: List[MealInfoWithIconPath]
+    status: MealStatus = Field(default=MealStatus.TO_EAT)
 
 
 class DailyMealsCreate(BaseModel):

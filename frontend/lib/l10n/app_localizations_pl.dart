@@ -206,6 +206,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weightKg => 'Waga (kg)';
 
   @override
+  String get weightG => 'Waga (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
@@ -667,7 +670,11 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wartość tego makroskładnika powinna mieścić się w przedziale';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween =>
+  String get valueOfCaloriesShouldBeBetween =>
+      'Wartość kalorii powinna mieścić się w przedziale';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
       'Wartość kalorii powinna mieścić się w przedziale';
 
   @override
@@ -711,4 +718,19 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get information => 'Informacja';
+
+  @override
+  String get yourStatistics => 'Twoje statystyki';
+
+  @override
+  String get statisticsLoadFailure => 'Nie udało się załadować statystyk';
+
+  @override
+  String get statistsMissing => 'Statystyki niedostępne';
+
+  @override
+  String get calorieConsumptionChartTitle => 'Spożyte kalorie';
+
+  @override
+  String get calorieGoalChartTitle => 'Cel kalorii vs faktyczne spożycie';
 }

@@ -136,7 +136,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, widgetSelectedDate, mealType, mealItems[0].mealId!),
+                    onPressed: showPopUp(context, widgetSelectedDate, mealType, mealItems[0].mealId),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -161,7 +161,7 @@ class _MealDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          generateMealItemNameHeader(mealInfo.name!),
+          generateMealItemNameHeader(mealInfo.name),
           const SizedBox(height: 12),
 
           Row(
@@ -178,7 +178,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId!, mealInfo: mealInfo),
+                onPressed: showPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),

@@ -23,7 +23,7 @@ class UserDetailsGateway:
     async def get_date_of_last_update_user_details(self, user: Type[User]) -> datetime:
         return await self.user_details_service.get_date_of_last_update_user_details(user)
 
-    async def get_user_diet_predictions(self, user: User) -> PredictedCalories:
+    async def get_user_diet_predictions(self, user: Type[User]) -> PredictedCalories:
         return await self.calories_prediction_service.get_calories_prediction_by_user_id(user.id)
 
     async def get_date_of_last_update_user_calories_prediction(self, user: Type[User]) -> datetime:
