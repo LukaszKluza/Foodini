@@ -104,7 +104,8 @@ class DailySummaryService:
                                 protein=float(meal.protein),
                                 carbs=float(meal.carbs),
                                 fat=float(meal.fat),
-                                weight=item.weight_eaten if item.weight_eaten is not None else int(meal.weight),
+                                unit_weight=int(meal.weight),
+                                target_weight=item.weight_eaten,
                             )
                         )
 
@@ -136,7 +137,8 @@ class DailySummaryService:
                     protein=float(meal.protein),
                     carbs=float(meal.carbs),
                     fat=float(meal.fat),
-                    weight=item.weight_eaten if item.weight_eaten is not None else int(meal.weight),
+                    unit_weight=int(meal.weight),
+                    target_weight=item.weight_eaten,
                 )
 
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
@@ -162,7 +164,8 @@ class DailySummaryService:
                     protein=float(meal.protein),
                     carbs=float(meal.carbs),
                     fat=float(meal.fat),
-                    weight=item.weight_eaten if item.weight_eaten is not None else meal.weight,
+                    unit_weight=int(meal.weight),
+                    target_weight=item.weight_eaten,
                 )
 
                 meal_items_info.append(basic_info)
@@ -257,8 +260,9 @@ class DailySummaryService:
             carbs=float(total_carbs),
             fat=float(total_fat),
             meal_id=slot.meal_items[0].meal_id,
-            weight=slot.meal_items[0].meal.weight,
-            # Weight doesnt matter. We can think of optional weight here and in model on front
+            unit_weight=slot.meal_items[0].meal.weight,
+            target_weight=slot.meal_items[0].meal.weight,
+            # TODO Weight doesn't matter. We can think of optional weight here and in model on front
         )
 
         await self.daily_summary_repo.update_meal_status(user.id, day, meal_type, new_status)
@@ -340,7 +344,8 @@ class DailySummaryService:
             protein=new_meal.protein,
             carbs=new_meal.carbs,
             fat=new_meal.fat,
-            weight=custom_meal.eaten_weight or new_meal.weight,
+            unit_weight=new_meal.weight,
+            target_weight=new_meal.weight,
             meal_id=new_meal.id,
         )
 

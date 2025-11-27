@@ -96,10 +96,10 @@ class DailyMealsGeneratorService:
             logger.debug("Diet not found in database")
             raise
         except HTTPException as e:
-            logger.error(f"Error while generating meal plan: {str(e)}")
+            logger.error(f"Error while generating meal plan: {str(e.detail)}")
             raise
         except Exception as e:
-            logger.error(f"Error while generating meal plan: {str(e)}")
+            logger.error(f"Error while generating meal plan: {str(e.with_traceback())}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error while generating meal plan",

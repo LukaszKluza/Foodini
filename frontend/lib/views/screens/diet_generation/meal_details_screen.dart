@@ -16,9 +16,10 @@ import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
+import 'package:frontend/views/widgets/diet_generation/edit_meal_pop_up.dart';
 import 'package:frontend/views/widgets/diet_generation/error_box.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
-import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
+import 'package:frontend/views/widgets/diet_generation/new_meal_pop_up.dart';
 import 'package:go_router/go_router.dart';
 
 class MealDetailsScreen extends StatefulWidget {
@@ -60,7 +61,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
             ),
             bottomSheet: CustomBottomSheet(
               mealTypeMacrosSummary: calculatedMacrosSummary,
-              selectedDate: widget.selectedDate,
+              mealType: widget.mealType,
             ),
           );
          },
@@ -118,7 +119,6 @@ class _MealDetails extends StatelessWidget {
   }
 
   Padding generateMealDetails(BuildContext context, MealType mealType, List<MealInfo> mealItems) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
       child: Column(
@@ -136,7 +136,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, widgetSelectedDate, mealType, mealItems[0].mealId),
+                    onPressed: showNewMealPopUp(context, widgetSelectedDate, mealType),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -178,7 +178,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo: mealInfo),
+                onPressed: showEditMealPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),

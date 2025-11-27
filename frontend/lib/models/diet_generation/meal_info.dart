@@ -7,7 +7,8 @@ class MealInfo {
   final String? explanation;
   final String? iconPath;
   final int? calories;
-  final int? weight;
+  final int unitWeight;
+  final int targetWeight;
   final double? protein;
   final double? carbs;
   final double? fat;
@@ -18,7 +19,8 @@ class MealInfo {
     this.description,
     this.explanation,
     this.iconPath,
-    this.weight,
+    required this.unitWeight,
+    required this.targetWeight,
     this.calories,
     this.protein,
     this.carbs,
@@ -32,7 +34,8 @@ class MealInfo {
       description: json['description'],
       explanation: json['explanation'],
       iconPath: json['icon_path'],
-      weight: json['weight'] as int,
+      unitWeight: json['unit_weight'] as int,
+      targetWeight: json['target_weight'] as int,
       calories: json['calories'] as int,
       protein: (json['protein'] as num).toDouble(),
       carbs: (json['carbs'] as num).toDouble(),
@@ -47,7 +50,8 @@ class MealInfo {
       if (description != null) 'description': description,
       if (explanation != null) 'explanation': explanation,
       if (iconPath != null) 'icon_path': iconPath,
-      if (weight != null) 'weight': weight,
+      'unit_weight': unitWeight,
+      'target_weight': targetWeight,
       if (calories != null) 'calories': calories,
       if (protein != null) 'protein': protein,
       if (carbs != null) 'carbs': carbs,

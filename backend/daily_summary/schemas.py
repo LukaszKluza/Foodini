@@ -16,7 +16,8 @@ class BasicMealInfo(BaseModel):
     protein: float
     carbs: float
     fat: float
-    weight: int
+    unit_weight: int
+    target_weight: int
 
 
 class MealInfo(BasicMealInfo):
