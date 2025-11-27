@@ -169,7 +169,7 @@ async def test_get_daily_meals_success(daily_summary_service, mock_daily_summary
     assert result.day == mock_summary.day
     assert result.target_calories == mock_summary.target_calories
     assert isinstance(result.meals, dict)
-    assert result.meals[MealType.BREAKFAST].meal_items[0].calories == 100
+    assert list(result.meals.values())[0][0].calories == 100
 
 
 @pytest.mark.asyncio
