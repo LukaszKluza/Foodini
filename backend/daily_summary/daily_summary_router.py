@@ -38,7 +38,7 @@ async def get_daily_meals(
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await diet_service.get_daily_meals(user.id, day)
+    return await diet_service.get_daily_meals(user, day)
 
 
 # DEV

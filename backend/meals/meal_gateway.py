@@ -5,7 +5,9 @@ from fastapi import Depends
 from backend.meals.dependencies import get_meal_service
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_service import MealService
+from backend.meals.schemas import MealRecipeResponse
 from backend.models import Meal, MealRecipe
+from backend.users.enums.language import Language
 
 
 class MealGateway:
@@ -20,6 +22,9 @@ class MealGateway:
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_service.add_meal_recipe(meal_recipe)
+
+    async def get_meal_recipe_by_meal_and_language_safe(self, meal_id: UUID, language: Language) -> MealRecipeResponse:
+        return await self.meal_service.get_meal_recipe_by_meal_and_language_safe(meal_id, language)
 
     async def get_meal_icon_id(self, meal_type: MealType) -> UUID:
         return await self.meal_service.get_meal_icon_id(meal_type)

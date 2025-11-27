@@ -245,7 +245,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       DropdownButtonFormField<DietStyle>(
         key: const Key('diet_style'),
         isExpanded: true,
-        value: _selectedDietStyle,
+        initialValue: _selectedDietStyle,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietStyle,
         ),
@@ -265,7 +265,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       DropdownButtonFormField<DietType>(
         key: const Key('diet_type'),
         isExpanded: true,
-        value: _selectedDietType,
+        initialValue: _selectedDietType,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietType,
         ),
@@ -326,7 +326,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           Expanded(
             child: DropdownButtonFormField<DailyBudget>(
               isExpanded: true,
-              value: _selectedDailyBudget,
+              initialValue: _selectedDailyBudget,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.dailyBudget,
               ),
@@ -347,7 +347,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
           Expanded(
             child: DropdownButtonFormField<CookingSkills>(
               isExpanded: true,
-              value: _selectedCookingSkills,
+              initialValue: _selectedCookingSkills,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.cookingSkills,
               ),
@@ -369,7 +369,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       DropdownButtonFormField<DietIntensity>(
         key: const Key('diet_intensity'),
         isExpanded: true,
-        value: _selectedDietIntensity,
+        initialValue: _selectedDietIntensity,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.dietIntensity,
         ),
@@ -395,7 +395,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         child: ListView.separated(
           shrinkWrap: true,
           itemCount: fields.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 15),
+          separatorBuilder: (_, _) => const SizedBox(height: 15),
           itemBuilder: (_, index) => fields[index],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:frontend/api_exception.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
+import 'package:frontend/models/user_details/user_statistics.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -65,6 +66,17 @@ class UserDetailsRepository {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while fetching calories prediction: $e');
+    }
+  }
+
+  Future<UserStatistics> getUserStatistics(UuidValue userId) async {
+    try {
+      final response = await apiClient.getUserStatistics(userId);
+      return UserStatistics.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while fetching user statistics: $e');
     }
   }
 }

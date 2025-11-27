@@ -1,9 +1,11 @@
+import 'package:frontend/models/diet_generation/meal.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 
 class DailySummary {
   final DateTime day;
-  final Map<MealType, MealInfo> meals;
+  final Map<MealType, Meal> meals;
+  final Map<MealType, MealInfo> generatedMeals;
   final int targetCalories;
   final double targetProtein;
   final double targetCarbs;
@@ -19,6 +21,7 @@ class DailySummary {
   DailySummary({
     required this.day,
     required this.meals,
+    required this.generatedMeals,
     required this.targetCalories,
     required this.targetProtein,
     required this.targetCarbs,
@@ -31,17 +34,26 @@ class DailySummary {
   });
 
   factory DailySummary.fromJson(Map<String, dynamic> json) {
-    final mealsMap = <MealType, MealInfo>{};
+    final mealsMap = <MealType, Meal>{};
     if (json['meals'] != null) {
       (json['meals'] as Map<String, dynamic>).forEach((key, value) {
         final mealType = MealType.fromJson(key);
-        mealsMap[mealType] = MealInfo.fromJson(value);
+        mealsMap[mealType] = Meal.fromJson(value);
+      });
+    }
+
+    final generatedMealsMap = <MealType, MealInfo>{};
+    if (json['generated_meals'] != null) {
+      (json['generated_meals'] as Map<String, dynamic>).forEach((key, value) {
+        final mealType = MealType.fromJson(key);
+        generatedMealsMap[mealType] = MealInfo.fromJson(value);
       });
     }
 
     return DailySummary(
       day: DateTime.parse(json['day']),
       meals: mealsMap,
+      generatedMeals: generatedMealsMap,
       targetCalories: json['target_calories'] as int,
       targetProtein: (json['target_protein'] as num).toDouble(),
       targetCarbs: (json['target_carbs'] as num).toDouble(),
@@ -55,11 +67,17 @@ class DailySummary {
   }
 
   Map<String, dynamic> toJson() {
-    final mealsJson = meals.map((key, value) => MapEntry(key.toJson(), value.toJson()));
+    final mealsJson = meals.map((key, value) => MapEntry(
+      key.toJson(),
+      value.toJson(),
+    ));
+    final generatedMealsJson = generatedMeals.map((key, value) =>
+        MapEntry(key.toJson(), value.toJson()));
 
     return {
       'day': day.toIso8601String().split('T').first,
       'meals': mealsJson,
+      'generated_meals': generatedMealsJson,
       'target_calories': targetCalories,
       'target_protein': targetProtein,
       'target_carbs': targetCarbs,

@@ -22,6 +22,22 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       emit(DailySummaryState());
     });
     on<GenerateMealPlan>(_onGenerateMealPlan);
+    on<AddScannedProduct>(_onAddScannedProduct);
+    on<ClearScannedProductStatus>(_onClearScannedProductStatus);
+  }
+
+  void _onClearScannedProductStatus(
+    ClearScannedProductStatus event,
+    Emitter<DailySummaryState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        addingScannedProduct: ProcessingStatus.emptyProcessingStatus,
+        errorCode: null,
+        errorData: null,
+        getMessage: null,
+      ),
+    );
   }
 
   Future<void> _onGetDailySummary(
@@ -79,7 +95,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     try {
       final request = MealInfoUpdateRequest(
         day: event.day,
-        mealId: event.mealId,
+        mealType: event.mealType,
         mealStatus: event.status,
       );
 
@@ -224,6 +240,54 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
                 '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.toString()}',
             isError: true,
           ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAddScannedProduct(
+    AddScannedProduct event,
+    Emitter<DailySummaryState> emit,
+  ) async {
+    emit(
+      state.copyWith(addingScannedProduct: ProcessingStatus.submittingOnGoing),
+    );
+
+    try {
+      await dietGenerationRepository.addScannedProduct(
+        barcode: event.barcode,
+        uploadedFile: event.uploadedFile,
+        mealType: event.mealType,
+        day: event.day,
+        userId: UserStorage().getUserId!,
+      );
+
+      final updatedSummary = await dietGenerationRepository.getDailySummary(
+        event.day,
+        UserStorage().getUserId!,
+      );
+
+      emit(
+        state.copyWith(
+          dailySummary: updatedSummary,
+          addingScannedProduct: ProcessingStatus.submittingSuccess,
+        ),
+      );
+    } on ApiException catch (error) {
+      emit(
+        state.copyWith(
+          addingScannedProduct: ProcessingStatus.submittingFailure,
+          errorCode: error.statusCode,
+          getMessage:
+              (context) =>
+              ExceptionConverter.formatErrorMessage(error.data, context),
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          addingScannedProduct: ProcessingStatus.submittingFailure,
+          getMessage: (context) => error.toString(),
         ),
       );
     }

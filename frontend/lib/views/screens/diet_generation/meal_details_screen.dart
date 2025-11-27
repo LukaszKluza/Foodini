@@ -7,8 +7,8 @@ import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
-import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/cache_manager.dart';
@@ -49,7 +49,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
         builder: (context, state) {
           final List<MealInfo> mealItems = state.getMealsByMealType(widget.mealType);
           final calculatedMacrosSummary = mealItems.isNotEmpty &&
-              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? calculateTotalMacros(mealItems) : MealTypeMacrosSummary.zero();
+              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? MacrosSummary.calculateTotalMacros(mealItems) : MacrosSummary.zero();
 
           return Scaffold(
             body: _MealDetails(mealType: widget.mealType, state: state, widgetSelectedDate: widget.selectedDate),
@@ -136,7 +136,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, widgetSelectedDate, mealItems[0].mealId!),
+                    onPressed: showPopUp(context, widgetSelectedDate, mealType, mealItems[0].mealId),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -161,7 +161,7 @@ class _MealDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          generateMealItemNameHeader(mealInfo.name!),
+          generateMealItemNameHeader(mealInfo.name),
           const SizedBox(height: 12),
 
           Row(
@@ -178,7 +178,7 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, widgetSelectedDate, mealInfo.mealId!, mealInfo: mealInfo),
+                onPressed: showPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
@@ -223,25 +223,4 @@ class _MealDetails extends StatelessWidget {
 
 BoxShadow getShadowBox() =>
     BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4));
-
-MealTypeMacrosSummary calculateTotalMacros(List<MealInfo> meals) {
-  double totalProtein = 0;
-  double totalCarbs = 0;
-  double totalFat = 0;
-  int totalCalories = 0;
-
-  for (final meal in meals) {
-    totalProtein += meal.protein!;
-    totalCarbs += meal.carbs!;
-    totalFat += meal.fat!;
-    totalCalories += meal.calories!;
-  }
-
-  return MealTypeMacrosSummary(
-    carbs: double.parse(totalCarbs.toStringAsFixed(2)),
-    fat: double.parse(totalFat.toStringAsFixed(2)),
-    protein: double.parse(totalProtein.toStringAsFixed(2)),
-    calories: totalCalories,
-  );
-}
 

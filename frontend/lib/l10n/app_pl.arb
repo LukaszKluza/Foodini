@@ -63,6 +63,7 @@
   "dietGoal": "Cel diety",
   "enterYourDietGoal": "Wprowadź swój cel diety",
   "weightKg": "Waga (kg)",
+  "weightG": "Waga (g)",
   "dietGoalShouldBeBetween": "Cel diety powinien być pomiędzy",
   "muscleGainGoalCantBeLower": "Cel diety dla 'Przyrostu masy mięśniowej' nie może być mniejszy niż obecna waga",
   "fatLossGoalCantBeHigher": "Cel diety dla 'Utraty tłuszczu' nie może być większy niż obecna waga",
@@ -214,7 +215,7 @@
   "dailySummary": "Dzienne podsumowanie",
   "fillFormToGenerateMeals": "Proszę wypełnić formularz, aby móc generować posiłki",
   "dailyMeals": "Dzienne menu",
-  "dailyMealsFor": "Posiłki na dzień ",
+  "plannedMealsFor": "Planowane posiłki na",
 
   "macrosSummary": "Podsumowanie makroskładników",
   "calories": "Kalorie",
@@ -224,11 +225,20 @@
   "addNewMeal": "Dodaj nowy posiłek",
   "save": "Zapisz",
   "scanProductBarCode": "Zeskanuj kod kreskowy produktu",
+  "productBarCode": "Kod kreskowy",
+  "addProduct": "Dodaj produkt",
+  "uploadBarCodeImage": "Dodaj zdjęcie kodu kreskowego",
+  "readFile": "Wczytano plik:",
+  "barcodeCannotBeEmpty": "Kod kreskowy nie może być pusty",
+  "barcodeMustBeLength": "Kod kreskowy musi mieć długość",
+  "barcodeMustContainOnlyDigits": "Kod kreskowy może zawierać tylko cyfry",
+  "barcodeUploaded": "Kod kreskowy dodany",
   "mealName": "Nazwa posiłku",
 
   "mealItemNameShouldBeBetween": "Nazwa posiłku powinna mieć długość pomiędzy",
   "valueOfThisMacroShouldBeBetween": "Wartość tego makroskładnika powinna mieścić się w przedziale",
-  "valueOfCaloriesMacroShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+  "valueOfCaloriesShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
+  "valueOfWeightShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
   "generateNewPlan": "Generuj posiłki",
   "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
@@ -243,5 +253,12 @@
   "mealsGeneratedSuccessfully": "Pomyślnie wygenerowano posiłki",
   "forSomething": "dla",
   "whileMealsGeneration": "podczas generowania posiłków",
-  "error": "Błąd"
+  "error": "Błąd",
+  "information": "Informacja",
+
+  "yourStatistics": "Twoje statystyki",
+  "statisticsLoadFailure": "Nie udało się załadować statystyk",
+  "statistsMissing": "Statystyki niedostępne",
+  "calorieConsumptionChartTitle": "Spożyte kalorie",
+  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie"
 }
