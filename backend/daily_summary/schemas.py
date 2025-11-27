@@ -29,18 +29,18 @@ class MealInfoWithIconPath(MealInfo):
     icon_path: Optional[str] = None
 
 
+class Meal(BaseModel):
+    meal_items: List[MealInfoWithIconPath]
+    status: MealStatus = Field(default=MealStatus.TO_EAT)
+
+
 class DailyMealsCreate(BaseModel):
     day: date
-    meals: Dict[MealType, List[BasicMealInfo]]
+    meals: Dict[MealType, Meal]
     target_calories: int
     target_protein: float
     target_carbs: float
     target_fat: float
-
-
-class Meal(BaseModel):
-    meal_items: List[MealInfoWithIconPath]
-    status: MealStatus = Field(default=MealStatus.TO_EAT)
 
 
 class DailySummary(DailyMealsCreate):
