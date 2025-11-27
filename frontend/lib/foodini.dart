@@ -54,22 +54,22 @@ class Foodini extends StatelessWidget {
           create: (_) => TokenStorageService(),
         ),
         ProxyProvider<ApiClient, CacheManager>(
-          update: (_, apiClient, __) => CacheManager(apiClient, appDir),
+          update: (_, apiClient, _) => CacheManager(apiClient, appDir),
         ),
         ProxyProvider<ApiClient, UserRepository>(
-          update: (_, apiClient, __) => UserRepository(apiClient),
+          update: (_, apiClient, _) => UserRepository(apiClient),
         ),
         ProxyProvider<ApiClient, UserDetailsRepository>(
-          update: (_, apiClient, __) => UserDetailsRepository(apiClient),
+          update: (_, apiClient, _) => UserDetailsRepository(apiClient),
         ),
         ProxyProvider2<ApiClient, CacheManager, MealsRepository>(
-          update: (_, apiClient, cacheManager, __) => MealsRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => MealsRepository(apiClient, cacheManager),
         ),
         ProxyProvider2<ApiClient, CacheManager, DietGenerationRepository>(
-          update: (_, apiClient, cacheManager, __) => DietGenerationRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => DietGenerationRepository(apiClient, cacheManager),
         ),
         ProxyProvider2<ApiClient, CacheManager, DietPredictionRepository>(
-          update: (_, apiClient, cacheManager, __) => DietPredictionRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => DietPredictionRepository(apiClient, cacheManager),
         ),
       ],
       child: MultiBlocProvider(

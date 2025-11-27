@@ -14,6 +14,7 @@ import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid_value.dart';
 
 class ApiClient {
@@ -41,7 +42,7 @@ class ApiClient {
     _client.interceptors.add(GlobalErrorInterceptor(this, _tokenStorage));
   }
 
-  get dio => _client;
+  Dio get dio => _client;
 
   Future<Response> getUser(UuidValue userId) {
     return _client.get(
@@ -271,6 +272,33 @@ class ApiClient {
     return _client.patch(
       Endpoints.customMeal,
       data: customMealUpdateRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> addScannedProduct({
+    String? barcode,
+    XFile? uploadedFile,
+    required MealType mealType,
+    required UuidValue userId
+  }) async {
+    final data = <String, dynamic>{
+      'meal_type': mealType,
+    };
+
+    if (barcode != null) data['barcode'] = barcode;
+    if (uploadedFile != null) {
+      final bytes = await uploadedFile.readAsBytes();
+      data['image'] = MultipartFile.fromBytes(
+        bytes,
+        filename: uploadedFile.name,
+      );
+    }
+
+    return _client.patch(
+      Endpoints.scannedProduct,
+      data: FormData.fromMap(data),
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );

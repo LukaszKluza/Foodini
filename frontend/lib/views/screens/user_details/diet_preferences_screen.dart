@@ -395,7 +395,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
         child: ListView.separated(
           shrinkWrap: true,
           itemCount: fields.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 15),
+          separatorBuilder: (_, _) => const SizedBox(height: 15),
           itemBuilder: (_, index) => fields[index],
         ),
       ),

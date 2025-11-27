@@ -225,6 +225,13 @@
   "addNewMeal": "Add new meal",
   "save": "Save",
   "scanProductBarCode": "Scan product bar code",
+  "productBarCode": "Bar code",
+  "addProduct": "Add product",
+  "uploadBarCodeImage": "Upload barcode image",
+  "readFile": "Read file:",
+  "barcodeCannotBeEmpty": "Barcode cannot be empty",
+  "barcodeMustBeLength": "Barcode must be exactly",
+  "barcodeMustContainOnlyDigits": "Barcode must contain only digits",
   "mealName": "Meal name",
 
   "mealItemNameShouldBeBetween": "Meal item name should be between",

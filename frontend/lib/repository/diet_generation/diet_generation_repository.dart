@@ -6,8 +6,10 @@ import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/utils/cache_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid_value.dart';
 
 class DietGenerationRepository {
@@ -58,6 +60,24 @@ class DietGenerationRepository {
       throw ApiException(e.response?.data ?? 'Error while editing meals', statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while editing meals: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
+
+  Future<MealInfo> addScannedProduct({
+    String? barcode,
+    XFile? uploadedFile,
+    required MealType mealType,
+    required UuidValue userId
+  }) async {
+    try {
+      final response = await apiClient.addScannedProduct(barcode: barcode, uploadedFile: uploadedFile, mealType: mealType, userId: userId);
+      return MealInfo.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data ?? 'Error while adding scanned product:', statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while adding scanned product: $e');
     } finally {
       await cacheManager.clearAllCache();
     }

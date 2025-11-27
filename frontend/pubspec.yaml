@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.10.1
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,12 +34,12 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  go_router: ^15.1.1
-  http: ^1.3.0
+  go_router: ^17.0.0
+  http: ^1.6.0
   country_picker: ^2.0.27
-  mockito: ^5.4.3
-  test: ^1.16.0
-  build_runner: ^2.4.15
+  mockito: ^5.5.0
+  test: ^1.26.0
+  build_runner: ^2.10.4
   provider: ^6.1.1
   flutter_secure_storage: ^9.2.4
   flutter_bloc: ^9.1.0
@@ -47,16 +47,17 @@ dependencies:
     git:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
       path: workmanager
-  dio: ^5.4.0
-  universal_html: ^2.0.8
-  logger: ^2.0.2
+      ref: v0.9.0+3
+  dio: ^5.9.0
+  universal_html: ^2.3.0
+  logger: ^2.6.2
   multi_select_flutter: ^4.1.3
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-  async: ^2.12.0
-  flutter_screenutil: ^5.9.0
-  shared_preferences: ^2.2.2
+  async: ^2.13.0
+  flutter_screenutil: ^5.9.3
+  shared_preferences: ^2.5.3
   bloc_test: 10.0.0
   mocktail: ^1.0.4
   equatable: 2.0.7
@@ -79,12 +80,12 @@ dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
-  uuid: ^4.5.1
+  flutter_lints: ^6.0.0
+  uuid: ^4.5.2
+  image_picker: ^1.2.0
 
 dev_dependencies:
-  protoc_plugin: any
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
   image_path: "assets/icons/icon_10.png"
