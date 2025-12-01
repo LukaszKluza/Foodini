@@ -54,7 +54,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredPassword => 'Password is required';
 
   @override
-  String get requiredPasswordConfirmation => 'Password confirmation is required';
+  String get requiredPasswordConfirmation =>
+      'Password confirmation is required';
 
   @override
   String get samePasswords => 'Passwords must be the same';
@@ -63,7 +64,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordLengthMustBeBetween => 'Password length must be between';
 
   @override
-  String get passwordComplexityError => 'Password must contain letters (capital and lowercase) and numbers';
+  String get passwordComplexityError =>
+      'Password must contain letters (capital and lowercase) and numbers';
 
   @override
   String get invalidEmail => 'Enter valid e-mail';
@@ -123,19 +125,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get successfullyDeletedAccount => 'Account deleted successfully';
 
   @override
-  String get accountActivatedSuccessfully => 'Account has been activated successfully';
+  String get accountActivatedSuccessfully =>
+      'Account has been activated successfully';
 
   @override
-  String get accountHasNotBeenConfirmed => 'Your account has not been confirmed.';
+  String get accountHasNotBeenConfirmed =>
+      'Your account has not been confirmed.';
 
   @override
-  String get successfullyResendEmailVerification => 'Email account verification send successfully';
+  String get successfullyResendEmailVerification =>
+      'Email account verification send successfully';
 
   @override
   String get sendVerificationEmailAgain => 'Send verification email again';
 
   @override
-  String get accountDeletionInformation => 'Are you sure you want to delete your account? This action cannot be undone.';
+  String get accountDeletionInformation =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
 
   @override
   String get confirmAccountDeletion => 'Confirm Account Deletion';
@@ -162,10 +168,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownError => 'Unknown error';
 
   @override
-  String get checkAndConfirmEmailAddress => 'Check and confirm your email address';
+  String get checkAndConfirmEmailAddress =>
+      'Check and confirm your email address';
 
   @override
-  String get checkEmailAddressToSetNewPassword => 'Check your email address to set new password';
+  String get checkEmailAddressToSetNewPassword =>
+      'Check your email address to set new password';
 
   @override
   String get passwordSuccessfullyChanged => 'Password successfully changed';
@@ -183,7 +191,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requiredDietType => 'Diet type is required';
 
   @override
-  String get dietaryRestrictions => 'Dietary restrictions';
+  String get dietStyle => 'Diet style';
+
+  @override
+  String get allergies => 'Allergies';
 
   @override
   String get dietGoal => 'Diet goal';
@@ -195,13 +206,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightKg => 'Weight (kg)';
 
   @override
+  String get weightG => 'Weight (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Diet goal should be between';
 
   @override
-  String get muscleGainGoalCantBeLower => 'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
+  String get muscleGainGoalCantBeLower =>
+      'Diet goal for \'Muscle Gain\' can\'t be lower than current weight';
 
   @override
-  String get fatLossGoalCantBeHigher => 'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
+  String get fatLossGoalCantBeHigher =>
+      'Diet goal for \'Fat Loss\' cant\'t be higher than current weight';
 
   @override
   String get kg => 'kg';
@@ -217,6 +233,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get caloriesPrediction => 'Calories prediction';
+
+  @override
+  String get dailyBudget => 'Daily budget';
+
+  @override
+  String get requiredDailyBudget => 'Daily budget is required';
+
+  @override
+  String get cookingSkills => 'Cooking skills';
+
+  @override
+  String get requiredCookingSkills => 'Cooking skills are required';
 
   @override
   String get activityLevel => 'Activity level';
@@ -267,7 +295,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fatPercentageShouldBeBetween => 'Fat % should be %';
 
   @override
-  String get advancedParametersValidation => 'Sum of advanced parameters can\'t be higher than';
+  String get advancedParametersValidation =>
+      'Sum of advanced parameters can\'t be higher than';
 
   @override
   String get generateWeeklyDiet => 'Generate weekly diet';
@@ -297,40 +326,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietType_WeightMaintenance => 'Weight Maintenance';
 
   @override
-  String get dietaryRestriction_Gluten => 'Gluten';
+  String get allergies_Gluten => 'Gluten';
 
   @override
-  String get dietaryRestriction_Peanuts => 'Peanuts';
+  String get allergies_Peanuts => 'Peanuts';
 
   @override
-  String get dietaryRestriction_Lactose => 'Lactose';
+  String get allergies_Lactose => 'Lactose';
 
   @override
-  String get dietaryRestriction_Fish => 'Fish';
+  String get allergies_Fish => 'Fish';
 
   @override
-  String get dietaryRestriction_Soy => 'Soy';
+  String get allergies_Soy => 'Soy';
 
   @override
-  String get dietaryRestriction_Wheat => 'Wheat';
+  String get allergies_Wheat => 'Wheat';
 
   @override
-  String get dietaryRestriction_Celery => 'Celery';
+  String get allergies_Celery => 'Celery';
 
   @override
-  String get dietaryRestriction_Sulphites => 'Sulphites';
+  String get allergies_Sulphites => 'Sulphites';
 
   @override
-  String get dietaryRestriction_Lupin => 'Lupin';
+  String get allergies_Lupin => 'Lupin';
 
   @override
-  String get dietaryRestriction_Vegetarian => 'Vegetarian';
+  String get dietStyle_Vegetarian => 'Vegetarian';
 
   @override
-  String get dietaryRestriction_Vegan => 'Vegan';
+  String get dietStyle_Vegan => 'Vegan';
 
   @override
-  String get dietaryRestriction_Keto => 'Keto';
+  String get dietStyle_Keto => 'Keto';
 
   @override
   String get dietIntensity_Slow => 'Slow';
@@ -340,6 +369,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietIntensity_Fast => 'Fast';
+
+  @override
+  String get dailyBudget_low => 'Low';
+
+  @override
+  String get dailyBudget_medium => 'Medium';
+
+  @override
+  String get dailyBudget_high => 'High';
+
+  @override
+  String get cookingSkills_beginner => 'Beginner';
+
+  @override
+  String get cookingSkills_advanced => 'Advanced';
+
+  @override
+  String get cookingSkills_professional => 'Professional';
 
   @override
   String get activityLevel_VeryLow => 'Very Low (1–2 days a week or less)';
@@ -453,7 +500,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get carbsG => 'Carbs (g)';
 
   @override
-  String get fillFormToSeePredictions => 'Please fill out the form to see predictions';
+  String get fillFormToSeePredictions =>
+      'Please fill out the form to see predictions';
 
   @override
   String get redirectToProfileDetails => 'Redirect to profile details';
@@ -546,10 +594,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailySummary => 'Daily Summary';
 
   @override
+  String get fillFormToGenerateMeals =>
+      'Please fill out the form to be able to generate meals';
+
+  @override
   String get dailyMeals => 'Daily Menu';
 
   @override
-  String get dailyMealsFor => 'Daily Meals for ';
+  String get plannedMealsFor => 'Planned meals for';
 
   @override
   String get macrosSummary => 'Macros summary';
@@ -576,14 +628,101 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanProductBarCode => 'Scan product bar code';
 
   @override
+  String get productBarCode => 'Bar code';
+
+  @override
+  String get addProduct => 'Add product';
+
+  @override
+  String get uploadBarCodeImage => 'Upload barcode image';
+
+  @override
+  String get readFile => 'Read file:';
+
+  @override
+  String get barcodeCannotBeEmpty => 'Barcode cannot be empty';
+
+  @override
+  String get barcodeMustBeLength => 'Barcode must be exactly';
+
+  @override
+  String get barcodeMustContainOnlyDigits => 'Barcode must contain only digits';
+
+  @override
+  String get barcodeUploaded => 'Barcode uploaded';
+
+  @override
   String get mealName => 'Meal name';
 
   @override
   String get mealItemNameShouldBeBetween => 'Meal item name should be between';
 
   @override
-  String get valueOfThisMacroShouldBeBetween => 'Value of this macro should be between';
+  String get valueOfThisMacroShouldBeBetween =>
+      'Value of this macro should be between';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween => 'Value of calories should be between';
+  String get valueOfCaloriesShouldBeBetween =>
+      'Value of calories should be between';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
+      'Value of weight should be between';
+
+  @override
+  String get generateNewPlan => 'Generate New Plan';
+
+  @override
+  String noMealData_contactSupport(Object email) {
+    return 'No data for this meal. Please refresh request or contact support at $email.';
+  }
+
+  @override
+  String get regenerateMeals => 'Regenerate Meals';
+
+  @override
+  String get dietOutdatedConsiderRegenerating =>
+      'Your meal plan may be outdated – consider regenerating it.';
+
+  @override
+  String get dietOutdated => 'Your meal plan may be outdated.';
+
+  @override
+  String get planDoesNotExist => 'Plan for given day does not exist.';
+
+  @override
+  String get chooseOption => 'Choose option';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get mealsGeneratedSuccessfully => 'Meals successfully generated';
+
+  @override
+  String get forSomething => 'for';
+
+  @override
+  String get whileMealsGeneration => 'while generating meals';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get information => 'Information';
+
+  @override
+  String get yourStatistics => 'Your statistics';
+
+  @override
+  String get statisticsLoadFailure => 'Failed to load statistics';
+
+  @override
+  String get statistsMissing => 'No statistics available';
+
+  @override
+  String get calorieConsumptionChartTitle => 'Calorie consumption';
+
+  @override
+  String get calorieGoalChartTitle => 'Calorie Goal vs Actual';
 }

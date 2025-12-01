@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/blocs/user/register_bloc.dart';
 import 'package:frontend/foodini.dart';
 import 'package:frontend/repository/api_client.dart';
+import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
 import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_repository.dart';
@@ -17,6 +18,7 @@ import 'package:mockito/annotations.dart';
   TokenStorageService,
   UserDetailsRepository,
   DietPredictionRepository,
+  DietGenerationRepository,
   MealsRepository,
   FlutterSecureStorage,
   ApiClient,

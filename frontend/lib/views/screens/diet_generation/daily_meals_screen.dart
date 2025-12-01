@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
+import 'package:frontend/config/custom_exception_code.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/diet_generation/date_comparator.dart';
+import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
@@ -32,15 +34,10 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     context.read<DailySummaryBloc>().add(GetDailySummary(widget.selectedDate));
   }
 
-  String formatForUrl(DateTime date) =>
-      '${date.year.toString().padLeft(4, '0')}-'
-      '${date.month.toString().padLeft(2, '0')}-'
-      '${date.day.toString().padLeft(2, '0')}';
-
   @override
   Widget build(BuildContext context) {
     final displayDate =
-        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}.${widget.selectedDate.year}";
+        "${widget.selectedDate.day.toString().padLeft(2, '0')}.${widget.selectedDate.month.toString().padLeft(2, '0')}";
 
     final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
     final nextDate = widget.selectedDate.add(const Duration(days: 1));
@@ -49,15 +46,8 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     final nextRoute = '/daily-meals/${formatForUrl(nextDate)}';
 
     final now = DateTime.now();
-
-    final isActiveDay = (
-        widget.selectedDate.isAfter(now) ||
-            (
-                now.year == widget.selectedDate.year &&
-                now.month == widget.selectedDate.month &&
-                now.day == widget.selectedDate.day
-            )
-    );
+    final isToDay = isSameDay(now, widget.selectedDate);
+    final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
       body: SafeArea(
@@ -67,24 +57,33 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                 context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
             }
             if (state.dietGeneratingInfo.processingStatus.isOngoing
+                && state.dietGeneratingInfo.day != null
                 && dateComparator(
                     state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
               return const Center(child: CircularProgressIndicator());
             } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
-                dateComparator(
-                    state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
+                (state.dietGeneratingInfo.day == null ||
+                    dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)) ||
                 state.gettingDailySummaryStatus.isFailure
             ) {
+              final errorCode = state.errorCode;
+              final errorData = state.errorData;
+              final isMissingPredictions =
+                  errorCode == 404 &&
+                  errorData is Map &&
+                  (errorData['code'] == CustomExceptionCode.missingDietPredictions.toJson());
+
               return Stack(
                 children: [
                   Center(
-                    child: Text(
-                      state.getMessage!(context),
-                      style: const TextStyle(fontSize: 16, color: Colors.red),
+                    child: ErrorMessage(
+                      message: state.getMessage != null
+                          ? state.getMessage!(context)
+                          : AppLocalizations.of(context)!.unknownError,
                     ),
                   ),
-                  if (isActiveDay)
-                    GenerateMealsButton(
+                  if (isActiveDay && !isMissingPredictions)
+                    DietGenerationInfoButton(
                       selectedDay: widget.selectedDate,
                       isRegenerateMode: false,
                       onPressed: generateOnPressed,
@@ -92,11 +91,9 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                 ],
               );
               }
-
             if (state.dailySummary != null &&
                 dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-              final meals = state.dailySummary!.meals;
-
+              final meals = state.dailySummary!.generatedMeals;
               final bool isRegenerate = meals.isNotEmpty;
               final sortedEntries =
                   meals.entries.toList()
@@ -119,9 +116,10 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                                 AppConfig.mealTypeLabels(context)[entry.key]!,
                             color: _getMealColor(entry.key),
                             imageUrl: entry.value.iconPath!,
-                            mealName: entry.value.name ?? '',
-                            description: entry.value.description ?? '',
-                            mealId: entry.value.mealId!,
+                            mealName: entry.value.name,
+                            description: entry.value.description!,
+                            explanation: entry.value.explanation,
+                            mealId: entry.value.mealId,
                             context: context,
                           ),
                         const SizedBox(height: 40),
@@ -129,12 +127,21 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
                     ),
                   ),
                   _buildHeader(displayDate),
-                  if (isActiveDay && widget.selectedDate.isAfter(now))
-                      GenerateMealsButton(
-                        selectedDay: widget.selectedDate,
-                        isRegenerateMode: isRegenerate,
-                        onPressed: generateOnPressed,
-                      ),
+                  if (widget.selectedDate.isAfter(now))
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: isRegenerate,
+                      onPressed: generateOnPressed,
+                      label: state.dailySummary!.isOutDated ?
+                        AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
+                        AppLocalizations.of(context)!.regenerateMeals,
+                    )
+                  else if(isToDay && state.dailySummary!.isOutDated)
+                    DietGenerationInfoButton(
+                      selectedDay: widget.selectedDate,
+                      isRegenerateMode: false,
+                      label: AppLocalizations.of(context)!.dietOutdated
+                    )
                 ],
               );
             }
@@ -160,7 +167,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: TitleTextWidgets.scaledTitle(
-              '${AppLocalizations.of(context)!.dailyMealsFor}$displayDate',
+              '${AppLocalizations.of(context)!.plannedMealsFor} $displayDate',
           ),
         ),
       ),
@@ -183,6 +190,65 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
         return const Color(0xFFCBE3A8);
       }
   }
+  void showInfoPopup(BuildContext context, String content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color(0xFFFFF6E0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: Color(0xFFE68A00),
+                      size: 26,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.information,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(
+                        Icons.close,
+                        size: 24,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  content,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.4,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildMealSection({
     required BuildContext context,
@@ -191,6 +257,7 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     required String imageUrl,
     required String mealName,
     required String description,
+    String? explanation,
     required UuidValue mealId,
   }) {
     return Padding(
@@ -210,18 +277,35 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(10),
+                  height: 40,
+                  padding: const EdgeInsets.fromLTRB(10,0,10,0),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (explanation != null)
+                        IconButton(
+                          onPressed: () {
+                            showInfoPopup(context, explanation);
+                          },
+                          icon: const Icon(
+                            Icons.info_outline,
+                            size: 24,
+                            color: Colors.black87,
+                          ),
+                        )
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),

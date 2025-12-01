@@ -6,6 +6,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import Runnable
 from langchain_ollama import OllamaLLM
 
+from backend.core.logger import logger
 from backend.diet_generation.schemas import AgentState, CompleteMeal, DietGenerationOutput
 from backend.settings import config
 
@@ -38,6 +39,29 @@ class PlannerTool:
             "4. Every meal except of correct structure must have:\n"
             "   - Ingredients that make nutritional sense.\n"
             "   - Macronutrient and calorie values that sum up correctly.\n\n"
+            "5. For each ingredient, include its weight as a number (in grams) without units.\n"
+            "6. You **must calculate the total weight of the prepared meal**. Base it on the sum of all ingredient "
+            "weights and account for any expected changes during cooking or preparation (e.g., water loss, absorption,"
+            " mixing). Include this total weight as a numeric value in grams in the output. Example:"
+            "Ingredients: Chicken breast: 150 g, Broccoli: 80 g  Carrots: 50 g  Olive oil: 10 g   Quinoa (dry): 60 g"
+            "Cooking: roasting chicken and steaming vegetables, quinoa boiled."
+            "Expected weight change: chicken loses ~15 g water, quinoa absorbs ~120 g water.  "
+            "Total meal weight = 150 - 15 + 80 + 50 + 10 + 60 + 120 = 455 g  Return in response as `weight': 455` \n"
+            "7. for each meal remember to generate a user-friendly explanation of adjustments made to a meal plan. \n"
+            "- For each meal, mention its name and main ingredient(s)."
+            "- Explain in a clear, natural way why adjustments were made, e.g.: \n"
+            "* The portion of fish at lunch was increased to meet your protein target."
+            "* Dinner included more vegetables to balance carbs and fiber."
+            "- Make the explanation conversational, as if a dietitian were giving tips."
+            "- Refer to the plan_name and diet_type in the introduction."
+            "- Avoid mentioning that the plan was adjusted, corrected, or generated multiple times."
+            "- Mention per-meal calorie and macro targets if relevant."
+            "- Vary phrasing and style, do not repeat the same sentences every day. "
+            "- Example phrasing for meals:"
+            "   * Breakfast includes a mix of protein-rich foods to start your day with steady energy. "
+            "   * Lunch offers a balanced combination of carbs and protein to keep you satisfied through the afternoon."
+            "   * Dinner provides a variety of nutrients with lean protein and healthy fats for a well-rounded "
+            "evening meal."
             "### CALORIE & MACRO REQUIREMENTS\n"
             "Ensure that the **sum of all meals’ calories and macros matches exactly** the input targets.\n"
             "Calories and macros should not exceed or fall short of the targets by more than rounding error (±1%).\n"
@@ -94,6 +118,9 @@ class PlannerTool:
         - Carbohydrates: {targets.carbs}g
         - Fat: {targets.fat}g
         - Meals per day: {targets.meals_per_day}
+        - Diet style: {getattr(targets, "diet_style", None) or "none"}
+        - Cooking skill (soft constraint): {getattr(targets, "cooking_skills", None) or "unspecified"}
+        - Daily budget (soft constraint): {getattr(targets, "daily_budget", None) or "unspecified"}
         ---
         ## REQUIRED LOGIC
         Before writing JSON, **internally calculate** how to distribute the nutrients.
@@ -112,12 +139,30 @@ class PlannerTool:
         5. Recalculate each meal’s calories from macros using:
            - Calories = 4 × (Protein + Carbs) + 9 × Fat
            Adjust slightly if needed to make the totals exact.
+        6. Calculate the total weight of the meal** by summing the weights of all ingredients the AI proposes,
+        accounting for any expected changes during preparation (e.g., water loss, absorption, mixing). Include this
+        total weight as a numeric value in grams. Adjust slightly if needed to make the totals exact.
         ---
         ## MEAL CREATION RULES
         - Use realistic meal names that match meal types (Breakfast, Lunch, Dinner, Snack).
         - Avoid typos or generic names like “Meal 1” or “Morning food”.
         - Meals must use realistic, balanced ingredients.
-        - Exclude from meals this dietary restrictions: [{targets.dietary_restriction}].
+        "- Meals must not include any of the following dietary restrictions: [{targets.dietary_restriction}]
+        (e.g., peanuts, lactose — if any ingredient contains these allergens, it must not be used in the meal.
+        For dishes containing other types of nuts, ensure they do NOT contain peanuts or traces of peanuts
+        in any ingredient)."
+        - Strictly follow the diet style if provided. If diet_style is:
+          - vegan: absolutely no animal products (no meat, fish, dairy, eggs, honey, gelatin).
+          - vegetarian: no meat or fish; dairy and eggs are allowed unless restricted elsewhere.
+          - keto: keep carbohydrates very low; prioritize high fat and moderate protein ingredients.
+        - Align the recipe complexity with cooking skill (softly, do not over-constrain):
+          - beginner: very simple, 3–6 ingredients, few steps, common techniques (stir, bake, boil), low prep time.
+          - advanced: moderate complexity, 5–10 ingredients, can include marinades/saute, reasonable prep time.
+          - professional: can include advanced techniques/longer prep, but keep reasonable for a single day plan.
+        - Prefer ingredients consistent with the daily budget (softly):
+          - low: prioritize affordable staples (rice, beans, oats, seasonal veggies, cheaper proteins like eggs/legumes)
+          - medium: mix of affordable and some premium items (chicken breast, salmon occasionally, Greek yogurt)
+          - high: allow premium ingredients more freely (salmon, steak cuts, specialty produce), avoid waste.
         - Avoid using any of the user’s previous meals, new meals must be completely different: {
             targets.previous_meals or "None"
         }.
@@ -128,6 +173,8 @@ class PlannerTool:
         Double-check **before finalizing**:
         - The sum of all calories == {targets.calories}
         - The sum of all macros == {targets.protein}/{targets.carbs}/{targets.fat} grams (±1g allowed)
+        - Diet style rules are not violated (e.g., vegan contains no animal-derived ingredients)
+        - Meals gently reflect cooking skill and budget preferences when possible
         - Meal names are realistic and type-consistent
         - JSON is strictly valid and matches schema.
         ---
@@ -155,6 +202,7 @@ class PlannerTool:
             }
 
         except Exception as e:
+            logger.error(f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)})")
             return {
                 "validation_report": f"FATAL ERROR: Diet generation error in LLM/Parser: {type(e).__name__}: {str(e)}"
             }

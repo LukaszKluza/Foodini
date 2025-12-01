@@ -7,6 +7,7 @@ import 'package:frontend/app_router.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
+import 'package:frontend/blocs/user_details/user_statistics_bloc.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/api_client.dart';
@@ -17,6 +18,7 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/repository/user_details/user_details_repository.dart';
 import 'package:frontend/services/token_storage_service.dart';
+import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/cache_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -52,22 +54,22 @@ class Foodini extends StatelessWidget {
           create: (_) => TokenStorageService(),
         ),
         ProxyProvider<ApiClient, CacheManager>(
-          update: (_, apiClient, __) => CacheManager(apiClient, appDir),
+          update: (_, apiClient, _) => CacheManager(apiClient, appDir),
         ),
         ProxyProvider<ApiClient, UserRepository>(
-          update: (_, apiClient, __) => UserRepository(apiClient),
+          update: (_, apiClient, _) => UserRepository(apiClient),
         ),
         ProxyProvider<ApiClient, UserDetailsRepository>(
-          update: (_, apiClient, __) => UserDetailsRepository(apiClient),
+          update: (_, apiClient, _) => UserDetailsRepository(apiClient),
         ),
         ProxyProvider2<ApiClient, CacheManager, MealsRepository>(
-          update: (_, apiClient, cacheManager, __) => MealsRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => MealsRepository(apiClient, cacheManager),
         ),
         ProxyProvider2<ApiClient, CacheManager, DietGenerationRepository>(
-          update: (_, apiClient, cacheManager, __) => DietGenerationRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => DietGenerationRepository(apiClient, cacheManager),
         ),
         ProxyProvider2<ApiClient, CacheManager, DietPredictionRepository>(
-          update: (_, apiClient, cacheManager, __) => DietPredictionRepository(apiClient, cacheManager),
+          update: (_, apiClient, cacheManager, _) => DietPredictionRepository(apiClient, cacheManager),
         ),
       ],
       child: MultiBlocProvider(
@@ -87,6 +89,11 @@ class Foodini extends StatelessWidget {
                 (context) =>
                     MacrosChangeBloc(context.read<UserDetailsRepository>()),
           ),
+          BlocProvider(
+            create:
+                (context) =>
+                    UserStatisticsBloc(context.read<UserDetailsRepository>()),
+          ),
         ],
         child: BlocBuilder<LanguageCubit, Locale>(
           builder: (context, locale) {
@@ -103,6 +110,28 @@ class Foodini extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               routerConfig: router,
+              builder: (context, child) {
+                return BlocListener<DailySummaryBloc, DailySummaryState>(
+                  listenWhen: (previous, current) =>
+                  previous.getNotification != current.getNotification &&
+                      current.getNotification != null,
+                  listener: (context, state) {
+                    final notification = state.getNotification!(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(notification.message),
+                        backgroundColor: notification.isError
+                            ? Colors.red
+                            : Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                        margin: const EdgeInsets.all(16),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                  child: child!,
+                );
+              },
             );
           },
         ),

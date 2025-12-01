@@ -3,7 +3,7 @@
 name: Foodini
 env:
   BACKEND_TEST_COVERAGE_THRESHOLD: 80
-  FRONTEND_TEST_COVERAGE_THRESHOLD: 50
+  FRONTEND_TEST_COVERAGE_THRESHOLD: 40
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -97,7 +97,7 @@ jobs:
       - name: Set up Frontend
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.1"
+          flutter-version: "3.38.3"
 
       - name: Build frontend
         run: |

@@ -62,7 +62,8 @@ import 'app_localizations_pl.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('pl')
+    Locale('pl'),
   ];
 
   /// No description provided for @foodini.
@@ -443,11 +446,17 @@ abstract class AppLocalizations {
   /// **'Diet type is required'**
   String get requiredDietType;
 
-  /// No description provided for @dietaryRestrictions.
+  /// No description provided for @dietStyle.
   ///
   /// In en, this message translates to:
-  /// **'Dietary restrictions'**
-  String get dietaryRestrictions;
+  /// **'Diet style'**
+  String get dietStyle;
+
+  /// No description provided for @allergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get allergies;
 
   /// No description provided for @dietGoal.
   ///
@@ -466,6 +475,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Weight (kg)'**
   String get weightKg;
+
+  /// No description provided for @weightG.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (g)'**
+  String get weightG;
 
   /// No description provided for @dietGoalShouldBeBetween.
   ///
@@ -514,6 +529,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calories prediction'**
   String get caloriesPrediction;
+
+  /// No description provided for @dailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget'**
+  String get dailyBudget;
+
+  /// No description provided for @requiredDailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily budget is required'**
+  String get requiredDailyBudget;
+
+  /// No description provided for @cookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills'**
+  String get cookingSkills;
+
+  /// No description provided for @requiredCookingSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooking skills are required'**
+  String get requiredCookingSkills;
 
   /// No description provided for @activityLevel.
   ///
@@ -671,77 +710,77 @@ abstract class AppLocalizations {
   /// **'Weight Maintenance'**
   String get dietType_WeightMaintenance;
 
-  /// No description provided for @dietaryRestriction_Gluten.
+  /// No description provided for @allergies_Gluten.
   ///
   /// In en, this message translates to:
   /// **'Gluten'**
-  String get dietaryRestriction_Gluten;
+  String get allergies_Gluten;
 
-  /// No description provided for @dietaryRestriction_Peanuts.
+  /// No description provided for @allergies_Peanuts.
   ///
   /// In en, this message translates to:
   /// **'Peanuts'**
-  String get dietaryRestriction_Peanuts;
+  String get allergies_Peanuts;
 
-  /// No description provided for @dietaryRestriction_Lactose.
+  /// No description provided for @allergies_Lactose.
   ///
   /// In en, this message translates to:
   /// **'Lactose'**
-  String get dietaryRestriction_Lactose;
+  String get allergies_Lactose;
 
-  /// No description provided for @dietaryRestriction_Fish.
+  /// No description provided for @allergies_Fish.
   ///
   /// In en, this message translates to:
   /// **'Fish'**
-  String get dietaryRestriction_Fish;
+  String get allergies_Fish;
 
-  /// No description provided for @dietaryRestriction_Soy.
+  /// No description provided for @allergies_Soy.
   ///
   /// In en, this message translates to:
   /// **'Soy'**
-  String get dietaryRestriction_Soy;
+  String get allergies_Soy;
 
-  /// No description provided for @dietaryRestriction_Wheat.
+  /// No description provided for @allergies_Wheat.
   ///
   /// In en, this message translates to:
   /// **'Wheat'**
-  String get dietaryRestriction_Wheat;
+  String get allergies_Wheat;
 
-  /// No description provided for @dietaryRestriction_Celery.
+  /// No description provided for @allergies_Celery.
   ///
   /// In en, this message translates to:
   /// **'Celery'**
-  String get dietaryRestriction_Celery;
+  String get allergies_Celery;
 
-  /// No description provided for @dietaryRestriction_Sulphites.
+  /// No description provided for @allergies_Sulphites.
   ///
   /// In en, this message translates to:
   /// **'Sulphites'**
-  String get dietaryRestriction_Sulphites;
+  String get allergies_Sulphites;
 
-  /// No description provided for @dietaryRestriction_Lupin.
+  /// No description provided for @allergies_Lupin.
   ///
   /// In en, this message translates to:
   /// **'Lupin'**
-  String get dietaryRestriction_Lupin;
+  String get allergies_Lupin;
 
-  /// No description provided for @dietaryRestriction_Vegetarian.
+  /// No description provided for @dietStyle_Vegetarian.
   ///
   /// In en, this message translates to:
   /// **'Vegetarian'**
-  String get dietaryRestriction_Vegetarian;
+  String get dietStyle_Vegetarian;
 
-  /// No description provided for @dietaryRestriction_Vegan.
+  /// No description provided for @dietStyle_Vegan.
   ///
   /// In en, this message translates to:
   /// **'Vegan'**
-  String get dietaryRestriction_Vegan;
+  String get dietStyle_Vegan;
 
-  /// No description provided for @dietaryRestriction_Keto.
+  /// No description provided for @dietStyle_Keto.
   ///
   /// In en, this message translates to:
   /// **'Keto'**
-  String get dietaryRestriction_Keto;
+  String get dietStyle_Keto;
 
   /// No description provided for @dietIntensity_Slow.
   ///
@@ -760,6 +799,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fast'**
   String get dietIntensity_Fast;
+
+  /// No description provided for @dailyBudget_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get dailyBudget_low;
+
+  /// No description provided for @dailyBudget_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get dailyBudget_medium;
+
+  /// No description provided for @dailyBudget_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get dailyBudget_high;
+
+  /// No description provided for @cookingSkills_beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get cookingSkills_beginner;
+
+  /// No description provided for @cookingSkills_advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get cookingSkills_advanced;
+
+  /// No description provided for @cookingSkills_professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get cookingSkills_professional;
 
   /// No description provided for @activityLevel_VeryLow.
   ///
@@ -1169,17 +1244,23 @@ abstract class AppLocalizations {
   /// **'Daily Summary'**
   String get dailySummary;
 
+  /// No description provided for @fillFormToGenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out the form to be able to generate meals'**
+  String get fillFormToGenerateMeals;
+
   /// No description provided for @dailyMeals.
   ///
   /// In en, this message translates to:
   /// **'Daily Menu'**
   String get dailyMeals;
 
-  /// No description provided for @dailyMealsFor.
+  /// No description provided for @plannedMealsFor.
   ///
   /// In en, this message translates to:
-  /// **'Daily Meals for '**
-  String get dailyMealsFor;
+  /// **'Planned meals for'**
+  String get plannedMealsFor;
 
   /// No description provided for @macrosSummary.
   ///
@@ -1229,6 +1310,54 @@ abstract class AppLocalizations {
   /// **'Scan product bar code'**
   String get scanProductBarCode;
 
+  /// No description provided for @productBarCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar code'**
+  String get productBarCode;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get addProduct;
+
+  /// No description provided for @uploadBarCodeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload barcode image'**
+  String get uploadBarCodeImage;
+
+  /// No description provided for @readFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Read file:'**
+  String get readFile;
+
+  /// No description provided for @barcodeCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode cannot be empty'**
+  String get barcodeCannotBeEmpty;
+
+  /// No description provided for @barcodeMustBeLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode must be exactly'**
+  String get barcodeMustBeLength;
+
+  /// No description provided for @barcodeMustContainOnlyDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode must contain only digits'**
+  String get barcodeMustContainOnlyDigits;
+
+  /// No description provided for @barcodeUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode uploaded'**
+  String get barcodeUploaded;
+
   /// No description provided for @mealName.
   ///
   /// In en, this message translates to:
@@ -1247,14 +1376,129 @@ abstract class AppLocalizations {
   /// **'Value of this macro should be between'**
   String get valueOfThisMacroShouldBeBetween;
 
-  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  /// No description provided for @valueOfCaloriesShouldBeBetween.
   ///
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
-  String get valueOfCaloriesMacroShouldBeBetween;
+  String get valueOfCaloriesShouldBeBetween;
+
+  /// No description provided for @valueOfWeightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of weight should be between'**
+  String get valueOfWeightShouldBeBetween;
+
+  /// No description provided for @generateNewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate New Plan'**
+  String get generateNewPlan;
+
+  /// No description provided for @noMealData_contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
+  String noMealData_contactSupport(Object email);
+
+  /// No description provided for @regenerateMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate Meals'**
+  String get regenerateMeals;
+
+  /// No description provided for @dietOutdatedConsiderRegenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated – consider regenerating it.'**
+  String get dietOutdatedConsiderRegenerating;
+
+  /// No description provided for @dietOutdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal plan may be outdated.'**
+  String get dietOutdated;
+
+  /// No description provided for @planDoesNotExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for given day does not exist.'**
+  String get planDoesNotExist;
+
+  /// No description provided for @chooseOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose option'**
+  String get chooseOption;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// No description provided for @mealsGeneratedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals successfully generated'**
+  String get mealsGeneratedSuccessfully;
+
+  /// No description provided for @forSomething.
+  ///
+  /// In en, this message translates to:
+  /// **'for'**
+  String get forSomething;
+
+  /// No description provided for @whileMealsGeneration.
+  ///
+  /// In en, this message translates to:
+  /// **'while generating meals'**
+  String get whileMealsGeneration;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @information.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get information;
+
+  /// No description provided for @yourStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistics'**
+  String get yourStatistics;
+
+  /// No description provided for @statisticsLoadFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load statistics'**
+  String get statisticsLoadFailure;
+
+  /// No description provided for @statistsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics available'**
+  String get statistsMissing;
+
+  /// No description provided for @calorieConsumptionChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie consumption'**
+  String get calorieConsumptionChartTitle;
+
+  /// No description provided for @calorieGoalChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie Goal vs Actual'**
+  String get calorieGoalChartTitle;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1263,25 +1507,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'pl': return AppLocalizationsPl();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'pl':
+      return AppLocalizationsPl();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

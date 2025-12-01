@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/blocs/user_details/macros_change_bloc.dart';
@@ -32,11 +33,13 @@ late MockApiClient mockApiClient;
 late MockCacheManager mockCacheManager;
 late MockLanguageCubit mockLanguageCubit;
 late MockUserDetailsRepository mockUserDetailsRepository;
+late MockDietGenerationRepository mockDietGenerationRepository;
 late MockTokenStorageService mockTokenStorageService;
 
 late AccountBloc accountBloc;
 late DietFormBloc dietFormBloc;
 late MacrosChangeBloc macrosChangeBloc;
+late DailySummaryBloc dailySummaryBloc;
 late UserRepository authRepository;
 late UuidValue uuidUserId;
 
@@ -54,6 +57,7 @@ void main() {
         .addProvider(Provider<CacheManager>.value(value: mockCacheManager))
         .addProvider(BlocProvider<DietFormBloc>.value(value: dietFormBloc))
         .addProvider(BlocProvider<MacrosChangeBloc>.value(value: macrosChangeBloc))
+        .addProvider(BlocProvider<DailySummaryBloc>.value(value: dailySummaryBloc))
         .addRoutes(additionalRoutes)
         .setInitialLocation(initialLocation)
         .build();
@@ -65,11 +69,13 @@ void main() {
     mockCacheManager = MockCacheManager();
     mockLanguageCubit = MockLanguageCubit();
     mockUserDetailsRepository = MockUserDetailsRepository();
+    mockDietGenerationRepository = MockDietGenerationRepository();
     mockTokenStorageService = MockTokenStorageService();
 
     authRepository = UserRepository(mockApiClient);
     dietFormBloc = DietFormBloc(mockUserDetailsRepository);
     macrosChangeBloc = MacrosChangeBloc(mockUserDetailsRepository);
+    dailySummaryBloc = DailySummaryBloc(mockDietGenerationRepository);
     accountBloc = AccountBloc(authRepository, mockTokenStorageService);
 
     uuidUserId = UuidValue.fromString('c4b678c3-bb44-5b37-90d9-5b0c9a4f1b87');
@@ -101,7 +107,7 @@ void main() {
     expect(find.text('Change password'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
     expect(find.text('Delete account'), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
     expect(accountBloc.state, isA<AccountInitial>());
   });
 

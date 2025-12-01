@@ -4,7 +4,7 @@ import 'package:frontend/models/user_details/dietary_restriction.dart';
 
 class DietPreferences {
   final DietType dietType;
-  final List<DietaryRestriction> dietaryRestriction;
+  final List<Allergies> dietaryRestriction;
   final double dietGoal;
   final int mealsPerDay;
   final DietIntensity dietIntensity;

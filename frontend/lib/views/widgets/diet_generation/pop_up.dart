@@ -5,13 +5,16 @@ import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/enter_barcode_pop_up.dart';
 import 'package:uuid/uuid.dart';
 
 VoidCallback showPopUp(
   BuildContext context,
   DateTime day,
+  MealType updatedMealType,
   UuidValue updatedMealId, {
   MealInfo? mealInfo,
 }) {
@@ -35,6 +38,21 @@ VoidCallback showPopUp(
     );
   }
 
+  void showEnterBarcodePopup(
+      BuildContext context,
+      DateTime day,
+      UuidValue updatedMealId, {
+        MealInfo? mealInfo,
+      }) {
+    showDialog(
+      context: context,
+      builder: (_) => EnterBarcodePopup(
+        day: day,
+        mealType: updatedMealType,
+      ),
+    );
+  }
+
   final formKey = GlobalKey<FormState>();
 
   return () {
@@ -55,6 +73,9 @@ VoidCallback showPopUp(
         );
         final caloriesController = TextEditingController(
           text: mealInfo?.calories.toString() ?? '',
+        );
+        final weightController = TextEditingController(
+          text: mealInfo?.weight.toString() ?? '',
         );
 
         return Dialog(
@@ -107,17 +128,29 @@ VoidCallback showPopUp(
                       (value) => validateCalories(value, context),
                       AppLocalizations.of(context)!.calories,
                     ),
+                    const SizedBox(height: 12),
+                    editableTextFormField(
+                      context,
+                      weightController,
+                          (value) => validateCalories(value, context),
+                      AppLocalizations.of(context)!.weightG,
+                    ),
                     const SizedBox(height: 18),
                     if (mealInfo == null) ...[
                       Row(
                         children: [
                           ActionButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              showEnterBarcodePopup(
+                                context,
+                                day,
+                                updatedMealId,
+                                mealInfo: mealInfo,
+                              );
+                            },
                             color: Colors.orangeAccent,
-                            label:
-                                AppLocalizations.of(
-                                  context,
-                                )!.scanProductBarCode,
+                            label: AppLocalizations.of(context)!.scanProductBarCode,
                           ),
                         ],
                       ),
@@ -137,13 +170,16 @@ VoidCallback showPopUp(
                               var customMealUpdateRequest =
                                 CustomMealUpdateRequest(
                                   day: day,
-                                  mealId: updatedMealId,
+                                  mealType: updatedMealType,
+                                  mealId:
+                                    mealInfo != null ? updatedMealId : null,
                                   customName:
                                     mealInfo == null ? nameController.text : null,
-                                  customCalories: int.tryParse(caloriesController.text),
-                                  customProtein: double.tryParse(proteinController.text),
-                                  customCarbs: double.tryParse(carbsController.text),
-                                  customFat: double.tryParse(fatController.text)
+                                  customCalories: int.tryParse(caloriesController.text)!,
+                                  customProtein: double.tryParse(proteinController.text)!,
+                                  customCarbs: double.tryParse(carbsController.text)!,
+                                  customFat: double.tryParse(fatController.text)!,
+                                  eatenWeight: int.tryParse(weightController.text)!,
                                 );
                               context.read<DailySummaryBloc>().add(
                                 UpdateMeal(
