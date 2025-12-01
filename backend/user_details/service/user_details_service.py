@@ -1,4 +1,5 @@
-from typing import Type
+from datetime import date
+from typing import List, Type
 
 from fastapi import HTTPException
 
@@ -6,7 +7,13 @@ from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.user_details.enums import DietType
-from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
+from backend.user_details.mappers import weight_history_create_to_entry, weight_history_to_response
+from backend.user_details.schemas import (
+    UserDetailsCreate,
+    UserDetailsUpdate,
+    UserWeightHistoryCreate,
+    UserWeightHistoryResponse,
+)
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
@@ -60,3 +67,19 @@ class UserDetailsService:
         await self.get_user_details_by_user(user)
 
         return await self.user_details_repository.update_user_details_by_user_id(user.id, user_details_data)
+
+    async def add_user_weight(self, data: UserWeightHistoryCreate, user: Type[User]) -> UserWeightHistoryResponse:
+        entry = weight_history_create_to_entry(user.id, data)
+        return weight_history_to_response(await self.user_details_repository.add_user_weight(entry))
+
+    async def get_weight_for_day(self, user: Type[User], day: date) -> UserWeightHistoryResponse | None:
+        entry = await self.user_details_repository.get_user_weight_history_by_user_id_and_day(user.id, day)
+        return weight_history_to_response(entry) if entry else None
+
+    async def get_weight_range(
+        self, user: Type[User], start_date: date, end_date: date
+    ) -> List[UserWeightHistoryResponse]:
+        entries = await self.user_details_repository.get_user_weight_history_by_user_id_and_date_range(
+            user.id, start_date, end_date
+        )
+        return [weight_history_to_response(entry) for entry in entries]
