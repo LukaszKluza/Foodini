@@ -224,6 +224,7 @@
   "skipMeal": "Skip Meal",
   "addNewMeal": "Add new meal",
   "save": "Save",
+  "confirmRemovingMeal": "Confirm you want to remove that meal",
   "scanProductBarCode": "Scan product bar code",
   "productBarCode": "Bar code",
   "addProduct": "Add product",

@@ -625,6 +625,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get confirmRemovingMeal => 'Confirm you want to remove that meal';
+
+  @override
   String get scanProductBarCode => 'Scan product bar code';
 
   @override

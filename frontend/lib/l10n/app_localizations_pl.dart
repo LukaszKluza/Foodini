@@ -631,6 +631,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get save => 'Zapisz';
 
   @override
+  String get confirmRemovingMeal => 'Potwierdź, że chcesz usunąć ten posiłek';
+
+  @override
   String get scanProductBarCode => 'Zeskanuj kod kreskowy produktu';
 
   @override

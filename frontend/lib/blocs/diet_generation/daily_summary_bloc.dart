@@ -18,12 +18,13 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     on<GetDailySummary>(_onGetDailySummary);
     on<ChangeMealStatus>(_onChangeMealStatus);
     on<UpdateMeal>(_onUpdateMeal);
-    on<ResetDailySummary>((event, emit) {
-      emit(DailySummaryState());
-    });
+    on<RemoveMeal>(_onRemoveMeal);
     on<GenerateMealPlan>(_onGenerateMealPlan);
     on<AddScannedProduct>(_onAddScannedProduct);
     on<ClearScannedProductStatus>(_onClearScannedProductStatus);
+    on<ResetDailySummary>((event, emit) {
+      emit(DailySummaryState());
+    });
   }
 
   void _onClearScannedProductStatus(
@@ -174,6 +175,51 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       emit(
         state.copyWith(
           updatingMealDetails: ProcessingStatus.submittingFailure,
+          getMessage: (context) => error.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onRemoveMeal(
+    RemoveMeal event,
+    Emitter<DailySummaryState> emit,
+  ) async {
+    emit(
+      state.copyWith(removingMealFromSummary: ProcessingStatus.submittingOnGoing),
+    );
+
+    try {
+      await dietGenerationRepository.removeMealFromSummary(
+        event.removeMealRequest,
+        UserStorage().getUserId!,
+      );
+
+      final updatedSummary = await dietGenerationRepository.getDailySummary(
+        event.removeMealRequest.day,
+        UserStorage().getUserId!,
+      );
+
+      emit(
+        state.copyWith(
+          dailySummary: updatedSummary,
+          removingMealFromSummary: ProcessingStatus.submittingSuccess,
+        ),
+      );
+    } on ApiException catch (error) {
+      emit(
+        state.copyWith(
+          removingMealFromSummary: ProcessingStatus.submittingFailure,
+          errorCode: error.statusCode,
+          getMessage:
+              (context) =>
+                  ExceptionConverter.formatErrorMessage(error.data, context),
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          removingMealFromSummary: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
         ),
       );

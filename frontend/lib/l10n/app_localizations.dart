@@ -1304,6 +1304,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @confirmRemovingMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm you want to remove that meal'**
+  String get confirmRemovingMeal;
+
   /// No description provided for @scanProductBarCode.
   ///
   /// In en, this message translates to:

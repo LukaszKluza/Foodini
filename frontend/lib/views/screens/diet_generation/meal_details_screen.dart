@@ -184,7 +184,13 @@ class _MealDetails extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               ActionButton(
-                onPressed: () {},
+                onPressed: showDeleteMealPopUp(
+                context,
+                widgetSelectedDate,
+                mealType,
+                mealInfo.mealId,
+                mealName: mealInfo.name,
+              ),
                 color: Colors.redAccent,
                 label: AppLocalizations.of(context)!.delete,
               ),

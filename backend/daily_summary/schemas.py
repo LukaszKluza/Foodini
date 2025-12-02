@@ -78,3 +78,13 @@ class CustomMealUpdateRequest(BaseModel):
     custom_fat: Optional[float] = Field(default=None, ge=0)
     custom_weight: Optional[int] = Field(default=None, ge=0, le=1250)
     eaten_weight: Optional[int] = Field(default=None, ge=0, le=1250)
+
+
+class RemoveMealRequest(BaseModel):
+    day: date
+    meal_type: MealType
+    meal_id: UUID
+
+
+class RemoveMealResponse(RemoveMealRequest):
+    success: bool

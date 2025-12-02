@@ -224,6 +224,7 @@
   "skipMeal": "Pomiń posiłek",
   "addNewMeal": "Dodaj nowy posiłek",
   "save": "Zapisz",
+  "confirmRemovingMeal": "Potwierdź, że chcesz usunąć ten posiłek",
   "scanProductBarCode": "Zeskanuj kod kreskowy produktu",
   "productBarCode": "Kod kreskowy",
   "addProduct": "Dodaj produkt",
