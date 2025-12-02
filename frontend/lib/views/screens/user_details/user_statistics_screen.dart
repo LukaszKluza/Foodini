@@ -9,6 +9,7 @@ import 'package:frontend/states/user_statistics_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/error_message.dart';
 import 'package:frontend/views/widgets/title_text.dart';
+import 'package:frontend/views/widgets/weight_input_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 class UserStatisticsScreen extends StatefulWidget {
@@ -33,6 +34,18 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
         title: Center(
           child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.yourStatistics),
         ),
+        actions: [
+          IconButton(
+            tooltip: AppLocalizations.of(context)!.enterYourWeight,
+            icon: const Icon(Icons.monitor_weight_outlined),
+            onPressed: () async {
+              final saved = await WeightInputDialog.show(context);
+              if (saved == true && context.mounted) {
+                context.read<UserStatisticsBloc>().add(RefreshUserStatistics());
+              }
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: BlocBuilder<UserStatisticsBloc, UserStatisticsState>(

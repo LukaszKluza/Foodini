@@ -85,10 +85,7 @@ class DailySummaryRepository:
         if daily_summary is None:
             raise NotFoundInDatabaseException(f"DailyMealsSummary with ID {daily_summary_id} not found.")
 
-
-        meal_summary_stmt = select(MealDailySummary.id).where(
-            MealDailySummary.daily_summary_id == daily_summary_id
-        )
+        meal_summary_stmt = select(MealDailySummary.id).where(MealDailySummary.daily_summary_id == daily_summary_id)
         meal_summary_ids_result = await self.db.execute(meal_summary_stmt)
         meal_summary_ids = meal_summary_ids_result.scalars().all()
 

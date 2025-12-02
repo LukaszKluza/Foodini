@@ -16,7 +16,10 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
     on<LoadUserStatistics>(_onLoad);
     on<RefreshUserStatistics>(_onLoad);
     on<ResetUserStatistics>((event, emit) => emit(const UserStatisticsState()));
+
+    on<UpdateUserWeight>(_onUpdateUserWeight);
   }
+
 
   Future<void> _onLoad(
     UserStatisticsEvent event,
@@ -54,4 +57,47 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
       );
     }
   }
+
+  Future<void> _onUpdateUserWeight(
+    UpdateUserWeight event,
+    Emitter<UserStatisticsState> emit,
+  ) async {
+    emit(state.copyWith(processingStatus: ProcessingStatus.submittingOnGoing));
+
+    try {
+      final userId = UserStorage().getUserId!;
+      await userDetailsRepository.addOrUpdateUserWeight(event.entry, userId);
+
+      final stats = await userDetailsRepository.getUserStatistics(userId);
+
+      emit(
+        state.copyWith(
+          statistics: stats,
+          processingStatus: ProcessingStatus.submittingSuccess,
+        ),
+      );
+    } on ApiException catch (error) {
+      emit(
+        state.copyWith(
+          processingStatus: ProcessingStatus.submittingFailure,
+          errorCode: error.statusCode,
+          getMessage: (context) {
+            final message =
+                ExceptionConverter.formatErrorMessage(error.data, context);
+            return message == 'Unknown error'
+                ? AppLocalizations.of(context)!.unknownError
+                : message;
+          },
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          processingStatus: ProcessingStatus.submittingFailure,
+          getMessage: (context) => e.toString(),
+        ),
+      );
+    }
+  }
+
 }

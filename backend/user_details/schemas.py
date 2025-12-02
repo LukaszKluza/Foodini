@@ -86,6 +86,16 @@ class UserDetailsUpdate(DietGoalValidationMixin, DateOfBirthValidationMixin, Flo
         )
 
 
+class UserWeightHistoryCreate(BaseModel):
+    weight_kg: float = Field(..., ge=20, le=160)
+    day: date
+
+
+class UserWeightHistoryResponse(BaseModel):
+    weight_kg: float
+    day: date
+
+
 class PredictedMacros(BaseModel):
     protein: float
     fat: float
