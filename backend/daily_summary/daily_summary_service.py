@@ -380,12 +380,30 @@ class DailySummaryService:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
-        self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
+        slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
 
         removed = await self.daily_summary_repo.remove_meal_from_summary(user.id, day, meal_type, meal_id)
         if not removed:
             logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")
             raise NotFoundInDatabaseException("Selected meal not assigned to selected meal type.")
+
+        if slot.status == MealStatus.EATEN:
+            calories = await self._get_meal_calories(meal_id)
+            macros = await self._get_meal_macros(meal_id)
+
+            macros_to_subtract = DailyMacrosSummaryCreate(
+                day=day,
+                calories=(-1) * calories,
+                protein=(-1) * macros["protein"],
+                carbs=(-1) * macros["carbs"],
+                fat=(-1) * macros["fat"],
+            )
+
+            updated_macros = await self._update_daily_macros_summary(user.id, macros_to_subtract)
+            if not updated_macros:
+                logger.debug(f"Failed to update macros summary after removing meal {meal_id}")
+                raise NotFoundInDatabaseException("Failed to update macros summary after removing meal.")
+
         return RemoveMealResponse(day=day, meal_type=meal_type, meal_id=meal_id, success=True)
 
     async def add_meal_details(self, meal_data: MealCreate):

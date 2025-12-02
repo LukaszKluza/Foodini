@@ -242,7 +242,7 @@
   "valueOfWeightShouldBeBetween": "Wartość kalorii powinna mieścić się w przedziale",
 
   "generateNewPlan": "Generuj posiłki",
-  "noMealData_contactSupport": "Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem {email}.",
+  "noMealData": "Brak danych dla tego posiłku.",
   "regenerateMeals": "Generuj posiłki ponownie",
   "dietOutdatedConsiderRegenerating": "Menu może być nieaktualne – rozważ regenerację.",
   "dietOutdated": "Menu może być nieaktualne.",

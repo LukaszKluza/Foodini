@@ -684,9 +684,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generateNewPlan => 'Generuj posiłki';
 
   @override
-  String noMealData_contactSupport(Object email) {
-    return 'Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem $email.';
-  }
+  String get noMealData => 'Brak danych dla tego posiłku.';
 
   @override
   String get regenerateMeals => 'Generuj posiłki ponownie';

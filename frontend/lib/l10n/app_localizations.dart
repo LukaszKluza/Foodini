@@ -1400,11 +1400,11 @@ abstract class AppLocalizations {
   /// **'Generate New Plan'**
   String get generateNewPlan;
 
-  /// No description provided for @noMealData_contactSupport.
+  /// No description provided for @noMealData.
   ///
   /// In en, this message translates to:
-  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
-  String noMealData_contactSupport(Object email);
+  /// **'No data for this meal.'**
+  String get noMealData;
 
   /// No description provided for @regenerateMeals.
   ///

@@ -242,7 +242,7 @@
   "valueOfWeightShouldBeBetween": "Value of weight should be between",
 
   "generateNewPlan": "Generate New Plan",
-  "noMealData_contactSupport": "No data for this meal. Please refresh request or contact support at {email}.",
+  "noMealData": "No data for this meal.",
   "regenerateMeals": "Regenerate Meals",
   "dietOutdatedConsiderRegenerating": "Your meal plan may be outdated – consider regenerating it.",
   "dietOutdated": "Your meal plan may be outdated.",

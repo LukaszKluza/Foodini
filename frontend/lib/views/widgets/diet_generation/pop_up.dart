@@ -15,8 +15,8 @@ import 'package:uuid/uuid.dart';
 VoidCallback showPopUp(
   BuildContext context,
   DateTime day,
-  MealType updatedMealType,
-  UuidValue updatedMealId, {
+  MealType updatedMealType, {
+  UuidValue? updatedMealId,
   MealInfo? mealInfo,
 }) {
   TextFormField editableTextFormField(
@@ -41,8 +41,7 @@ VoidCallback showPopUp(
 
   void showEnterBarcodePopup(
       BuildContext context,
-      DateTime day,
-      UuidValue updatedMealId, {
+      DateTime day, {
         MealInfo? mealInfo,
       }) {
     showDialog(
@@ -146,7 +145,6 @@ VoidCallback showPopUp(
                               showEnterBarcodePopup(
                                 context,
                                 day,
-                                updatedMealId,
                                 mealInfo: mealInfo,
                               );
                             },
