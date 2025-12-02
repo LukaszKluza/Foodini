@@ -1,6 +1,7 @@
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/remove_meal_request.dart';
 import 'package:image_picker/image_picker.dart';
 
 abstract class DailySummaryEvent {}
@@ -18,6 +19,14 @@ class UpdateMeal extends DailySummaryEvent {
 
   UpdateMeal({
     required this.customMealUpdateRequest,
+  });
+}
+
+class RemoveMeal extends DailySummaryEvent {
+  final RemoveMealRequest removeMealRequest;
+
+  RemoveMeal({
+    required this.removeMealRequest,
   });
 }
 

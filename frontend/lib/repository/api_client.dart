@@ -4,6 +4,7 @@ import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/remove_meal_request.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
 import 'package:frontend/models/user/language.dart';
@@ -272,6 +273,15 @@ class ApiClient {
     return _client.patch(
       Endpoints.customMeal,
       data: customMealUpdateRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> removeMealFromSummary(RemoveMealRequest removeMealRequest, UuidValue userId) {
+    return _client.delete(
+      Endpoints.removeMealFromSummary,
+      data: removeMealRequest.toJson(),
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );

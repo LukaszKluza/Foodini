@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
@@ -11,7 +10,6 @@ import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/cache_manager.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
@@ -90,15 +88,24 @@ class _MealDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
              if ((mealItems.isNotEmpty && dateComparator(state.dailySummary!.day, widgetSelectedDate) != 0) || mealItems.isEmpty)
-              buildErrorBox(
-                context,
-                AppLocalizations.of(context)!.noMealData_contactSupport(Constants.supportEmail),
-                buttonText:
-                AppLocalizations.of(context)!.refreshRequest,
-                onButtonPressed: () {
-                  context.read<CacheManager>().clearAllCache();
-                  context.read<DailySummaryBloc>().add(GetDailySummary(widgetSelectedDate));
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    generateMealNameHeader(context, mealType),
+                    const SizedBox(height: 16),
+                    buildErrorBox(
+                      context,
+                      AppLocalizations.of(context)!.noMealData,
+                      button: ActionButton(
+                        onPressed: showPopUp(context, widgetSelectedDate, mealType),
+                        color: Colors.orangeAccent,
+                        label: AppLocalizations.of(context)!.addNewMeal,
+                      ),
+                    ),
+                  ],
+                ),
               ) else
                 generateMealDetails(context, mealType, mealItems),
               if (state.updatingMealDetails. isFailure)
@@ -136,7 +143,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, widgetSelectedDate, mealType, mealItems[0].mealId),
+                    onPressed: showPopUp(context, widgetSelectedDate, mealType, updatedMealId: mealItems[0].mealId),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -178,13 +185,19 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo: mealInfo),
+                onPressed: showPopUp(context, widgetSelectedDate, mealType, updatedMealId: mealInfo.mealId, mealInfo: mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
               const SizedBox(width: 12),
               ActionButton(
-                onPressed: () {},
+                onPressed: showDeleteMealPopUp(
+                context,
+                widgetSelectedDate,
+                mealType,
+                mealInfo.mealId,
+                mealName: mealInfo.name,
+              ),
                 color: Colors.redAccent,
                 label: AppLocalizations.of(context)!.delete,
               ),

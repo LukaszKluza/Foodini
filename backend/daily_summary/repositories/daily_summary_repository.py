@@ -85,10 +85,7 @@ class DailySummaryRepository:
         if daily_summary is None:
             raise NotFoundInDatabaseException(f"DailyMealsSummary with ID {daily_summary_id} not found.")
 
-
-        meal_summary_stmt = select(MealDailySummary.id).where(
-            MealDailySummary.daily_summary_id == daily_summary_id
-        )
+        meal_summary_stmt = select(MealDailySummary.id).where(MealDailySummary.daily_summary_id == daily_summary_id)
         meal_summary_ids_result = await self.db.execute(meal_summary_stmt)
         meal_summary_ids = meal_summary_ids_result.scalars().all()
 
@@ -216,16 +213,20 @@ class DailySummaryRepository:
             return user_daily_meals_summary
         return None
 
-    async def remove_meal_from_summary(self, user_id: UUID, day: date, meal_id: UUID) -> bool:
+    async def remove_meal_from_summary(self, user_id: UUID, day: date, meal_type: MealType, meal_id: UUID) -> bool:
         user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
         if user_daily_meals_summary:
-            for meal_daily_summary in user_daily_meals_summary.daily_meals:
+            meal_daily_summary = next(
+                (meal for meal in user_daily_meals_summary.daily_meals if meal.meal_type == meal_type), None
+            )
+
+            if meal_daily_summary:
                 composed_item = next(
                     (item for item in meal_daily_summary.meal_items if item.meal_id == meal_id),
                     None,
                 )
                 if composed_item:
                     await self.db.delete(composed_item)
-            await self.db.commit()
-            return True
+                    await self.db.commit()
+                    return True
         return False

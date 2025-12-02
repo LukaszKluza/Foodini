@@ -7,6 +7,8 @@ import 'package:frontend/models/diet_generation/daily_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/remove_meal_request.dart';
+import 'package:frontend/models/diet_generation/remove_meal_response.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/services/barcode_scanner_service.dart';
 import 'package:frontend/utils/cache_manager.dart';
@@ -61,6 +63,19 @@ class DietGenerationRepository {
       throw ApiException(e.response?.data ?? 'Error while editing meals', statusCode: e.response?.statusCode);
     } catch (e) {
       throw Exception('Error while editing meals: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
+
+   Future<RemoveMealResponse> removeMealFromSummary(RemoveMealRequest removeMealRequest, UuidValue userId) async {
+    try {
+      final response = await apiClient.removeMealFromSummary(removeMealRequest, userId);
+      return RemoveMealResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data ?? 'Error while removing meal from summary', statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while removing meal from summary: $e');
     } finally {
       await cacheManager.clearAllCache();
     }

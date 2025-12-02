@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/views/screens/diet_generation/meal_details_screen.dart';
-import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+// import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
 
 class CustomBottomSheet extends StatelessWidget {
@@ -51,11 +51,12 @@ class CustomBottomSheet extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    ActionButton(onPressed: () {}, color: Colors.redAccent, label: AppLocalizations.of(context)!.skipMeal)
-                  ],
-                ),
+                // TODO: Change this button in order to change status (not only to skip)
+                // Row(
+                //   children: [
+                //     ActionButton(onPressed: () {}, color: Colors.redAccent, label: AppLocalizations.of(context)!.skipMeal)
+                //   ],
+                // ),
               ],
             ),
           ),

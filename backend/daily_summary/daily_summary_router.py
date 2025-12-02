@@ -13,6 +13,8 @@ from backend.daily_summary.schemas import (
     DailySummary,
     MealInfo,
     MealInfoUpdateRequest,
+    RemoveMealRequest,
+    RemoveMealResponse,
 )
 from backend.meals.schemas import MealCreate
 from backend.users.user_gateway import UserGateway, get_user_gateway
@@ -92,6 +94,16 @@ async def add_custom_meal(
 ):
     user, _ = await user_gateway.get_current_user()
     return await daily_summary_service.add_custom_meal(user, custom_meal)
+
+
+@daily_summary_router.delete("/meal", response_model=RemoveMealResponse)
+async def remove_meal_from_summary(
+    meal_to_remove: RemoveMealRequest,
+    daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
+    user_gateway: UserGateway = Depends(get_user_gateway),
+):
+    user, _ = await user_gateway.get_current_user()
+    return await daily_summary_service.remove_meal_from_summary(user, meal_to_remove)
 
 
 # DEV
