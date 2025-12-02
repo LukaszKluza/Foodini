@@ -49,7 +49,7 @@ async def update_user_details(
 @user_details_router.post(
     "/weight-history", status_code=status.HTTP_201_CREATED, response_model=UserWeightHistoryResponse
 )
-async def add_user_weight_entry(
+async def add_user_weight(
     body: UserWeightHistoryCreate,
     user_details_service: UserDetailsService = Depends(get_user_details_service),
     user_gateway: UserGateway = Depends(get_user_gateway),

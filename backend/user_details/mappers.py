@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from backend.models import UserWeightHistory
-from backend.user_details.schemas import UserWeightHistoryResponse, UserWeightHistoryCreate
+from backend.user_details.schemas import UserWeightHistoryCreate, UserWeightHistoryResponse
 
 
 def weight_history_to_response(data: UserWeightHistory) -> UserWeightHistoryResponse:

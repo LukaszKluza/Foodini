@@ -1,12 +1,15 @@
 import uuid
 from datetime import date, datetime
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import UUID, CheckConstraint, ForeignKey, Index, UniqueConstraint
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel, func
 
 from ..core.db_listeners import register_timestamp_listeners
 from .types import FloatAsNumeric
+
+if TYPE_CHECKING:
+    from .user_model import User
 
 
 class UserWeightHistory(SQLModel, table=True):
