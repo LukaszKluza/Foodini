@@ -113,7 +113,7 @@ VoidCallback showNewMealPopUp(
                     editableTextFormField(
                       context,
                       weightController,
-                          (value) => validateCalories(value, context),
+                          (value) => validateWeight(value, context),
                       AppLocalizations.of(context)!.weightG,
                     ),
                     const SizedBox(height: 18),
