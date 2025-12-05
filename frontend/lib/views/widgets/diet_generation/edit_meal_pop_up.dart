@@ -39,21 +39,19 @@ VoidCallback showEditMealPopUp(
 
   final formKey = GlobalKey<FormState>();
 
-  Widget _macroIcon(String text) {
+  Widget macroIcon(String text) {
+    var fontSize = MediaQuery.of(context).size.width >= 400 ? 14.0 : 10.0;
     return Row(
       children: [
         Text(
           text,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.w900),
         ),
       ],
     );
   }
 
-  Widget _macroDivider() {
+  Widget macroDivider() {
     return Transform.translate(
       offset: const Offset(0, -3),
       child: Text(
@@ -68,16 +66,13 @@ VoidCallback showEditMealPopUp(
     );
   }
 
-
   return () {
     showDialog(
       context: context,
       builder: (context) {
         final weightController = TextEditingController(
-          text: mealItemInfo.unitWeight.toString(),
+          text: mealItemInfo.plannedWeight.toString(),
         );
-
-        print(mealItemInfo.toJson());
 
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -87,7 +82,7 @@ VoidCallback showEditMealPopUp(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -98,11 +93,17 @@ VoidCallback showEditMealPopUp(
                       children: [
                         Text(
                           AppLocalizations.of(context)!.macrosPer100g,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 8,
+                          ),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [Color(0xFFFF7F50), Color(0xFFFFA500)],
@@ -122,15 +123,35 @@ VoidCallback showEditMealPopUp(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              _macroIcon('${(mealItemInfo.calories!/mealItemInfo.unitWeight * 100).toStringAsFixed(0)} kcal'),
-                              _macroDivider(),
-                              _macroIcon(
-                                  '${AppLocalizations.of(context)!.p_protein}: ${(mealItemInfo.protein!/ mealItemInfo.unitWeight * 100).toStringAsFixed(2)}g'
-                              ),
-                              _macroDivider(),
-                              _macroIcon('${AppLocalizations.of(context)!.c_carbs}: ${(mealItemInfo.carbs!/mealItemInfo.unitWeight*100).toStringAsFixed(2)}g '),
-                              _macroDivider(),
-                              _macroIcon('${AppLocalizations.of(context)!.f_fat}: ${(mealItemInfo.fat!/mealItemInfo.unitWeight*100).toStringAsFixed(2)}g'),
+                              mealItemInfo.unitWeight == 0
+                                  ? macroIcon('0 kcal')
+                                  : macroIcon(
+                                      '${(mealItemInfo.calories / mealItemInfo.unitWeight * 100).toStringAsFixed(0)} kcal',
+                                    ),
+                              macroDivider(),
+                              mealItemInfo.unitWeight == 0
+                                  ? macroIcon(
+                                      '${AppLocalizations.of(context)!.p_protein}: 0.00',
+                                    )
+                                  : macroIcon(
+                                      '${AppLocalizations.of(context)!.p_protein}: ${(mealItemInfo.protein / mealItemInfo.unitWeight * 100).toStringAsFixed(2)}',
+                                    ),
+                              macroDivider(),
+                              mealItemInfo.unitWeight == 0
+                                  ? macroIcon(
+                                      '${AppLocalizations.of(context)!.c_carbs}: 0.00',
+                                    )
+                                  : macroIcon(
+                                      '${AppLocalizations.of(context)!.c_carbs}: ${(mealItemInfo.carbs / mealItemInfo.unitWeight * 100).toStringAsFixed(2)}',
+                                    ),
+                              macroDivider(),
+                              mealItemInfo.unitWeight == 0
+                                  ? macroIcon(
+                                      '${AppLocalizations.of(context)!.f_fat}: 0.00',
+                                    )
+                                  : macroIcon(
+                                      '${AppLocalizations.of(context)!.f_fat}: ${(mealItemInfo.fat / mealItemInfo.unitWeight * 100).toStringAsFixed(2)}',
+                                    ),
                             ],
                           ),
                         ),
@@ -139,7 +160,7 @@ VoidCallback showEditMealPopUp(
                         editableTextFormField(
                           context,
                           weightController,
-                              (value) => validateCalories(value, context),
+                          (value) => validateCalories(value, context),
                           AppLocalizations.of(context)!.weightG,
                         ),
                       ],
@@ -157,19 +178,22 @@ VoidCallback showEditMealPopUp(
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               var customMealUpdateRequest =
-                                CustomMealUpdateRequest(
-                                  day: day,
-                                  mealType: mealType,
-                                  mealId: mealItemId,
-                                  customCalories: mealItemInfo.calories!,
-                                  customProtein: mealItemInfo.protein!,
-                                  customCarbs: mealItemInfo.carbs!,
-                                  customFat: mealItemInfo.fat!,
-                                  eatenWeight: int.tryParse(weightController.text)!,
-                                );
+                                  CustomMealUpdateRequest(
+                                    day: day,
+                                    mealType: mealType,
+                                    mealId: mealItemId,
+                                    customCalories: mealItemInfo.calories,
+                                    customProtein: mealItemInfo.protein,
+                                    customCarbs: mealItemInfo.carbs,
+                                    customFat: mealItemInfo.fat,
+                                    eatenWeight: int.tryParse(
+                                      weightController.text,
+                                    )!,
+                                  );
                               context.read<DailySummaryBloc>().add(
                                 UpdateMeal(
-                                  customMealUpdateRequest: customMealUpdateRequest,
+                                  customMealUpdateRequest:
+                                      customMealUpdateRequest,
                                 ),
                               );
                               Navigator.pop(context);

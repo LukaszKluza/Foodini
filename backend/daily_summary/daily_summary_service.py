@@ -5,6 +5,7 @@ from uuid import UUID
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
+from backend.daily_summary.repositories.composed_meal_iteams import ComposedMealItemsRepository
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
@@ -17,6 +18,7 @@ from backend.daily_summary.schemas import (
     MealInfo,
     MealInfoUpdateRequest,
     MealInfoWithIconPath,
+    MealMacros,
 )
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
@@ -32,17 +34,19 @@ class DailySummaryService:
         summary_repo: DailySummaryRepository,
         meal_repo: MealRepository,
         last_generated_meals_repo: LastGeneratedMealsRepository,
+        composed_meal_items_repo: ComposedMealItemsRepository,
         meal_gateway: MealGateway,
         user_details_gateway: UserDetailsGateway,
     ):
         self.daily_summary_repo = summary_repo
         self.meal_repo = meal_repo
         self.last_generated_meals_repo = last_generated_meals_repo
+        self.composed_meal_items_repo = composed_meal_items_repo
         self.meal_gateway = meal_gateway
         self.user_details_gateway = user_details_gateway
 
     async def get_daily_summary(self, user: Type[User], day: date):
-        daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day, user.language)
+        daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day)
         if not daily_meals:
             logger.debug(f"No daily meals for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
@@ -105,7 +109,11 @@ class DailySummaryService:
                                 carbs=float(meal.carbs),
                                 fat=float(meal.fat),
                                 unit_weight=int(meal.weight),
-                                target_weight=item.weight_eaten,
+                                planned_calories=item.planned_calories,
+                                planned_protein=item.planned_protein,
+                                planned_carbs=item.planned_carbs,
+                                planned_fat=item.planned_fat,
+                                planned_weight=item.planned_weight,
                             )
                         )
 
@@ -138,7 +146,11 @@ class DailySummaryService:
                     carbs=float(meal.carbs),
                     fat=float(meal.fat),
                     unit_weight=int(meal.weight),
-                    target_weight=item.weight_eaten,
+                    planned_weight=item.planned_weight,
+                    planned_calories=item.planned_calories,
+                    planned_protein=item.planned_protein,
+                    planned_carbs=item.planned_carbs,
+                    planned_fat=item.planned_fat,
                 )
 
     async def add_daily_meals(self, daily_meals_data: DailyMealsCreate, user_id: UUID):
@@ -165,7 +177,11 @@ class DailySummaryService:
                     carbs=float(meal.carbs),
                     fat=float(meal.fat),
                     unit_weight=int(meal.weight),
-                    target_weight=item.weight_eaten,
+                    planned_weight=int(meal.weight),
+                    planned_calories=meal.calories,
+                    planned_protein=meal.protein,
+                    planned_fat=meal.fat,
+                    planned_carbs=meal.carbs,
                 )
 
                 meal_items_info.append(basic_info)
@@ -244,45 +260,46 @@ class DailySummaryService:
         total_carbs = 0
         total_fat = 0
 
-        for item in slot.meal_items:
-            meal = item.meal
+        for meal in slot.meal_items:
             if not meal:
                 continue
-            total_calories += meal.calories
-            total_protein += meal.protein
-            total_carbs += meal.carbs
-            total_fat += meal.fat
+            total_calories += meal.planned_calories
+            total_protein += meal.planned_protein
+            total_carbs += meal.planned_carbs
+            total_fat += meal.planned_fat
 
-        meal_info = BasicMealInfo(
-            status=new_status,
+        meal_macros = MealMacros(
+            day=day,
+            meal_id=slot.meal_items[0].meal_id,
             calories=int(total_calories),
             protein=float(total_protein),
             carbs=float(total_carbs),
             fat=float(total_fat),
-            meal_id=slot.meal_items[0].meal_id,
-            unit_weight=slot.meal_items[0].meal.weight,
-            target_weight=slot.meal_items[0].meal.weight,
-            # TODO Weight doesn't matter. We can think of optional weight here and in model on front
         )
 
         await self.daily_summary_repo.update_meal_status(user.id, day, meal_type, new_status)
-        await self._update_macros_after_status_change(user.id, day, meal_info, new_status, previous_status)
+        await self._update_macros_after_status_change(user.id, meal_macros, new_status, previous_status)
         await self._update_next_meal_status(user_daily_meals)
 
-        return meal_info
+        return meal_macros
 
     # ruff: noqa: C901
     async def add_custom_meal(self, user: Type[User], custom_meal: CustomMealUpdateRequest):
+        old_composed_meal = None
+        existing_link = None
+        existing_item = None
+
         day = custom_meal.day
-        daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day, user.language)
+        daily_meals = await self.daily_summary_repo.get_daily_summary(user.id, day)
+        if custom_meal.meal_id:
+            old_composed_meal = await self.composed_meal_items_repo.get_composed_meal_item_by_user_id_and_meal_id(
+                user.id, custom_meal.meal_id
+            )
         if not daily_meals:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         daily_meals.daily_meals = list(daily_meals.daily_meals)
-
-        existing_link = None
-        existing_item = None
 
         if custom_meal.meal_id:
             for link in daily_meals.daily_meals:
@@ -313,8 +330,10 @@ class DailySummaryService:
             previous_status = MealStatus(existing_link.status)
             existing_meal = None
 
+        # TODO, fix name handling
         new_meal_name = custom_meal.custom_name or (existing_meal.meal_name if existing_meal else "Custom Meal")
 
+        # TODO Imo we should raise exception if no calories/macros provided
         new_meal = MealCreate(
             meal_name=new_meal_name,
             meal_type=existing_link.meal_type,
@@ -323,7 +342,7 @@ class DailySummaryService:
             protein=custom_meal.custom_protein or (existing_meal.protein if existing_meal else 0),
             carbs=custom_meal.custom_carbs or (existing_meal.carbs if existing_meal else 0),
             fat=custom_meal.custom_fat or (existing_meal.fat if existing_meal else 0),
-            weight=custom_meal.custom_weight,
+            weight=(existing_meal.weight if existing_meal else custom_meal.custom_weight) or 0,
             is_generated=existing_meal.is_generated if existing_meal else False,
         )
 
@@ -344,22 +363,32 @@ class DailySummaryService:
             protein=new_meal.protein,
             carbs=new_meal.carbs,
             fat=new_meal.fat,
-            unit_weight=new_meal.weight,
-            target_weight=new_meal.weight,
+            unit_weight=existing_meal.weight if existing_meal else new_meal.weight,
+            planned_calories=int(new_meal.calories / new_meal.weight * custom_meal.custom_weight)
+            if new_meal.calories
+            else 0,
+            planned_protein=round(new_meal.protein / new_meal.weight * custom_meal.custom_weight, 2)
+            if new_meal.protein
+            else 0.0,
+            planned_carbs=round(new_meal.carbs / new_meal.weight * custom_meal.custom_weight, 2)
+            if new_meal.carbs
+            else 0.0,
+            planned_fat=round(new_meal.fat / new_meal.weight * custom_meal.custom_weight, 2) if new_meal.fat else 0.0,
+            planned_weight=custom_meal.custom_weight,
             meal_id=new_meal.id,
         )
 
         if previous_status == MealStatus.EATEN:
-            new_c = int(new_meal.calories or 0)
-            new_p = float(new_meal.protein or 0)
-            new_cb = float(new_meal.carbs or 0)
-            new_f = float(new_meal.fat or 0)
+            new_c = int(meal_info.planned_calories)
+            new_p = float(meal_info.planned_protein)
+            new_cb = float(meal_info.planned_carbs)
+            new_f = float(meal_info.planned_fat)
 
-            if existing_meal and existing_item:
-                old_c = int(existing_meal.calories or 0)
-                old_p = float(existing_meal.protein or 0)
-                old_cb = float(existing_meal.carbs or 0)
-                old_f = float(existing_meal.fat or 0)
+            if existing_meal and existing_item and old_composed_meal:
+                old_c = old_composed_meal.planned_calories
+                old_p = old_composed_meal.planned_protein
+                old_cb = old_composed_meal.planned_carbs
+                old_f = old_composed_meal.planned_fat
                 delta = DailyMacrosSummaryCreate(
                     day=day,
                     calories=new_c - old_c,
@@ -372,6 +401,7 @@ class DailySummaryService:
 
             await self._update_daily_macros_summary(user.id, delta)
 
+        # TODO Probably we can just update existing composed meal item instead of removing and adding new one
         if existing_item:
             await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_item.meal_id)
 
@@ -425,7 +455,7 @@ class DailySummaryService:
         return user_daily_macros
 
     async def _update_macros_after_status_change(
-        self, user_id: UUID, day: date, meal_info: BasicMealInfo, status: MealStatus, previous_status: MealStatus
+        self, user_id: UUID, meal_macros: MealMacros, status: MealStatus, previous_status: MealStatus
     ):
         multiplier = 0
 
@@ -437,31 +467,12 @@ class DailySummaryService:
         if multiplier == 0:
             return
 
-        calories = meal_info.calories
-        protein = meal_info.protein
-        carbs = meal_info.carbs
-        fat = meal_info.fat
-        meal_id = meal_info.meal_id
-
-        if None in (calories, protein, carbs, fat) and meal_id:
-            db_calories = await self._get_meal_calories(meal_id)
-            db_macros = await self._get_meal_macros(meal_id)
-            calories = calories if calories is not None else db_calories
-            protein = protein if protein is not None else db_macros["protein"]
-            carbs = carbs if carbs is not None else db_macros["carbs"]
-            fat = fat if fat is not None else db_macros["fat"]
-
-        calories = calories or 0
-        protein = protein or 0
-        carbs = carbs or 0
-        fat = fat or 0
-
         data = DailyMacrosSummaryCreate(
-            day=day,
-            calories=calories * multiplier,
-            protein=protein * multiplier,
-            carbs=carbs * multiplier,
-            fat=fat * multiplier,
+            day=meal_macros.day,
+            calories=meal_macros.calories * multiplier,
+            protein=meal_macros.protein * multiplier,
+            carbs=meal_macros.carbs * multiplier,
+            fat=meal_macros.fat * multiplier,
         )
 
         await self._update_daily_macros_summary(user_id, data)

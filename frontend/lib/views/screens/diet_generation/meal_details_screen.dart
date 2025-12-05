@@ -167,10 +167,10 @@ class _MealDetails extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildCarbsItem(context, mealInfo.carbs!),
-              buildFatItem(context, mealInfo.fat!),
-              buildProteinItem(context, mealInfo.protein!),
-              buildCaloriesItem(context, mealInfo.calories!),
+              buildCarbsItem(context, mealInfo.plannedCarbs),
+              buildFatItem(context, mealInfo.plannedFat),
+              buildProteinItem(context, mealInfo.plannedProtein),
+              buildCaloriesItem(context, mealInfo.plannedCalories),
             ],
           ),
           const SizedBox(height: 16),

@@ -115,7 +115,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
               final eatenCalories = summary.eatenCalories;
 
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
                 child: Center(
                   child: Column(
                     children: [
@@ -457,7 +457,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             )).toList(),
           ),
           if (activeMealsInfo.length > 1)
-            MealNutrientsRow(macrosSummary: calculatedTotalMacros, breakpoint: 325),
+            MealNutrientsRow(macrosSummary: calculatedTotalMacros, breakpoint: 345),
         ],
       ),
     );

@@ -134,7 +134,7 @@ class DailyMealsGeneratorService:
             saved_recipes.append(meal_recipe)
             _status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
             meals_type_map[saved_meal.meal_type.value] = [
-                to_empty_basic_meal_info(meal_id=saved_meal.id, status=_status)
+                to_empty_basic_meal_info(saved_meal=saved_meal, status=_status)
             ]
 
         return saved_meals, saved_recipes, meals_type_map
