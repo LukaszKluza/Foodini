@@ -57,12 +57,12 @@ class MealInfoCard extends StatelessWidget {
               const SizedBox(height: 12),
               MealNutrientsRow(
                   macrosSummary: MacrosSummary(
-                      carbs: activeMealInfo.carbs!,
-                      fat: activeMealInfo.fat!,
-                      protein: activeMealInfo.protein!,
-                      calories: activeMealInfo.calories!
+                      carbs: activeMealInfo.plannedCarbs,
+                      fat: activeMealInfo.plannedFat,
+                      protein: activeMealInfo.plannedProtein,
+                      calories: activeMealInfo.plannedCalories
                   ),
-                  breakpoint: 280
+                  breakpoint: 350
               )
             ],
           ),

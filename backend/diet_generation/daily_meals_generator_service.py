@@ -96,10 +96,10 @@ class DailyMealsGeneratorService:
             logger.debug("Diet not found in database")
             raise
         except HTTPException as e:
-            logger.error(f"Error while generating meal plan: {str(e)}")
+            logger.error(f"Error while generating meal plan: {str(e.detail)}")
             raise
         except Exception as e:
-            logger.error(f"Error while generating meal plan: {str(e)}")
+            logger.error(f"Error while generating meal plan: {str(e.with_traceback())}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error while generating meal plan",
@@ -134,7 +134,7 @@ class DailyMealsGeneratorService:
             saved_recipes.append(meal_recipe)
             _status = MealStatus.PENDING if complete_meal.meal_type == MealType.BREAKFAST.value else MealStatus.TO_EAT
             meals_type_map[saved_meal.meal_type.value] = [
-                to_empty_basic_meal_info(meal_id=saved_meal.id, status=_status)
+                to_empty_basic_meal_info(saved_meal=saved_meal, status=_status)
             ]
 
         return saved_meals, saved_recipes, meals_type_map
