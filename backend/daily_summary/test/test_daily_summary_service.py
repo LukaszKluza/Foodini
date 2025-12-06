@@ -119,11 +119,13 @@ def mock_last_generated_meals_repository():
     repo.get_last_generated_meals = AsyncMock()
     return repo
 
+
 @pytest.fixture
 def mock_composed_meal_items_repo():
     repo = AsyncMock()
     repo.get_composed_meal_item_by_user_id_and_meal_id = AsyncMock()
     return repo
+
 
 @pytest.fixture
 def mock_meal_gateway():
