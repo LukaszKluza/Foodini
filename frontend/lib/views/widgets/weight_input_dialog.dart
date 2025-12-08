@@ -5,7 +5,6 @@ import 'package:frontend/events/user_details/user_statistics_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/models/user_details/user_weight_history.dart';
-import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/states/user_statistics_states.dart';
 
 class WeightInputDialog {
@@ -31,32 +30,14 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
     super.initState();
     selectedDate = DateTime.now();
     weightController = TextEditingController();
-    _loadExistingWeight();
+
+    context.read<UserStatisticsBloc>().add(LoadUserWeightForDay(selectedDate));
   }
 
   @override
   void dispose() {
     weightController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadExistingWeight() async {
-    final repo = context.read<UserStatisticsBloc>().userDetailsRepository;
-    final userId = UserStorage().getUserId!;
-
-    try {
-      final existing = await repo.getUserWeightForDay(selectedDate, userId);
-      if (mounted) {
-        final weightText = existing?.weightKg.toStringAsFixed(1) ?? '';
-        if (weightController.text != weightText) {
-          setState(() {
-            weightController.text = weightText;
-          });
-        }
-      }
-    } catch (_) {
-      // Idk what to do here, maybe just pass
-    }
   }
 
   Future<void> _pickDate() async {
@@ -68,11 +49,17 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
       lastDate: DateTime(now.year + 1),
     );
 
+    if (!mounted) return;
+
     if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      await _loadExistingWeight();
+      setState(() => selectedDate = picked);
+
+      context.read<UserStatisticsBloc>().add(
+            LoadUserWeightForDay(selectedDate),
+          );
     }
   }
+
 
   Future<void> _save() async {
     final text = weightController.text.trim().replaceAll(',', '.');
@@ -88,33 +75,47 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
       return;
     }
 
-    final entry = UserWeightHistory(weightKg: parsed, day: selectedDate);
-    context.read<UserStatisticsBloc>().add(UpdateUserWeight(entry));
+    final entry = UserWeightHistory(
+      weightKg: parsed,
+      day: selectedDate,
+    );
 
+    context.read<UserStatisticsBloc>().add(UpdateUserWeight(entry));
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final bloc = context.read<UserStatisticsBloc>();
 
     return BlocListener<UserStatisticsBloc, UserStatisticsState>(
-      bloc: bloc,
-      listenWhen: (previous, current) => previous.processingStatus != current.processingStatus,
+      listenWhen: (previous, current) =>
+          previous.processingStatus != current.processingStatus,
       listener: (context, state) {
         if (state.processingStatus == ProcessingStatus.submittingSuccess) {
           Navigator.of(context).pop(true);
         } else if (state.processingStatus == ProcessingStatus.submittingFailure) {
-          final errorMessage = state.getMessage?.call(context) ?? loc.unknownError;
+          final errorMessage =
+              state.getMessage?.call(context) ?? loc.unknownError;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
           );
         }
       },
       child: BlocBuilder<UserStatisticsBloc, UserStatisticsState>(
-        bloc: bloc,
         builder: (context, state) {
-          final isSubmitting = state.processingStatus == ProcessingStatus.submittingOnGoing;
+          final isSubmitting =
+              state.processingStatus == ProcessingStatus.submittingOnGoing;
+
+          final dailyWeight = state.dailyWeight;
+          if (dailyWeight != null) {
+            final newText = dailyWeight.weightKg.toStringAsFixed(1);
+            if (weightController.text != newText) {
+              weightController.text = newText;
+            }
+          } else {
+            weightController.text = '';
+          }
 
           return AlertDialog(
             title: Text(loc.enterYourWeight),
@@ -125,7 +126,11 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
                   children: [
                     const Icon(Icons.calendar_today, size: 18),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(selectedDate.toIso8601String().split('T').first)),
+                    Expanded(
+                      child: Text(
+                        selectedDate.toIso8601String().split('T').first,
+                      ),
+                    ),
                     IconButton(
                       onPressed: isSubmitting ? null : _pickDate,
                       icon: const Icon(Icons.edit_calendar_outlined),
@@ -135,7 +140,9 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: weightController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     labelText: loc.weightKg,
                     prefixIcon: const Icon(Icons.monitor_weight_outlined),
@@ -145,19 +152,26 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
             ),
             actions: [
               TextButton(
-                onPressed: isSubmitting ? null : () => Navigator.pop(context, false),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                onPressed:
+                    isSubmitting ? null : () => Navigator.pop(context, false),
+                child: Text(MaterialLocalizations.of(context)
+                    .cancelButtonLabel),
               ),
               ElevatedButton.icon(
                 onPressed: isSubmitting ? null : _save,
                 icon: isSubmitting
-                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : const Icon(Icons.save_outlined),
-                label: Text(MaterialLocalizations.of(context).okButtonLabel),
-              )
+                label:
+                    Text(MaterialLocalizations.of(context).okButtonLabel),
+              ),
             ],
           );
-        }
+        },
       ),
     );
   }

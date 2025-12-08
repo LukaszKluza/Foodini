@@ -260,5 +260,6 @@
   "statisticsLoadFailure": "Nie udało się załadować statystyk",
   "statistsMissing": "Statystyki niedostępne",
   "calorieConsumptionChartTitle": "Spożyte kalorie",
-  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie"
+  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie",
+  "weightChartTitle": "Historia wagi"
 }

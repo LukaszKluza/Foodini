@@ -725,4 +725,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calorieGoalChartTitle => 'Calorie Goal vs Actual';
+
+  @override
+  String get weightChartTitle => 'Weight history';
 }

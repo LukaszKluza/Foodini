@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 
 from backend.models import UserDetails
-from backend.user_details.dependencies import get_user_details_service
+from backend.user_details.dependencies import get_user_details_service, get_user_weight_service
 from backend.user_details.schemas import (
     UserDetailsCreate,
     UserDetailsUpdate,
@@ -12,6 +12,7 @@ from backend.user_details.schemas import (
     UserWeightHistoryResponse,
 )
 from backend.user_details.service.user_details_service import UserDetailsService
+from backend.user_details.service.user_weight_service import UserWeightService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
 user_details_router = APIRouter(prefix="/v1/user-details")
@@ -51,29 +52,29 @@ async def update_user_details(
 )
 async def add_user_weight(
     body: UserWeightHistoryCreate,
-    user_details_service: UserDetailsService = Depends(get_user_details_service),
+    user_weight_service: UserWeightService = Depends(get_user_weight_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await user_details_service.add_user_weight(body, user)
+    return await user_weight_service.add_user_weight(body, user)
 
 
 @user_details_router.get("/weight-history/{day}", response_model=UserWeightHistoryResponse | None)
 async def get_user_weight_history(
     day: date,
-    user_details_service: UserDetailsService = Depends(get_user_details_service),
+    user_weight_service: UserWeightService = Depends(get_user_weight_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await user_details_service.get_weight_for_day(user, day)
+    return await user_weight_service.get_weight_for_day(user, day)
 
 
 @user_details_router.get("/weight-history", response_model=List[UserWeightHistoryResponse])
 async def get_latest_user_weight(
     start: date,
     end: date,
-    user_details_service: UserDetailsService = Depends(get_user_details_service),
+    user_weight_service: UserWeightService = Depends(get_user_weight_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await user_details_service.get_weight_range(user, start, end)
+    return await user_weight_service.get_weight_range(user, start, end)

@@ -733,4 +733,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get calorieGoalChartTitle => 'Cel kalorii vs faktyczne spożycie';
+
+  @override
+  String get weightChartTitle => 'Historia wagi';
 }

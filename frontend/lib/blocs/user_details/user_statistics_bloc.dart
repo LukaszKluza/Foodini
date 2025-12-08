@@ -16,10 +16,11 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
     on<LoadUserStatistics>(_onLoad);
     on<RefreshUserStatistics>(_onLoad);
     on<ResetUserStatistics>((event, emit) => emit(const UserStatisticsState()));
-
+    on<LoadUserWeightForDay>(_onLoadUserWeightForDay);
     on<UpdateUserWeight>(_onUpdateUserWeight);
-  }
 
+    on<LoadUserWeightHistory>(_onLoadWeightHistory);
+  }
 
   Future<void> _onLoad(
     UserStatisticsEvent event,
@@ -53,6 +54,33 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
         state.copyWith(
           processingStatus: ProcessingStatus.gettingFailure,
           getMessage: (context) => e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLoadUserWeightForDay(
+    LoadUserWeightForDay event,
+    Emitter<UserStatisticsState> emit,
+  ) async {
+    emit(state.copyWith(processingStatus: ProcessingStatus.gettingOnGoing));
+
+    try {
+      final userId = UserStorage().getUserId!;
+      final weight =
+          await userDetailsRepository.getUserWeightForDay(event.date, userId);
+
+      emit(
+        state.copyWith(
+          dailyWeight: weight,
+          processingStatus: ProcessingStatus.gettingSuccess,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          processingStatus: ProcessingStatus.gettingFailure,
+          getMessage: (_) => e.toString(),
         ),
       );
     }
@@ -100,4 +128,34 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
     }
   }
 
+
+  Future<void> _onLoadWeightHistory(
+    LoadUserWeightHistory event,
+    Emitter<UserStatisticsState> emit,
+  ) async {
+    emit(state.copyWith(processingStatus: ProcessingStatus.gettingOnGoing));
+
+    try {
+      final userId = UserStorage().getUserId!;
+      final history = await userDetailsRepository.getUserWeightHistory(
+        start: event.start,
+        end: event.end,
+        userId: userId,
+      );
+
+      emit(
+        state.copyWith(
+          weightHistory: history,
+          processingStatus: ProcessingStatus.gettingSuccess,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          processingStatus: ProcessingStatus.gettingFailure,
+          getMessage: (_) => e.toString(),
+        ),
+      );
+    }
+  }
 }

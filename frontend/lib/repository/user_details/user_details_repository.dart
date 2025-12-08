@@ -99,11 +99,31 @@ class UserDetailsRepository {
     }
   }
 
+  Future<List<UserWeightHistory>> getUserWeightHistory({
+    required DateTime start,
+    required DateTime end,
+    required UuidValue userId,
+  }) async {
+    try {
+      final response = await apiClient.getWeightHistory(
+        start: start,
+        end: end,
+        userId: userId,
+      );
+
+      final data = response.data as List;
+      return data.map((e) => UserWeightHistory.fromJson(e)).toList();
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while fetching weight history: $e');
+    }
+  }
+
   Future<UserWeightHistory> addOrUpdateUserWeight(UserWeightHistory request, UuidValue userId) async {
     try {
       final response = await apiClient.addUserWeight(request.toJson(), userId);
 
-      // Invalidate cached user statistics and weight-for-day, so subsequent GETs return fresh data
       if (cacheManager != null) {
         try {
           final statsUri = Uri.parse('${Endpoints.userStatistics}?user_id=${userId.uuid}');
@@ -112,7 +132,6 @@ class UserDetailsRepository {
           await cacheManager!.clearCacheFor(statsUri);
           await cacheManager!.clearCacheFor(weightUri);
         } catch (_) {
-          // ignore cache errors
         }
       }
 

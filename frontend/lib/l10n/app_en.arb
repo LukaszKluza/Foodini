@@ -260,5 +260,6 @@
   "statisticsLoadFailure": "Failed to load statistics",
   "statistsMissing": "No statistics available",
   "calorieConsumptionChartTitle": "Calorie consumption",
-  "calorieGoalChartTitle": "Calorie Goal vs Actual"
+  "calorieGoalChartTitle": "Calorie Goal vs Actual",
+  "weightChartTitle": "Weight history"
 }

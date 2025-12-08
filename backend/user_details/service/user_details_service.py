@@ -1,5 +1,4 @@
-from datetime import date
-from typing import List, Type
+from typing import Type
 
 from fastapi import HTTPException
 
@@ -7,16 +6,14 @@ from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.user_details.enums import DietType
-from backend.user_details.mappers import weight_history_create_to_entry, weight_history_to_response
 from backend.user_details.schemas import (
     UserDetailsCreate,
     UserDetailsUpdate,
-    UserWeightHistoryCreate,
-    UserWeightHistoryResponse,
 )
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
+from backend.user_details.service.user_weight_service import UserWeightService
 from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.users.user_gateway import UserGateway
 
@@ -27,10 +24,12 @@ class UserDetailsService:
         user_details_repository: UserDetailsRepository,
         user_gateway: UserGateway,
         user_details_validators: UserDetailsValidationService,
+        user_weight_service: UserWeightService | None = None,
     ):
         self.user_details_repository = user_details_repository
         self.user_gateway = user_gateway
         self.user_details_validators = user_details_validators
+        self.user_weight_service = user_weight_service
 
     async def get_user_details_by_user(self, user: Type[User]):
         return await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)
@@ -67,19 +66,3 @@ class UserDetailsService:
         await self.get_user_details_by_user(user)
 
         return await self.user_details_repository.update_user_details_by_user_id(user.id, user_details_data)
-
-    async def add_user_weight(self, data: UserWeightHistoryCreate, user: Type[User]) -> UserWeightHistoryResponse:
-        entry = weight_history_create_to_entry(user.id, data)
-        return weight_history_to_response(await self.user_details_repository.add_user_weight(entry))
-
-    async def get_weight_for_day(self, user: Type[User], day: date) -> UserWeightHistoryResponse | None:
-        entry = await self.user_details_repository.get_user_weight_history_by_user_id_and_day(user.id, day)
-        return weight_history_to_response(entry) if entry else None
-
-    async def get_weight_range(
-        self, user: Type[User], start_date: date, end_date: date
-    ) -> List[UserWeightHistoryResponse]:
-        entries = await self.user_details_repository.get_user_weight_history_by_user_id_and_date_range(
-            user.id, start_date, end_date
-        )
-        return [weight_history_to_response(entry) for entry in entries]
