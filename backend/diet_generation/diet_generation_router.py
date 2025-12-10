@@ -12,7 +12,12 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 diet_generation_router = APIRouter(prefix="/v1/diet-generation")
 
 
-@diet_generation_router.post("/generate-meal-plan", response_model=List[MealRecipe])
+@diet_generation_router.post(
+    "/generate-meal-plan",
+    response_model=List[MealRecipe],
+    summary="Generate meal plan",
+    description="Generate meal plan for the currently authenticated user and chosen date.",
+)
 @limiter.limit("3/day", key_func=user_target_date_key)
 @limiter.limit("1 per 2 minutes", key_func=user_target_date_key)
 async def generate_meal_plan(

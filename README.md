@@ -98,3 +98,7 @@ sudo systemctl restart foodini-backend
 ```
 sudo systemctl reload caddy
 ```
+
+6. Generate ReDoc HTML
+   curl http://localhost:8000/openapi.json -o openapi.json
+   redocly build-docs openapi.json --output api.html
