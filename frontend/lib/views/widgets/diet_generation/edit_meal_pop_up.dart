@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
+import 'package:frontend/config/constants.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
@@ -55,7 +56,7 @@ VoidCallback showEditMealPopUp(
     return Transform.translate(
       offset: const Offset(0, -3),
       child: Text(
-        '|',
+        Constants.pipe,
         style: const TextStyle(
           fontSize: 40,
           color: Colors.white70,
@@ -119,14 +120,13 @@ VoidCallback showEditMealPopUp(
                               ),
                             ],
                           ),
-                          // child:
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               mealItemInfo.unitWeight == 0
-                                  ? macroIcon('0 kcal')
+                                  ? macroIcon('0 ${AppLocalizations.of(context)!.kcal}')
                                   : macroIcon(
-                                      '${(mealItemInfo.calories / mealItemInfo.unitWeight * 100).toStringAsFixed(0)} kcal',
+                                      '${(mealItemInfo.calories / mealItemInfo.unitWeight * 100).toStringAsFixed(0)} ${AppLocalizations.of(context)!.kcal}',
                                     ),
                               macroDivider(),
                               mealItemInfo.unitWeight == 0

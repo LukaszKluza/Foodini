@@ -2,6 +2,8 @@ import 'package:frontend/models/user_details/cooking_skills.dart';
 import 'package:frontend/models/user_details/daily_budget.dart';
 
 class Constants {
+  static const String pipe = '|';
+
   static const int minPasswordLength = 8;
   static const int maxPasswordLength = 64;
   static const int redirectionDelay = 200;

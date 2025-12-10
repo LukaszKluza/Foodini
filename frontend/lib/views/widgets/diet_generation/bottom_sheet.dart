@@ -30,7 +30,7 @@ class CustomBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${AppLocalizations.of(context)!.macrosSummary } ${AppConfig.mealTypeLabels(context)[mealType]}',
+              '${AppLocalizations.of(context)!.macrosSummary} ${AppConfig.mealTypeLabels(context)[mealType]}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],

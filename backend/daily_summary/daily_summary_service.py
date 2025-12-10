@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict, List, Type
+from typing import Dict, List, Type, Union
 from uuid import UUID
 
 from backend.core.logger import logger
@@ -364,16 +364,12 @@ class DailySummaryService:
             carbs=new_meal.carbs,
             fat=new_meal.fat,
             unit_weight=existing_meal.weight if existing_meal else new_meal.weight,
-            planned_calories=int(new_meal.calories / new_meal.weight * custom_meal.custom_weight)
-            if new_meal.calories
-            else 0,
-            planned_protein=round(new_meal.protein / new_meal.weight * custom_meal.custom_weight, 2)
-            if new_meal.protein
-            else 0.0,
-            planned_carbs=round(new_meal.carbs / new_meal.weight * custom_meal.custom_weight, 2)
-            if new_meal.carbs
-            else 0.0,
-            planned_fat=round(new_meal.fat / new_meal.weight * custom_meal.custom_weight, 2) if new_meal.fat else 0.0,
+            planned_calories=self._calculate_planned_value(
+                new_meal.calories, new_meal.weight, custom_meal.custom_weight, is_int=True
+            ),
+            planned_protein=self._calculate_planned_value(new_meal.protein, new_meal.weight, custom_meal.custom_weight),
+            planned_carbs=self._calculate_planned_value(new_meal.carbs, new_meal.weight, custom_meal.custom_weight),
+            planned_fat=self._calculate_planned_value(new_meal.fat, new_meal.weight, custom_meal.custom_weight),
             planned_weight=custom_meal.custom_weight,
             meal_id=new_meal.id,
         )
@@ -408,6 +404,21 @@ class DailySummaryService:
         await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
 
         return meal_info
+
+    @staticmethod
+    def _calculate_planned_value(
+        macro_value: Union[int, float], base_weight: int, planned_weight: int, is_int: bool = False
+    ):
+        if not macro_value or not base_weight or base_weight <= 0:
+            return 0 if is_int else 0.0
+
+        scale_factor = planned_weight / base_weight
+        result = macro_value * scale_factor
+
+        if is_int:
+            return int(result)
+        else:
+            return round(result, 2)
 
     async def add_meal_details(self, meal_data: MealCreate):
         return await self.meal_repo.add_meal(meal_data)
