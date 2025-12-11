@@ -4,21 +4,16 @@ import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
-import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
-import 'package:frontend/models/diet_generation/remove_meal_request.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/enter_barcode_pop_up.dart';
-import 'package:uuid/uuid.dart';
 
 VoidCallback showNewMealPopUp(
   BuildContext context,
   DateTime day,
-  MealType updatedMealType, {
-  UuidValue? updatedMealId,
-  MealInfo? mealInfo,
-}) {
+  MealType updatedMealType
+) {
   TextFormField editableTextFormField(
     BuildContext context,
     TextEditingController textEditingController,
@@ -39,11 +34,7 @@ VoidCallback showNewMealPopUp(
     );
   }
 
-  void showEnterBarcodePopup(
-      BuildContext context,
-      DateTime day, {
-        MealInfo? mealInfo,
-      }) {
+  void showEnterBarcodePopup(BuildContext context, DateTime day) {
     showDialog(
       context: context,
       builder: (_) => EnterBarcodePopup(
@@ -176,66 +167,6 @@ VoidCallback showNewMealPopUp(
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  };
-}
-
-VoidCallback showDeleteMealPopUp(
-  BuildContext context,
-  DateTime day,
-  MealType mealType,
-  UuidValue mealId,
-  {required String mealName}
-) {
-  return () {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 12,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.confirmRemovingMeal,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      ActionButton(
-                        onPressed: () => Navigator.pop(context),
-                        color: Colors.grey[500]!,
-                        label: AppLocalizations.of(context)!.cancel,
-                      ),
-                      const SizedBox(width: 12),
-                      ActionButton(
-                        onPressed: () {
-                          final request = RemoveMealRequest(
-                            day: day,
-                            mealType: mealType,
-                            mealId: mealId,
-                          );
-                          context.read<DailySummaryBloc>().add(RemoveMeal(removeMealRequest: request));
-                          Navigator.pop(context);
-                        },
-                        color: Colors.redAccent,
-                        label: AppLocalizations.of(context)!.delete,
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
           ),

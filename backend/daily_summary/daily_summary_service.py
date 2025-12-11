@@ -395,7 +395,9 @@ class DailySummaryService:
 
         # TODO Probably we can just update existing composed meal item instead of removing and adding new one
         if existing_item:
-            await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_item.meal_id)
+            await self.daily_summary_repo.remove_meal_from_summary(
+                user.id, day, custom_meal.meal_type, existing_item.meal_id
+            )
 
         await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
 
