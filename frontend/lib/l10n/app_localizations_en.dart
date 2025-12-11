@@ -604,7 +604,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plannedMealsFor => 'Planned meals for';
 
   @override
-  String get macrosSummary => 'Macros summary';
+  String get macrosSummary => 'Summary of';
 
   @override
   String get calories => 'Calories';
@@ -726,4 +726,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calorieGoalChartTitle => 'Calorie Goal vs Actual';
+
+  @override
+  String get macrosPer100g => 'Macros per 100 g';
 }

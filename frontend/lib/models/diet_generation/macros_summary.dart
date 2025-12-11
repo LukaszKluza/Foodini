@@ -26,10 +26,10 @@ class MacrosSummary {
     int totalCalories = 0;
 
     for (final meal in meals) {
-      totalProtein += meal.protein!;
-      totalCarbs += meal.carbs!;
-      totalFat += meal.fat!;
-      totalCalories += meal.calories!;
+      totalProtein += meal.plannedProtein;
+      totalCarbs += meal.plannedCarbs;
+      totalFat += meal.plannedFat;
+      totalCalories += meal.plannedCalories;
     }
 
     return MacrosSummary(
@@ -39,7 +39,6 @@ class MacrosSummary {
       calories: totalCalories,
     );
   }
-
 
   Map<String, dynamic> toJson() => {
     'carbs': carbs,
