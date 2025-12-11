@@ -217,7 +217,7 @@
   "dailyMeals": "Dzienne menu",
   "plannedMealsFor": "Planowane posiłki na",
 
-  "macrosSummary": "Podsumowanie makroskładników",
+  "macrosSummary": "Podsumowanie",
   "calories": "Kalorie",
   "submit": "Zatwierdź",
   "edit": "Edytuj",
@@ -261,5 +261,6 @@
   "statisticsLoadFailure": "Nie udało się załadować statystyk",
   "statistsMissing": "Statystyki niedostępne",
   "calorieConsumptionChartTitle": "Spożyte kalorie",
-  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie"
+  "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie",
+  "macrosPer100g": "Makroskładniki na 100 g"
 }

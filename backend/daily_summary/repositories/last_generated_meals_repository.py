@@ -5,7 +5,8 @@ from sqlalchemy import UUID, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import MealRecipe
-from backend.models.meals_daily_summary import ComposedMealItem, MealDailySummary
+from backend.models.composed_meal_item import ComposedMealItem
+from backend.models.meals_daily_summary import MealDailySummary
 from backend.models.user_daily_summary_model import DailyMealsSummary
 
 

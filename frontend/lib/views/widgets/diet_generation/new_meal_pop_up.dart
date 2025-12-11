@@ -12,7 +12,7 @@ import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/enter_barcode_pop_up.dart';
 import 'package:uuid/uuid.dart';
 
-VoidCallback showPopUp(
+VoidCallback showNewMealPopUp(
   BuildContext context,
   DateTime day,
   MealType updatedMealType, {
@@ -59,24 +59,12 @@ VoidCallback showPopUp(
     showDialog(
       context: context,
       builder: (context) {
-        final nameController = TextEditingController(
-          text: mealInfo?.name ?? '',
-        );
-        final carbsController = TextEditingController(
-          text: mealInfo?.carbs.toString() ?? '',
-        );
-        final fatController = TextEditingController(
-          text: mealInfo?.fat.toString() ?? '',
-        );
-        final proteinController = TextEditingController(
-          text: mealInfo?.protein.toString() ?? '',
-        );
-        final caloriesController = TextEditingController(
-          text: mealInfo?.calories.toString() ?? '',
-        );
-        final weightController = TextEditingController(
-          text: mealInfo?.weight.toString() ?? '',
-        );
+        final nameController = TextEditingController();
+        final carbsController = TextEditingController();
+        final fatController = TextEditingController();
+        final proteinController = TextEditingController();
+        final caloriesController = TextEditingController();
+        final weightController = TextEditingController();
 
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -92,14 +80,13 @@ VoidCallback showPopUp(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (mealInfo == null)
-                      editableTextFormField(
-                        context,
-                        nameController,
-                        (value) => validateMealItemName(value, context),
-                        AppLocalizations.of(context)!.mealName,
-                        textInputType: TextInputType.text,
-                      ),
+                    editableTextFormField(
+                      context,
+                      nameController,
+                      (value) => validateMealItemName(value, context),
+                      AppLocalizations.of(context)!.mealName,
+                      textInputType: TextInputType.text,
+                    ),
                     const SizedBox(height: 12),
                     editableTextFormField(
                       context,
@@ -132,29 +119,26 @@ VoidCallback showPopUp(
                     editableTextFormField(
                       context,
                       weightController,
-                          (value) => validateCalories(value, context),
+                          (value) => validateWeight(value, context),
                       AppLocalizations.of(context)!.weightG,
                     ),
                     const SizedBox(height: 18),
-                    if (mealInfo == null) ...[
-                      Row(
-                        children: [
-                          ActionButton(
-                            onPressed: () {
+                    Row(
+                      children: [
+                        ActionButton(
+                          onPressed: () {
                               Navigator.pop(context);
-                              showEnterBarcodePopup(
-                                context,
-                                day,
-                                mealInfo: mealInfo,
-                              );
+                              showEnterBarcodePopup(context, day);
                             },
-                            color: Colors.orangeAccent,
-                            label: AppLocalizations.of(context)!.scanProductBarCode,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                    ],
+                          color: Colors.orangeAccent,
+                          label:
+                              AppLocalizations.of(
+                                context
+                              )!.scanProductBarCode,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         ActionButton(
@@ -170,10 +154,7 @@ VoidCallback showPopUp(
                                 CustomMealUpdateRequest(
                                   day: day,
                                   mealType: updatedMealType,
-                                  mealId:
-                                    mealInfo != null ? updatedMealId : null,
-                                  customName:
-                                    mealInfo == null ? nameController.text : null,
+                                  customName: nameController.text,
                                   customCalories: int.tryParse(caloriesController.text)!,
                                   customProtein: double.tryParse(proteinController.text)!,
                                   customCarbs: double.tryParse(carbsController.text)!,
