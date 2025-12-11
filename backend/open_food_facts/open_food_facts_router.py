@@ -7,7 +7,12 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 open_food_facts_router = APIRouter(prefix="/v1/open-food-facts")
 
 
-@open_food_facts_router.get("/{product_barcode}")
+@open_food_facts_router.get(
+    "/{product_barcode}",
+    summary="Get product details by barcode",
+    description="Retrieves detailed information about a food product using its barcode "
+    "from the Open Food Facts database.",
+)
 async def get_meal_recipe_by_meal_id(
     product_barcode: str,
     open_food_facts_service: OpenFoodFactsService = Depends(get_open_food_facts_service),
