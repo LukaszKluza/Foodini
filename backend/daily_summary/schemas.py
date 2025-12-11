@@ -16,7 +16,12 @@ class BasicMealInfo(BaseModel):
     protein: float
     carbs: float
     fat: float
-    weight: int
+    unit_weight: int
+    planned_calories: int
+    planned_protein: float
+    planned_carbs: float
+    planned_fat: float
+    planned_weight: int
 
 
 class MealInfo(BasicMealInfo):
@@ -61,6 +66,15 @@ class DailyMacrosSummaryCreate(BaseModel):
     fat: float = Field(default=0)
 
 
+class MealMacros(BaseModel):
+    day: date
+    meal_id: UUID
+    calories: int = Field(default=0)
+    protein: float = Field(default=0)
+    carbs: float = Field(default=0)
+    fat: float = Field(default=0)
+
+
 class MealInfoUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
@@ -76,5 +90,5 @@ class CustomMealUpdateRequest(BaseModel):
     custom_protein: Optional[float] = Field(default=None, ge=0)
     custom_carbs: Optional[float] = Field(default=None, ge=0)
     custom_fat: Optional[float] = Field(default=None, ge=0)
-    custom_weight: Optional[int] = Field(default=None, ge=0, le=1250)
-    eaten_weight: Optional[int] = Field(default=None, ge=0, le=1250)
+    custom_weight: Optional[int] = Field(default=None, ge=0, le=2250)
+    eaten_weight: Optional[int] = Field(default=None, ge=0, le=2250)

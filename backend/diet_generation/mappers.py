@@ -77,5 +77,18 @@ def to_daily_meals_create(
     )
 
 
-def to_empty_basic_meal_info(meal_id: UUID, status: MealStatus = MealStatus.TO_EAT) -> BasicMealInfo:
-    return BasicMealInfo(meal_id=meal_id, status=status, calories=0, protein=0, fat=0, carbs=0, weight=0)
+def to_empty_basic_meal_info(saved_meal: Meal, status: MealStatus = MealStatus.TO_EAT) -> BasicMealInfo:
+    return BasicMealInfo(
+        meal_id=saved_meal.id,
+        status=status,
+        calories=saved_meal.calories,
+        protein=saved_meal.protein,
+        fat=saved_meal.fat,
+        carbs=saved_meal.carbs,
+        unit_weight=saved_meal.weight,
+        planned_weight=saved_meal.weight,
+        planned_calories=saved_meal.calories,
+        planned_protein=saved_meal.protein,
+        planned_carbs=saved_meal.carbs,
+        planned_fat=saved_meal.fat,
+    )
