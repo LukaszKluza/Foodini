@@ -9,10 +9,10 @@ from backend.core.not_found_in_database_exception import NotFoundInDatabaseExcep
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
 from backend.meals.enums.meal_type import MealType
-from backend.models import Meal
-from backend.models.meals_daily_summary import ComposedMealItem, MealDailySummary
+from backend.models.composed_meal_item import ComposedMealItem
+from backend.models.meal_model import Meal
+from backend.models.meals_daily_summary import MealDailySummary
 from backend.models.user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
-from backend.users.enums.language import Language
 
 
 class DailySummaryRepository:
@@ -41,7 +41,11 @@ class DailySummaryRepository:
                 composed_meal = ComposedMealItem(
                     meal_daily_summary_id=meal_daily_summary_link.id,
                     meal_id=meal.meal_id,
-                    weight_eaten=meal.weight,
+                    planned_calories=meal.calories,
+                    planned_protein=meal.protein,
+                    planned_fat=meal.fat,
+                    planned_carbs=meal.carbs,
+                    planned_weight=meal.unit_weight,
                 )
                 self.db.add(composed_meal)
 
@@ -49,7 +53,7 @@ class DailySummaryRepository:
         await self.db.refresh(user_daily_meals)
         return user_daily_meals
 
-    async def get_daily_summary(self, user_id: UUID, day: date, language: Language) -> DailyMealsSummary | None:
+    async def get_daily_summary(self, user_id: UUID, day: date) -> DailyMealsSummary | None:
         query = (
             select(DailyMealsSummary)
             .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
@@ -104,6 +108,7 @@ class DailySummaryRepository:
 
         await self.db.commit()
 
+    # TODO Probably needs refactor or removal
     async def update_daily_meals(
         self, user_id: UUID, daily_meals_data: DailyMealsCreate, day: date
     ) -> DailyMealsSummary | None:
@@ -205,7 +210,11 @@ class DailySummaryRepository:
                 composed_item = ComposedMealItem(
                     meal_daily_summary_id=meal_daily_summary.id,
                     meal_id=meal_info.meal_id,
-                    weight_eaten=meal_info.weight,
+                    planned_weight=meal_info.planned_weight,
+                    planned_calories=meal_info.planned_calories,
+                    planned_protein=meal_info.planned_protein,
+                    planned_carbs=meal_info.planned_carbs,
+                    planned_fat=meal_info.planned_fat,
                 )
                 self.db.add(composed_item)
             await self.db.commit()

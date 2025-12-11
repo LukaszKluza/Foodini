@@ -217,7 +217,7 @@
   "dailyMeals": "Daily Menu",
   "plannedMealsFor": "Planned meals for",
 
-  "macrosSummary": "Macros summary",
+  "macrosSummary": "Summary of",
   "calories": "Calories",
   "submit": "Submit",
   "edit": "Edit",
@@ -261,5 +261,6 @@
   "statistsMissing": "No statistics available",
   "calorieConsumptionChartTitle": "Calorie consumption",
   "calorieGoalChartTitle": "Calorie Goal vs Actual",
+  "macrosPer100g": "Macros per 100 g"
   "weightChartTitle": "Weight history"
 }
