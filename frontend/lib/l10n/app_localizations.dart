@@ -1304,6 +1304,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @confirmRemovingMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm you want to remove that meal'**
+  String get confirmRemovingMeal;
+
   /// No description provided for @scanProductBarCode.
   ///
   /// In en, this message translates to:
@@ -1394,11 +1400,11 @@ abstract class AppLocalizations {
   /// **'Generate New Plan'**
   String get generateNewPlan;
 
-  /// No description provided for @noMealData_contactSupport.
+  /// No description provided for @noMealData.
   ///
   /// In en, this message translates to:
-  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
-  String noMealData_contactSupport(Object email);
+  /// **'No data for this meal.'**
+  String get noMealData;
 
   /// No description provided for @regenerateMeals.
   ///

@@ -19,6 +19,8 @@ from backend.daily_summary.schemas import (
     MealInfoUpdateRequest,
     MealInfoWithIconPath,
     MealMacros,
+    RemoveMealRequest,
+    RemoveMealResponse,
 )
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
@@ -245,13 +247,7 @@ class DailySummaryService:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
-        slot = next((slot for slot in user_daily_meals.daily_meals if slot.meal_type == meal_type), None)
-        if not slot:
-            logger.debug(f"Meal does not exist in {user.id} plan for {day}")
-            raise NotFoundInDatabaseException("Meal does not exist in user's plan for the given day.")
-
-        if not slot.meal_items:
-            raise NotFoundInDatabaseException("No composed meals assigned to this meal slot.")
+        slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
 
         previous_status = slot.status
 
@@ -399,11 +395,49 @@ class DailySummaryService:
 
         # TODO Probably we can just update existing composed meal item instead of removing and adding new one
         if existing_item:
-            await self.daily_summary_repo.remove_meal_from_summary(user.id, day, existing_item.meal_id)
+            await self.daily_summary_repo.remove_meal_from_summary(
+                user.id, day, custom_meal.meal_type, existing_item.meal_id
+            )
 
         await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
 
         return meal_info
+
+    async def remove_meal_from_summary(self, user: Type[User], meal_to_remove: RemoveMealRequest):
+        day = meal_to_remove.day
+        meal_type = meal_to_remove.meal_type
+        meal_id = meal_to_remove.meal_id
+
+        user_daily_meals = await self.daily_summary_repo.get_daily_meals_summary(user.id, day)
+        if not user_daily_meals:
+            logger.debug(f"No plan for {day} for user {user.id}")
+            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
+
+        slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
+
+        removed = await self.daily_summary_repo.remove_meal_from_summary(user.id, day, meal_type, meal_id)
+        if not removed:
+            logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")
+            raise NotFoundInDatabaseException("Selected meal not assigned to selected meal type.")
+
+        if slot.status == MealStatus.EATEN:
+            calories = await self._get_meal_calories(meal_id)
+            macros = await self._get_meal_macros(meal_id)
+
+            macros_to_subtract = DailyMacrosSummaryCreate(
+                day=day,
+                calories=(-1) * calories,
+                protein=(-1) * macros["protein"],
+                carbs=(-1) * macros["carbs"],
+                fat=(-1) * macros["fat"],
+            )
+
+            updated_macros = await self._update_daily_macros_summary(user.id, macros_to_subtract)
+            if not updated_macros:
+                logger.debug(f"Failed to update macros summary after removing meal {meal_id}")
+                raise NotFoundInDatabaseException("Failed to update macros summary after removing meal.")
+
+        return RemoveMealResponse(day=day, meal_type=meal_type, meal_id=meal_id, success=True)
 
     @staticmethod
     def _calculate_planned_value(
@@ -526,3 +560,16 @@ class DailySummaryService:
             if new_status != current_status:
                 link.status = new_status.value
                 await self.daily_summary_repo.update_meal_status(user_id, day, link.meal_type, new_status)
+
+    def _find_meal_slot(self, daily_summary, meal_type: MealType, user_id: UUID, day: date):
+        slot = next((s for s in daily_summary.daily_meals if s.meal_type == meal_type), None)
+
+        if not slot:
+            logger.debug(f"Meal does not exist in {user_id} plan for {day}")
+            raise NotFoundInDatabaseException("Meal does not exist in user's plan for the given day.")
+
+        if not slot.meal_items:
+            logger.debug(f"No composed meals assigned to {meal_type} for {day}.")
+            raise NotFoundInDatabaseException("No composed meals assigned to this meal slot.")
+
+        return slot

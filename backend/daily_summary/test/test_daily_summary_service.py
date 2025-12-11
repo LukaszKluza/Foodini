@@ -7,10 +7,7 @@ import pytest
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.schemas import (
-    DailyMacrosSummaryCreate,
-    MealInfoUpdateRequest,
-)
+from backend.daily_summary.schemas import DailyMacrosSummaryCreate, MealInfoUpdateRequest, RemoveMealRequest
 from backend.meals.enums.meal_type import MealType
 from backend.meals.schemas import MealCreate
 from backend.meals.test.test_data import MEAL_ICON_ID, MEAL_ID
@@ -563,3 +560,104 @@ async def test_get_meal_macros_not_found(daily_summary_service, mock_meal_reposi
 
     with pytest.raises(NotFoundInDatabaseException):
         await daily_summary_service._get_meal_macros(MEAL_ID)
+
+
+@pytest.mark.asyncio
+async def test_remove_meal_success(daily_summary_service, mock_daily_summary_repository):
+    user = User(id=uuid.uuid4())
+    day = date.today()
+    meal_type = MealType.BREAKFAST
+    meal_id = uuid.uuid4()
+
+    daily_summary_obj = MockDailyMealsSummary()
+    slot = daily_summary_obj.daily_meals[0]
+    slot.status = MealStatus.TO_EAT
+    slot.meal_type = meal_type
+
+    mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
+    mock_daily_summary_repository.remove_meal_from_summary.return_value = True
+
+    meal_request = RemoveMealRequest(day=day, meal_type=meal_type, meal_id=meal_id)
+
+    result = await daily_summary_service.remove_meal_from_summary(user, meal_request)
+
+    assert result.success is True
+    assert result.day == day
+    assert result.meal_type == meal_type
+    assert result.meal_id == meal_id
+
+
+@pytest.mark.asyncio
+async def test_remove_meal_eaten_status(daily_summary_service, mock_daily_summary_repository):
+    user = User(id=uuid.uuid4())
+    day = date.today()
+    meal_type = MealType.BREAKFAST
+    meal_id = uuid.uuid4()
+
+    daily_summary_obj = MockDailyMealsSummary()
+    slot = daily_summary_obj.daily_meals[0]
+    slot.status = MealStatus.EATEN
+    slot.meal_type = meal_type
+    slot.meal_items = [MagicMock(meal_id=meal_id)]
+
+    mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
+    mock_daily_summary_repository.remove_meal_from_summary.return_value = True
+    daily_summary_service._get_meal_calories = AsyncMock(return_value=500)
+    daily_summary_service._get_meal_macros = AsyncMock(return_value={"protein": 50, "carbs": 100, "fat": 20})
+    daily_summary_service._update_daily_macros_summary = AsyncMock(return_value=True)
+
+    meal_request = RemoveMealRequest(day=day, meal_type=meal_type, meal_id=meal_id)
+
+    result = await daily_summary_service.remove_meal_from_summary(user, meal_request)
+
+    assert result.success is True
+    daily_summary_service._update_daily_macros_summary.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_remove_meal_no_plan_raises(daily_summary_service, mock_daily_summary_repository):
+    user = User(id=uuid.uuid4())
+    day = date.today()
+    mock_daily_summary_repository.get_daily_meals_summary.return_value = None
+
+    meal_request = RemoveMealRequest(day=day, meal_type=MealType.BREAKFAST, meal_id=uuid.uuid4())
+
+    with pytest.raises(NotFoundInDatabaseException):
+        await daily_summary_service.remove_meal_from_summary(user, meal_request)
+
+
+@pytest.mark.asyncio
+async def test_remove_meal_slot_not_found_raises(daily_summary_service, mock_daily_summary_repository):
+    user = User(id=uuid.uuid4())
+    day = date.today()
+    meal_id = uuid.uuid4()
+
+    daily_summary_obj = MockDailyMealsSummary()
+    daily_summary_obj.daily_meals = []
+
+    mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
+
+    meal_request = RemoveMealRequest(day=day, meal_type=MealType.BREAKFAST, meal_id=meal_id)
+
+    with pytest.raises(NotFoundInDatabaseException):
+        await daily_summary_service.remove_meal_from_summary(user, meal_request)
+
+
+@pytest.mark.asyncio
+async def test_remove_meal_not_removed_raises(daily_summary_service, mock_daily_summary_repository):
+    user = User(id=uuid.uuid4())
+    day = date.today()
+    meal_id = uuid.uuid4()
+
+    daily_summary_obj = MockDailyMealsSummary()
+    slot = daily_summary_obj.daily_meals[0]
+    slot.meal_type = MealType.BREAKFAST
+    slot.status = MealStatus.TO_EAT
+
+    mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
+    mock_daily_summary_repository.remove_meal_from_summary.return_value = False
+
+    meal_request = RemoveMealRequest(day=day, meal_type=MealType.BREAKFAST, meal_id=meal_id)
+
+    with pytest.raises(NotFoundInDatabaseException):
+        await daily_summary_service.remove_meal_from_summary(user, meal_request)
