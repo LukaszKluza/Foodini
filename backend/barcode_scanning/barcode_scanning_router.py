@@ -28,6 +28,4 @@ async def add_scanned_product(
     scanning_service: BarcodeScanningService = Depends(get_barcode_scanning_service),
 ):
     user, _ = await user_gateway.get_current_user()
-
-    result = await scanning_service.process_scan(user, day, meal_type, barcode, image)
-    return result
+    return await scanning_service.process_scan(user, day, meal_type, barcode, image)

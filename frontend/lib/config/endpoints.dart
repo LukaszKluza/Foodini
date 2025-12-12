@@ -30,7 +30,7 @@ class Endpoints {
   static const String meal = '$baseUrl/meals';
   static const String mealRecipe = '$baseUrl/meals/meal-recipes';
   static const String mealIconInfo = '$baseUrl/meals/meal-icon';
-  static const String customMeal = '$baseUrl/daily-summary/meals/custom';
+  static const String dailyMeal = '$baseUrl/daily-summary/meals';
   static const String removeMealFromSummary = '$baseUrl/daily-summary/meal';
   static const String scannedProduct = '$baseUrl/barcode_scanning/scanned-product';
 
