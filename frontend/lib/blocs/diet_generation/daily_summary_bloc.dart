@@ -65,7 +65,10 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
           errorCode: error.statusCode,
           errorData: error.data,
           getMessage: (context) {
-            final message = ExceptionConverter.formatErrorMessage(error.data, context);
+            final message = ExceptionConverter.formatErrorMessage(
+              error.data,
+              context,
+            );
 
             return message == 'Unknown error'
                 ? AppLocalizations.of(context)!.unknownError
@@ -88,9 +91,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     Emitter<DailySummaryState> emit,
   ) async {
     emit(
-      state.copyWith(
-        changingMealStatus: ProcessingStatus.submittingOnGoing,
-      ),
+      state.copyWith(changingMealStatus: ProcessingStatus.submittingOnGoing),
     );
 
     try {
@@ -121,9 +122,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         state.copyWith(
           changingMealStatus: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
-          getMessage:
-              (context) =>
-                  ExceptionConverter.formatErrorMessage(error.data, context),
+          getMessage: (context) =>
+              ExceptionConverter.formatErrorMessage(error.data, context),
         ),
       );
     } catch (error) {
@@ -145,10 +145,17 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     );
 
     try {
-      await dietGenerationRepository.addCustomMeal(
-        event.customMealUpdateRequest,
-        UserStorage().getUserId!,
-      );
+      if (event.customMealUpdateRequest.mealId != null) {
+        await dietGenerationRepository.addCustomMeal(
+          event.customMealUpdateRequest,
+          UserStorage().getUserId!,
+        );
+      } else {
+        await dietGenerationRepository.updateCustomMeal(
+          event.customMealUpdateRequest,
+          UserStorage().getUserId!,
+        );
+      }
 
       final updatedSummary = await dietGenerationRepository.getDailySummary(
         event.customMealUpdateRequest.day,
@@ -246,8 +253,9 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
       emit(
         state.copyWith(
           processingStatus: ProcessingStatus.submittingSuccess,
-          getNotification: (context) =>  MealsGenerationNotification(
-            message: '${AppLocalizations.of(context)!.mealsGeneratedSuccessfully} '
+          getNotification: (context) => MealsGenerationNotification(
+            message:
+                '${AppLocalizations.of(context)!.mealsGeneratedSuccessfully} '
                 '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}',
             isError: false,
           ),
@@ -266,11 +274,11 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
           processingStatus: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
           errorData: error.data,
-          getMessage:
-              (context) =>
-                  ExceptionConverter.formatErrorMessage(error.data, context),
+          getMessage: (context) =>
+              ExceptionConverter.formatErrorMessage(error.data, context),
           getNotification: (context) => MealsGenerationNotification(
-            message: '${AppLocalizations.of(context)!.error} ${AppLocalizations.of(context)!.whileMealsGeneration} '
+            message:
+                '${AppLocalizations.of(context)!.error} ${AppLocalizations.of(context)!.whileMealsGeneration} '
                 '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.data}',
             isError: true,
           ),
@@ -282,7 +290,8 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
           processingStatus: ProcessingStatus.submittingFailure,
           getMessage: (context) => error.toString(),
           getNotification: (context) => MealsGenerationNotification(
-            message: '${AppLocalizations.of(context)!.unknownError} ${AppLocalizations.of(context)!.whileMealsGeneration} '
+            message:
+                '${AppLocalizations.of(context)!.unknownError} ${AppLocalizations.of(context)!.whileMealsGeneration} '
                 '${AppLocalizations.of(context)!.forSomething} ${event.day.day}.${event.day.month}.${event.day.year}: ${error.toString()}',
             isError: true,
           ),
@@ -324,8 +333,7 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
         state.copyWith(
           addingScannedProduct: ProcessingStatus.submittingFailure,
           errorCode: error.statusCode,
-          getMessage:
-              (context) =>
+          getMessage: (context) =>
               ExceptionConverter.formatErrorMessage(error.data, context),
         ),
       );
@@ -339,7 +347,10 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
     }
   }
 
-  void _emitGettingDailySummaryStatus(DailySummary summary, Emitter<DailySummaryState> emit) {
+  void _emitGettingDailySummaryStatus(
+    DailySummary summary,
+    Emitter<DailySummaryState> emit,
+  ) {
     if (summary.meals.isEmpty) {
       emit(
         state.copyWith(

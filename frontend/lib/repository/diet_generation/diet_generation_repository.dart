@@ -57,12 +57,25 @@ class DietGenerationRepository {
 
   Future<MealInfo> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
     try {
-      final response = await apiClient.addCustomMeal(customMealUpdateRequest, userId);
+      final response = await apiClient.addDailyMeal(customMealUpdateRequest, userId);
       return MealInfo.fromJson(response.data);
     } on DioException catch (e) {
-      throw ApiException(e.response?.data ?? 'Error while editing meals', statusCode: e.response?.statusCode);
+      throw ApiException(e.response?.data ?? 'Error while editing daily meal', statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while editing meals: $e');
+      throw Exception('Error while editing daily meal: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
+
+  Future<MealInfo> updateCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
+    try {
+      final response = await apiClient.updateDailyMeal(customMealUpdateRequest, userId);
+      return MealInfo.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data ?? 'Error while adding daily meal', statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while adding daily meal: $e');
     } finally {
       await cacheManager.clearAllCache();
     }
