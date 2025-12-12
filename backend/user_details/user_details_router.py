@@ -18,7 +18,12 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 user_details_router = APIRouter(prefix="/v1/user-details")
 
 
-@user_details_router.get("/", response_model=UserDetails)
+@user_details_router.get(
+    "/",
+    response_model=UserDetails,
+    summary="Get current user details",
+    description="Retrieves the detailed information of the currently authenticated user.",
+)
 async def get_user_details(
     user_details_service: UserDetailsService = Depends(get_user_details_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -27,7 +32,13 @@ async def get_user_details(
     return await user_details_service.get_user_details_by_user(user)
 
 
-@user_details_router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserDetails)
+@user_details_router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserDetails,
+    summary="Add current user details",
+    description="Creates the detailed information about currently authenticated user and links them to proper account.",
+)
 async def add_user_details(
     user_details: UserDetailsCreate,
     user_details_service: UserDetailsService = Depends(get_user_details_service),
@@ -37,7 +48,12 @@ async def add_user_details(
     return await user_details_service.add_user_details(user_details, user)
 
 
-@user_details_router.patch("/", response_model=UserDetails)
+@user_details_router.patch(
+    "/",
+    response_model=UserDetails,
+    summary="Update current user details",
+    description="Updates the detailed information of the currently authenticated user with the provided data.",
+)
 async def update_user_details(
     user_details: UserDetailsUpdate,
     user_details_service: UserDetailsService = Depends(get_user_details_service),

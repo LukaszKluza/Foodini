@@ -24,7 +24,7 @@ from backend.user_details.user_details_router import user_details_router
 from backend.user_statistics.user_statistics_router import user_statistics_router
 from backend.users.user_router import user_router
 
-app = FastAPI()
+app = FastAPI(docs_url="/docs", redoc_url=None)
 app.include_router(user_router)
 app.include_router(user_details_router)
 app.include_router(calories_prediction_router)

@@ -12,8 +12,8 @@ import 'package:frontend/views/widgets/diet_generation/enter_barcode_pop_up.dart
 VoidCallback showNewMealPopUp(
   BuildContext context,
   DateTime day,
-  MealType updatedMealType,
-  ) {
+  MealType updatedMealType
+) {
   TextFormField editableTextFormField(
     BuildContext context,
     TextEditingController textEditingController,
@@ -34,10 +34,7 @@ VoidCallback showNewMealPopUp(
     );
   }
 
-  void showEnterBarcodePopup(
-      BuildContext context,
-      DateTime day
-  ) {
+  void showEnterBarcodePopup(BuildContext context, DateTime day) {
     showDialog(
       context: context,
       builder: (_) => EnterBarcodePopup(

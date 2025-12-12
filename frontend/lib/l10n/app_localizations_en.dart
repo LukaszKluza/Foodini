@@ -625,6 +625,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get confirmRemovingMeal => 'Confirm you want to remove that meal';
+
+  @override
   String get scanProductBarCode => 'Scan product bar code';
 
   @override
@@ -673,9 +676,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateNewPlan => 'Generate New Plan';
 
   @override
-  String noMealData_contactSupport(Object email) {
-    return 'No data for this meal. Please refresh request or contact support at $email.';
-  }
+  String get noMealData => 'No data for this meal.';
 
   @override
   String get regenerateMeals => 'Regenerate Meals';

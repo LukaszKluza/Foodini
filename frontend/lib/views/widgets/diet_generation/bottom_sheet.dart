@@ -49,7 +49,8 @@ class CustomBottomSheet extends StatelessWidget {
                     buildCaloriesItem(context, mealTypeMacrosSummary.calories)
                   ],
                 ),
-                // const SizedBox(height: 10),
+                const SizedBox(height: 10),
+                // TODO: Change this button in order to change status (not only to skip)
                 // Row(
                 //   children: [
                 //     ActionButton(onPressed: () {}, color: Colors.redAccent, label: AppLocalizations.of(context)!.skipMeal)

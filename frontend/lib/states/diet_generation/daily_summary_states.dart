@@ -10,6 +10,7 @@ class DailySummaryState {
   final ProcessingStatus gettingDailySummaryStatus;
   final ProcessingStatus changingMealStatus;
   final ProcessingStatus updatingMealDetails;
+  final ProcessingStatus removingMealFromSummary;
   final ProcessingStatus addingScannedProduct;
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
@@ -22,6 +23,7 @@ class DailySummaryState {
     this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
     this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
     this.updatingMealDetails = ProcessingStatus.emptyProcessingStatus,
+    this.removingMealFromSummary = ProcessingStatus.emptyProcessingStatus,
     this.addingScannedProduct = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
@@ -35,6 +37,7 @@ class DailySummaryState {
     ProcessingStatus? gettingDailySummaryStatus,
     ProcessingStatus? changingMealStatus,
     ProcessingStatus? updatingMealDetails,
+    ProcessingStatus? removingMealFromSummary,
     ProcessingStatus? addingScannedProduct,
 
     DateTime? day,
@@ -50,6 +53,7 @@ class DailySummaryState {
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
       changingMealStatus: changingMealStatus ?? this.changingMealStatus,
       updatingMealDetails: updatingMealDetails ?? this.updatingMealDetails,
+      removingMealFromSummary: removingMealFromSummary ?? this.removingMealFromSummary,
       addingScannedProduct: addingScannedProduct ?? this.addingScannedProduct,
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
@@ -70,6 +74,7 @@ class DailySummaryState {
         'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
         'changingMealStatus: $changingMealStatus, '
         'updatingMeal: $updatingMealDetails, '
+        'removingMeal: $removingMealFromSummary, '
         'addingScannedProduct: $addingScannedProduct, '
         'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
         'errorCode: $errorCode'

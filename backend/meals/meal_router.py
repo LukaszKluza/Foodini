@@ -1,7 +1,7 @@
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
+from fastapi import APIRouter, Depends, Query
 
 from backend.meals.dependencies import get_meal_service
 from backend.meals.enums.meal_type import MealType
@@ -14,7 +14,12 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 meal_router = APIRouter(prefix="/v1/meals")
 
 
-@meal_router.get("/meal-icon", response_model=MealIcon)
+@meal_router.get(
+    "/meal-icon",
+    response_model=MealIcon,
+    summary="Get meal icon information",
+    description="Retrieves icon information for a specific meal type. One icon is assigned to all meals of one type.",
+)
 async def get_meal_icon_info(
     meal_type: MealType,
     meal_service: MealService = Depends(get_meal_service),
@@ -25,7 +30,12 @@ async def get_meal_icon_info(
 
 
 # TODO Admin only endpoint
-@meal_router.get("/admin/meal-recipes/{meal_id}", response_model=List[MealRecipeResponse])
+@meal_router.get(
+    "/admin/meal-recipes/{meal_id}",
+    response_model=List[MealRecipeResponse],
+    summary="Get all meal recipes (Admin)",
+    description="Retrieves all recipes for a specific meal by its ID. This endpoint is intended for admin use only.",
+)
 async def get_meal_recipe_by_meal_id(
     meal_id: UUID,
     language: Optional[Language] = Query(None),
@@ -36,7 +46,13 @@ async def get_meal_recipe_by_meal_id(
     return await meal_service.get_meal_recipes(meal_id, language)
 
 
-@meal_router.get("/meal-recipes/{meal_id}", response_model=MealRecipeResponse)
+@meal_router.get(
+    "/meal-recipes/{meal_id}",
+    response_model=MealRecipeResponse,
+    summary="Get meal recipe",
+    description="Retrieves a safe version of the recipe for a specific meal by its ID and optionally "
+    "filtered by language.",
+)
 async def get_safe_meal_recipe_by_meal_id(
     meal_id: UUID,
     language: Optional[Language] = Query(None),
@@ -45,18 +61,3 @@ async def get_safe_meal_recipe_by_meal_id(
 ):
     await user_gateway.get_current_user()
     return await meal_service.get_meal_recipe_by_meal_and_language_safe(meal_id, language)
-
-
-@meal_router.patch("/scanned-product")
-async def add_scanned_product(
-    barcode: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    user_gateway: UserGateway = Depends(get_user_gateway),
-):
-    await user_gateway.get_current_user()
-    if not barcode and not image:
-        return {"error": "Provide either barcode or image"}
-    if barcode:
-        return {"message": f"Processed barcode: {barcode}"}
-    if image:
-        return {"message": f"Processed image: {image.filename}"}

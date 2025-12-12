@@ -8,7 +8,12 @@ from backend.users.user_gateway import UserGateway, get_user_gateway
 user_statistics_router = APIRouter(prefix="/v1/user-statistics")
 
 
-@user_statistics_router.get("/", response_model=UserStatisticsSchema)
+@user_statistics_router.get(
+    "/",
+    response_model=UserStatisticsSchema,
+    summary="Get user weekly statistics",
+    description="Retrieves weekly nutrition and meal statistics for the currently authenticated user.",
+)
 async def get_user_weekly_statistics(
     user_statistics_service: UserStatisticsService = Depends(get_user_statistics_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
