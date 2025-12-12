@@ -1265,7 +1265,7 @@ abstract class AppLocalizations {
   /// No description provided for @macrosSummary.
   ///
   /// In en, this message translates to:
-  /// **'Macros summary'**
+  /// **'Summary of'**
   String get macrosSummary;
 
   /// No description provided for @calories.
@@ -1495,6 +1495,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calorie Goal vs Actual'**
   String get calorieGoalChartTitle;
+
+  /// No description provided for @macrosPer100g.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros per 100 g'**
+  String get macrosPer100g;
 
   /// No description provided for @weightChartTitle.
   ///

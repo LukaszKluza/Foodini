@@ -610,7 +610,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get plannedMealsFor => 'Planowane posiłki na';
 
   @override
-  String get macrosSummary => 'Podsumowanie makroskładników';
+  String get macrosSummary => 'Podsumowanie';
 
   @override
   String get calories => 'Kalorie';
@@ -733,6 +733,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get calorieGoalChartTitle => 'Cel kalorii vs faktyczne spożycie';
+
+  @override
+  String get macrosPer100g => 'Makroskładniki na 100 g';
 
   @override
   String get weightChartTitle => 'Historia wagi';

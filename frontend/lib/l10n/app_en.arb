@@ -261,6 +261,6 @@
   "statistsMissing": "No statistics available",
   "calorieConsumptionChartTitle": "Calorie consumption",
   "calorieGoalChartTitle": "Calorie Goal vs Actual",
-  "macrosPer100g": "Macros per 100 g"
+  "macrosPer100g": "Macros per 100 g",
   "weightChartTitle": "Weight history"
 }
