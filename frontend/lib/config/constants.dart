@@ -2,6 +2,8 @@ import 'package:frontend/models/user_details/cooking_skills.dart';
 import 'package:frontend/models/user_details/daily_budget.dart';
 
 class Constants {
+  static const String pipe = '|';
+
   static const int minPasswordLength = 8;
   static const int maxPasswordLength = 64;
   static const int redirectionDelay = 200;
@@ -38,7 +40,9 @@ class Constants {
 
   static const int minNameLength = 2;
   static const int maxNameLength = 124;
+  static const int barcodeLength = 13;
   static const int maxMacroValue = 1000;
   static const int maxCaloriesValue = 10_000;
+  static const int maxWeightValue = 2250;
   static const String supportEmail = 'foodini.app.dev@gmail.com';
 }

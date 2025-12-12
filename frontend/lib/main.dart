@@ -29,7 +29,7 @@ void main() async {
   Directory? appDir;
 
   if (!kIsWeb) {
-    await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+    await Workmanager().initialize(callbackDispatcher);
 
     await Workmanager().registerPeriodicTask(
       'refreshAccessTokenTask',

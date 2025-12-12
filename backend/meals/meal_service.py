@@ -39,7 +39,12 @@ class MealService:
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)
 
-    async def get_meal_recipes_by_meal_recipe_id(self, meal_id: UUID) -> List[MealRecipeResponse]:
+    async def get_meal_recipes(self, meal_id: UUID, language: Language) -> List[MealRecipeResponse]:
+        if language:
+            return [await self.get_meal_recipe_by_meal_recipe_id_and_language(meal_id, language)]
+        return await self.get_meal_recipes_by_meal_id(meal_id)
+
+    async def get_meal_recipes_by_meal_id(self, meal_id: UUID) -> List[MealRecipeResponse]:
         meal_recipes = await self.meal_recipes_repository.get_meal_recipes_by_meal_id(meal_id)
         meal_recipes = await self.validate_response(meal_recipes, f"Meal recipes for mealId: {meal_id} not found")
         meal_recipes_response = []
@@ -59,6 +64,19 @@ class MealService:
 
         return await self._enhance_meal_response_by_icon(meal_recipe)
 
+    async def get_meal_recipe_by_meal_and_language_safe(self, meal_id: UUID, language: Language) -> MealRecipeResponse:
+        meal_recipes = await self.get_meal_recipes_by_meal_id(meal_id)
+
+        meal_recipes_by_language = {mr.language: mr for mr in meal_recipes}
+        if language in meal_recipes_by_language:
+            response = meal_recipes_by_language[language]
+        elif Language.EN in meal_recipes_by_language:
+            response = meal_recipes_by_language[Language.EN]
+        else:
+            response = meal_recipes[0]
+
+        return response
+
     async def _enhance_meal_response_by_icon(self, meal_recipe: MealRecipe) -> MealRecipeResponse:
         meal = await self.meal_repository.get_meal_by_id(meal_recipe.meal_id)
         await self.validate_response(meal, f"Meal with id {meal_recipe.meal_id} not found")
@@ -72,6 +90,7 @@ class MealService:
             language=meal_recipe.language,
             meal_name=meal_recipe.meal_name,
             meal_description=meal_recipe.meal_description,
+            meal_explanation=meal_recipe.meal_explanation,
             ingredients=meal_recipe.ingredients,
             steps=meal_recipe.steps,
             meal_type=meal.meal_type,

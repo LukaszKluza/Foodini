@@ -16,6 +16,7 @@ import 'package:frontend/views/screens/user_details/calories_prediction_screen.d
 import 'package:frontend/views/screens/user_details/diet_preferences_screen.dart';
 import 'package:frontend/views/screens/user_details/prediction_results_screen.dart';
 import 'package:frontend/views/screens/user_details/profile_details_screen.dart';
+import 'package:frontend/views/screens/user_details/user_statistics_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -46,6 +47,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/profile-details',
       builder: (context, state) => ProfileDetailsScreen(),
+      redirect: (context, state) => _redirectIfUnauthenticated(context),
+    ),
+    GoRoute(
+      path: '/statistics',
+      builder: (context, state) => UserStatisticsScreen(),
       redirect: (context, state) => _redirectIfUnauthenticated(context),
     ),
     GoRoute(

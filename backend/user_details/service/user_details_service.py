@@ -6,10 +6,14 @@ from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.user_details.enums import DietType
-from backend.user_details.schemas import UserDetailsCreate, UserDetailsUpdate
+from backend.user_details.schemas import (
+    UserDetailsCreate,
+    UserDetailsUpdate,
+)
 from backend.user_details.service.user_details_validation_service import (
     UserDetailsValidationService,
 )
+from backend.user_details.service.user_weight_service import UserWeightService
 from backend.user_details.user_details_repository import UserDetailsRepository
 from backend.users.user_gateway import UserGateway
 
@@ -20,10 +24,12 @@ class UserDetailsService:
         user_details_repository: UserDetailsRepository,
         user_gateway: UserGateway,
         user_details_validators: UserDetailsValidationService,
+        user_weight_service: UserWeightService | None = None,
     ):
         self.user_details_repository = user_details_repository
         self.user_gateway = user_gateway
         self.user_details_validators = user_details_validators
+        self.user_weight_service = user_weight_service
 
     async def get_user_details_by_user(self, user: Type[User]):
         return await self.user_details_validators.ensure_user_details_exist_by_user_id(user.id)

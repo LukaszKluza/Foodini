@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
     from .user_details_model import UserDetails
     from .user_diet_prediction_model import UserDietPredictions
+    from .user_weight_history_model import UserWeightHistory
 
 
 class User(SQLModel, table=True):
@@ -46,6 +47,9 @@ class User(SQLModel, table=True):
         back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
     )
     daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
+    )
+    weight_history: List["UserWeightHistory"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
     )
 

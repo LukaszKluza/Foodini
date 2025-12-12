@@ -1,8 +1,12 @@
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_status.dart';
-import 'package:uuid/uuid_value.dart';
+import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/remove_meal_request.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class DailySummaryEvent {}
+
+class ClearScannedProductStatus extends DailySummaryEvent {}
 
 class GetDailySummary extends DailySummaryEvent {
   final DateTime day;
@@ -18,14 +22,22 @@ class UpdateMeal extends DailySummaryEvent {
   });
 }
 
+class RemoveMeal extends DailySummaryEvent {
+  final RemoveMealRequest removeMealRequest;
+
+  RemoveMeal({
+    required this.removeMealRequest,
+  });
+}
+
 class ChangeMealStatus extends DailySummaryEvent {
   final DateTime day;
-  final UuidValue mealId;
+  final MealType mealType;
   final MealStatus status;
 
   ChangeMealStatus({
     required this.day,
-    required this.mealId,
+    required this.mealType,
     required this.status,
   });
 }
@@ -34,6 +46,20 @@ class GenerateMealPlan extends DailySummaryEvent {
   final DateTime day;
 
   GenerateMealPlan({
+    required this.day
+  });
+}
+
+class AddScannedProduct extends DailySummaryEvent {
+  final String? barcode;
+  final XFile? uploadedFile;
+  final MealType mealType;
+  final DateTime day;
+
+  AddScannedProduct({
+    this.barcode,
+    this.uploadedFile,
+    required this.mealType,
     required this.day
   });
 }

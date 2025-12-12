@@ -101,7 +101,7 @@ class _LoginScreenState extends State<MainPageScreen> {
                             Icons.show_chart_rounded,
                             screenWidth,
                             screenHeight,
-                                () => context.push('/statistics'),
+                            () => context.push('/statistics'),
                           ),
                         ],
                       ),
