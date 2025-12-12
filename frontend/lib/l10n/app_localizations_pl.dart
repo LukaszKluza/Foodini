@@ -737,4 +737,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get macrosPer100g => 'Makroskładniki na 100 g';
+
+  @override
+  String get weightChartTitle => 'Historia wagi';
 }

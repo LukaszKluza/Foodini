@@ -59,8 +59,8 @@ class Foodini extends StatelessWidget {
         ProxyProvider<ApiClient, UserRepository>(
           update: (_, apiClient, _) => UserRepository(apiClient),
         ),
-        ProxyProvider<ApiClient, UserDetailsRepository>(
-          update: (_, apiClient, _) => UserDetailsRepository(apiClient),
+        ProxyProvider2<ApiClient, CacheManager, UserDetailsRepository>(
+          update: (_, apiClient, cacheManager, _) => UserDetailsRepository(apiClient, cacheManager),
         ),
         ProxyProvider2<ApiClient, CacheManager, MealsRepository>(
           update: (_, apiClient, cacheManager, _) => MealsRepository(apiClient, cacheManager),

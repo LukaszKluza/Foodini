@@ -149,6 +149,40 @@ class ApiClient {
     );
   }
 
+  Future<Response> getUserWeightForDay(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
+    return _client.get(
+      '${Endpoints.userWeightHistory}/$formattedDate',
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
+  Future<Response> getWeightHistory({
+    required DateTime start,
+    required DateTime end,
+    required UuidValue userId,
+  }) {
+    return dio.get(
+      Endpoints.userWeightHistory,
+      queryParameters: {
+        'start': start.toIso8601String().split('T').first,
+        'end': end.toIso8601String().split('T').first,
+        'user_id': userId.uuid,
+      },
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
+  Future<Response> addUserWeight(Map<String, dynamic> body, UuidValue userId) {
+    return _client.post(
+      Endpoints.userWeightHistory,
+      data: body,
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
   Future<Response> getDietPreferences(UuidValue userId) {
     return _client.get(
       Endpoints.dietPreferences,

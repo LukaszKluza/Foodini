@@ -729,4 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get macrosPer100g => 'Macros per 100 g';
+
+  @override
+  String get weightChartTitle => 'Weight history';
 }

@@ -1507,6 +1507,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Macros per 100 g'**
   String get macrosPer100g;
+
+  /// No description provided for @weightChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight history'**
+  String get weightChartTitle;
 }
 
 class _AppLocalizationsDelegate
