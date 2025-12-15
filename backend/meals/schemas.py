@@ -19,6 +19,19 @@ class MealCreate(BaseModel):
     weight: int = Field(default=0, ge=0, le=1250)
     is_generated: bool = Field(default=True)
 
+    @staticmethod
+    def from_custom_meal_request(request) -> "MealCreate":
+        return MealCreate(
+            meal_name=request.custom_name,
+            meal_type=request.meal_type,
+            calories=request.custom_calories,
+            protein=request.custom_protein,
+            carbs=request.custom_carbs,
+            fat=request.custom_fat,
+            weight=request.custom_weight,
+            is_generated=False,
+        )
+
 
 class MealRecipeResponse(BaseModel):
     id: UUID

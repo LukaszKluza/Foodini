@@ -13,6 +13,7 @@ from backend.daily_summary.schemas import (
     RemoveMealRequest,
     RemoveMealResponse,
 )
+from backend.models import ComposedMealItem
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
 daily_summary_router = APIRouter(prefix="/v1/daily-summary")
@@ -48,8 +49,13 @@ async def update_meal_status(
     return await daily_summary_service.update_meal_status(user, meal_info_update)
 
 
-@daily_summary_router.post("/meals", response_model=MealInfo)
-async def edit_meal(
+@daily_summary_router.post(
+    "/meals",
+    response_model=ComposedMealItem,
+    summary="Add custom meal",
+    description="Add a custom meal created by the user to their proper daily summary.",
+)
+async def add_meal(
     custom_meal: CustomMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -61,16 +67,16 @@ async def edit_meal(
 @daily_summary_router.patch(
     "/meals/{meal_id}",
     response_model=MealInfo,
-    summary="Add custom meal",
-    description="Adds a custom meal created by the user to their proper daily summary.",
+    summary="Edit meal",
+    description="Edit a wight eaten by the user for a specific meal in their daily summary.",
 )
-async def add_meal(
+async def edit_meal(
     custom_meal: CustomMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
     user, _ = await user_gateway.get_current_user()
-    return await daily_summary_service.add_custom_meal(user, custom_meal)
+    return await daily_summary_service.edit_meal(user, custom_meal)
 
 
 @daily_summary_router.delete(

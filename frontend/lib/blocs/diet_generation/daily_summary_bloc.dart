@@ -146,12 +146,12 @@ class DailySummaryBloc extends Bloc<DailySummaryEvent, DailySummaryState> {
 
     try {
       if (event.customMealUpdateRequest.mealId != null) {
-        await dietGenerationRepository.addCustomMeal(
+        await dietGenerationRepository.updateCustomMeal(
           event.customMealUpdateRequest,
           UserStorage().getUserId!,
         );
       } else {
-        await dietGenerationRepository.updateCustomMeal(
+        await dietGenerationRepository.addCustomMeal(
           event.customMealUpdateRequest,
           UserStorage().getUserId!,
         );

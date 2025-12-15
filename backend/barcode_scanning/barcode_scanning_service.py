@@ -10,7 +10,7 @@ from backend.core.not_found_in_database_exception import NotFoundInDatabaseExcep
 from backend.core.value_error_exception import ValueErrorException
 from backend.daily_summary.schemas import CustomMealUpdateRequest
 from backend.meals.enums.meal_type import MealType
-from backend.models import User
+from backend.models import ComposedMealItem, User
 
 A_CODE = {
     "0001101": "0",
@@ -143,7 +143,7 @@ class BarcodeScanningService:
 
     async def process_scan(
         self, user: Type[User], day: date, meal_type: MealType, barcode: Optional[str], image: Optional[UploadFile]
-    ):
+    ) -> ComposedMealItem:
         product = None
         if barcode:
             product = await self._process_barcode(barcode)
@@ -166,8 +166,8 @@ class BarcodeScanningService:
             custom_weight=product.weight,
             eaten_weight=product.eaten_weight,
         )
-        meal_info = await self.daily_summary_gateway.add_custom_meal(user, custom_meal)
-        return meal_info
+        composed_meal_item = await self.daily_summary_gateway.add_custom_meal(user, custom_meal)
+        return composed_meal_item
 
     async def _process_barcode(self, barcode: str):
         if not _validate_check_sum(barcode):

@@ -27,3 +27,9 @@ class ComposedMealItemsRepository:
 
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
+
+    async def add_composed_meal_item(self, composed_meal_item: ComposedMealItem) -> ComposedMealItem:
+        self.db.add(composed_meal_item)
+        await self.db.commit()
+        await self.db.refresh(composed_meal_item)
+        return composed_meal_item

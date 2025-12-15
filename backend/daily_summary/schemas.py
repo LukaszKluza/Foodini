@@ -102,3 +102,16 @@ class RemoveMealRequest(BaseModel):
 
 class RemoveMealResponse(RemoveMealRequest):
     success: bool
+
+
+class DailyMealTypeSummary(BaseModel):
+    daily_summary_id: UUID
+    meal_daily_summary_id: UUID
+    user_id: UUID
+    day: date
+    target_calories: int
+    target_protein: float
+    target_carbs: float
+    target_fat: float
+    status: MealStatus
+    meal_type: MealType
