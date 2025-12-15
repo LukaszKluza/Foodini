@@ -22,7 +22,6 @@ class MockDailyMealLink:
         self.meal_id = meal_id
         self.status = status
         self.meal_type = meal_type
-        self.is_active = True
         self.is_generated = True
         self.meal_items = []
 

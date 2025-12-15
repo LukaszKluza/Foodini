@@ -28,7 +28,6 @@ class MealDailySummary(SQLModel, table=True):
     )
     status: MealStatus = Field(default=MealStatus.TO_EAT, nullable=False)
     meal_type: MealType = Field(nullable=False)
-    is_active: bool = Field(default=True, nullable=False)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(

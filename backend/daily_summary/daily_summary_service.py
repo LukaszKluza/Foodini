@@ -85,41 +85,38 @@ class DailySummaryService:
     async def fetch_daily_meals(self, daily_meals, user):
         meals_dict: Dict[MealType, Meal] = {}
         for link in daily_meals.daily_meals:
-            if link.is_active:
-                meal_items_info: List[MealInfoWithIconPath] = []
+            meal_items_info: List[MealInfoWithIconPath] = []
 
-                for item in link.meal_items:
-                    meal = item.meal
-                    if meal:
-                        recipe = (
-                            None
-                            if not meal.is_generated
-                            else await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(
-                                meal.id, user.language
-                            )
+            for item in link.meal_items:
+                meal = item.meal
+                if meal and item.is_active:
+                    recipe = (
+                        None
+                        if not meal.is_generated
+                        else await self.meal_gateway.get_meal_recipe_by_meal_and_language_safe(meal.id, user.language)
+                    )
+
+                    meal_items_info.append(
+                        MealInfoWithIconPath(
+                            meal_id=meal.id,
+                            name=recipe.meal_name if recipe else meal.meal_name,
+                            description=recipe.meal_description if recipe else None,
+                            explanation=recipe.meal_explanation if recipe else None,
+                            icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
+                            calories=int(meal.calories),
+                            protein=float(meal.protein),
+                            carbs=float(meal.carbs),
+                            fat=float(meal.fat),
+                            unit_weight=int(meal.weight),
+                            planned_calories=item.planned_calories,
+                            planned_protein=item.planned_protein,
+                            planned_carbs=item.planned_carbs,
+                            planned_fat=item.planned_fat,
+                            planned_weight=item.planned_weight,
                         )
+                    )
 
-                        meal_items_info.append(
-                            MealInfoWithIconPath(
-                                meal_id=meal.id,
-                                name=recipe.meal_name if recipe else meal.meal_name,
-                                description=recipe.meal_description if recipe else None,
-                                explanation=recipe.meal_explanation if recipe else None,
-                                icon_path=await self.meal_gateway.get_meal_icon_path_by_id(meal.icon_id),
-                                calories=int(meal.calories),
-                                protein=float(meal.protein),
-                                carbs=float(meal.carbs),
-                                fat=float(meal.fat),
-                                unit_weight=int(meal.weight),
-                                planned_calories=item.planned_calories,
-                                planned_protein=item.planned_protein,
-                                planned_carbs=item.planned_carbs,
-                                planned_fat=item.planned_fat,
-                                planned_weight=item.planned_weight,
-                            )
-                        )
-
-                meals_dict[link.meal_type] = Meal(meal_items=meal_items_info, status=link.status)
+            meals_dict[link.meal_type] = Meal(meal_items=meal_items_info, status=link.status)
         return meals_dict
 
     async def fetch_generated_meals(self, daily_meals, user):
@@ -257,7 +254,7 @@ class DailySummaryService:
         total_fat = 0
 
         for meal in slot.meal_items:
-            if not meal:
+            if not meal or not meal.is_active:
                 continue
             total_calories += meal.planned_calories
             total_protein += meal.planned_protein
@@ -394,6 +391,8 @@ class DailySummaryService:
             await self._update_daily_macros_summary(user.id, delta)
 
         # TODO Probably we can just update existing composed meal item instead of removing and adding new one
+        # Now it just updates updates is_active flag.
+        # I left unchanged name because it indeed removes meal from summary (not from database)
         if existing_item:
             await self.daily_summary_repo.remove_meal_from_summary(
                 user.id, day, custom_meal.meal_type, existing_item.meal_id
@@ -439,6 +438,16 @@ class DailySummaryService:
 
         return RemoveMealResponse(day=day, meal_type=meal_type, meal_id=meal_id, success=True)
 
+    async def add_meal_details(self, meal_data: MealCreate):
+        return await self.meal_repo.add_meal(meal_data)
+
+    async def get_meal_details(self, meal_id: UUID):
+        meal = await self.meal_repo.get_meal_by_id(meal_id)
+        if not meal:
+            logger.debug(f"Meal with id {meal_id} not found.")
+            raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
+        return meal
+
     @staticmethod
     def _calculate_planned_value(
         macro_value: Union[int, float], base_weight: int, planned_weight: int, is_int: bool = False
@@ -453,16 +462,6 @@ class DailySummaryService:
             return int(result)
         else:
             return round(result, 2)
-
-    async def add_meal_details(self, meal_data: MealCreate):
-        return await self.meal_repo.add_meal(meal_data)
-
-    async def get_meal_details(self, meal_id: UUID):
-        meal = await self.meal_repo.get_meal_by_id(meal_id)
-        if not meal:
-            logger.debug(f"Meal with id {meal_id} not found.")
-            raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
-        return meal
 
     async def _get_meal_calories(self, meal_id: UUID) -> int:
         calories = await self.meal_repo.get_meal_calories_by_id(meal_id)

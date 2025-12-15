@@ -202,7 +202,6 @@ class DailySummaryRepository:
                         daily_summary_id=user_daily_meals_summary.id,
                         meal_type=meal_info.meal_type,
                         status=meal_info.status,
-                        is_active=True,
                     )
                     self.db.add(meal_daily_summary)
                     await self.db.flush()
@@ -215,6 +214,7 @@ class DailySummaryRepository:
                     planned_protein=meal_info.planned_protein,
                     planned_carbs=meal_info.planned_carbs,
                     planned_fat=meal_info.planned_fat,
+                    is_active=True,
                 )
                 self.db.add(composed_item)
             await self.db.commit()
@@ -235,7 +235,7 @@ class DailySummaryRepository:
                     None,
                 )
                 if composed_item:
-                    await self.db.delete(composed_item)
+                    composed_item.is_active = False
                     await self.db.commit()
                     return True
         return False
