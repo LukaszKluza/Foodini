@@ -67,6 +67,20 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.unique().scalar_one_or_none()
 
+    async def get_daily_meals_summary(self, user_id: UUID, day: date) -> DailyMealsSummary | None:
+        query = (
+            select(DailyMealsSummary)
+            .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
+            .options(
+                selectinload(DailyMealsSummary.daily_meals)
+                .selectinload(MealDailySummary.meal_items)
+                .selectinload(ComposedMealItem.meal)
+                .selectinload(Meal.recipes)
+            )
+        )
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
+
     async def get_daily_meal_type_summary(self, user_id: UUID, day: date, meal_type: MealType) -> DailyMealsSummary:
         query = (
             select(DailyMealsSummary)
@@ -81,20 +95,6 @@ class DailySummaryRepository:
 
         result = await self.db.execute(query)
         return result.unique().scalar_one_or_none()
-
-    async def get_daily_meals_summary(self, user_id: UUID, day: date) -> DailyMealsSummary | None:
-        query = (
-            select(DailyMealsSummary)
-            .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
-            .options(
-                selectinload(DailyMealsSummary.daily_meals)
-                .selectinload(MealDailySummary.meal_items)
-                .selectinload(ComposedMealItem.meal)
-                .selectinload(Meal.recipes)
-            )
-        )
-        result = await self.db.execute(query)
-        return result.scalar_one_or_none()
 
     async def remove_daily_meals_summary(self, daily_summary_id: UUID) -> None:
         stmt = select(DailyMealsSummary).where(DailyMealsSummary.id == daily_summary_id)

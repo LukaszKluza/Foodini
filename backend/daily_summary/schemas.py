@@ -81,7 +81,7 @@ class MealInfoUpdateRequest(BaseModel):
     status: MealStatus
 
 
-class CustomMealUpdateRequest(BaseModel):
+class ComposedMealUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
     meal_id: Optional[UUID] = None
@@ -115,3 +115,11 @@ class DailyMealTypeSummary(BaseModel):
     target_fat: float
     status: MealStatus
     meal_type: MealType
+
+
+class ComposedMealItemUpdateEntity(BaseModel):
+    planned_calories: int
+    planned_protein: float
+    planned_fat: float
+    planned_carbs: float
+    planned_weight: int

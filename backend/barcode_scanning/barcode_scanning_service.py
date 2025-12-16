@@ -8,7 +8,7 @@ from fastapi import UploadFile
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
-from backend.daily_summary.schemas import CustomMealUpdateRequest
+from backend.daily_summary.schemas import ComposedMealUpdateRequest
 from backend.meals.enums.meal_type import MealType
 from backend.models import ComposedMealItem, User
 
@@ -155,7 +155,7 @@ class BarcodeScanningService:
             logger.debug("Decode image: product not found")
             raise ValueErrorException("We couldn't find this product in our database. You can add it manually.")
 
-        custom_meal = CustomMealUpdateRequest(
+        custom_meal = ComposedMealUpdateRequest(
             day=day,
             meal_type=meal_type,
             custom_name=product.name,

@@ -5,9 +5,8 @@ from fastapi import APIRouter, Depends
 from backend.daily_summary.daily_summary_service import DailySummaryService
 from backend.daily_summary.dependencies import get_daily_summary_service
 from backend.daily_summary.schemas import (
-    CustomMealUpdateRequest,
+    ComposedMealUpdateRequest,
     DailySummary,
-    MealInfo,
     MealInfoUpdateRequest,
     MealMacros,
     RemoveMealRequest,
@@ -56,7 +55,7 @@ async def update_meal_status(
     description="Add a custom meal created by the user to their proper daily summary.",
 )
 async def add_meal(
-    custom_meal: CustomMealUpdateRequest,
+    custom_meal: ComposedMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
@@ -66,12 +65,12 @@ async def add_meal(
 
 @daily_summary_router.patch(
     "/meals/{meal_id}",
-    response_model=MealInfo,
+    response_model=ComposedMealItem,
     summary="Edit meal",
     description="Edit a wight eaten by the user for a specific meal in their daily summary.",
 )
 async def edit_meal(
-    custom_meal: CustomMealUpdateRequest,
+    custom_meal: ComposedMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):

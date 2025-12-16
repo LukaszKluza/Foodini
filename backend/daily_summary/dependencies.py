@@ -2,8 +2,9 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db
+from backend.daily_summary.composed_meal_items_service import ComposedMealItemsService
 from backend.daily_summary.daily_summary_service import DailySummaryService
-from backend.daily_summary.repositories.composed_meal_iteams import ComposedMealItemsRepository
+from backend.daily_summary.repositories.composed_meal_items_repository import ComposedMealItemsRepository
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.meals.dependencies import get_meal_repository
@@ -30,11 +31,23 @@ async def get_composed_meal_items_repository(
     return ComposedMealItemsRepository(db)
 
 
+async def get_composed_meal_items_service(
+    daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
+    composed_meal_items_repository: ComposedMealItemsRepository = Depends(get_composed_meal_items_repository),
+    meal_gateway: MealGateway = Depends(get_meal_gateway),
+) -> ComposedMealItemsService:
+    return ComposedMealItemsService(
+        daily_summary_repository,
+        composed_meal_items_repository,
+        meal_gateway,
+    )
+
+
 async def get_daily_summary_service(
     daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
     meal_repository: MealRepository = Depends(get_meal_repository),
     last_generated_meals_repository: LastGeneratedMealsRepository = Depends(get_last_generated_meals_repository),
-    composed_meal_items_repository: ComposedMealItemsRepository = Depends(get_composed_meal_items_repository),
+    composed_meal_items_service: ComposedMealItemsService = Depends(get_composed_meal_items_service),
     meal_gateway: MealGateway = Depends(get_meal_gateway),
     user_details_gateway: UserDetailsGateway = Depends(get_user_details_gateway),
 ) -> DailySummaryService:
@@ -42,7 +55,7 @@ async def get_daily_summary_service(
         daily_summary_repository,
         meal_repository,
         last_generated_meals_repository,
-        composed_meal_items_repository,
+        composed_meal_items_service,
         meal_gateway,
         user_details_gateway,
     )

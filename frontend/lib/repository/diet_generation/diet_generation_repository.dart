@@ -69,10 +69,10 @@ class DietGenerationRepository {
     }
   }
 
-  Future<MealInfo> updateCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
+  Future<ComposedMealItem> updateCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
     try {
       final response = await apiClient.updateDailyMeal(customMealUpdateRequest, userId);
-      return MealInfo.fromJson(response.data);
+      return ComposedMealItem.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while adding daily meal', statusCode: e.response?.statusCode);
     } catch (e) {

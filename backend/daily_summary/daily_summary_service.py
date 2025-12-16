@@ -4,19 +4,17 @@ from uuid import UUID
 
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
-from backend.daily_summary.daily_summary_mapper import DailySummaryMapper
+from backend.daily_summary.composed_meal_items_service import ComposedMealItemsService
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.repositories.composed_meal_iteams import ComposedMealItemsRepository
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
     BasicMealInfo,
-    CustomMealUpdateRequest,
+    ComposedMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
     DailySummary,
     Meal,
-    MealInfo,
     MealInfoUpdateRequest,
     MealInfoWithIconPath,
     MealMacros,
@@ -26,7 +24,6 @@ from backend.daily_summary.schemas import (
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
 from backend.meals.repositories.meal_repository import MealRepository
-from backend.meals.schemas import MealCreate
 from backend.models import ComposedMealItem, DailyMealsSummary, User
 from backend.user_details.user_details_gateway import UserDetailsGateway
 
@@ -37,14 +34,14 @@ class DailySummaryService:
         summary_repository: DailySummaryRepository,
         meal_repository: MealRepository,
         last_generated_meals_repository: LastGeneratedMealsRepository,
-        composed_meal_items_repository: ComposedMealItemsRepository,
+        composed_meal_items_service: ComposedMealItemsService,
         meal_gateway: MealGateway,
         user_details_gateway: UserDetailsGateway,
     ):
         self.daily_summary_repository = summary_repository
         self.meal_repository = meal_repository
         self.last_generated_meals_repo = last_generated_meals_repository
-        self.composed_meal_items_repository = composed_meal_items_repository
+        self.composed_meal_items_service = composed_meal_items_service
         self.meal_gateway = meal_gateway
         self.user_details_gateway = user_details_gateway
 
@@ -280,167 +277,11 @@ class DailySummaryService:
 
         return meal_macros
 
-    # ruff: noqa: C901
-    async def edit_meal(self, user: Type[User], custom_meal: CustomMealUpdateRequest):
-        old_composed_meal = None
-        existing_link = None
-        existing_item = None
+    async def edit_meal(self, user: Type[User], update_meal_request: ComposedMealUpdateRequest) -> ComposedMealItem:
+        return await self.composed_meal_items_service.edit_meal(user, update_meal_request)
 
-        day = custom_meal.day
-        daily_meals = await self.daily_summary_repository.get_daily_summary(user.id, day)
-        if custom_meal.meal_id:
-            old_composed_meal = await self.composed_meal_items_repository.get_composed_meal_item_by_user_id_and_meal_id(
-                user.id, custom_meal.meal_id
-            )
-        if not daily_meals:
-            logger.debug(f"No plan for {day} for user {user.id}")
-            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
-
-        daily_meals.daily_meals = list(daily_meals.daily_meals)
-
-        if custom_meal.meal_id:
-            for link in daily_meals.daily_meals:
-                for item in link.meal_items:
-                    if item.meal_id == custom_meal.meal_id:
-                        existing_link = link
-                        existing_item = item
-                        break
-                if existing_link:
-                    break
-
-            if not existing_item:
-                raise NotFoundInDatabaseException(f"No meal of id {custom_meal.meal_id} for this day.")
-
-            previous_status = MealStatus(existing_link.status)
-            existing_meal = existing_item.meal
-
-        else:
-            existing_link = next(
-                (link for link in daily_meals.daily_meals if link.meal_type == custom_meal.meal_type),
-                None,
-            )
-
-            if not existing_link:
-                logger.debug(f"No meal type {custom_meal.meal_type} for {day} for user {user.id}")
-                raise NotFoundInDatabaseException(f"No meal type {custom_meal.meal_type} found for this day.")
-
-            previous_status = MealStatus(existing_link.status)
-            existing_meal = None
-
-        # TODO, fix name handling
-        new_meal_name = custom_meal.custom_name or (existing_meal.meal_name if existing_meal else "Custom Meal")
-
-        # TODO Imo we should raise exception if no calories/macros provided
-        new_meal = MealCreate(
-            meal_name=new_meal_name,
-            meal_type=existing_link.meal_type,
-            icon_id=existing_meal.icon_id if existing_meal else None,
-            calories=custom_meal.custom_calories or (existing_meal.calories if existing_meal else 0),
-            protein=custom_meal.custom_protein or (existing_meal.protein if existing_meal else 0),
-            carbs=custom_meal.custom_carbs or (existing_meal.carbs if existing_meal else 0),
-            fat=custom_meal.custom_fat or (existing_meal.fat if existing_meal else 0),
-            weight=(existing_meal.weight if existing_meal else custom_meal.custom_weight) or 0,
-            is_generated=existing_meal.is_generated if existing_meal else False,
-        )
-
-        if existing_meal:
-            new_meal = await self.meal_repository.update_meal_by_id(existing_meal.id, new_meal)
-        else:
-            new_meal = await self.meal_repository.add_meal(new_meal)
-
-        if not new_meal:
-            logger.debug("No existing meal for update in database or failure in adding new meal.")
-            raise NotFoundInDatabaseException("Error while adding new meal/editing existing one in database.")
-
-        meal_info = MealInfo(
-            status=previous_status,
-            name=new_meal_name,
-            description="",
-            calories=new_meal.calories,
-            protein=new_meal.protein,
-            carbs=new_meal.carbs,
-            fat=new_meal.fat,
-            unit_weight=existing_meal.weight if existing_meal else new_meal.weight,
-            planned_calories=self._calculate_planned_value(
-                new_meal.calories, new_meal.weight, custom_meal.custom_weight, is_int=True
-            ),
-            planned_protein=self._calculate_planned_value(new_meal.protein, new_meal.weight, custom_meal.custom_weight),
-            planned_carbs=self._calculate_planned_value(new_meal.carbs, new_meal.weight, custom_meal.custom_weight),
-            planned_fat=self._calculate_planned_value(new_meal.fat, new_meal.weight, custom_meal.custom_weight),
-            planned_weight=custom_meal.custom_weight,
-            meal_id=new_meal.id,
-        )
-
-        if previous_status == MealStatus.EATEN:
-            new_c = int(meal_info.planned_calories)
-            new_p = float(meal_info.planned_protein)
-            new_cb = float(meal_info.planned_carbs)
-            new_f = float(meal_info.planned_fat)
-
-            if existing_meal and existing_item and old_composed_meal:
-                old_c = old_composed_meal.planned_calories
-                old_p = old_composed_meal.planned_protein
-                old_cb = old_composed_meal.planned_carbs
-                old_f = old_composed_meal.planned_fat
-                delta = DailyMacrosSummaryCreate(
-                    day=day,
-                    calories=new_c - old_c,
-                    protein=new_p - old_p,
-                    carbs=new_cb - old_cb,
-                    fat=new_f - old_f,
-                )
-            else:
-                delta = DailyMacrosSummaryCreate(day=day, calories=new_c, protein=new_p, carbs=new_cb, fat=new_f)
-
-            await self._update_daily_macros_summary(user.id, delta)
-
-        # TODO Probably we can just update existing composed meal item instead of removing and adding new one
-        if existing_item:
-            await self.daily_summary_repository.remove_meal_from_summary(
-                user.id, day, custom_meal.meal_type, existing_item.meal_id
-            )
-
-        await self.daily_summary_repository.add_custom_meal(user.id, day, custom_meal.meal_type, meal_info)
-        return meal_info
-
-    async def add_custom_meal(self, user: Type[User], custom_meal: CustomMealUpdateRequest) -> ComposedMealItem:
-        day = custom_meal.day
-        daily_meal_types_summary = DailySummaryMapper.map_to_daily_meal_type(
-            await self.daily_summary_repository.get_daily_meal_type_summary(user.id, day, custom_meal.meal_type)
-        )
-        if not daily_meal_types_summary:
-            logger.debug(f"No plan for {day} for user {user.id}")
-            raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
-
-        new_meal = await self.meal_repository.add_meal(MealCreate.from_custom_meal_request(custom_meal))
-
-        if not new_meal:
-            logger.debug("No existing meal for update in database or failure in adding new meal.")
-            raise NotFoundInDatabaseException("Error while adding new meal/editing existing one in database.")
-
-        composed_meal_item = ComposedMealItem(
-            meal_daily_summary_id=daily_meal_types_summary.meal_daily_summary_id,
-            meal_id=new_meal.id,
-            planned_weight=custom_meal.custom_weight,
-            planned_calories=self._calculate_planned_value(
-                new_meal.calories, new_meal.weight, custom_meal.custom_weight, is_int=True
-            ),
-            planned_protein=self._calculate_planned_value(new_meal.protein, new_meal.weight, custom_meal.custom_weight),
-            planned_carbs=self._calculate_planned_value(new_meal.carbs, new_meal.weight, custom_meal.custom_weight),
-            planned_fat=self._calculate_planned_value(new_meal.fat, new_meal.weight, custom_meal.custom_weight),
-        )
-
-        if daily_meal_types_summary.status == MealStatus.EATEN:
-            new_c = int(composed_meal_item.planned_calories)
-            new_p = float(composed_meal_item.planned_protein)
-            new_cb = float(composed_meal_item.planned_carbs)
-            new_f = float(composed_meal_item.planned_fat)
-
-            delta = DailyMacrosSummaryCreate(day=day, calories=new_c, protein=new_p, carbs=new_cb, fat=new_f)
-            await self._update_daily_macros_summary(user.id, delta)
-
-        await self.composed_meal_items_repository.add_composed_meal_item(composed_meal_item)
-        return composed_meal_item
+    async def add_custom_meal(self, user: Type[User], custom_meal: ComposedMealUpdateRequest) -> ComposedMealItem:
+        return await self.composed_meal_items_service.add_composed_meal(user, custom_meal)
 
     async def remove_meal_from_summary(self, user: Type[User], meal_to_remove: RemoveMealRequest):
         day = meal_to_remove.day
@@ -481,7 +322,7 @@ class DailySummaryService:
     @staticmethod
     def _calculate_planned_value(
         macro_value: Union[int, float], base_weight: int, planned_weight: int, is_int: bool = False
-    ):
+    ) -> Union[int, float]:
         if not macro_value or not base_weight or base_weight <= 0:
             return 0 if is_int else 0.0
 
@@ -493,11 +334,8 @@ class DailySummaryService:
         else:
             return round(result, 2)
 
-    async def add_meal_details(self, meal_data: MealCreate):
-        return await self.meal_repository.add_meal(meal_data)
-
     async def get_meal_details(self, meal_id: UUID):
-        meal = await self.meal_repository.get_meal_by_id(meal_id)
+        meal = await self.meal_gateway.get_meal_by_id(meal_id)
         if not meal:
             logger.debug(f"Meal with id {meal_id} not found.")
             raise NotFoundInDatabaseException(f"Meal with id {meal_id} not found.")
@@ -600,7 +438,8 @@ class DailySummaryService:
                 link.status = new_status.value
                 await self.daily_summary_repository.update_meal_status(user_id, day, link.meal_type, new_status)
 
-    def _find_meal_slot(self, daily_summary, meal_type: MealType, user_id: UUID, day: date):
+    @staticmethod
+    def _find_meal_slot(daily_summary, meal_type: MealType, user_id: UUID, day: date):
         slot = next((s for s in daily_summary.daily_meals if s.meal_type == meal_type), None)
 
         if not slot:

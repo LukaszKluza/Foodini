@@ -6,10 +6,9 @@ class DailySummaryMapper:
     @staticmethod
     def map_to_daily_meal_type(daily_summary: DailyMealsSummary) -> DailyMealTypeSummary:
         first_meal = daily_summary.daily_meals[0] if daily_summary.daily_meals else None
-        print(first_meal.meal_type)
         return DailyMealTypeSummary(
             daily_summary_id=daily_summary.id,
-            meal_daily_summary_id=first_meal.id,
+            meal_daily_summary_id=first_meal.id if first_meal else None,
             user_id=daily_summary.user_id,
             day=daily_summary.day,
             target_calories=daily_summary.target_calories,
