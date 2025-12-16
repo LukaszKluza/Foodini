@@ -614,19 +614,15 @@ async def test_remove_meal_eaten_status(daily_summary_service, mock_daily_summar
     slot.meal_type = meal_type
     slot.meal_items = [MagicMock(meal_id=meal_id)]
 
-    # Set up mock repositories for the actual method calls
     mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
     mock_daily_summary_repository.remove_meal_from_summary.return_value = True
 
-    # Set up for _get_meal_calories
     mock_meal_repository.get_meal_calories_by_id.return_value = 500
 
-    # Set up for _get_meal_macros
     mock_meal_repository.get_meal_protein_by_id.return_value = 50
     mock_meal_repository.get_meal_fat_by_id.return_value = 20
     mock_meal_repository.get_meal_carbs_by_id.return_value = 100
 
-    # Set up for _update_daily_macros_summary
     mock_daily_summary_repository.get_daily_macros_summary.return_value = MagicMock(
         calories=1000, protein=100, carbs=200, fat=50
     )
