@@ -10,6 +10,7 @@ from backend.daily_summary.repositories.daily_summary_repository import DailySum
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
 from backend.daily_summary.schemas import (
     BasicMealInfo,
+    ComposedMealItemUpdateRequest,
     CustomMealUpdateRequest,
     DailyMacrosSummaryCreate,
     DailyMealsCreate,
@@ -390,15 +391,21 @@ class DailySummaryService:
 
             await self._update_daily_macros_summary(user.id, delta)
 
-        # TODO Probably we can just update existing composed meal item instead of removing and adding new one
-        # Now it just updates updates is_active flag.
-        # I left unchanged name because it indeed removes meal from summary (not from database)
         if existing_item:
-            await self.daily_summary_repo.remove_meal_from_summary(
-                user.id, day, custom_meal.meal_type, existing_item.meal_id
+            composed_meal_update_request = ComposedMealItemUpdateRequest(
+                composed_item_id=old_composed_meal.id,
+                new_meal_id=new_meal.id,
+                planned_weight=meal_info.planned_weight,
+                planned_calories=meal_info.planned_calories,
+                planned_protein=meal_info.planned_protein,
+                planned_carbs=meal_info.planned_carbs,
+                planned_fat=meal_info.planned_fat,
             )
-
-        await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
+            await self.daily_summary_repo.update_composed_meal_item(
+                composed_meal_update_request,
+            )
+        else:
+            await self.daily_summary_repo.add_custom_meal(user.id, day, custom_meal.meal_type, {new_meal.id: meal_info})
 
         return meal_info
 
@@ -413,8 +420,13 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
+        meal = await self.meal_gateway.get_meal_by_id(meal_id)
 
-        removed = await self.daily_summary_repo.remove_meal_from_summary(user.id, day, meal_type, meal_id)
+        if meal.is_generated:
+            removed = await self.daily_summary_repo.remove_meal_from_summary(user.id, day, meal_type, meal_id)
+        else:
+            removed = await self.meal_gateway.delete_meal_by_id(meal_id)
+
         if not removed:
             logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")
             raise NotFoundInDatabaseException("Selected meal not assigned to selected meal type.")

@@ -94,6 +94,16 @@ class CustomMealUpdateRequest(BaseModel):
     eaten_weight: Optional[int] = Field(default=None, ge=0, le=2250)
 
 
+class ComposedMealItemUpdateRequest(BaseModel):
+    composed_item_id: UUID
+    new_meal_id: UUID
+    planned_weight: int
+    planned_calories: int
+    planned_protein: float
+    planned_carbs: float
+    planned_fat: float
+
+
 class RemoveMealRequest(BaseModel):
     day: date
     meal_type: MealType

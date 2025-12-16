@@ -7,7 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
+from backend.daily_summary.schemas import ComposedMealItemUpdateRequest, DailyMacrosSummaryCreate, DailyMealsCreate
 from backend.meals.enums.meal_type import MealType
 from backend.models.composed_meal_item import ComposedMealItem
 from backend.models.meal_model import Meal
@@ -221,6 +221,22 @@ class DailySummaryRepository:
             await self.db.refresh(user_daily_meals_summary)
             return user_daily_meals_summary
         return None
+
+    async def update_composed_meal_item(self, composed_meal_update_request: ComposedMealItemUpdateRequest) -> None:
+        await self.db.execute(
+            update(ComposedMealItem)
+            .where(ComposedMealItem.id == composed_meal_update_request.composed_item_id)
+            .values(
+                meal_id=composed_meal_update_request.new_meal_id,
+                planned_weight=composed_meal_update_request.planned_weight,
+                planned_calories=composed_meal_update_request.planned_calories,
+                planned_protein=composed_meal_update_request.planned_protein,
+                planned_carbs=composed_meal_update_request.planned_carbs,
+                planned_fat=composed_meal_update_request.planned_fat,
+                is_active=True,
+            )
+        )
+        await self.db.commit()
 
     async def remove_meal_from_summary(self, user_id: UUID, day: date, meal_type: MealType, meal_id: UUID) -> bool:
         user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
