@@ -491,7 +491,7 @@ async def test_update_meal_status_not_found(daily_summary_service, mock_daily_su
 
 
 @pytest.mark.asyncio
-async def test_add_meal_details_add_new(daily_summary_service, mock_meal_repository):
+async def test_get_meal_details_success(daily_summary_service, mock_meal_gateway):
     meal_data = MealCreate(
         meal_name="Test_name",
         calories=300,
@@ -501,37 +501,17 @@ async def test_add_meal_details_add_new(daily_summary_service, mock_meal_reposit
         meal_type=MealType.BREAKFAST,
         icon_id=MEAL_ICON_ID,
     )
-    mock_meal_repository.add_meal.return_value = meal_data
-
-    result = await daily_summary_service.add_meal_details(meal_data)
-
-    assert result == meal_data
-    mock_meal_repository.add_meal.assert_awaited_once_with(meal_data)
-    mock_meal_repository.update_meal.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_get_meal_details_success(daily_summary_service, mock_meal_repository):
-    meal_data = MealCreate(
-        meal_name="Test_name",
-        calories=300,
-        protein=20,
-        carbs=5,
-        fat=15,
-        meal_type=MealType.BREAKFAST,
-        icon_id=MEAL_ICON_ID,
-    )
-    mock_meal_repository.get_meal_by_id.return_value = meal_data
+    mock_meal_gateway.get_meal_by_id.return_value = meal_data
 
     result = await daily_summary_service.get_meal_details(MEAL_ID)
 
     assert result == meal_data
-    mock_meal_repository.get_meal_by_id.assert_awaited_once_with(MEAL_ID)
+    mock_meal_gateway.get_meal_by_id.assert_awaited_once_with(MEAL_ID)
 
 
 @pytest.mark.asyncio
-async def test_get_meal_details_not_found(daily_summary_service, mock_meal_repository):
-    mock_meal_repository.get_meal_by_id.return_value = None
+async def test_get_meal_details_not_found(daily_summary_service, mock_meal_gateway):
+    mock_meal_gateway.get_meal_by_id.return_value = None
 
     with pytest.raises(NotFoundInDatabaseException):
         await daily_summary_service.get_meal_details(MEAL_ID)

@@ -3,61 +3,68 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i24;
-import 'dart:ui' as _i22;
+import 'dart:async' as _i27;
+import 'dart:ui' as _i25;
 
-import 'package:dio/dio.dart' as _i20;
-import 'package:dio/src/dio_mixin.dart' as _i21;
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart' as _i23;
-import 'package:flutter/foundation.dart' as _i45;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i33;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i19;
-import 'package:frontend/blocs/user/register_bloc.dart' as _i31;
-import 'package:frontend/events/user/register_events.dart' as _i32;
-import 'package:frontend/foodini.dart' as _i46;
-import 'package:frontend/models/diet_generation/custom_meal_update_request.dart'
-    as _i41;
-import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart'
+import 'package:dio/dio.dart' as _i23;
+import 'package:dio/src/dio_mixin.dart' as _i24;
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart' as _i26;
+import 'package:flutter/foundation.dart' as _i49;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i36;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i22;
+import 'package:frontend/blocs/user/register_bloc.dart' as _i34;
+import 'package:frontend/events/user/register_events.dart' as _i35;
+import 'package:frontend/foodini.dart' as _i50;
+import 'package:frontend/models/diet_generation/composed_meal_item.dart'
     as _i17;
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart'
+    as _i44;
+import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart'
+    as _i20;
 import 'package:frontend/models/diet_generation/daily_meals_create.dart'
-    as _i15;
-import 'package:frontend/models/diet_generation/daily_summary.dart' as _i14;
-import 'package:frontend/models/diet_generation/meal_create.dart' as _i18;
-import 'package:frontend/models/diet_generation/meal_info.dart' as _i16;
+    as _i16;
+import 'package:frontend/models/diet_generation/daily_summary.dart' as _i15;
+import 'package:frontend/models/diet_generation/meal_create.dart' as _i21;
+import 'package:frontend/models/diet_generation/meal_info.dart' as _i19;
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart'
-    as _i40;
-import 'package:frontend/models/diet_generation/meal_recipe.dart' as _i13;
-import 'package:frontend/models/diet_generation/meal_type.dart' as _i43;
-import 'package:frontend/models/user/change_language_request.dart' as _i30;
-import 'package:frontend/models/user/change_password_request.dart' as _i29;
+    as _i43;
+import 'package:frontend/models/diet_generation/meal_recipe.dart' as _i14;
+import 'package:frontend/models/diet_generation/meal_type.dart' as _i47;
+import 'package:frontend/models/diet_generation/remove_meal_request.dart'
+    as _i45;
+import 'package:frontend/models/diet_generation/remove_meal_response.dart'
+    as _i18;
+import 'package:frontend/models/user/change_language_request.dart' as _i33;
+import 'package:frontend/models/user/change_password_request.dart' as _i32;
 import 'package:frontend/models/user/default_response.dart' as _i5;
-import 'package:frontend/models/user/language.dart' as _i38;
+import 'package:frontend/models/user/language.dart' as _i41;
 import 'package:frontend/models/user/logged_user.dart' as _i4;
-import 'package:frontend/models/user/login_request.dart' as _i26;
-import 'package:frontend/models/user/provide_email_request.dart' as _i28;
+import 'package:frontend/models/user/login_request.dart' as _i29;
+import 'package:frontend/models/user/provide_email_request.dart' as _i31;
 import 'package:frontend/models/user/refreshed_tokens_response.dart' as _i6;
-import 'package:frontend/models/user/register_request.dart' as _i27;
+import 'package:frontend/models/user/register_request.dart' as _i30;
 import 'package:frontend/models/user/user_response.dart' as _i3;
 import 'package:frontend/models/user_details/diet_form.dart' as _i9;
-import 'package:frontend/models/user_details/macros.dart' as _i36;
+import 'package:frontend/models/user_details/macros.dart' as _i39;
 import 'package:frontend/models/user_details/predicted_calories.dart' as _i10;
 import 'package:frontend/models/user_details/user_statistics.dart' as _i11;
+import 'package:frontend/models/user_details/user_weight_history.dart' as _i12;
 import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart'
-    as _i39;
+    as _i42;
 import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart'
-    as _i37;
+    as _i40;
 import 'package:frontend/repository/diet_generation/meals_repository.dart'
-    as _i44;
+    as _i48;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
 import 'package:frontend/repository/user_details/user_details_repository.dart'
-    as _i35;
-import 'package:frontend/services/token_storage_service.dart' as _i34;
+    as _i38;
+import 'package:frontend/services/token_storage_service.dart' as _i37;
 import 'package:frontend/states/register_states.dart' as _i8;
-import 'package:frontend/utils/cache_manager.dart' as _i12;
-import 'package:image_picker/image_picker.dart' as _i42;
+import 'package:frontend/utils/cache_manager.dart' as _i13;
+import 'package:image_picker/image_picker.dart' as _i46;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:uuid/uuid_value.dart' as _i25;
+import 'package:uuid/uuid_value.dart' as _i28;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -129,124 +136,142 @@ class _FakeUserStatistics_9 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeCacheManager_10 extends _i1.SmartFake implements _i12.CacheManager {
-  _FakeCacheManager_10(Object parent, Invocation parentInvocation)
+class _FakeUserWeightHistory_10 extends _i1.SmartFake
+    implements _i12.UserWeightHistory {
+  _FakeUserWeightHistory_10(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMealRecipe_11 extends _i1.SmartFake implements _i13.MealRecipe {
-  _FakeMealRecipe_11(Object parent, Invocation parentInvocation)
+class _FakeCacheManager_11 extends _i1.SmartFake implements _i13.CacheManager {
+  _FakeCacheManager_11(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailySummary_12 extends _i1.SmartFake implements _i14.DailySummary {
-  _FakeDailySummary_12(Object parent, Invocation parentInvocation)
+class _FakeMealRecipe_12 extends _i1.SmartFake implements _i14.MealRecipe {
+  _FakeMealRecipe_12(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailyMealsCreate_13 extends _i1.SmartFake
-    implements _i15.DailyMealsCreate {
-  _FakeDailyMealsCreate_13(Object parent, Invocation parentInvocation)
+class _FakeDailySummary_13 extends _i1.SmartFake implements _i15.DailySummary {
+  _FakeDailySummary_13(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMealInfo_14 extends _i1.SmartFake implements _i16.MealInfo {
-  _FakeMealInfo_14(Object parent, Invocation parentInvocation)
+class _FakeDailyMealsCreate_14 extends _i1.SmartFake
+    implements _i16.DailyMealsCreate {
+  _FakeDailyMealsCreate_14(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailyMacrosSummaryCreate_15 extends _i1.SmartFake
-    implements _i17.DailyMacrosSummaryCreate {
-  _FakeDailyMacrosSummaryCreate_15(Object parent, Invocation parentInvocation)
+class _FakeComposedMealItem_15 extends _i1.SmartFake
+    implements _i17.ComposedMealItem {
+  _FakeComposedMealItem_15(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMealCreate_16 extends _i1.SmartFake implements _i18.MealCreate {
-  _FakeMealCreate_16(Object parent, Invocation parentInvocation)
+class _FakeRemoveMealResponse_16 extends _i1.SmartFake
+    implements _i18.RemoveMealResponse {
+  _FakeRemoveMealResponse_16(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeIOSOptions_17 extends _i1.SmartFake implements _i19.IOSOptions {
-  _FakeIOSOptions_17(Object parent, Invocation parentInvocation)
+class _FakeMealInfo_17 extends _i1.SmartFake implements _i19.MealInfo {
+  _FakeMealInfo_17(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAndroidOptions_18 extends _i1.SmartFake
-    implements _i19.AndroidOptions {
-  _FakeAndroidOptions_18(Object parent, Invocation parentInvocation)
+class _FakeDailyMacrosSummaryCreate_18 extends _i1.SmartFake
+    implements _i20.DailyMacrosSummaryCreate {
+  _FakeDailyMacrosSummaryCreate_18(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeLinuxOptions_19 extends _i1.SmartFake implements _i19.LinuxOptions {
-  _FakeLinuxOptions_19(Object parent, Invocation parentInvocation)
+class _FakeMealCreate_19 extends _i1.SmartFake implements _i21.MealCreate {
+  _FakeMealCreate_19(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeWindowsOptions_20 extends _i1.SmartFake
-    implements _i19.WindowsOptions {
-  _FakeWindowsOptions_20(Object parent, Invocation parentInvocation)
+class _FakeIOSOptions_20 extends _i1.SmartFake implements _i22.IOSOptions {
+  _FakeIOSOptions_20(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeWebOptions_21 extends _i1.SmartFake implements _i19.WebOptions {
-  _FakeWebOptions_21(Object parent, Invocation parentInvocation)
+class _FakeAndroidOptions_21 extends _i1.SmartFake
+    implements _i22.AndroidOptions {
+  _FakeAndroidOptions_21(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMacOsOptions_22 extends _i1.SmartFake implements _i19.MacOsOptions {
-  _FakeMacOsOptions_22(Object parent, Invocation parentInvocation)
+class _FakeLinuxOptions_22 extends _i1.SmartFake implements _i22.LinuxOptions {
+  _FakeLinuxOptions_22(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDio_23 extends _i1.SmartFake implements _i20.Dio {
-  _FakeDio_23(Object parent, Invocation parentInvocation)
+class _FakeWindowsOptions_23 extends _i1.SmartFake
+    implements _i22.WindowsOptions {
+  _FakeWindowsOptions_23(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeResponse_24<T> extends _i1.SmartFake implements _i20.Response<T> {
-  _FakeResponse_24(Object parent, Invocation parentInvocation)
+class _FakeWebOptions_24 extends _i1.SmartFake implements _i22.WebOptions {
+  _FakeWebOptions_24(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeInterceptorState_25<T> extends _i1.SmartFake
-    implements _i21.InterceptorState<T> {
-  _FakeInterceptorState_25(Object parent, Invocation parentInvocation)
+class _FakeMacOsOptions_25 extends _i1.SmartFake implements _i22.MacOsOptions {
+  _FakeMacOsOptions_25(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeLocale_26 extends _i1.SmartFake implements _i22.Locale {
-  _FakeLocale_26(Object parent, Invocation parentInvocation)
+class _FakeDio_26 extends _i1.SmartFake implements _i23.Dio {
+  _FakeDio_26(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeBaseOptions_27 extends _i1.SmartFake implements _i20.BaseOptions {
-  _FakeBaseOptions_27(Object parent, Invocation parentInvocation)
+class _FakeResponse_27<T> extends _i1.SmartFake implements _i23.Response<T> {
+  _FakeResponse_27(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeInterceptors_28 extends _i1.SmartFake implements _i20.Interceptors {
-  _FakeInterceptors_28(Object parent, Invocation parentInvocation)
+class _FakeInterceptorState_28<T> extends _i1.SmartFake
+    implements _i24.InterceptorState<T> {
+  _FakeInterceptorState_28(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeHttpClientAdapter_29 extends _i1.SmartFake
-    implements _i20.HttpClientAdapter {
-  _FakeHttpClientAdapter_29(Object parent, Invocation parentInvocation)
+class _FakeLocale_29 extends _i1.SmartFake implements _i25.Locale {
+  _FakeLocale_29(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeTransformer_30 extends _i1.SmartFake implements _i20.Transformer {
-  _FakeTransformer_30(Object parent, Invocation parentInvocation)
+class _FakeBaseOptions_30 extends _i1.SmartFake implements _i23.BaseOptions {
+  _FakeBaseOptions_30(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeCacheStore_31 extends _i1.SmartFake implements _i23.CacheStore {
-  _FakeCacheStore_31(Object parent, Invocation parentInvocation)
+class _FakeInterceptors_31 extends _i1.SmartFake implements _i23.Interceptors {
+  _FakeInterceptors_31(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeCacheOptions_32 extends _i1.SmartFake implements _i23.CacheOptions {
-  _FakeCacheOptions_32(Object parent, Invocation parentInvocation)
+class _FakeHttpClientAdapter_32 extends _i1.SmartFake
+    implements _i23.HttpClientAdapter {
+  _FakeHttpClientAdapter_32(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeTransformer_33 extends _i1.SmartFake implements _i23.Transformer {
+  _FakeTransformer_33(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeCacheStore_34 extends _i1.SmartFake implements _i26.CacheStore {
+  _FakeCacheStore_34(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeCacheOptions_35 extends _i1.SmartFake implements _i26.CacheOptions {
+  _FakeCacheOptions_35(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -267,126 +292,126 @@ class MockUserRepository extends _i1.Mock implements _i7.UserRepository {
           as _i2.ApiClient);
 
   @override
-  _i24.Future<_i3.UserResponse> getUser(_i25.UuidValue? userId) =>
+  _i27.Future<_i3.UserResponse> getUser(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [userId]),
-            returnValue: _i24.Future<_i3.UserResponse>.value(
+            returnValue: _i27.Future<_i3.UserResponse>.value(
               _FakeUserResponse_1(this, Invocation.method(#getUser, [userId])),
             ),
           )
-          as _i24.Future<_i3.UserResponse>);
+          as _i27.Future<_i3.UserResponse>);
 
   @override
-  _i24.Future<_i4.LoggedUser> login(_i26.LoginRequest? request) =>
+  _i27.Future<_i4.LoggedUser> login(_i29.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
-            returnValue: _i24.Future<_i4.LoggedUser>.value(
+            returnValue: _i27.Future<_i4.LoggedUser>.value(
               _FakeLoggedUser_2(this, Invocation.method(#login, [request])),
             ),
           )
-          as _i24.Future<_i4.LoggedUser>);
+          as _i27.Future<_i4.LoggedUser>);
 
   @override
-  _i24.Future<void> logout(_i25.UuidValue? userId) =>
+  _i27.Future<void> logout(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#logout, [userId]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<void> resendVerificationMail(String? email) =>
+  _i27.Future<void> resendVerificationMail(String? email) =>
       (super.noSuchMethod(
             Invocation.method(#resendVerificationMail, [email]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<void> delete(_i25.UuidValue? userId) =>
+  _i27.Future<void> delete(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<_i5.DefaultResponse?> register(_i27.RegisterRequest? request) =>
+  _i27.Future<_i5.DefaultResponse?> register(_i30.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
-            returnValue: _i24.Future<_i5.DefaultResponse?>.value(),
+            returnValue: _i27.Future<_i5.DefaultResponse?>.value(),
           )
-          as _i24.Future<_i5.DefaultResponse?>);
+          as _i27.Future<_i5.DefaultResponse?>);
 
   @override
-  _i24.Future<_i5.DefaultResponse> provideEmail(
-    _i28.ProvideEmailRequest? request,
+  _i27.Future<_i5.DefaultResponse> provideEmail(
+    _i31.ProvideEmailRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#provideEmail, [request]),
-            returnValue: _i24.Future<_i5.DefaultResponse>.value(
+            returnValue: _i27.Future<_i5.DefaultResponse>.value(
               _FakeDefaultResponse_3(
                 this,
                 Invocation.method(#provideEmail, [request]),
               ),
             ),
           )
-          as _i24.Future<_i5.DefaultResponse>);
+          as _i27.Future<_i5.DefaultResponse>);
 
   @override
-  _i24.Future<_i5.DefaultResponse> changePassword(
-    _i29.ChangePasswordRequest? request,
+  _i27.Future<_i5.DefaultResponse> changePassword(
+    _i32.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
-            returnValue: _i24.Future<_i5.DefaultResponse>.value(
+            returnValue: _i27.Future<_i5.DefaultResponse>.value(
               _FakeDefaultResponse_3(
                 this,
                 Invocation.method(#changePassword, [request]),
               ),
             ),
           )
-          as _i24.Future<_i5.DefaultResponse>);
+          as _i27.Future<_i5.DefaultResponse>);
 
   @override
-  _i24.Future<_i5.DefaultResponse> changeLanguage(
-    _i30.ChangeLanguageRequest? request,
-    _i25.UuidValue? userId,
+  _i27.Future<_i5.DefaultResponse> changeLanguage(
+    _i33.ChangeLanguageRequest? request,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changeLanguage, [request, userId]),
-            returnValue: _i24.Future<_i5.DefaultResponse>.value(
+            returnValue: _i27.Future<_i5.DefaultResponse>.value(
               _FakeDefaultResponse_3(
                 this,
                 Invocation.method(#changeLanguage, [request, userId]),
               ),
             ),
           )
-          as _i24.Future<_i5.DefaultResponse>);
+          as _i27.Future<_i5.DefaultResponse>);
 
   @override
-  _i24.Future<_i6.RefreshedTokensResponse> refreshTokens(
-    _i25.UuidValue? userId,
+  _i27.Future<_i6.RefreshedTokensResponse> refreshTokens(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#refreshTokens, [userId]),
-            returnValue: _i24.Future<_i6.RefreshedTokensResponse>.value(
+            returnValue: _i27.Future<_i6.RefreshedTokensResponse>.value(
               _FakeRefreshedTokensResponse_4(
                 this,
                 Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i6.RefreshedTokensResponse>);
+          as _i27.Future<_i6.RefreshedTokensResponse>);
 }
 
 /// A class which mocks [RegisterBloc].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
+class MockRegisterBloc extends _i1.Mock implements _i34.RegisterBloc {
   MockRegisterBloc() {
     _i1.throwOnMissingStub(this);
   }
@@ -411,12 +436,12 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
           as _i8.RegisterState);
 
   @override
-  _i24.Stream<_i8.RegisterState> get stream =>
+  _i27.Stream<_i8.RegisterState> get stream =>
       (super.noSuchMethod(
             Invocation.getter(#stream),
-            returnValue: _i24.Stream<_i8.RegisterState>.empty(),
+            returnValue: _i27.Stream<_i8.RegisterState>.empty(),
           )
-          as _i24.Stream<_i8.RegisterState>);
+          as _i27.Stream<_i8.RegisterState>);
 
   @override
   bool get isClosed =>
@@ -424,13 +449,13 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
           as bool);
 
   @override
-  void add(_i32.RegisterEvent? event) => super.noSuchMethod(
+  void add(_i35.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#add, [event]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void onEvent(_i32.RegisterEvent? event) => super.noSuchMethod(
+  void onEvent(_i35.RegisterEvent? event) => super.noSuchMethod(
     Invocation.method(#onEvent, [event]),
     returnValueForMissingStub: null,
   );
@@ -442,9 +467,9 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
   );
 
   @override
-  void on<E extends _i32.RegisterEvent?>(
-    _i33.EventHandler<E, _i8.RegisterState>? handler, {
-    _i33.EventTransformer<E>? transformer,
+  void on<E extends _i35.RegisterEvent?>(
+    _i36.EventHandler<E, _i8.RegisterState>? handler, {
+    _i36.EventTransformer<E>? transformer,
   }) => super.noSuchMethod(
     Invocation.method(#on, [handler], {#transformer: transformer}),
     returnValueForMissingStub: null,
@@ -452,7 +477,7 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
 
   @override
   void onTransition(
-    _i33.Transition<_i32.RegisterEvent?, _i8.RegisterState>? transition,
+    _i36.Transition<_i35.RegisterEvent?, _i8.RegisterState>? transition,
   ) => super.noSuchMethod(
     Invocation.method(#onTransition, [transition]),
     returnValueForMissingStub: null,
@@ -460,7 +485,7 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
 
   @override
   void onDone(
-    _i32.RegisterEvent? event, [
+    _i35.RegisterEvent? event, [
     Object? error,
     StackTrace? stackTrace,
   ]) => super.noSuchMethod(
@@ -469,16 +494,16 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
   );
 
   @override
-  _i24.Future<void> close() =>
+  _i27.Future<void> close() =>
       (super.noSuchMethod(
             Invocation.method(#close, []),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  void onChange(_i33.Change<_i8.RegisterState>? change) => super.noSuchMethod(
+  void onChange(_i36.Change<_i8.RegisterState>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );
@@ -500,69 +525,69 @@ class MockRegisterBloc extends _i1.Mock implements _i31.RegisterBloc {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageService extends _i1.Mock
-    implements _i34.TokenStorageService {
+    implements _i37.TokenStorageService {
   MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i24.Future<void> saveAccessToken(String? token) =>
+  _i27.Future<void> saveAccessToken(String? token) =>
       (super.noSuchMethod(
             Invocation.method(#saveAccessToken, [token]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<String?> getAccessToken() =>
+  _i27.Future<String?> getAccessToken() =>
       (super.noSuchMethod(
             Invocation.method(#getAccessToken, []),
-            returnValue: _i24.Future<String?>.value(),
+            returnValue: _i27.Future<String?>.value(),
           )
-          as _i24.Future<String?>);
+          as _i27.Future<String?>);
 
   @override
-  _i24.Future<void> deleteAccessToken() =>
+  _i27.Future<void> deleteAccessToken() =>
       (super.noSuchMethod(
             Invocation.method(#deleteAccessToken, []),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<void> saveRefreshToken(String? token) =>
+  _i27.Future<void> saveRefreshToken(String? token) =>
       (super.noSuchMethod(
             Invocation.method(#saveRefreshToken, [token]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<String?> getRefreshToken() =>
+  _i27.Future<String?> getRefreshToken() =>
       (super.noSuchMethod(
             Invocation.method(#getRefreshToken, []),
-            returnValue: _i24.Future<String?>.value(),
+            returnValue: _i27.Future<String?>.value(),
           )
-          as _i24.Future<String?>);
+          as _i27.Future<String?>);
 
   @override
-  _i24.Future<void> deleteRefreshToken() =>
+  _i27.Future<void> deleteRefreshToken() =>
       (super.noSuchMethod(
             Invocation.method(#deleteRefreshToken, []),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 }
 
 /// A class which mocks [UserDetailsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserDetailsRepository extends _i1.Mock
-    implements _i35.UserDetailsRepository {
+    implements _i38.UserDetailsRepository {
   MockUserDetailsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -576,95 +601,140 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i2.ApiClient);
 
   @override
-  _i24.Future<_i9.DietForm> getDietPreferences(_i25.UuidValue? userId) =>
+  _i27.Future<_i9.DietForm> getDietPreferences(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getDietPreferences, [userId]),
-            returnValue: _i24.Future<_i9.DietForm>.value(
+            returnValue: _i27.Future<_i9.DietForm>.value(
               _FakeDietForm_7(
                 this,
                 Invocation.method(#getDietPreferences, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i9.DietForm>);
+          as _i27.Future<_i9.DietForm>);
 
   @override
-  _i24.Future<void> submitDietForm(
+  _i27.Future<void> submitDietForm(
     _i9.DietForm? request,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitDietForm, [request, userId]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<_i10.PredictedCalories> submitMacrosChange(
-    _i36.Macros? request,
-    _i25.UuidValue? userId,
+  _i27.Future<_i10.PredictedCalories> submitMacrosChange(
+    _i39.Macros? request,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitMacrosChange, [request, userId]),
-            returnValue: _i24.Future<_i10.PredictedCalories>.value(
+            returnValue: _i27.Future<_i10.PredictedCalories>.value(
               _FakePredictedCalories_8(
                 this,
                 Invocation.method(#submitMacrosChange, [request, userId]),
               ),
             ),
           )
-          as _i24.Future<_i10.PredictedCalories>);
+          as _i27.Future<_i10.PredictedCalories>);
 
   @override
-  _i24.Future<_i10.PredictedCalories> addCaloriesPrediction(
-    _i25.UuidValue? userId,
+  _i27.Future<_i10.PredictedCalories> addCaloriesPrediction(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addCaloriesPrediction, [userId]),
-            returnValue: _i24.Future<_i10.PredictedCalories>.value(
+            returnValue: _i27.Future<_i10.PredictedCalories>.value(
               _FakePredictedCalories_8(
                 this,
                 Invocation.method(#addCaloriesPrediction, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i10.PredictedCalories>);
+          as _i27.Future<_i10.PredictedCalories>);
 
   @override
-  _i24.Future<_i10.PredictedCalories> getCaloriesPrediction(
-    _i25.UuidValue? userId,
+  _i27.Future<_i10.PredictedCalories> getCaloriesPrediction(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getCaloriesPrediction, [userId]),
-            returnValue: _i24.Future<_i10.PredictedCalories>.value(
+            returnValue: _i27.Future<_i10.PredictedCalories>.value(
               _FakePredictedCalories_8(
                 this,
                 Invocation.method(#getCaloriesPrediction, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i10.PredictedCalories>);
+          as _i27.Future<_i10.PredictedCalories>);
 
   @override
-  _i24.Future<_i11.UserStatistics> getUserStatistics(_i25.UuidValue? userId) =>
+  _i27.Future<_i11.UserStatistics> getUserStatistics(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUserStatistics, [userId]),
-            returnValue: _i24.Future<_i11.UserStatistics>.value(
+            returnValue: _i27.Future<_i11.UserStatistics>.value(
               _FakeUserStatistics_9(
                 this,
                 Invocation.method(#getUserStatistics, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i11.UserStatistics>);
+          as _i27.Future<_i11.UserStatistics>);
+
+  @override
+  _i27.Future<_i12.UserWeightHistory?> getUserWeightForDay(
+    DateTime? day,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserWeightForDay, [day, userId]),
+            returnValue: _i27.Future<_i12.UserWeightHistory?>.value(),
+          )
+          as _i27.Future<_i12.UserWeightHistory?>);
+
+  @override
+  _i27.Future<List<_i12.UserWeightHistory>> getUserWeightHistory({
+    required DateTime? start,
+    required DateTime? end,
+    required _i28.UuidValue? userId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserWeightHistory, [], {
+              #start: start,
+              #end: end,
+              #userId: userId,
+            }),
+            returnValue: _i27.Future<List<_i12.UserWeightHistory>>.value(
+              <_i12.UserWeightHistory>[],
+            ),
+          )
+          as _i27.Future<List<_i12.UserWeightHistory>>);
+
+  @override
+  _i27.Future<_i12.UserWeightHistory> addOrUpdateUserWeight(
+    _i12.UserWeightHistory? request,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addOrUpdateUserWeight, [request, userId]),
+            returnValue: _i27.Future<_i12.UserWeightHistory>.value(
+              _FakeUserWeightHistory_10(
+                this,
+                Invocation.method(#addOrUpdateUserWeight, [request, userId]),
+              ),
+            ),
+          )
+          as _i27.Future<_i12.UserWeightHistory>);
 }
 
 /// A class which mocks [DietPredictionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDietPredictionRepository extends _i1.Mock
-    implements _i37.DietPredictionRepository {
+    implements _i40.DietPredictionRepository {
   MockDietPredictionRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -678,39 +748,39 @@ class MockDietPredictionRepository extends _i1.Mock
           as _i2.ApiClient);
 
   @override
-  _i12.CacheManager get cacheManager =>
+  _i13.CacheManager get cacheManager =>
       (super.noSuchMethod(
             Invocation.getter(#cacheManager),
-            returnValue: _FakeCacheManager_10(
+            returnValue: _FakeCacheManager_11(
               this,
               Invocation.getter(#cacheManager),
             ),
           )
-          as _i12.CacheManager);
+          as _i13.CacheManager);
 
   @override
-  _i24.Future<_i13.MealRecipe> getMealRecipe(
-    _i25.UuidValue? userId,
-    _i25.UuidValue? mealId,
-    _i38.Language? language,
+  _i27.Future<_i14.MealRecipe> getMealRecipe(
+    _i28.UuidValue? userId,
+    _i28.UuidValue? mealId,
+    _i41.Language? language,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealRecipe, [userId, mealId, language]),
-            returnValue: _i24.Future<_i13.MealRecipe>.value(
-              _FakeMealRecipe_11(
+            returnValue: _i27.Future<_i14.MealRecipe>.value(
+              _FakeMealRecipe_12(
                 this,
                 Invocation.method(#getMealRecipe, [userId, mealId, language]),
               ),
             ),
           )
-          as _i24.Future<_i13.MealRecipe>);
+          as _i27.Future<_i14.MealRecipe>);
 }
 
 /// A class which mocks [DietGenerationRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDietGenerationRepository extends _i1.Mock
-    implements _i39.DietGenerationRepository {
+    implements _i42.DietGenerationRepository {
   MockDietGenerationRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -724,75 +794,75 @@ class MockDietGenerationRepository extends _i1.Mock
           as _i2.ApiClient);
 
   @override
-  _i12.CacheManager get cacheManager =>
+  _i13.CacheManager get cacheManager =>
       (super.noSuchMethod(
             Invocation.getter(#cacheManager),
-            returnValue: _FakeCacheManager_10(
+            returnValue: _FakeCacheManager_11(
               this,
               Invocation.getter(#cacheManager),
             ),
           )
-          as _i12.CacheManager);
+          as _i13.CacheManager);
 
   @override
-  _i24.Future<_i14.DailySummary> getDailySummary(
+  _i27.Future<_i15.DailySummary> getDailySummary(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummary, [day, userId]),
-            returnValue: _i24.Future<_i14.DailySummary>.value(
-              _FakeDailySummary_12(
+            returnValue: _i27.Future<_i15.DailySummary>.value(
+              _FakeDailySummary_13(
                 this,
                 Invocation.method(#getDailySummary, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i14.DailySummary>);
+          as _i27.Future<_i15.DailySummary>);
 
   @override
-  _i24.Future<_i15.DailyMealsCreate> getDailySummaryMeals(
+  _i27.Future<_i16.DailyMealsCreate> getDailySummaryMeals(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMeals, [day, userId]),
-            returnValue: _i24.Future<_i15.DailyMealsCreate>.value(
-              _FakeDailyMealsCreate_13(
+            returnValue: _i27.Future<_i16.DailyMealsCreate>.value(
+              _FakeDailyMealsCreate_14(
                 this,
                 Invocation.method(#getDailySummaryMeals, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i15.DailyMealsCreate>);
+          as _i27.Future<_i16.DailyMealsCreate>);
 
   @override
-  _i24.Future<void> updateDailySummaryMeals(
-    _i40.MealInfoUpdateRequest? mealInfoUpdateRequest,
-    _i25.UuidValue? userId,
+  _i27.Future<void> updateDailySummaryMeals(
+    _i43.MealInfoUpdateRequest? mealInfoUpdateRequest,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateDailySummaryMeals, [
               mealInfoUpdateRequest,
               userId,
             ]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<_i16.MealInfo> addCustomMeal(
-    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
-    _i25.UuidValue? userId,
+  _i27.Future<_i17.ComposedMealItem> addCustomMeal(
+    _i44.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addCustomMeal, [
               customMealUpdateRequest,
               userId,
             ]),
-            returnValue: _i24.Future<_i16.MealInfo>.value(
-              _FakeMealInfo_14(
+            returnValue: _i27.Future<_i17.ComposedMealItem>.value(
+              _FakeComposedMealItem_15(
                 this,
                 Invocation.method(#addCustomMeal, [
                   customMealUpdateRequest,
@@ -801,15 +871,59 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i24.Future<_i16.MealInfo>);
+          as _i27.Future<_i17.ComposedMealItem>);
 
   @override
-  _i24.Future<_i16.MealInfo> addScannedProduct({
+  _i27.Future<_i17.ComposedMealItem> updateCustomMeal(
+    _i44.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateCustomMeal, [
+              customMealUpdateRequest,
+              userId,
+            ]),
+            returnValue: _i27.Future<_i17.ComposedMealItem>.value(
+              _FakeComposedMealItem_15(
+                this,
+                Invocation.method(#updateCustomMeal, [
+                  customMealUpdateRequest,
+                  userId,
+                ]),
+              ),
+            ),
+          )
+          as _i27.Future<_i17.ComposedMealItem>);
+
+  @override
+  _i27.Future<_i18.RemoveMealResponse> removeMealFromSummary(
+    _i45.RemoveMealRequest? removeMealRequest,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeMealFromSummary, [
+              removeMealRequest,
+              userId,
+            ]),
+            returnValue: _i27.Future<_i18.RemoveMealResponse>.value(
+              _FakeRemoveMealResponse_16(
+                this,
+                Invocation.method(#removeMealFromSummary, [
+                  removeMealRequest,
+                  userId,
+                ]),
+              ),
+            ),
+          )
+          as _i27.Future<_i18.RemoveMealResponse>);
+
+  @override
+  _i27.Future<_i19.MealInfo> addScannedProduct({
     String? barcode,
-    _i42.XFile? uploadedFile,
-    required _i43.MealType? mealType,
+    _i46.XFile? uploadedFile,
+    required _i47.MealType? mealType,
     required DateTime? day,
-    required _i25.UuidValue? userId,
+    required _i28.UuidValue? userId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#addScannedProduct, [], {
@@ -819,8 +933,8 @@ class MockDietGenerationRepository extends _i1.Mock
               #day: day,
               #userId: userId,
             }),
-            returnValue: _i24.Future<_i16.MealInfo>.value(
-              _FakeMealInfo_14(
+            returnValue: _i27.Future<_i19.MealInfo>.value(
+              _FakeMealInfo_17(
                 this,
                 Invocation.method(#addScannedProduct, [], {
                   #barcode: barcode,
@@ -832,38 +946,38 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i24.Future<_i16.MealInfo>);
+          as _i27.Future<_i19.MealInfo>);
 
   @override
-  _i24.Future<_i17.DailyMacrosSummaryCreate> getDailySummaryMacros(
+  _i27.Future<_i20.DailyMacrosSummaryCreate> getDailySummaryMacros(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMacros, [day, userId]),
-            returnValue: _i24.Future<_i17.DailyMacrosSummaryCreate>.value(
-              _FakeDailyMacrosSummaryCreate_15(
+            returnValue: _i27.Future<_i20.DailyMacrosSummaryCreate>.value(
+              _FakeDailyMacrosSummaryCreate_18(
                 this,
                 Invocation.method(#getDailySummaryMacros, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i17.DailyMacrosSummaryCreate>);
+          as _i27.Future<_i20.DailyMacrosSummaryCreate>);
 
   @override
-  _i24.Future<void> generateMealPlan(_i25.UuidValue? userId, DateTime? day) =>
+  _i27.Future<void> generateMealPlan(_i28.UuidValue? userId, DateTime? day) =>
       (super.noSuchMethod(
             Invocation.method(#generateMealPlan, [userId, day]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 }
 
 /// A class which mocks [MealsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMealsRepository extends _i1.Mock implements _i44.MealsRepository {
+class MockMealsRepository extends _i1.Mock implements _i48.MealsRepository {
   MockMealsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -877,109 +991,109 @@ class MockMealsRepository extends _i1.Mock implements _i44.MealsRepository {
           as _i2.ApiClient);
 
   @override
-  _i12.CacheManager get cacheManager =>
+  _i13.CacheManager get cacheManager =>
       (super.noSuchMethod(
             Invocation.getter(#cacheManager),
-            returnValue: _FakeCacheManager_10(
+            returnValue: _FakeCacheManager_11(
               this,
               Invocation.getter(#cacheManager),
             ),
           )
-          as _i12.CacheManager);
+          as _i13.CacheManager);
 
   @override
-  _i24.Future<_i18.MealCreate> getMealDetails(
-    _i25.UuidValue? mealId,
-    _i25.UuidValue? userId,
+  _i27.Future<_i21.MealCreate> getMealDetails(
+    _i28.UuidValue? mealId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealDetails, [mealId, userId]),
-            returnValue: _i24.Future<_i18.MealCreate>.value(
-              _FakeMealCreate_16(
+            returnValue: _i27.Future<_i21.MealCreate>.value(
+              _FakeMealCreate_19(
                 this,
                 Invocation.method(#getMealDetails, [mealId, userId]),
               ),
             ),
           )
-          as _i24.Future<_i18.MealCreate>);
+          as _i27.Future<_i21.MealCreate>);
 }
 
 /// A class which mocks [FlutterSecureStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFlutterSecureStorage extends _i1.Mock
-    implements _i19.FlutterSecureStorage {
+    implements _i22.FlutterSecureStorage {
   MockFlutterSecureStorage() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i19.IOSOptions get iOptions =>
+  _i22.IOSOptions get iOptions =>
       (super.noSuchMethod(
             Invocation.getter(#iOptions),
-            returnValue: _FakeIOSOptions_17(this, Invocation.getter(#iOptions)),
+            returnValue: _FakeIOSOptions_20(this, Invocation.getter(#iOptions)),
           )
-          as _i19.IOSOptions);
+          as _i22.IOSOptions);
 
   @override
-  _i19.AndroidOptions get aOptions =>
+  _i22.AndroidOptions get aOptions =>
       (super.noSuchMethod(
             Invocation.getter(#aOptions),
-            returnValue: _FakeAndroidOptions_18(
+            returnValue: _FakeAndroidOptions_21(
               this,
               Invocation.getter(#aOptions),
             ),
           )
-          as _i19.AndroidOptions);
+          as _i22.AndroidOptions);
 
   @override
-  _i19.LinuxOptions get lOptions =>
+  _i22.LinuxOptions get lOptions =>
       (super.noSuchMethod(
             Invocation.getter(#lOptions),
-            returnValue: _FakeLinuxOptions_19(
+            returnValue: _FakeLinuxOptions_22(
               this,
               Invocation.getter(#lOptions),
             ),
           )
-          as _i19.LinuxOptions);
+          as _i22.LinuxOptions);
 
   @override
-  _i19.WindowsOptions get wOptions =>
+  _i22.WindowsOptions get wOptions =>
       (super.noSuchMethod(
             Invocation.getter(#wOptions),
-            returnValue: _FakeWindowsOptions_20(
+            returnValue: _FakeWindowsOptions_23(
               this,
               Invocation.getter(#wOptions),
             ),
           )
-          as _i19.WindowsOptions);
+          as _i22.WindowsOptions);
 
   @override
-  _i19.WebOptions get webOptions =>
+  _i22.WebOptions get webOptions =>
       (super.noSuchMethod(
             Invocation.getter(#webOptions),
-            returnValue: _FakeWebOptions_21(
+            returnValue: _FakeWebOptions_24(
               this,
               Invocation.getter(#webOptions),
             ),
           )
-          as _i19.WebOptions);
+          as _i22.WebOptions);
 
   @override
-  _i19.MacOsOptions get mOptions =>
+  _i22.MacOsOptions get mOptions =>
       (super.noSuchMethod(
             Invocation.getter(#mOptions),
-            returnValue: _FakeMacOsOptions_22(
+            returnValue: _FakeMacOsOptions_25(
               this,
               Invocation.getter(#mOptions),
             ),
           )
-          as _i19.MacOsOptions);
+          as _i22.MacOsOptions);
 
   @override
   void registerListener({
     required String? key,
-    required _i45.ValueChanged<String?>? listener,
+    required _i49.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -988,7 +1102,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i45.ValueChanged<String?>? listener,
+    required _i49.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -1011,15 +1125,15 @@ class MockFlutterSecureStorage extends _i1.Mock
   );
 
   @override
-  _i24.Future<void> write({
+  _i27.Future<void> write({
     required String? key,
     required String? value,
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#write, [], {
@@ -1032,20 +1146,20 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<String?> read({
+  _i27.Future<String?> read({
     required String? key,
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#read, [], {
@@ -1057,19 +1171,19 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<String?>.value(),
+            returnValue: _i27.Future<String?>.value(),
           )
-          as _i24.Future<String?>);
+          as _i27.Future<String?>);
 
   @override
-  _i24.Future<bool> containsKey({
+  _i27.Future<bool> containsKey({
     required String? key,
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#containsKey, [], {
@@ -1081,19 +1195,19 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<bool>.value(false),
+            returnValue: _i27.Future<bool>.value(false),
           )
-          as _i24.Future<bool>);
+          as _i27.Future<bool>);
 
   @override
-  _i24.Future<void> delete({
+  _i27.Future<void> delete({
     required String? key,
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [], {
@@ -1105,19 +1219,19 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<Map<String, String>> readAll({
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+  _i27.Future<Map<String, String>> readAll({
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#readAll, [], {
@@ -1128,20 +1242,20 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<Map<String, String>>.value(
+            returnValue: _i27.Future<Map<String, String>>.value(
               <String, String>{},
             ),
           )
-          as _i24.Future<Map<String, String>>);
+          as _i27.Future<Map<String, String>>);
 
   @override
-  _i24.Future<void> deleteAll({
-    _i19.IOSOptions? iOptions,
-    _i19.AndroidOptions? aOptions,
-    _i19.LinuxOptions? lOptions,
-    _i19.WebOptions? webOptions,
-    _i19.MacOsOptions? mOptions,
-    _i19.WindowsOptions? wOptions,
+  _i27.Future<void> deleteAll({
+    _i22.IOSOptions? iOptions,
+    _i22.AndroidOptions? aOptions,
+    _i22.LinuxOptions? lOptions,
+    _i22.WebOptions? webOptions,
+    _i22.MacOsOptions? mOptions,
+    _i22.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#deleteAll, [], {
@@ -1152,18 +1266,18 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<bool?> isCupertinoProtectedDataAvailable() =>
+  _i27.Future<bool?> isCupertinoProtectedDataAvailable() =>
       (super.noSuchMethod(
             Invocation.method(#isCupertinoProtectedDataAvailable, []),
-            returnValue: _i24.Future<bool?>.value(),
+            returnValue: _i27.Future<bool?>.value(),
           )
-          as _i24.Future<bool?>);
+          as _i27.Future<bool?>);
 }
 
 /// A class which mocks [ApiClient].
@@ -1175,334 +1289,391 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   }
 
   @override
-  _i20.Dio get dio =>
+  _i23.Dio get dio =>
       (super.noSuchMethod(
             Invocation.getter(#dio),
-            returnValue: _FakeDio_23(this, Invocation.getter(#dio)),
+            returnValue: _FakeDio_26(this, Invocation.getter(#dio)),
           )
-          as _i20.Dio);
+          as _i23.Dio);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getUser(_i25.UuidValue? userId) =>
+  _i27.Future<_i23.Response<dynamic>> getUser(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getUser, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> register(_i27.RegisterRequest? request) =>
+  _i27.Future<_i23.Response<dynamic>> register(_i30.RegisterRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#register, [request]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#register, [request]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> login(_i26.LoginRequest? request) =>
+  _i27.Future<_i23.Response<dynamic>> login(_i29.LoginRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#login, [request]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#login, [request]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> provideEmail(
-    _i28.ProvideEmailRequest? request,
+  _i27.Future<_i23.Response<dynamic>> provideEmail(
+    _i31.ProvideEmailRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#provideEmail, [request]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#provideEmail, [request]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> changePassword(
-    _i29.ChangePasswordRequest? request,
+  _i27.Future<_i23.Response<dynamic>> changePassword(
+    _i32.ChangePasswordRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#changePassword, [request]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> changeLanguage(
-    _i30.ChangeLanguageRequest? request,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> changeLanguage(
+    _i33.ChangeLanguageRequest? request,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#changeLanguage, [request, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#changeLanguage, [request, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> refreshTokens(_i25.UuidValue? userId) =>
+  _i27.Future<_i23.Response<dynamic>> refreshTokens(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#refreshTokens, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#refreshTokens, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> logout(_i25.UuidValue? userId) =>
+  _i27.Future<_i23.Response<dynamic>> logout(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#logout, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#logout, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> resendVerificationMail(String? email) =>
+  _i27.Future<_i23.Response<dynamic>> resendVerificationMail(String? email) =>
       (super.noSuchMethod(
             Invocation.method(#resendVerificationMail, [email]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#resendVerificationMail, [email]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> delete(_i25.UuidValue? userId) =>
+  _i27.Future<_i23.Response<dynamic>> delete(_i28.UuidValue? userId) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#delete, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> refreshRequest(
-    _i20.RequestOptions? requestOptions,
+  _i27.Future<_i23.Response<dynamic>> refreshRequest(
+    _i23.RequestOptions? requestOptions,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#refreshRequest, [requestOptions]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#refreshRequest, [requestOptions]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getUserStatistics(
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getUserStatistics(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getUserStatistics, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getUserStatistics, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getDietPreferences(
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getUserWeightForDay(
+    DateTime? day,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserWeightForDay, [day, userId]),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
+                this,
+                Invocation.method(#getUserWeightForDay, [day, userId]),
+              ),
+            ),
+          )
+          as _i27.Future<_i23.Response<dynamic>>);
+
+  @override
+  _i27.Future<_i23.Response<dynamic>> getWeightHistory({
+    required DateTime? start,
+    required DateTime? end,
+    required _i28.UuidValue? userId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getWeightHistory, [], {
+              #start: start,
+              #end: end,
+              #userId: userId,
+            }),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
+                this,
+                Invocation.method(#getWeightHistory, [], {
+                  #start: start,
+                  #end: end,
+                  #userId: userId,
+                }),
+              ),
+            ),
+          )
+          as _i27.Future<_i23.Response<dynamic>>);
+
+  @override
+  _i27.Future<_i23.Response<dynamic>> addUserWeight(
+    Map<String, dynamic>? body,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addUserWeight, [body, userId]),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
+                this,
+                Invocation.method(#addUserWeight, [body, userId]),
+              ),
+            ),
+          )
+          as _i27.Future<_i23.Response<dynamic>>);
+
+  @override
+  _i27.Future<_i23.Response<dynamic>> getDietPreferences(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDietPreferences, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getDietPreferences, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> submitDietForm(
+  _i27.Future<_i23.Response<dynamic>> submitDietForm(
     _i9.DietForm? request,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitDietForm, [request, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#submitDietForm, [request, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> submitMacrosChange(
-    _i36.Macros? request,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> submitMacrosChange(
+    _i39.Macros? request,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#submitMacrosChange, [request, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#submitMacrosChange, [request, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> addCaloriesPrediction(
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> addCaloriesPrediction(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addCaloriesPrediction, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#addCaloriesPrediction, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getCaloriesPrediction(
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getCaloriesPrediction(
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getCaloriesPrediction, [userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getCaloriesPrediction, [userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getMealRecipe(
-    _i25.UuidValue? mealId,
-    _i38.Language? language,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getMealRecipe(
+    _i28.UuidValue? mealId,
+    _i41.Language? language,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealRecipe, [mealId, language, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getMealRecipe, [mealId, language, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> generateMealPlan(
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> generateMealPlan(
+    _i28.UuidValue? userId,
     DateTime? day,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#generateMealPlan, [userId, day]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#generateMealPlan, [userId, day]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getDailySummary(
+  _i27.Future<_i23.Response<dynamic>> getDailySummary(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummary, [day, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getDailySummary, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getDailySummaryMeals(
+  _i27.Future<_i23.Response<dynamic>> getDailySummaryMeals(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMeals, [day, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getDailySummaryMeals, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> updateDailySummaryMeals(
-    _i40.MealInfoUpdateRequest? mealInfoUpdateRequest,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> updateDailySummaryMeals(
+    _i43.MealInfoUpdateRequest? mealInfoUpdateRequest,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateDailySummaryMeals, [
               mealInfoUpdateRequest,
               userId,
             ]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#updateDailySummaryMeals, [
                   mealInfoUpdateRequest,
@@ -1511,85 +1682,126 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getDailySummaryMacros(
+  _i27.Future<_i23.Response<dynamic>> getDailySummaryMacros(
     DateTime? day,
-    _i25.UuidValue? userId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMacros, [day, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getDailySummaryMacros, [day, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getMealDetails(
-    _i25.UuidValue? mealId,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getMealDetails(
+    _i28.UuidValue? mealId,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealDetails, [mealId, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getMealDetails, [mealId, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> getMealIconInfo(
-    _i43.MealType? mealType,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> getMealIconInfo(
+    _i47.MealType? mealType,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealIconInfo, [mealType, userId]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#getMealIconInfo, [mealType, userId]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> addCustomMeal(
-    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
-    _i25.UuidValue? userId,
+  _i27.Future<_i23.Response<dynamic>> addDailyMeal(
+    _i44.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i28.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#addCustomMeal, [
-              customMealUpdateRequest,
-              userId,
-            ]),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            Invocation.method(#addDailyMeal, [customMealUpdateRequest, userId]),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
-                Invocation.method(#addCustomMeal, [
+                Invocation.method(#addDailyMeal, [
                   customMealUpdateRequest,
                   userId,
                 ]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> addScannedProduct({
+  _i27.Future<_i23.Response<dynamic>> updateDailyMeal(
+    _i44.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateDailyMeal, [
+              customMealUpdateRequest,
+              userId,
+            ]),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
+                this,
+                Invocation.method(#updateDailyMeal, [
+                  customMealUpdateRequest,
+                  userId,
+                ]),
+              ),
+            ),
+          )
+          as _i27.Future<_i23.Response<dynamic>>);
+
+  @override
+  _i27.Future<_i23.Response<dynamic>> removeMealFromSummary(
+    _i45.RemoveMealRequest? removeMealRequest,
+    _i28.UuidValue? userId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeMealFromSummary, [
+              removeMealRequest,
+              userId,
+            ]),
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
+                this,
+                Invocation.method(#removeMealFromSummary, [
+                  removeMealRequest,
+                  userId,
+                ]),
+              ),
+            ),
+          )
+          as _i27.Future<_i23.Response<dynamic>>);
+
+  @override
+  _i27.Future<_i23.Response<dynamic>> addScannedProduct({
     String? barcode,
-    _i42.XFile? uploadedFile,
-    required _i43.MealType? mealType,
+    _i46.XFile? uploadedFile,
+    required _i47.MealType? mealType,
     required DateTime? day,
-    required _i25.UuidValue? userId,
+    required _i28.UuidValue? userId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#addScannedProduct, [], {
@@ -1599,8 +1811,8 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               #day: day,
               #userId: userId,
             }),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(#addScannedProduct, [], {
                   #barcode: barcode,
@@ -1612,30 +1824,30 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 }
 
 /// A class which mocks [ErrorInterceptorHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockErrorInterceptorHandler extends _i1.Mock
-    implements _i20.ErrorInterceptorHandler {
+    implements _i23.ErrorInterceptorHandler {
   MockErrorInterceptorHandler() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i24.Future<_i21.InterceptorState<dynamic>> get future =>
+  _i27.Future<_i24.InterceptorState<dynamic>> get future =>
       (super.noSuchMethod(
             Invocation.getter(#future),
-            returnValue: _i24.Future<_i21.InterceptorState<dynamic>>.value(
-              _FakeInterceptorState_25<dynamic>(
+            returnValue: _i27.Future<_i24.InterceptorState<dynamic>>.value(
+              _FakeInterceptorState_28<dynamic>(
                 this,
                 Invocation.getter(#future),
               ),
             ),
           )
-          as _i24.Future<_i21.InterceptorState<dynamic>>);
+          as _i27.Future<_i24.InterceptorState<dynamic>>);
 
   @override
   bool get isCompleted =>
@@ -1643,19 +1855,19 @@ class MockErrorInterceptorHandler extends _i1.Mock
           as bool);
 
   @override
-  void next(_i20.DioException? error) => super.noSuchMethod(
+  void next(_i23.DioException? error) => super.noSuchMethod(
     Invocation.method(#next, [error]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void resolve(_i20.Response<dynamic>? response) => super.noSuchMethod(
+  void resolve(_i23.Response<dynamic>? response) => super.noSuchMethod(
     Invocation.method(#resolve, [response]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void reject(_i20.DioException? error) => super.noSuchMethod(
+  void reject(_i23.DioException? error) => super.noSuchMethod(
     Invocation.method(#reject, [error]),
     returnValueForMissingStub: null,
   );
@@ -1664,26 +1876,26 @@ class MockErrorInterceptorHandler extends _i1.Mock
 /// A class which mocks [LanguageCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLanguageCubit extends _i1.Mock implements _i46.LanguageCubit {
+class MockLanguageCubit extends _i1.Mock implements _i50.LanguageCubit {
   MockLanguageCubit() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i22.Locale get state =>
+  _i25.Locale get state =>
       (super.noSuchMethod(
             Invocation.getter(#state),
-            returnValue: _FakeLocale_26(this, Invocation.getter(#state)),
+            returnValue: _FakeLocale_29(this, Invocation.getter(#state)),
           )
-          as _i22.Locale);
+          as _i25.Locale);
 
   @override
-  _i24.Stream<_i22.Locale> get stream =>
+  _i27.Stream<_i25.Locale> get stream =>
       (super.noSuchMethod(
             Invocation.getter(#stream),
-            returnValue: _i24.Stream<_i22.Locale>.empty(),
+            returnValue: _i27.Stream<_i25.Locale>.empty(),
           )
-          as _i24.Stream<_i22.Locale>);
+          as _i27.Stream<_i25.Locale>);
 
   @override
   bool get isClosed =>
@@ -1691,22 +1903,22 @@ class MockLanguageCubit extends _i1.Mock implements _i46.LanguageCubit {
           as bool);
 
   @override
-  _i24.Future<void> change(_i38.Language? language) =>
+  _i27.Future<void> change(_i41.Language? language) =>
       (super.noSuchMethod(
             Invocation.method(#change, [language]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  void emit(_i22.Locale? state) => super.noSuchMethod(
+  void emit(_i25.Locale? state) => super.noSuchMethod(
     Invocation.method(#emit, [state]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void onChange(_i33.Change<_i22.Locale>? change) => super.noSuchMethod(
+  void onChange(_i36.Change<_i25.Locale>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );
@@ -1724,78 +1936,78 @@ class MockLanguageCubit extends _i1.Mock implements _i46.LanguageCubit {
   );
 
   @override
-  _i24.Future<void> close() =>
+  _i27.Future<void> close() =>
       (super.noSuchMethod(
             Invocation.method(#close, []),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 }
 
 /// A class which mocks [Dio].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDio extends _i1.Mock implements _i20.Dio {
+class MockDio extends _i1.Mock implements _i23.Dio {
   MockDio() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i20.BaseOptions get options =>
+  _i23.BaseOptions get options =>
       (super.noSuchMethod(
             Invocation.getter(#options),
-            returnValue: _FakeBaseOptions_27(this, Invocation.getter(#options)),
+            returnValue: _FakeBaseOptions_30(this, Invocation.getter(#options)),
           )
-          as _i20.BaseOptions);
+          as _i23.BaseOptions);
 
   @override
-  _i20.Interceptors get interceptors =>
+  _i23.Interceptors get interceptors =>
       (super.noSuchMethod(
             Invocation.getter(#interceptors),
-            returnValue: _FakeInterceptors_28(
+            returnValue: _FakeInterceptors_31(
               this,
               Invocation.getter(#interceptors),
             ),
           )
-          as _i20.Interceptors);
+          as _i23.Interceptors);
 
   @override
-  _i20.HttpClientAdapter get httpClientAdapter =>
+  _i23.HttpClientAdapter get httpClientAdapter =>
       (super.noSuchMethod(
             Invocation.getter(#httpClientAdapter),
-            returnValue: _FakeHttpClientAdapter_29(
+            returnValue: _FakeHttpClientAdapter_32(
               this,
               Invocation.getter(#httpClientAdapter),
             ),
           )
-          as _i20.HttpClientAdapter);
+          as _i23.HttpClientAdapter);
 
   @override
-  _i20.Transformer get transformer =>
+  _i23.Transformer get transformer =>
       (super.noSuchMethod(
             Invocation.getter(#transformer),
-            returnValue: _FakeTransformer_30(
+            returnValue: _FakeTransformer_33(
               this,
               Invocation.getter(#transformer),
             ),
           )
-          as _i20.Transformer);
+          as _i23.Transformer);
 
   @override
-  set options(_i20.BaseOptions? value) => super.noSuchMethod(
+  set options(_i23.BaseOptions? value) => super.noSuchMethod(
     Invocation.setter(#options, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set httpClientAdapter(_i20.HttpClientAdapter? value) => super.noSuchMethod(
+  set httpClientAdapter(_i23.HttpClientAdapter? value) => super.noSuchMethod(
     Invocation.setter(#httpClientAdapter, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set transformer(_i20.Transformer? value) => super.noSuchMethod(
+  set transformer(_i23.Transformer? value) => super.noSuchMethod(
     Invocation.setter(#transformer, value),
     returnValueForMissingStub: null,
   );
@@ -1807,12 +2019,12 @@ class MockDio extends _i1.Mock implements _i20.Dio {
   );
 
   @override
-  _i24.Future<_i20.Response<T>> head<T>(
+  _i27.Future<_i23.Response<T>> head<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -1825,8 +2037,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #cancelToken: cancelToken,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #head,
@@ -1841,14 +2053,14 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> headUri<T>(
+  _i27.Future<_i23.Response<T>> headUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -1856,8 +2068,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               [uri],
               {#data: data, #options: options, #cancelToken: cancelToken},
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #headUri,
@@ -1867,16 +2079,16 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> get<T>(
+  _i27.Future<_i23.Response<T>> get<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -1890,8 +2102,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #get,
@@ -1907,15 +2119,15 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> getUri<T>(
+  _i27.Future<_i23.Response<T>> getUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -1928,8 +2140,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #getUri,
@@ -1944,17 +2156,17 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> post<T>(
+  _i27.Future<_i23.Response<T>> post<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -1969,8 +2181,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #post,
@@ -1987,16 +2199,16 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> postUri<T>(
+  _i27.Future<_i23.Response<T>> postUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2010,8 +2222,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #postUri,
@@ -2027,17 +2239,17 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> put<T>(
+  _i27.Future<_i23.Response<T>> put<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2052,8 +2264,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #put,
@@ -2070,16 +2282,16 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> putUri<T>(
+  _i27.Future<_i23.Response<T>> putUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2093,8 +2305,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #putUri,
@@ -2110,17 +2322,17 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> patch<T>(
+  _i27.Future<_i23.Response<T>> patch<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2135,8 +2347,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #patch,
@@ -2153,16 +2365,16 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> patchUri<T>(
+  _i27.Future<_i23.Response<T>> patchUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2176,8 +2388,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #patchUri,
@@ -2193,15 +2405,15 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> delete<T>(
+  _i27.Future<_i23.Response<T>> delete<T>(
     String? path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2214,8 +2426,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #cancelToken: cancelToken,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #delete,
@@ -2230,14 +2442,14 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> deleteUri<T>(
+  _i27.Future<_i23.Response<T>> deleteUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.Options? options,
-    _i20.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2245,8 +2457,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               [uri],
               {#data: data, #options: options, #cancelToken: cancelToken},
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #deleteUri,
@@ -2256,20 +2468,20 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> download(
+  _i27.Future<_i23.Response<dynamic>> download(
     String? urlPath,
     dynamic savePath, {
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.ProgressCallback? onReceiveProgress,
     Map<String, dynamic>? queryParameters,
-    _i20.CancelToken? cancelToken,
+    _i23.CancelToken? cancelToken,
     bool? deleteOnError = true,
-    _i20.FileAccessMode? fileAccessMode = _i20.FileAccessMode.write,
+    _i23.FileAccessMode? fileAccessMode = _i23.FileAccessMode.write,
     String? lengthHeader = 'content-length',
     Object? data,
-    _i20.Options? options,
+    _i23.Options? options,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2286,8 +2498,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #options: options,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(
                   #download,
@@ -2306,19 +2518,19 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<dynamic>> downloadUri(
+  _i27.Future<_i23.Response<dynamic>> downloadUri(
     Uri? uri,
     dynamic savePath, {
-    _i20.ProgressCallback? onReceiveProgress,
-    _i20.CancelToken? cancelToken,
+    _i23.ProgressCallback? onReceiveProgress,
+    _i23.CancelToken? cancelToken,
     bool? deleteOnError = true,
-    _i20.FileAccessMode? fileAccessMode = _i20.FileAccessMode.write,
+    _i23.FileAccessMode? fileAccessMode = _i23.FileAccessMode.write,
     String? lengthHeader = 'content-length',
     Object? data,
-    _i20.Options? options,
+    _i23.Options? options,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2334,8 +2546,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #options: options,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<dynamic>>.value(
-              _FakeResponse_24<dynamic>(
+            returnValue: _i27.Future<_i23.Response<dynamic>>.value(
+              _FakeResponse_27<dynamic>(
                 this,
                 Invocation.method(
                   #downloadUri,
@@ -2353,17 +2565,17 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<dynamic>>);
+          as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i24.Future<_i20.Response<T>> request<T>(
+  _i27.Future<_i23.Response<T>> request<T>(
     String? url, {
     Object? data,
     Map<String, dynamic>? queryParameters,
-    _i20.CancelToken? cancelToken,
-    _i20.Options? options,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2378,8 +2590,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #request,
@@ -2396,16 +2608,16 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> requestUri<T>(
+  _i27.Future<_i23.Response<T>> requestUri<T>(
     Uri? uri, {
     Object? data,
-    _i20.CancelToken? cancelToken,
-    _i20.Options? options,
-    _i20.ProgressCallback? onSendProgress,
-    _i20.ProgressCallback? onReceiveProgress,
+    _i23.CancelToken? cancelToken,
+    _i23.Options? options,
+    _i23.ProgressCallback? onSendProgress,
+    _i23.ProgressCallback? onReceiveProgress,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2419,8 +2631,8 @@ class MockDio extends _i1.Mock implements _i20.Dio {
                 #onReceiveProgress: onReceiveProgress,
               },
             ),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(
                   #requestUri,
@@ -2436,27 +2648,27 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i24.Future<_i20.Response<T>> fetch<T>(_i20.RequestOptions? requestOptions) =>
+  _i27.Future<_i23.Response<T>> fetch<T>(_i23.RequestOptions? requestOptions) =>
       (super.noSuchMethod(
             Invocation.method(#fetch, [requestOptions]),
-            returnValue: _i24.Future<_i20.Response<T>>.value(
-              _FakeResponse_24<T>(
+            returnValue: _i27.Future<_i23.Response<T>>.value(
+              _FakeResponse_27<T>(
                 this,
                 Invocation.method(#fetch, [requestOptions]),
               ),
             ),
           )
-          as _i24.Future<_i20.Response<T>>);
+          as _i27.Future<_i23.Response<T>>);
 
   @override
-  _i20.Dio clone({
-    _i20.BaseOptions? options,
-    _i20.Interceptors? interceptors,
-    _i20.HttpClientAdapter? httpClientAdapter,
-    _i20.Transformer? transformer,
+  _i23.Dio clone({
+    _i23.BaseOptions? options,
+    _i23.Interceptors? interceptors,
+    _i23.HttpClientAdapter? httpClientAdapter,
+    _i23.Transformer? transformer,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#clone, [], {
@@ -2465,7 +2677,7 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               #httpClientAdapter: httpClientAdapter,
               #transformer: transformer,
             }),
-            returnValue: _FakeDio_23(
+            returnValue: _FakeDio_26(
               this,
               Invocation.method(#clone, [], {
                 #options: options,
@@ -2475,66 +2687,66 @@ class MockDio extends _i1.Mock implements _i20.Dio {
               }),
             ),
           )
-          as _i20.Dio);
+          as _i23.Dio);
 }
 
 /// A class which mocks [CacheManager].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCacheManager extends _i1.Mock implements _i12.CacheManager {
+class MockCacheManager extends _i1.Mock implements _i13.CacheManager {
   MockCacheManager() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i23.CacheStore get cacheStore =>
+  _i26.CacheStore get cacheStore =>
       (super.noSuchMethod(
             Invocation.getter(#cacheStore),
-            returnValue: _FakeCacheStore_31(
+            returnValue: _FakeCacheStore_34(
               this,
               Invocation.getter(#cacheStore),
             ),
           )
-          as _i23.CacheStore);
+          as _i26.CacheStore);
 
   @override
-  _i23.CacheOptions get cacheOptions =>
+  _i26.CacheOptions get cacheOptions =>
       (super.noSuchMethod(
             Invocation.getter(#cacheOptions),
-            returnValue: _FakeCacheOptions_32(
+            returnValue: _FakeCacheOptions_35(
               this,
               Invocation.getter(#cacheOptions),
             ),
           )
-          as _i23.CacheOptions);
+          as _i26.CacheOptions);
 
   @override
-  set cacheStore(_i23.CacheStore? value) => super.noSuchMethod(
+  set cacheStore(_i26.CacheStore? value) => super.noSuchMethod(
     Invocation.setter(#cacheStore, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set cacheOptions(_i23.CacheOptions? value) => super.noSuchMethod(
+  set cacheOptions(_i26.CacheOptions? value) => super.noSuchMethod(
     Invocation.setter(#cacheOptions, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  _i24.Future<void> clearAllCache() =>
+  _i27.Future<void> clearAllCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearAllCache, []),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 
   @override
-  _i24.Future<void> clearCacheFor(Uri? url) =>
+  _i27.Future<void> clearCacheFor(Uri? url) =>
       (super.noSuchMethod(
             Invocation.method(#clearCacheFor, [url]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
+            returnValue: _i27.Future<void>.value(),
+            returnValueForMissingStub: _i27.Future<void>.value(),
           )
-          as _i24.Future<void>);
+          as _i27.Future<void>);
 }

@@ -81,7 +81,7 @@ class MealInfoUpdateRequest(BaseModel):
     status: MealStatus
 
 
-class CustomMealUpdateRequest(BaseModel):
+class ComposedMealUpdateRequest(BaseModel):
     day: date
     meal_type: MealType
     meal_id: Optional[UUID] = None
@@ -94,16 +94,6 @@ class CustomMealUpdateRequest(BaseModel):
     eaten_weight: Optional[int] = Field(default=None, ge=0, le=2250)
 
 
-class ComposedMealItemUpdateRequest(BaseModel):
-    composed_item_id: UUID
-    new_meal_id: UUID
-    planned_weight: int
-    planned_calories: int
-    planned_protein: float
-    planned_carbs: float
-    planned_fat: float
-
-
 class RemoveMealRequest(BaseModel):
     day: date
     meal_type: MealType
@@ -112,3 +102,24 @@ class RemoveMealRequest(BaseModel):
 
 class RemoveMealResponse(RemoveMealRequest):
     success: bool
+
+
+class DailyMealTypeSummary(BaseModel):
+    daily_summary_id: UUID
+    meal_daily_summary_id: UUID
+    user_id: UUID
+    day: date
+    target_calories: int
+    target_protein: float
+    target_carbs: float
+    target_fat: float
+    status: MealStatus
+    meal_type: MealType
+
+
+class ComposedMealItemUpdateEntity(BaseModel):
+    planned_calories: int
+    planned_protein: float
+    planned_fat: float
+    planned_carbs: float
+    planned_weight: int

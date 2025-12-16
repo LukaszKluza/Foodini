@@ -300,12 +300,24 @@ class ApiClient {
     );
   }
 
-  Future<Response> addCustomMeal(
+  Future<Response> addDailyMeal(
       CustomMealUpdateRequest customMealUpdateRequest,
       UuidValue userId,
   ) {
+    return _client.post(
+      Endpoints.dailyMeal,
+      data: customMealUpdateRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> updateDailyMeal(
+      CustomMealUpdateRequest customMealUpdateRequest,
+      UuidValue userId,
+    ) {
     return _client.patch(
-      Endpoints.customMeal,
+      '${Endpoints.dailyMeal}/$userId',
       data: customMealUpdateRequest.toJson(),
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
