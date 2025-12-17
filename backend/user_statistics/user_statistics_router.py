@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 
+from backend.core.role_sets import user_or_admin
 from backend.user_statistics.dependancies import get_user_statistics_service
 from backend.user_statistics.schemas import UserStatisticsSchema
 from backend.user_statistics.user_statistics_service import UserStatisticsService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-user_statistics_router = APIRouter(prefix="/v1/user-statistics")
+user_statistics_router = APIRouter(prefix="/v1/user-statistics", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @user_statistics_router.get(

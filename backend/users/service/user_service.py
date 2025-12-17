@@ -2,18 +2,22 @@ from datetime import datetime
 from typing import Type
 
 from fastapi import HTTPException, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import RedirectResponse
 
 from backend.core.logger import logger
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.models import User
 from backend.settings import config
+from backend.users.enums.role import Role
+from backend.users.mappers import user_create_to_entry
 from backend.users.schemas import (
     ChangeLanguageRequest,
     DefaultResponse,
     LoginUserResponse,
     NewPasswordConfirm,
     PasswordResetRequest,
+    TokenPayload,
     UserCreate,
     UserLogin,
     UserUpdate,
@@ -54,9 +58,13 @@ class UserService:
         )
 
         await self.email_verification_service.process_new_account_verification(user.email, token)
-        return await self.user_repository.create_user(user)
+        role = await self.user_repository.get_role_id_by_role_name(Role.USER)
 
-    async def login(self, user_login: UserLogin):
+        entry = user_create_to_entry(user, role.id)
+        return await self.user_repository.create_user(entry)
+
+    async def login(self, form_data: OAuth2PasswordRequestForm):
+        user_login = UserLogin(email=form_data.username, password=form_data.password)
         user_ = await self.user_validators.ensure_user_exists_by_email(user_login.email)
         self.user_validators.ensure_verified_user(user_)
 
@@ -67,8 +75,10 @@ class UserService:
                 detail="Incorrect password",
             )
 
+        user_role_ = await self.user_repository.get_role_by_id(user_.role_id)
+
         access_token, refresh_token = await self.authorization_service.create_tokens(
-            {"sub": user_.email, "id": str(user_.id)}
+            {"sub": user_.email, "id": str(user_.id), "role": user_role_.name}
         )
 
         return LoginUserResponse(
@@ -78,8 +88,8 @@ class UserService:
             refresh_token=refresh_token,
         )
 
-    async def logout(self, token_payload: dict):
-        await self.authorization_service.revoke_tokens(token_payload["jti"], token_payload["linked_jti"])
+    async def logout(self, token: TokenPayload):
+        await self.authorization_service.revoke_tokens(token.jti, token.linked_jti)
         return Response(status_code=204)
 
     async def reset_password(self, password_reset_request: PasswordResetRequest, form_url: str):
@@ -105,8 +115,8 @@ class UserService:
     ):
         return await self.user_repository.change_language(user.id, change_language_request.language)
 
-    async def delete(self, user: Type[User], token_payload: dict):
-        await self.authorization_service.revoke_tokens(token_payload["jti"], token_payload["linked_jti"])
+    async def delete(self, user: Type[User], token: TokenPayload):
+        await self.authorization_service.revoke_tokens(token.jti, token.linked_jti)
         return await self.user_repository.delete_user(user.id)
 
     async def decode_url_token(self, token: str, salt: str = config.NEW_ACCOUNT_SALT):

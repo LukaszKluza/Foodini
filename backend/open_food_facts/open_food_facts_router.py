@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
 
+from backend.core.role_sets import user_or_admin
 from backend.open_food_facts.dependencies import get_open_food_facts_service
 from backend.open_food_facts.open_food_facts_service import OpenFoodFactsService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-open_food_facts_router = APIRouter(prefix="/v1/open-food-facts")
+open_food_facts_router = APIRouter(prefix="/v1/open-food-facts", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @open_food_facts_router.get(

@@ -6,8 +6,7 @@ from typing import Any, Dict
 
 import jwt
 import redis.asyncio as aioredis
-from fastapi import HTTPException, Security, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Depends, HTTPException, status
 from itsdangerous import (
     BadData,
     BadSignature,
@@ -17,12 +16,12 @@ from itsdangerous import (
 )
 
 from backend.core.logger import logger
+from backend.core.security import oauth2_scheme
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
-from backend.users.schemas import RefreshTokensResponse
-
-security = HTTPBearer()
+from backend.users.mappers import decoded_token_to_payload
+from backend.users.schemas import RefreshTokensResponse, TokenPayload
 
 
 class AuthorizationService:
@@ -46,6 +45,7 @@ class AuthorizationService:
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
                 "type": Token.ACCESS.value,
+                "role": data.get("role"),
             }
         )
 
@@ -56,6 +56,7 @@ class AuthorizationService:
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
                 "type": Token.REFRESH.value,
+                "role": data.get("role"),
             }
         )
 
@@ -82,57 +83,56 @@ class AuthorizationService:
 
     async def refresh_tokens(
         self,
-        refresh_token: HTTPAuthorizationCredentials = Security(security),
+        refresh_token: str = Depends(oauth2_scheme),
     ) -> RefreshTokensResponse:
-        payload = await self.verify_refresh_token(refresh_token)
+        token = await self.verify_refresh_token(refresh_token)
 
-        refresh_token_jti = payload.get("jti")
-        access_token_jti = payload.get("linked_jti")
+        refresh_token_jti = token.jti
+        access_token_jti = token.linked_jti
 
-        new_access_token, new_refresh_token = await self.create_tokens({"sub": payload["sub"], "id": payload["id"]})
+        new_access_token, new_refresh_token = await self.create_tokens(
+            {"sub": token.email, "id": token.id, "role": token.role}
+        )
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
         return RefreshTokensResponse(
-            id=payload["id"],
-            email=payload["sub"],
+            id=token.id,
+            email=token.email,
             access_token=new_access_token,
             refresh_token=new_refresh_token,
         )
 
     async def verify_access_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
-    ):
-        return await self.verify_token_by_type(credentials, Token.ACCESS.value)
+        token: str = Depends(oauth2_scheme),
+    ) -> TokenPayload:
+        return await self.verify_token_by_type(Token.ACCESS.value, token)
 
     async def verify_refresh_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
-    ):
-        return await self.verify_token_by_type(credentials, Token.REFRESH.value)
+        token: str = Depends(oauth2_scheme),
+    ) -> TokenPayload:
+        return await self.verify_token_by_type(Token.REFRESH.value, token)
 
     async def verify_token_by_type(
         self,
-        credentials: HTTPAuthorizationCredentials,
         expected_type: str,
-    ):
-        token = await self.get_payload_from_token(credentials, expected_type)
-        token_type = token.get("type")
-        token_jti = token.get("jti")
-        linked_jti = token.get("linked_jti")
+        token: str = Depends(oauth2_scheme),
+    ) -> TokenPayload:
+        token_payload = await self.get_payload_from_token(expected_type, token)
 
-        if token_type != expected_type:
+        if token_payload.type != expected_type:
             logger.debug(f"Invalid token type. Expected {expected_type}.")
 
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token_type
+                if Token.ACCESS.value == token_payload.type
                 else status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
-        redis_key = token_jti if expected_type == Token.REFRESH.value else linked_jti
+        redis_key = token_payload.jti if expected_type == Token.REFRESH.value else token_payload.linked_jti
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
@@ -144,32 +144,34 @@ class AuthorizationService:
             )
 
         async with self.redis.pipeline() as pipe:
-            pipe.exists(f"blacklist:{token_jti}")
-            if linked_jti:
-                pipe.exists(f"blacklist:{linked_jti}")
+            pipe.exists(f"blacklist:{token_payload.jti}")
+            if token_payload.linked_jti:
+                pipe.exists(f"blacklist:{token_payload.linked_jti}")
             revoked_results = await pipe.execute()
 
         if any(revoked_results):
             logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token_type
+                if Token.ACCESS.value == token_payload.type
                 else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
             )
 
-        return token
+        return token_payload
 
     async def get_payload_from_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
-    ):
+        token: str = Depends(oauth2_scheme),
+    ) -> TokenPayload:
         try:
-            return jwt.decode(
-                credentials.credentials,
-                config.SECRET_KEY,
-                algorithms=[config.ALGORITHM],
+            return decoded_token_to_payload(
+                jwt.decode(
+                    token,
+                    config.SECRET_KEY,
+                    algorithms=[config.ALGORITHM],
+                )
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
             logger.debug("Revoked token")

@@ -7,19 +7,20 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import User
 from backend.models.user_model import Language
-from backend.users.schemas import UserCreate, UserUpdate
+from backend.models.user_role import UserRole
+from backend.users.enums.role import Role
+from backend.users.schemas import UserUpdate
 
 
 class UserRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_user(self, user_data: UserCreate) -> User:
-        user = User(**user_data.model_dump())
-        self.db.add(user)
+    async def create_user(self, user_data: User) -> User:
+        self.db.add(user_data)
         await self.db.commit()
-        await self.db.refresh(user)
-        return user
+        await self.db.refresh(user_data)
+        return user_data
 
     async def get_user_by_id(self, user_id: UUID) -> User | None:
         return await self.db.get(User, user_id)
@@ -77,3 +78,11 @@ class UserRepository:
             await self.db.refresh(user)
             return user
         return None
+
+    async def get_role_by_id(self, role_id: UUID) -> UserRole | None:
+        return await self.db.get(UserRole, role_id)
+
+    async def get_role_id_by_role_name(self, role: Role) -> UserRole | None:
+        query = select(UserRole).where(UserRole.name == role.value)
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()

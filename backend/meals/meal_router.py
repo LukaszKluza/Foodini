@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 
+from backend.core.role_sets import user_or_admin
 from backend.meals.dependencies import get_meal_service
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_service import MealService
@@ -11,7 +12,7 @@ from backend.models.meal_icon_model import MealIcon
 from backend.users.enums.language import Language
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-meal_router = APIRouter(prefix="/v1/meals")
+meal_router = APIRouter(prefix="/v1/meals", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @meal_router.get(
