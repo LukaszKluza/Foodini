@@ -14,6 +14,7 @@ from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
+from backend.daily_summary.admin_daily_summary_router import admin_daily_summary_router
 from backend.daily_summary.daily_summary_router import daily_summary_router
 from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.meals.meal_router import meal_router
@@ -30,6 +31,7 @@ app.include_router(user_details_router)
 app.include_router(calories_prediction_router)
 app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
+app.include_router(admin_daily_summary_router)
 app.include_router(meal_router)
 app.include_router(user_statistics_router)
 app.include_router(open_food_facts_router)

@@ -2,12 +2,12 @@ from datetime import date
 from uuid import UUID
 
 from sqlalchemy import delete, select, update
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import contains_eager, selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.enums.meal_status import MealStatus
-from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate
+from backend.daily_summary.schemas import DailyMacrosSummaryCreate, DailyMealsCreate, MealInfo
 from backend.meals.enums.meal_type import MealType
 from backend.models.composed_meal_item import ComposedMealItem
 from backend.models.meal_model import Meal
@@ -81,6 +81,21 @@ class DailySummaryRepository:
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
+    async def get_daily_meal_type_summary(self, user_id: UUID, day: date, meal_type: MealType) -> DailyMealsSummary:
+        query = (
+            select(DailyMealsSummary)
+            .join(DailyMealsSummary.daily_meals)
+            .where(
+                DailyMealsSummary.user_id == user_id,
+                DailyMealsSummary.day == day,
+                MealDailySummary.meal_type == meal_type,
+            )
+            .options(contains_eager(DailyMealsSummary.daily_meals))
+        )
+
+        result = await self.db.execute(query)
+        return result.unique().scalar_one_or_none()
+
     async def remove_daily_meals_summary(self, daily_summary_id: UUID) -> None:
         stmt = select(DailyMealsSummary).where(DailyMealsSummary.id == daily_summary_id)
         result = await self.db.execute(stmt)
@@ -107,35 +122,6 @@ class DailySummaryRepository:
         await self.db.delete(daily_summary)
 
         await self.db.commit()
-
-    # TODO Probably needs refactor or removal
-    async def update_daily_meals(
-        self, user_id: UUID, daily_meals_data: DailyMealsCreate, day: date
-    ) -> DailyMealsSummary | None:
-        user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
-        if user_daily_meals_summary:
-            await self.db.execute(
-                update(DailyMealsSummary)
-                .where(DailyMealsSummary.user_id == user_id, DailyMealsSummary.day == day)
-                .values(**daily_meals_data.model_dump(exclude={"meals"}))
-            )
-
-            await self.db.execute(
-                delete(MealDailySummary).where(MealDailySummary.daily_summary_id == user_daily_meals_summary.id)
-            )
-
-            for meal_info in daily_meals_data.meals.values():
-                if meal_info.meal_id is not None:
-                    link = MealDailySummary(
-                        meal_id=meal_info.meal_id,
-                        daily_summary_id=user_daily_meals_summary.id,
-                        status=meal_info.status,
-                    )
-                    self.db.add(link)
-            await self.db.commit()
-            await self.db.refresh(user_daily_meals_summary)
-            return user_daily_meals_summary
-        return None
 
     async def add_daily_macros_summary(
         self, daily_summary_data: DailyMacrosSummaryCreate, user_id: UUID
@@ -187,36 +173,35 @@ class DailySummaryRepository:
         return None
 
     async def add_custom_meal(
-        self, user_id: UUID, day: date, meal_type: MealType, meals: dict
+        self, user_id: UUID, day: date, meal_type: MealType, meal_info: MealInfo
     ) -> DailyMealsSummary | None:
         user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
 
         if user_daily_meals_summary:
-            for meal_info in meals.values():
-                meal_daily_summary = next(
-                    (link for link in user_daily_meals_summary.daily_meals if link.meal_type == meal_type),
-                    None,
+            meal_daily_summary = next(
+                (link for link in user_daily_meals_summary.daily_meals if link.meal_type == meal_type),
+                None,
+            )
+            if not meal_daily_summary:
+                meal_daily_summary = MealDailySummary(
+                    daily_summary_id=user_daily_meals_summary.id,
+                    meal_type=meal_info.meal_type,
+                    status=meal_info.status,
+                    is_active=True,
                 )
-                if not meal_daily_summary:
-                    meal_daily_summary = MealDailySummary(
-                        daily_summary_id=user_daily_meals_summary.id,
-                        meal_type=meal_info.meal_type,
-                        status=meal_info.status,
-                        is_active=True,
-                    )
-                    self.db.add(meal_daily_summary)
-                    await self.db.flush()
+                self.db.add(meal_daily_summary)
+                await self.db.flush()
 
-                composed_item = ComposedMealItem(
-                    meal_daily_summary_id=meal_daily_summary.id,
-                    meal_id=meal_info.meal_id,
-                    planned_weight=meal_info.planned_weight,
-                    planned_calories=meal_info.planned_calories,
-                    planned_protein=meal_info.planned_protein,
-                    planned_carbs=meal_info.planned_carbs,
-                    planned_fat=meal_info.planned_fat,
-                )
-                self.db.add(composed_item)
+            composed_item = ComposedMealItem(
+                meal_daily_summary_id=meal_daily_summary.id,
+                meal_id=meal_info.meal_id,
+                planned_weight=meal_info.planned_weight,
+                planned_calories=meal_info.planned_calories,
+                planned_protein=meal_info.planned_protein,
+                planned_carbs=meal_info.planned_carbs,
+                planned_fat=meal_info.planned_fat,
+            )
+            self.db.add(composed_item)
             await self.db.commit()
             await self.db.refresh(user_daily_meals_summary)
             return user_daily_meals_summary

@@ -28,12 +28,6 @@ class MealRecipesRepository:
         result = await self.db.get(Meal, meal_id)
         return result
 
-    async def add_meal(self, meal: Meal) -> Meal:
-        self.db.add(meal)
-        await self.db.commit()
-        await self.db.refresh(meal)
-        return meal
-
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         self.db.add(meal_recipe)
         await self.db.commit()

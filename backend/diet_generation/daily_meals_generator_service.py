@@ -13,7 +13,6 @@ from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.schemas import BasicMealInfo, DailyMacrosSummaryCreate
 from backend.diet_generation.agent.graph_builder import DietAgentBuilder
 from backend.diet_generation.mappers import (
-    complete_meal_to_meal,
     complete_meal_to_recipe,
     meal_recipe_translation_to_recipe,
     recipe_to_meal_recipe_translation,
@@ -24,6 +23,7 @@ from backend.diet_generation.schemas import CompleteMeal, DietGenerationInput, c
 from backend.diet_generation.tools.translator import TranslatorTool
 from backend.meals.enums.meal_type import MealType
 from backend.meals.meal_gateway import MealGateway
+from backend.meals.schemas import MealCreate
 from backend.models import Meal, MealRecipe, User, UserDetails
 from backend.settings import config
 from backend.user_details.schemas import PredictedCalories
@@ -124,7 +124,7 @@ class DailyMealsGeneratorService:
 
         for complete_meal in daily_diet:
             saved_meal = await self.meal_gateway.add_meal(
-                complete_meal_to_meal(complete_meal, meal_icons[complete_meal.meal_type])
+                MealCreate.from_complete_meal(complete_meal, meal_icons[complete_meal.meal_type])
             )
             meal_recipe = await self.meal_gateway.add_meal_recipe(
                 complete_meal_to_recipe(complete_meal, saved_meal.id, Language.EN)

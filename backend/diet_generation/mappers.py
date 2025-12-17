@@ -11,19 +11,6 @@ from backend.user_details.schemas import PredictedCalories
 from backend.users.enums.language import Language
 
 
-def complete_meal_to_meal(meal_data: CompleteMeal, icon_id: UUID) -> Meal:
-    return Meal(
-        meal_name=meal_data.meal_name,
-        meal_type=MealType(meal_data.meal_type),
-        icon_id=icon_id,
-        calories=meal_data.calories,
-        protein=meal_data.protein,
-        fat=meal_data.fat,
-        carbs=meal_data.carbs,
-        weight=meal_data.weight,
-    )
-
-
 def complete_meal_to_recipe(meal_data: CompleteMeal, meal_id: UUID, language: Language = Language.EN) -> MealRecipe:
     return MealRecipe(
         meal_id=meal_id,
