@@ -117,10 +117,11 @@ def mock_last_generated_meals_repository():
 
 
 @pytest.fixture
-def mock_composed_meal_items_repo():
-    repo = AsyncMock()
-    repo.get_composed_meal_item_by_user_id_and_meal_id = AsyncMock()
-    return repo
+def mock_composed_meal_items_service():
+    service = AsyncMock()
+    service.get_composed_meal_item_by_user_id_and_meal_id = AsyncMock()
+    service.remove_composed_meal = AsyncMock()
+    return service
 
 
 @pytest.fixture
@@ -144,7 +145,7 @@ def daily_summary_service(
     mock_daily_summary_repository,
     mock_meal_repository,
     mock_last_generated_meals_repository,
-    mock_composed_meal_items_repo,
+    mock_composed_meal_items_service,
     mock_meal_gateway,
     mock_user_details_gateway,
 ):
@@ -152,7 +153,7 @@ def daily_summary_service(
         mock_daily_summary_repository,
         mock_meal_repository,
         mock_last_generated_meals_repository,
-        mock_composed_meal_items_repo,
+        mock_composed_meal_items_service,
         mock_meal_gateway,
         mock_user_details_gateway,
     )
@@ -568,7 +569,17 @@ async def test_remove_meal_success(daily_summary_service, mock_daily_summary_rep
     slot.status = MealStatus.TO_EAT
     slot.meal_type = meal_type
 
+    composed_item = MagicMock()
+    composed_item.planned_calories = 500
+    composed_item.planned_protein = 50
+    composed_item.planned_carbs = 100
+    composed_item.planned_fat = 20
+
     mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
+    daily_summary_service.composed_meal_items_service.remove_composed_meal.return_value = (
+        composed_item,
+        True,
+    )
     mock_daily_summary_repository.remove_meal_from_summary.return_value = True
 
     meal_request = RemoveMealRequest(day=day, meal_type=meal_type, meal_id=meal_id)
@@ -582,7 +593,7 @@ async def test_remove_meal_success(daily_summary_service, mock_daily_summary_rep
 
 
 @pytest.mark.asyncio
-async def test_remove_meal_eaten_status(daily_summary_service, mock_daily_summary_repository, mock_meal_repository):
+async def test_remove_meal_eaten_status(daily_summary_service, mock_daily_summary_repository):
     user = User(id=uuid.uuid4())
     day = date.today()
     meal_type = MealType.BREAKFAST
@@ -592,21 +603,21 @@ async def test_remove_meal_eaten_status(daily_summary_service, mock_daily_summar
     slot = daily_summary_obj.daily_meals[0]
     slot.status = MealStatus.EATEN
     slot.meal_type = meal_type
-    slot.meal_items = [MagicMock(meal_id=meal_id)]
+
+    composed_item = MagicMock()
+    composed_item.planned_calories = 500
+    composed_item.planned_protein = 50
+    composed_item.planned_carbs = 100
+    composed_item.planned_fat = 20
 
     mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
-    mock_daily_summary_repository.remove_meal_from_summary.return_value = True
-
-    mock_meal_repository.get_meal_calories_by_id.return_value = 500
-
-    mock_meal_repository.get_meal_protein_by_id.return_value = 50
-    mock_meal_repository.get_meal_fat_by_id.return_value = 20
-    mock_meal_repository.get_meal_carbs_by_id.return_value = 100
-
+    daily_summary_service.composed_meal_items_service.remove_composed_meal.return_value = (
+        composed_item,
+        True,
+    )
     mock_daily_summary_repository.get_daily_macros_summary.return_value = MagicMock(
         calories=1000, protein=100, carbs=200, fat=50
     )
-    mock_daily_summary_repository.update_daily_macros_summary.return_value = MagicMock()
 
     meal_request = RemoveMealRequest(day=day, meal_type=meal_type, meal_id=meal_id)
 
@@ -646,7 +657,9 @@ async def test_remove_meal_slot_not_found_raises(daily_summary_service, mock_dai
 
 
 @pytest.mark.asyncio
-async def test_remove_meal_not_removed_raises(daily_summary_service, mock_daily_summary_repository):
+async def test_remove_meal_not_removed_raises(
+    daily_summary_service, mock_daily_summary_repository, mock_composed_meal_items_service
+):
     user = User(id=uuid.uuid4())
     day = date.today()
     meal_id = uuid.uuid4()
@@ -657,7 +670,11 @@ async def test_remove_meal_not_removed_raises(daily_summary_service, mock_daily_
     slot.status = MealStatus.TO_EAT
 
     mock_daily_summary_repository.get_daily_meals_summary.return_value = daily_summary_obj
-    mock_daily_summary_repository.remove_meal_from_summary.return_value = False
+
+    daily_summary_service.composed_meal_items_service.remove_composed_meal.return_value = (
+        MagicMock(),
+        False,
+    )
 
     meal_request = RemoveMealRequest(day=day, meal_type=MealType.BREAKFAST, meal_id=meal_id)
 

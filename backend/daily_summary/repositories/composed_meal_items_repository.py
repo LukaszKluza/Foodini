@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -75,3 +75,21 @@ class ComposedMealItemsRepository:
             await self.db.refresh(composed_meal_item)
             return composed_meal_item
         return None
+
+    async def remove_meal_from_summary(self, composed_meal_item_id: UUID) -> bool:
+        result = await self.db.execute(
+            update(ComposedMealItem)
+            .where(
+                ComposedMealItem.id == composed_meal_item_id,
+                ComposedMealItem.is_active,
+            )
+            .values(is_active=False)
+            .returning(ComposedMealItem.id)
+        )
+
+        updated_id = result.scalar_one_or_none()
+        if not updated_id:
+            return False
+
+        await self.db.commit()
+        return True

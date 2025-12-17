@@ -291,12 +291,7 @@ class DailySummaryService:
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
         slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
-        composed_meal_item = await self.composed_meal_items_service.get_composed_meal_item_by_meal_id(meal_id)
-
-        if composed_meal_item.meal.is_generated:
-            removed = await self.daily_summary_repository.remove_meal_from_summary(user.id, day, meal_type, meal_id)
-        else:
-            removed = await self.meal_gateway.delete_meal_by_id(meal_id)
+        composed_meal_item, removed = await self.composed_meal_items_service.remove_composed_meal(user.id, meal_id)
 
         if not removed:
             logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")

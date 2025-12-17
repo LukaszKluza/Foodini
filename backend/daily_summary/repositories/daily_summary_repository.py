@@ -210,21 +210,3 @@ class DailySummaryRepository:
             await self.db.refresh(user_daily_meals_summary)
             return user_daily_meals_summary
         return None
-
-    async def remove_meal_from_summary(self, user_id: UUID, day: date, meal_type: MealType, meal_id: UUID) -> bool:
-        user_daily_meals_summary = await self.get_daily_meals_summary(user_id, day)
-        if user_daily_meals_summary:
-            meal_daily_summary = next(
-                (meal for meal in user_daily_meals_summary.daily_meals if meal.meal_type == meal_type), None
-            )
-
-            if meal_daily_summary:
-                composed_item = next(
-                    (item for item in meal_daily_summary.meal_items if item.meal_id == meal_id),
-                    None,
-                )
-                if composed_item:
-                    composed_item.is_active = False
-                    await self.db.commit()
-                    return True
-        return False
