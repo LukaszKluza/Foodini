@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, status
 from fastapi.params import Query
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 from backend.settings import config
@@ -25,14 +25,11 @@ from .schemas import (
     NewPasswordConfirm,
     PasswordResetRequest,
     UserCreate,
-    UserLogin,
     UserResponse,
     UserUpdate,
 )
 
 user_router = APIRouter(prefix="/v1/users", tags=["User", "Admin"])
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/users/login")
 
 
 @user_router.get(
@@ -97,8 +94,10 @@ async def delete_user(
     description="Authenticates a user with email and password, returning access and refresh "
     "tokens upon successful login.",
 )
-async def login_user(user: UserLogin, user_service: UserService = Depends(get_user_service)):
-    return await user_service.login(user)
+async def login_user(
+    form_data: OAuth2PasswordRequestForm = Depends(), user_service: UserService = Depends(get_user_service)
+):
+    return await user_service.login(form_data)
 
 
 @user_router.get(

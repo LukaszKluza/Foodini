@@ -6,8 +6,7 @@ from typing import Any, Dict
 
 import jwt
 import redis.asyncio as aioredis
-from fastapi import HTTPException, Security, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Depends, HTTPException, status
 from itsdangerous import (
     BadData,
     BadSignature,
@@ -17,13 +16,12 @@ from itsdangerous import (
 )
 
 from backend.core.logger import logger
+from backend.core.security import oauth2_scheme
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
 from backend.users.mappers import decoded_token_to_payload
 from backend.users.schemas import RefreshTokensResponse, TokenPayload
-
-security = HTTPBearer()
 
 
 class AuthorizationService:
@@ -85,7 +83,7 @@ class AuthorizationService:
 
     async def refresh_tokens(
         self,
-        refresh_token: HTTPAuthorizationCredentials = Security(security),
+        refresh_token: str = Depends(oauth2_scheme),
     ) -> RefreshTokensResponse:
         token = await self.verify_refresh_token(refresh_token)
 
@@ -107,34 +105,34 @@ class AuthorizationService:
 
     async def verify_access_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
+        token: str = Depends(oauth2_scheme),
     ) -> TokenPayload:
-        return await self.verify_token_by_type(credentials, Token.ACCESS.value)
+        return await self.verify_token_by_type(Token.ACCESS.value, token)
 
     async def verify_refresh_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
+        token: str = Depends(oauth2_scheme),
     ) -> TokenPayload:
-        return await self.verify_token_by_type(credentials, Token.REFRESH.value)
+        return await self.verify_token_by_type(Token.REFRESH.value, token)
 
     async def verify_token_by_type(
         self,
-        credentials: HTTPAuthorizationCredentials,
         expected_type: str,
+        token: str = Depends(oauth2_scheme),
     ) -> TokenPayload:
-        token = await self.get_payload_from_token(credentials, expected_type)
+        token_payload = await self.get_payload_from_token(expected_type, token)
 
-        if token.type != expected_type:
+        if token_payload.type != expected_type:
             logger.debug(f"Invalid token type. Expected {expected_type}.")
 
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token.type
+                if Token.ACCESS.value == token_payload.type
                 else status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
-        redis_key = token.jti if expected_type == Token.REFRESH.value else token.linked_jti
+        redis_key = token_payload.jti if expected_type == Token.REFRESH.value else token_payload.linked_jti
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
@@ -146,31 +144,31 @@ class AuthorizationService:
             )
 
         async with self.redis.pipeline() as pipe:
-            pipe.exists(f"blacklist:{token.jti}")
-            if token.linked_jti:
-                pipe.exists(f"blacklist:{token.linked_jti}")
+            pipe.exists(f"blacklist:{token_payload.jti}")
+            if token_payload.linked_jti:
+                pipe.exists(f"blacklist:{token_payload.linked_jti}")
             revoked_results = await pipe.execute()
 
         if any(revoked_results):
             logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token.type
+                if Token.ACCESS.value == token_payload.type
                 else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
             )
 
-        return token
+        return token_payload
 
     async def get_payload_from_token(
         self,
-        credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
+        token: str = Depends(oauth2_scheme),
     ) -> TokenPayload:
         try:
             return decoded_token_to_payload(
                 jwt.decode(
-                    credentials.credentials,
+                    token,
                     config.SECRET_KEY,
                     algorithms=[config.ALGORITHM],
                 )

@@ -1,8 +1,9 @@
 import psycopg2
+import sqlalchemy
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
-from redis.exceptions import ConnectionError as RedisConnectionError
+from redis.exceptions import RedisError
 from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
@@ -95,8 +96,7 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
 
 
 @app.exception_handler(psycopg2.OperationalError)
-@app.exception_handler(OSError)
-async def db_connection_error_handler(request: Request, exc: Exception):
+async def db_connection_error_handler(request: Request, exc: psycopg2.OperationalError):
     logger.error(f"Database connection error: {str(exc)}")
 
     raise HTTPException(
@@ -105,7 +105,27 @@ async def db_connection_error_handler(request: Request, exc: Exception):
     )
 
 
-@app.exception_handler(RedisConnectionError)
+@app.exception_handler(sqlalchemy.exc.OperationalError)
+async def db_operational_error_handler(request: Request, exc: sqlalchemy.exc.OperationalError):
+    logger.error(f"Database connection error: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
+    )
+
+
+@app.exception_handler(sqlalchemy.exc.DBAPIError)
+async def db_api_error_handler(request: Request, exc: sqlalchemy.exc.DBAPIError):
+    logger.error(f"Database connection error: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
+    )
+
+
+@app.exception_handler(RedisError)
 async def redis_connection_error_handler(request: Request, exc: Exception):
     logger.error(f"Redis connection error: {str(exc)}")
 

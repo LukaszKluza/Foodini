@@ -5,6 +5,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, TypeAdapter
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
@@ -18,7 +19,6 @@ from backend.users.schemas import (
     PasswordResetRequest,
     TokenPayload,
     UserCreate,
-    UserLogin,
     UserUpdate,
 )
 from backend.users.service.password_service import PasswordService
@@ -152,15 +152,19 @@ async def test_register_user_new(
 @pytest.mark.asyncio
 async def test_login_user_not_found(user_service, mock_user_validators):
     # Given
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
     mock_user_validators.ensure_user_exists_by_email.side_effect = NotFoundInDatabaseException("User not found")
 
     # When/Then
     with pytest.raises(NotFoundInDatabaseException) as exc_info:
-        await user_service.login(user_login)
+        await user_service.login(form)
 
     assert exc_info.value.detail == "User not found"
 
@@ -169,16 +173,20 @@ async def test_login_user_not_found(user_service, mock_user_validators):
 async def test_login_user_incorrect_password(mock_password_service, mock_user_validators, user_service):
     # Given
     mock_user = MagicMock(password="hashed_password")
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
     mock_password_service["verify_password"].return_value = False
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_service.login(user_login)
+        await user_service.login(form)
 
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
@@ -202,13 +210,17 @@ async def test_login_user_success(
         b"access_token",
         b"refresh_token",
     )
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
 
     # When
-    result = await user_service.login(user_login)
+    result = await user_service.login(form)
 
     # Then
     assert result.email == "test@example.com"

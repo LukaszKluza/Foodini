@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from fastapi.security import HTTPAuthorizationCredentials
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr, TypeAdapter
 
 from backend.models import User
@@ -19,8 +19,14 @@ def mock_user():
 
 
 @pytest.fixture
-def mock_credentials():
-    return HTTPAuthorizationCredentials(scheme="Bearer", credentials="mock-token")
+def mock_oauth_token(monkeypatch):
+    token = "mock-token"
+
+    def mock_call(*args, **kwargs):
+        return token
+
+    monkeypatch.setattr(OAuth2PasswordBearer, "__call__", mock_call)
+    return token
 
 
 @pytest.fixture
@@ -58,12 +64,12 @@ def mock_authorization_service():
 
 
 @pytest.fixture
-def auth_dependency(mock_user_validators, mock_authorization_service, mock_credentials):
+def auth_dependency(mock_user_validators, mock_authorization_service, mock_oauth_token):
     return AuthDependency(
         user_id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        credentials=mock_credentials,
         user_validators=mock_user_validators,
         authorization_service=mock_authorization_service,
+        token=mock_oauth_token,
     )
 
 

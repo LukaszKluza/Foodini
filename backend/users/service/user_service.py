@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Type
 
 from fastapi import HTTPException, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import RedirectResponse
 
 from backend.core.logger import logger
@@ -62,7 +63,8 @@ class UserService:
         entry = user_create_to_entry(user, role.id)
         return await self.user_repository.create_user(entry)
 
-    async def login(self, user_login: UserLogin):
+    async def login(self, form_data: OAuth2PasswordRequestForm):
+        user_login = UserLogin(email=form_data.username, password=form_data.password)
         user_ = await self.user_validators.ensure_user_exists_by_email(user_login.email)
         self.user_validators.ensure_verified_user(user_)
 
