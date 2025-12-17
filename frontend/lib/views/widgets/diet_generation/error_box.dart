@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 
-Padding buildErrorBox(BuildContext context, String label,
-    {String? buttonText, VoidCallback? onButtonPressed}) {
+Padding buildErrorBox(BuildContext context, String label, {Widget? button}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 120.0),
-    child:
-    Center(
+    padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 36.0),
+    child: Center(
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -22,24 +19,13 @@ Padding buildErrorBox(BuildContext context, String label,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-            if (buttonText != null && onButtonPressed != null) ...[
+            if (button != null) ...[
               const SizedBox(height: 12),
-              customCenterButton(
-                Key('refresh_request_button'),
-                onButtonPressed,
-                ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF4F4F),
-                  minimumSize: const Size.fromHeight(48),
-                ),
-                Text(
-                    buttonText,
-                    style: const TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w700)
-                ),
-              )
+              Row(children: [button]),
             ],
           ],
-        )
+        ),
       ),
-    )
+    ),
   );
 }

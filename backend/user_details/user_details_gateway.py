@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from fastapi import Depends
 
@@ -16,16 +17,16 @@ class UserDetailsGateway:
         self.user_details_service = user_details_service
         self.calories_prediction_service = calories_prediction_service
 
-    async def get_user_details(self, user: User) -> UserDetails:
+    async def get_user_details(self, user: Type[User]) -> UserDetails:
         return await self.user_details_service.get_user_details_by_user(user)
 
-    async def get_date_of_last_update_user_details(self, user: User) -> datetime:
+    async def get_date_of_last_update_user_details(self, user: Type[User]) -> datetime:
         return await self.user_details_service.get_date_of_last_update_user_details(user)
 
-    async def get_user_diet_predictions(self, user: User) -> PredictedCalories:
+    async def get_user_diet_predictions(self, user: Type[User]) -> PredictedCalories:
         return await self.calories_prediction_service.get_calories_prediction_by_user_id(user.id)
 
-    async def get_date_of_last_update_user_calories_prediction(self, user: User) -> datetime:
+    async def get_date_of_last_update_user_calories_prediction(self, user: Type[User]) -> datetime:
         return await self.calories_prediction_service.get_date_of_last_update_user_calories_prediction(user.id)
 
 

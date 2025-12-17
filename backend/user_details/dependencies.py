@@ -6,7 +6,9 @@ from backend.user_details.calories_prediction_repository import CaloriesPredicti
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
 from backend.user_details.service.user_details_service import UserDetailsService
 from backend.user_details.service.user_details_validation_service import UserDetailsValidationService
+from backend.user_details.service.user_weight_service import UserWeightService
 from backend.user_details.user_details_repository import UserDetailsRepository
+from backend.user_details.user_weight_repository import UserWeightRepository
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
 
@@ -28,12 +30,25 @@ def get_user_details_validators(
     return UserDetailsValidationService(user_details_repository)
 
 
+def get_user_weight_repository(
+    db: AsyncSession = Depends(get_db),
+) -> UserWeightRepository:
+    return UserWeightRepository(db)
+
+
+def get_user_weight_service(
+    user_weight_repository: UserWeightRepository = Depends(get_user_weight_repository),
+) -> UserWeightService:
+    return UserWeightService(user_weight_repository)
+
+
 def get_user_details_service(
     user_details_repository: UserDetailsRepository = Depends(get_user_details_repository),
     user_gateway: UserGateway = Depends(get_user_gateway),
     user_details_validators: UserDetailsValidationService = Depends(get_user_details_validators),
+    user_weight_service: UserWeightService = Depends(get_user_weight_service),
 ):
-    return UserDetailsService(user_details_repository, user_gateway, user_details_validators)
+    return UserDetailsService(user_details_repository, user_gateway, user_details_validators, user_weight_service)
 
 
 def get_calories_prediction_service(

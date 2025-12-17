@@ -57,6 +57,7 @@ CORNFLAKES_EN_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Crispy cornflakes served with smooth, creamy soy milk. "
     "A light, nutritious breakfast perfect for a quick start to your day",
+    meal_explanation="Meal explanation: Cornflakes with soy milk is a quick and easy breakfast option",
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="cornflakes"),
@@ -88,6 +89,8 @@ CORNFLAKES_PL_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Chrupiące płatki kukurydziane podawane z gładkim,"
     " kremowym mlekiem sojowym. Lekkie, pożywne śniadanie idealne na szybki start dnia.",
+    meal_explanation="Uzasadnienie posiłku: Płatki kukurydziane z mlekiem sojowym to szybkie i łatwe do przygotowania "
+    "śniadanie",
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.PL), name="płatki kukurydziane"),
