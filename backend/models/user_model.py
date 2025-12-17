@@ -3,13 +3,14 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import EmailStr
-from sqlalchemy import UUID, Column, DateTime, Index, func
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, Index, func
 from sqlmodel import Field, Relationship, SQLModel
 
 from backend.settings import config
 from backend.users.enums.language import Language
 
 from ..core.db_listeners import register_timestamp_listeners
+from .user_role import UserRole
 
 if TYPE_CHECKING:
     from .user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
@@ -25,6 +26,7 @@ class User(SQLModel, table=True):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
+    role_id: uuid.UUID = Field(sa_column=Column(UUID(as_uuid=True), ForeignKey("user_roles.id"), nullable=False))
     name: str
     last_name: str
     country: str
@@ -57,6 +59,8 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     )
+
+    role: "UserRole" = Relationship(back_populates="users")
 
 
 register_timestamp_listeners([User])

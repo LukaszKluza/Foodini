@@ -1,6 +1,6 @@
 import sys
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -11,9 +11,12 @@ from backend.core.not_found_in_database_exception import NotFoundInDatabaseExcep
 from backend.models import User
 from backend.settings import config
 from backend.users.enums.language import Language
+from backend.users.enums.role import Role
+from backend.users.enums.token import Token
 from backend.users.schemas import (
     NewPasswordConfirm,
     PasswordResetRequest,
+    TokenPayload,
     UserCreate,
     UserLogin,
     UserUpdate,
@@ -90,6 +93,8 @@ def mock_user_repository():
     repo.update_user = AsyncMock()
     repo.delete_user = AsyncMock()
     repo.verify_user = AsyncMock()
+    repo.get_role_id_by_role_name = AsyncMock(return_value=MagicMock(id=uuid.uuid4()))
+    repo.get_role_by_id = AsyncMock(return_value=Role.USER)
     return repo
 
 
@@ -213,7 +218,15 @@ async def test_login_user_success(
 @pytest.mark.asyncio
 async def test_logout_user_success(mock_user_validators, mock_authorization_service, user_service):
     response = await user_service.logout(
-        {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "jti": "jti", "linked_jti": "linked_jti"}
+        TokenPayload(
+            id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+            jti="jti",
+            linked_jti="linked_jti",
+            email="test@example.com",
+            exp=datetime.now(timezone.utc),
+            type=Token.ACCESS,
+            role=Role.USER,
+        )
     )
 
     # Then
@@ -324,11 +337,16 @@ async def test_delete_account_when_user_exist(
     user_service, mock_user_validators, mock_authorization_service, mock_user_repository
 ):
     # Given
-    token_payload = {
-        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        "jti": "fake_jti",
-        "linked_jti": "fake_linked_jti",
-    }
+    token_payload = TokenPayload(
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        jti="fake_jti",
+        linked_jti="fake_linked_jti",
+        email="test@example.com",
+        exp=datetime.now(timezone.utc),
+        type=Token.ACCESS,
+        role=Role.USER,
+    )
+
     mock_authorization_service.revoke_tokens.return_value = True
     mock_user_repository.delete_user.return_value = basic_user
 

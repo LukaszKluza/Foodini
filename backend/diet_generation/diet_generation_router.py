@@ -4,12 +4,13 @@ from typing import List
 from fastapi import APIRouter, Depends, Request
 
 from backend.core.limiter import limiter, user_target_date_key
+from backend.core.role_sets import user_or_admin
 from backend.diet_generation.daily_meals_generator_service import DailyMealsGeneratorService
 from backend.diet_generation.dependencies import get_prompt_service
 from backend.models import MealRecipe
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-diet_generation_router = APIRouter(prefix="/v1/diet-generation")
+diet_generation_router = APIRouter(prefix="/v1/diet-generation", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @diet_generation_router.post(

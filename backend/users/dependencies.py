@@ -10,6 +10,7 @@ from backend.core.database import get_db, get_redis
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
 from backend.users.auth_dependencies import AuthDependency
+from backend.users.enums.role import Role
 from backend.users.mail import MailService
 from backend.users.service.email_verification_service import EmailVerificationService
 from backend.users.service.user_service import UserService
@@ -68,11 +69,11 @@ async def get_user_service(
     )
 
 
-async def get_token_payload(
-    authorization_service: AuthorizationService = Depends(get_authorization_service),
-    credentials: HTTPAuthorizationCredentials = Security(security),
-):
-    return await authorization_service.verify_access_token(credentials)
+def require_roles(*roles: Role):
+    async def dependency(authorization_service: AuthDependency = Depends(get_auth_dependency)):
+        await authorization_service.require_roles(list(roles))
+
+    return Depends(dependency)
 
 
 async def get_auth_dependency(

@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -7,7 +8,9 @@ from pydantic import EmailStr, TypeAdapter
 
 from backend.models import User
 from backend.users.auth_dependencies import AuthDependency
-from backend.users.schemas import RefreshTokensResponse
+from backend.users.enums.role import Role
+from backend.users.enums.token import Token
+from backend.users.schemas import RefreshTokensResponse, TokenPayload
 
 
 @pytest.fixture
@@ -32,7 +35,17 @@ def mock_user_validators(mock_user):
 @pytest.fixture
 def mock_authorization_service():
     mock = AsyncMock()
-    mock.verify_access_token = AsyncMock(return_value={"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")})
+    mock.verify_access_token = AsyncMock(
+        return_value=TokenPayload(
+            id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+            email="test@example.com",
+            jti="jti",
+            linked_jti="linked_jti",
+            exp=datetime.now(timezone.utc),
+            type=Token.ACCESS,
+            role=Role.USER,
+        )
+    )
     mock.refresh_tokens = AsyncMock(
         return_value=RefreshTokensResponse(
             id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
@@ -55,18 +68,11 @@ def auth_dependency(mock_user_validators, mock_authorization_service, mock_crede
 
 
 @pytest.mark.asyncio
-async def test_get_token_payload(auth_dependency, mock_credentials, mock_authorization_service):
-    payload = await auth_dependency.get_token_payload(mock_credentials)
-    assert payload == {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")}
-    mock_authorization_service.verify_access_token.assert_awaited_once_with(mock_credentials)
-
-
-@pytest.mark.asyncio
 async def test_get_current_user(auth_dependency, mock_user_validators, mock_user):
-    user, payload = await auth_dependency.get_current_user()
+    user, token = await auth_dependency.get_current_user()
 
     assert user == mock_user
-    assert payload == {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")}
+    assert token.id == uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")
 
     mock_user_validators.check_user_permission.assert_called_once_with(
         uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")

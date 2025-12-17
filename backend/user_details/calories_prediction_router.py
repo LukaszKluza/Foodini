@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends
 
+from backend.core.role_sets import user_or_admin
 from backend.user_details.dependencies import get_calories_prediction_service
 from backend.user_details.schemas import PredictedCalories, PredictedMacros
 from backend.user_details.service.calories_prediction_service import CaloriesPredictionService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-calories_prediction_router = APIRouter(prefix="/v1/calories-prediction")
+calories_prediction_router = APIRouter(
+    prefix="/v1/calories-prediction", tags=["User", "Admin"], dependencies=[user_or_admin]
+)
 
 
 @calories_prediction_router.post(

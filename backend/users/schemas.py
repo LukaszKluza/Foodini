@@ -1,9 +1,12 @@
+from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field
 
 from ..models.user_model import Language
+from .enums.role import Role
+from .enums.token import Token
 from .mixins import CountryValidationMixin, PasswordValidationMixin
 
 
@@ -72,3 +75,11 @@ class RefreshTokensResponse(DefaultResponse):
 
 class EmailSchema(BaseModel):
     addresses: List[EmailStr]
+
+
+class TokenPayload(DefaultResponse):
+    jti: str
+    linked_jti: str
+    exp: datetime
+    type: Token
+    role: Role

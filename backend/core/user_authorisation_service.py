@@ -20,7 +20,8 @@ from backend.core.logger import logger
 from backend.core.value_error_exception import ValueErrorException
 from backend.settings import config
 from backend.users.enums.token import Token
-from backend.users.schemas import RefreshTokensResponse
+from backend.users.mappers import decoded_token_to_payload
+from backend.users.schemas import RefreshTokensResponse, TokenPayload
 
 security = HTTPBearer()
 
@@ -46,6 +47,7 @@ class AuthorizationService:
                 "linked_jti": refresh_token_jti,
                 "exp": access_token_expire,
                 "type": Token.ACCESS.value,
+                "role": data.get("role"),
             }
         )
 
@@ -56,6 +58,7 @@ class AuthorizationService:
                 "linked_jti": access_token_jti,
                 "exp": refresh_token_expire,
                 "type": Token.REFRESH.value,
+                "role": data.get("role"),
             }
         )
 
@@ -84,18 +87,20 @@ class AuthorizationService:
         self,
         refresh_token: HTTPAuthorizationCredentials = Security(security),
     ) -> RefreshTokensResponse:
-        payload = await self.verify_refresh_token(refresh_token)
+        token = await self.verify_refresh_token(refresh_token)
 
-        refresh_token_jti = payload.get("jti")
-        access_token_jti = payload.get("linked_jti")
+        refresh_token_jti = token.jti
+        access_token_jti = token.linked_jti
 
-        new_access_token, new_refresh_token = await self.create_tokens({"sub": payload["sub"], "id": payload["id"]})
+        new_access_token, new_refresh_token = await self.create_tokens(
+            {"sub": token.email, "id": token.id, "role": token.role}
+        )
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
 
         return RefreshTokensResponse(
-            id=payload["id"],
-            email=payload["sub"],
+            id=token.id,
+            email=token.email,
             access_token=new_access_token,
             refresh_token=new_refresh_token,
         )
@@ -103,36 +108,33 @@ class AuthorizationService:
     async def verify_access_token(
         self,
         credentials: HTTPAuthorizationCredentials = Security(security),
-    ):
+    ) -> TokenPayload:
         return await self.verify_token_by_type(credentials, Token.ACCESS.value)
 
     async def verify_refresh_token(
         self,
         credentials: HTTPAuthorizationCredentials = Security(security),
-    ):
+    ) -> TokenPayload:
         return await self.verify_token_by_type(credentials, Token.REFRESH.value)
 
     async def verify_token_by_type(
         self,
         credentials: HTTPAuthorizationCredentials,
         expected_type: str,
-    ):
+    ) -> TokenPayload:
         token = await self.get_payload_from_token(credentials, expected_type)
-        token_type = token.get("type")
-        token_jti = token.get("jti")
-        linked_jti = token.get("linked_jti")
 
-        if token_type != expected_type:
+        if token.type != expected_type:
             logger.debug(f"Invalid token type. Expected {expected_type}.")
 
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token_type
+                if Token.ACCESS.value == token.type
                 else status.HTTP_403_FORBIDDEN,
                 detail=f"Invalid token type. Expected {expected_type}.",
             )
 
-        redis_key = token_jti if expected_type == Token.REFRESH.value else linked_jti
+        redis_key = token.jti if expected_type == Token.REFRESH.value else token.linked_jti
         stored_token = await self.redis.get(redis_key)
 
         if not stored_token:
@@ -144,16 +146,16 @@ class AuthorizationService:
             )
 
         async with self.redis.pipeline() as pipe:
-            pipe.exists(f"blacklist:{token_jti}")
-            if linked_jti:
-                pipe.exists(f"blacklist:{linked_jti}")
+            pipe.exists(f"blacklist:{token.jti}")
+            if token.linked_jti:
+                pipe.exists(f"blacklist:{token.linked_jti}")
             revoked_results = await pipe.execute()
 
         if any(revoked_results):
             logger.debug("Revoked token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED
-                if Token.ACCESS.value == token_type
+                if Token.ACCESS.value == token.type
                 else status.HTTP_403_FORBIDDEN,
                 detail="Revoked token",
             )
@@ -164,12 +166,14 @@ class AuthorizationService:
         self,
         credentials: HTTPAuthorizationCredentials = Security(security),
         token_type: str = None,
-    ):
+    ) -> TokenPayload:
         try:
-            return jwt.decode(
-                credentials.credentials,
-                config.SECRET_KEY,
-                algorithms=[config.ALGORITHM],
+            return decoded_token_to_payload(
+                jwt.decode(
+                    credentials.credentials,
+                    config.SECRET_KEY,
+                    algorithms=[config.ALGORITHM],
+                )
             )
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
             logger.debug("Revoked token")
