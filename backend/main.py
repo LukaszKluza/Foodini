@@ -14,6 +14,7 @@ from starlette.templating import Jinja2Templates
 
 from backend.barcode_scanning.barcode_scanning_router import barcode_scanning_router
 from backend.core.database import engine, redis_tokens
+from backend.core.health import check_db, check_redis
 from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
@@ -167,6 +168,46 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
+@app.get("/health/live", tags=["health"])
+async def liveness_probe():
+    return {"status": "alive"}
+
+
+@app.get("/health/ready", tags=["health"])
+async def readiness_probe():
+    db = await check_db(engine)
+    redis = await check_redis(redis_tokens)
+
+    healthy = db["status"] == "ok" and redis["status"] == "ok"
+
+    response = {
+        "status": "ok" if healthy else "degraded",
+        "components": {
+            "database": db,
+            "redis": redis,
+        },
+    }
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if healthy else status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=response,
+    )
+
+
+@app.get("/health", tags=["health"])
+async def health():
+    db = await check_db(engine)
+    redis = await check_redis(redis_tokens)
+
+    healthy = db["status"] == "ok" and redis["status"] == "ok"
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if healthy else status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={
+            "status": "ok" if healthy else "degraded",
+            "components": {
+                "database": db,
+                "redis": redis,
+            },
+        },
+    )
