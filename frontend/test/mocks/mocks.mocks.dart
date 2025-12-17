@@ -1733,7 +1733,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           as _i27.Future<_i23.Response<dynamic>>);
 
   @override
-  _i27.Future<_i23.Response<dynamic>> addDailyMeal(
+  _i27.Future<_i23.Response<dynamic>> addMeal(
     _i44.CustomMealUpdateRequest? customMealUpdateRequest,
     _i28.UuidValue? userId,
   ) =>

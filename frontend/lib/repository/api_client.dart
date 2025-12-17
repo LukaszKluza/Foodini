@@ -300,7 +300,7 @@ class ApiClient {
     );
   }
 
-  Future<Response> addDailyMeal(
+  Future<Response> addMeal(
       CustomMealUpdateRequest customMealUpdateRequest,
       UuidValue userId,
   ) {

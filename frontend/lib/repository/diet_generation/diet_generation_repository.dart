@@ -5,7 +5,6 @@ import 'package:frontend/models/diet_generation/custom_meal_update_request.dart'
 import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart';
 import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
-import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/remove_meal_request.dart';
@@ -58,7 +57,7 @@ class DietGenerationRepository {
 
   Future<ComposedMealItem> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
     try {
-      final response = await apiClient.addDailyMeal(customMealUpdateRequest, userId);
+      final response = await apiClient.addMeal(customMealUpdateRequest, userId);
       return ComposedMealItem.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while editing daily meal', statusCode: e.response?.statusCode);
@@ -95,7 +94,7 @@ class DietGenerationRepository {
     }
   }
 
-  Future<MealInfo> addScannedProduct({
+  Future<ComposedMealItem> addScannedProduct({
     String? barcode,
     XFile? uploadedFile,
     required MealType mealType,
@@ -108,7 +107,7 @@ class DietGenerationRepository {
         barcode = await barcodeScannerService.scanBarcodeFromGallery(uploadedFile);
       }
       final response = await apiClient.addScannedProduct(barcode: barcode, uploadedFile: uploadedFile, mealType: mealType, day: day, userId: userId);
-      return MealInfo.fromJson(response.data);
+      return ComposedMealItem.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while adding scanned product:', statusCode: e.response?.statusCode);
     } catch (e) {
