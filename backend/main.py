@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 import psycopg2
 import sqlalchemy
 from fastapi import FastAPI, HTTPException, Request, status
@@ -11,6 +13,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from backend.barcode_scanning.barcode_scanning_router import barcode_scanning_router
+from backend.core.database import engine, redis_tokens
 from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
@@ -25,7 +28,21 @@ from backend.user_details.user_details_router import user_details_router
 from backend.user_statistics.user_statistics_router import user_statistics_router
 from backend.users.user_router import user_router
 
-app = FastAPI(docs_url="/docs", redoc_url=None)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("App startup: DB and Redis ready")
+
+    yield
+
+    logger.info("App shutdown: disposing DB engine and closing Redis")
+
+    await engine.dispose()
+    await redis_tokens.close()
+    await redis_tokens.close()
+
+
+app = FastAPI(lifespan=lifespan, docs_url="/docs", redoc_url=None)
 app.include_router(user_router)
 app.include_router(user_details_router)
 app.include_router(calories_prediction_router)
