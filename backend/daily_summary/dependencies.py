@@ -7,6 +7,7 @@ from backend.daily_summary.daily_summary_service import DailySummaryService
 from backend.daily_summary.repositories.composed_meal_items_repository import ComposedMealItemsRepository
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
+from backend.daily_summary.repositories.meal_type_daily_summary_repository import MealTypeDailySummaryRepository
 from backend.meals.dependencies import get_meal_repository
 from backend.meals.meal_gateway import MealGateway, get_meal_gateway
 from backend.meals.repositories.meal_repository import MealRepository
@@ -23,6 +24,12 @@ async def get_daily_summary_repository(
     db: AsyncSession = Depends(get_db),
 ) -> DailySummaryRepository:
     return DailySummaryRepository(db)
+
+
+async def get_meal_type_daily_summary_repository(
+    db: AsyncSession = Depends(get_db),
+) -> MealTypeDailySummaryRepository:
+    return MealTypeDailySummaryRepository(db)
 
 
 async def get_composed_meal_items_repository(
@@ -46,6 +53,9 @@ async def get_composed_meal_items_service(
 async def get_daily_summary_service(
     daily_summary_repository: DailySummaryRepository = Depends(get_daily_summary_repository),
     meal_repository: MealRepository = Depends(get_meal_repository),
+    meal_type_daily_summary_repository: MealTypeDailySummaryRepository = Depends(
+        get_meal_type_daily_summary_repository
+    ),
     last_generated_meals_repository: LastGeneratedMealsRepository = Depends(get_last_generated_meals_repository),
     composed_meal_items_service: ComposedMealItemsService = Depends(get_composed_meal_items_service),
     meal_gateway: MealGateway = Depends(get_meal_gateway),
@@ -53,6 +63,7 @@ async def get_daily_summary_service(
 ) -> DailySummaryService:
     return DailySummaryService(
         daily_summary_repository,
+        meal_type_daily_summary_repository,
         meal_repository,
         last_generated_meals_repository,
         composed_meal_items_service,

@@ -11,7 +11,7 @@ from backend.models.types import FloatAsNumeric
 if TYPE_CHECKING:
     from backend.models.meal_icon_model import MealIcon
     from backend.models.meal_recipe_model import MealRecipe
-    from backend.models.meals_daily_summary import ComposedMealItem
+    from backend.models.meal_type_daily_summary import ComposedMealItem
 
 
 class Meal(SQLModel, table=True):

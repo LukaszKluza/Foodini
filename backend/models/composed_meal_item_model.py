@@ -9,7 +9,7 @@ from backend.models.types import FloatAsNumeric
 
 if TYPE_CHECKING:
     from backend.models.meal_recipe_model import Meal
-    from backend.models.meals_daily_summary import MealDailySummary
+    from backend.models.meal_type_daily_summary import MealTypeDailySummary
 
 
 class ComposedMealItem(SQLModel, table=True):
@@ -28,7 +28,7 @@ class ComposedMealItem(SQLModel, table=True):
     meal_daily_summary_id: uuid.UUID = Field(
         sa_column=Column(
             UUID(as_uuid=True),
-            ForeignKey("meal_daily_summary.id", ondelete="CASCADE"),
+            ForeignKey("meal_type_daily_summary.id", ondelete="CASCADE"),
             nullable=False,
             index=True,
         )
@@ -49,7 +49,7 @@ class ComposedMealItem(SQLModel, table=True):
     )
 
     meal: Optional["Meal"] = Relationship(back_populates="composed_meal_items")
-    daily_meal: Optional["MealDailySummary"] = Relationship(
+    daily_meal: Optional["MealTypeDailySummary"] = Relationship(
         back_populates="meal_items",
-        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_daily_summary_id == MealDailySummary.id"},
+        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_daily_summary_id == MealTypeDailySummary.id"},
     )

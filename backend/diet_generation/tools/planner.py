@@ -19,9 +19,7 @@ class PlannerTool:
         if config.OLLAMA_API_KEY:
             client_kwargs = {"headers": {"Authorization": f"Bearer {config.OLLAMA_API_KEY}"}}
 
-        self.llm: Runnable = OllamaLLM(
-            model=config.MODEL_NAME, base_url=config.OLLAMA_API_BASE_URL, client_kwargs=client_kwargs
-        )
+        self.llm: Runnable = OllamaLLM(model=config.MODEL_NAME, client_kwargs=client_kwargs)
         self.parser = JsonOutputParser(pydantic_object=DietGenerationOutput)
 
         self.system_instruction = (
