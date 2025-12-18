@@ -1,7 +1,7 @@
 class Macros {
-  final int protein;
-  final int fat;
-  final int carbs;
+  final double protein;
+  final double fat;
+  final double carbs;
 
   Macros({
     required this.protein,

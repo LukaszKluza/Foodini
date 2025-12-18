@@ -5,6 +5,7 @@ from uuid import UUID
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.daily_summary.composed_meal_items_service import ComposedMealItemsService
+from backend.daily_summary.daily_summary_mapper import DailySummaryMapper
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
@@ -285,19 +286,20 @@ class DailySummaryService:
         meal_type = meal_to_remove.meal_type
         meal_id = meal_to_remove.meal_id
 
-        user_daily_meals = await self.daily_summary_repository.get_daily_meals_summary(user.id, day)
-        if not user_daily_meals:
+        meal_type_daily_summary = DailySummaryMapper.map_to_daily_meal_type(
+            await self.daily_summary_repository.get_daily_meal_type_summary(user.id, day, meal_type)
+        )
+        if not meal_type_daily_summary or not meal_type_daily_summary.meal_daily_summary_id:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
-        slot = self._find_meal_slot(user_daily_meals, meal_type, user.id, day)
         composed_meal_item, removed = await self.composed_meal_items_service.remove_composed_meal(user.id, meal_id)
 
         if not removed:
             logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")
             raise NotFoundInDatabaseException("Selected meal not assigned to selected meal type.")
 
-        if slot.status == MealStatus.EATEN:
+        if meal_type_daily_summary.status == MealStatus.EATEN:
             macros_to_subtract = DailyMacrosSummaryCreate(
                 day=day,
                 calories=(-1) * composed_meal_item.planned_calories,

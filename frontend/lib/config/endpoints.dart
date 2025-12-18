@@ -13,8 +13,8 @@ class Endpoints {
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
 
   // user-details
-  static const String dietPreferences = '$baseUrl/user-details';
-  static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
+  static const String dietPreferences = '$baseUrl/user-details/';
+  static const String userCaloriesPrediction = '$baseUrl/calories-prediction/';
   static const String userStatistics = '$baseUrl/user-statistics';
   static const String userWeightHistory = '$baseUrl/user-details/weight-history';
 

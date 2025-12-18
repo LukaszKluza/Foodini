@@ -70,10 +70,11 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     super.dispose();
   }
 
-  int _calculateCalories() {
-    final protein = int.tryParse(_proteinController.text) ?? 0;
-    final fat = int.tryParse(_fatController.text) ?? 0;
-    final carbs = int.tryParse(_carbsController.text) ?? 0;
+  double _calculateCalories() {
+    final protein = double.tryParse(_proteinController.text) ?? 0.0;
+    final fat = double.tryParse(_fatController.text) ?? 0.0;
+    final carbs = double.tryParse(_carbsController.text) ?? 0.0;
+
     return (protein * Constants.proteinEstimator) +
         (fat * Constants.fatEstimator) +
         (carbs * Constants.carbsEstimator);
@@ -81,10 +82,13 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
 
   String? _macrosValidator(String? value, int target) {
     final total = _calculateCalories();
-    const tolerance = 30;
+    const tolerance = 30.0;
 
     if ((total - target).abs() > tolerance) {
-      return '${AppLocalizations.of(context)!.macros} = $total ${AppLocalizations.of(context)!.kcal}, ${AppLocalizations.of(context)!.expected} ~ $target ${AppLocalizations.of(context)!.kcal}';
+      return '${AppLocalizations.of(context)!.macros} = '
+          '${total.round()} ${AppLocalizations.of(context)!.kcal}, '
+          '${AppLocalizations.of(context)!.expected} ~ '
+          '$target ${AppLocalizations.of(context)!.kcal}';
     }
     return null;
   }
@@ -180,11 +184,11 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     final dietDurationDays = state.predictedCalories!.dietDurationDays;
     final target = state.predictedCalories!.targetCalories;
     _proteinController.text =
-        state.predictedCalories!.predictedMacros.protein.toString();
+        state.predictedCalories!.predictedMacros.protein.toStringAsFixed(1);
     _fatController.text =
-        state.predictedCalories!.predictedMacros.fat.toString();
+        state.predictedCalories!.predictedMacros.fat.toStringAsFixed(1);
     _carbsController.text =
-        state.predictedCalories!.predictedMacros.carbs.toString();
+        state.predictedCalories!.predictedMacros.carbs.toStringAsFixed(1);
 
     Widget buildField(String label, String value) =>
         Center(child: Text('$label: $value', textAlign: TextAlign.center));
@@ -266,9 +270,9 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           context.read<MacrosChangeBloc>().add(
             SubmitMacrosChange(
               Macros(
-                protein: int.tryParse(_proteinController.text)!,
-                fat: int.tryParse(_fatController.text)!,
-                carbs: int.tryParse(_carbsController.text)!,
+                protein: double.tryParse(_proteinController.text)!,
+                fat: double.tryParse(_fatController.text)!,
+                carbs: double.tryParse(_carbsController.text)!,
               ),
             ),
           );
