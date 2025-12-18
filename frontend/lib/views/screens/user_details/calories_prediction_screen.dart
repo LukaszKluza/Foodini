@@ -304,7 +304,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                   const Center(child: CircularProgressIndicator())
                 else
                   ElevatedButton(
-                    key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
+                    key: Key(AppLocalizations.of(context)!.savePreferences),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         context.read<DietFormBloc>().add(SubmitForm());
@@ -314,7 +314,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                       backgroundColor: Color(0xFFB2F2BB),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.generateWeeklyDiet,
+                      AppLocalizations.of(context)!.savePreferences,
                     ),
                   ),
                 if (_message != null)

@@ -93,7 +93,7 @@
   "enterFatPercentage": "Wprowadź procent tłuszczu",
   "fatPercentageShouldBeBetween": "Procent tłuszczu powinien być pomiędzy",
   "advancedParametersValidation": "Suma zaawansowanych parametrów nie może być wyższa niż",
-  "generateWeeklyDiet": "Wygeneruj tygodniową dietę",
+  "savePreferences": "Zapisz preferencje",
   "predictedCalories": "Przewidywana liczba kalorii",
   "bmr": "Podstawowa przemiana materii (BMR)",
   "tdee": "Całkowite dzienne zapotrzebowanie (TDEE)",

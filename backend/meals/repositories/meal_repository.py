@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.meals.schemas import MealCreate
@@ -60,3 +60,10 @@ class MealRepository:
         query = select(Meal.fat).where(Meal.id == meal_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
+
+    async def delete_meal_by_id(self, meal_id: UUID) -> bool:
+        query = delete(Meal).where(Meal.id == meal_id)
+        result = await self.db.execute(query)
+        await self.db.commit()
+
+        return result.rowcount != 0

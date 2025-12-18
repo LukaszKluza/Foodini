@@ -656,11 +656,11 @@ abstract class AppLocalizations {
   /// **'Sum of advanced parameters can\'t be higher than'**
   String get advancedParametersValidation;
 
-  /// No description provided for @generateWeeklyDiet.
+  /// No description provided for @savePreferences.
   ///
   /// In en, this message translates to:
-  /// **'Generate weekly diet'**
-  String get generateWeeklyDiet;
+  /// **'Save preferences'**
+  String get savePreferences;
 
   /// No description provided for @predictedCalories.
   ///

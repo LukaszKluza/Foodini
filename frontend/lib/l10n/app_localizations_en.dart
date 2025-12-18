@@ -299,7 +299,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sum of advanced parameters can\'t be higher than';
 
   @override
-  String get generateWeeklyDiet => 'Generate weekly diet';
+  String get savePreferences => 'Save preferences';
 
   @override
   String get predictedCalories => 'Predicted calories';

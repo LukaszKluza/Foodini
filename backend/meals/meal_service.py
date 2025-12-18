@@ -80,6 +80,9 @@ class MealService:
 
         return response
 
+    async def delete_meal_by_id(self, meal_id: UUID) -> bool:
+        return await self.meal_repository.delete_meal_by_id(meal_id)
+
     async def _enhance_meal_response_by_icon(self, meal_recipe: MealRecipe) -> MealRecipeResponse:
         meal = await self.meal_repository.get_meal_by_id(meal_recipe.meal_id)
         await self.validate_response(meal, f"Meal with id {meal_recipe.meal_id} not found")

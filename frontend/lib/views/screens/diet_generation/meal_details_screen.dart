@@ -81,7 +81,7 @@ class _MealDetails extends StatelessWidget {
     final List<MealInfo> mealItems = state.getMealsByMealType(mealType);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 140),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 140),
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(

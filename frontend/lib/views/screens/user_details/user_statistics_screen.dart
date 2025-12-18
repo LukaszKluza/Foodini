@@ -97,6 +97,7 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
                     }
 
                     return SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -104,7 +105,6 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
                             title: AppLocalizations.of(context)!.calorieConsumptionChartTitle,
                             child: _buildCalorieChart(stats.weeklyCaloriesConsumption),
                           ),
-                          const SizedBox(height: 16),
                           _buildChartCard(
                             title: AppLocalizations.of(context)!.calorieGoalChartTitle,
                             child: _buildGoalComparisonChart(stats),

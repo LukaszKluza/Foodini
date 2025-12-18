@@ -302,7 +302,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Suma zaawansowanych parametrów nie może być wyższa niż';
 
   @override
-  String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
+  String get savePreferences => 'Zapisz preferencje';
 
   @override
   String get predictedCalories => 'Przewidywana liczba kalorii';

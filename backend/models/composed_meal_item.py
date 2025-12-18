@@ -41,6 +41,7 @@ class ComposedMealItem(SQLModel, table=True):
     planned_fat: float = Field(sa_column=Column(FloatAsNumeric), ge=0, le=500)
     planned_carbs: float = Field(sa_column=Column(FloatAsNumeric), ge=0, le=500)
     planned_weight: int = Field(nullable=False, ge=0, le=2250)
+    is_active: bool = Field(default=True, nullable=False)
 
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
     updated_at: datetime = Field(
