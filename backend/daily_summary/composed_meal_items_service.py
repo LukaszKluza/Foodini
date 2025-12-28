@@ -119,6 +119,15 @@ class ComposedMealItemsService:
         await self.composed_meal_items_repository.add_composed_meal_item(composed_meal_item)
         return composed_meal_item
 
+    async def remove_composed_meal(self, user_id: UUID, meal_id: UUID):
+        composed_meal_item = await self._get_composed_meal_item_with_summary_and_origin_meal(user_id, meal_id)
+
+        if composed_meal_item.meal.is_generated:
+            removed = await self.composed_meal_items_repository.remove_meal_from_summary(composed_meal_item.id)
+        else:
+            removed = await self.meal_gateway.delete_meal_by_id(meal_id)
+        return composed_meal_item, removed
+
     async def _get_composed_meal_item_with_summary_and_origin_meal(self, user_id: UUID, meal_id: UUID):
         composed_meal = await self.composed_meal_items_repository.get_composed_meal_item_with_summary_and_origin_meal(
             user_id, meal_id
