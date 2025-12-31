@@ -10,7 +10,7 @@ from backend.core.user_authorisation_service import AuthorizationService
 from backend.models import User
 from backend.settings import config
 from backend.users.enums.role import Role
-from backend.users.mappers import user_create_to_entry
+from backend.users.mappers import user_create_to_entity
 from backend.users.schemas import (
     ChangeLanguageRequest,
     DefaultResponse,
@@ -28,17 +28,20 @@ from backend.users.service.user_validation_service import (
     UserValidationService,
 )
 from backend.users.user_repository import UserRepository
+from backend.users.user_role_repository import UserRoleRepository
 
 
 class UserService:
     def __init__(
         self,
         user_repository: UserRepository,
+        user_role_repository: UserRoleRepository,
         email_verification_service: EmailVerificationService,
         user_validators: UserValidationService,
         authorization_service: AuthorizationService,
     ):
         self.user_repository = user_repository
+        self.user_role_repository = user_role_repository
         self.email_verification_service = email_verification_service
         self.user_validators = user_validators
         self.authorization_service = authorization_service
@@ -58,9 +61,9 @@ class UserService:
         )
 
         await self.email_verification_service.process_new_account_verification(user.email, token)
-        role = await self.user_repository.get_role_id_by_role_name(Role.USER)
+        role = await self.user_role_repository.get_role_id_by_role_name(Role.USER)
 
-        entry = user_create_to_entry(user, role.id)
+        entry = user_create_to_entity(user, role.id)
         return await self.user_repository.create_user(entry)
 
     async def login(self, form_data: OAuth2PasswordRequestForm):
@@ -75,7 +78,7 @@ class UserService:
                 detail="Incorrect password",
             )
 
-        user_role_ = await self.user_repository.get_role_by_id(user_.role_id)
+        user_role_ = await self.user_role_repository.get_role_by_id(user_.role_id)
 
         access_token, refresh_token = await self.authorization_service.create_tokens(
             {"sub": user_.email, "id": str(user_.id), "role": user_role_.name}

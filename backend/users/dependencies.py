@@ -16,10 +16,15 @@ from backend.users.service.email_verification_service import EmailVerificationSe
 from backend.users.service.user_service import UserService
 from backend.users.service.user_validation_service import UserValidationService
 from backend.users.user_repository import UserRepository
+from backend.users.user_role_repository import UserRoleRepository
 
 
 async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:
     return UserRepository(db)
+
+
+async def get_user_role_repository(db: AsyncSession = Depends(get_db)) -> UserRoleRepository:
+    return UserRoleRepository(db)
 
 
 async def get_mail_config() -> FastMail:
@@ -55,12 +60,14 @@ async def get_email_verification_service(
 
 async def get_user_service(
     user_repository: UserRepository = Depends(get_user_repository),
+    user_role_repository: UserRoleRepository = Depends(get_user_role_repository),
     email_verification_service: EmailVerificationService = Depends(get_email_verification_service),
     user_validators: UserValidationService = Depends(get_user_validators),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
 ) -> UserService:
     return UserService(
         user_repository,
+        user_role_repository,
         email_verification_service,
         user_validators,
         authorization_service,

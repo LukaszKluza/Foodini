@@ -4,7 +4,7 @@ from backend.models import User
 from backend.users.schemas import TokenPayload, UserCreate
 
 
-def user_create_to_entry(user_data: UserCreate, role_id: UUID) -> User:
+def user_create_to_entity(user_data: UserCreate, role_id: UUID) -> User:
     return User(**user_data.model_dump(), role_id=role_id)
 
 

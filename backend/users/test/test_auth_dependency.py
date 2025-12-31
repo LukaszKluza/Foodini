@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import EmailStr, TypeAdapter
 
 from backend.models import User
+from backend.settings import config
 from backend.users.auth_dependencies import AuthDependency
 from backend.users.enums.role import Role
 from backend.users.enums.token import Token
@@ -44,10 +45,10 @@ def mock_authorization_service():
     mock.verify_access_token = AsyncMock(
         return_value=TokenPayload(
             id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-            email="test@example.com",
+            email=TypeAdapter(EmailStr).validate_python("test@example.com"),
             jti="jti",
             linked_jti="linked_jti",
-            exp=datetime.now(timezone.utc),
+            exp=datetime.now(config.TIMEZONE) + timedelta(minutes=30),
             type=Token.ACCESS,
             role=Role.USER,
         )

@@ -183,7 +183,7 @@ class _LoginFormState extends State<_LoginForm> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = LoginRequest(
-                            email: _emailController.text,
+                            username: _emailController.text,
                             password: _passwordController.text,
                           );
                           context.read<LoginBloc>().add(
