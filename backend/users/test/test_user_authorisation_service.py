@@ -12,8 +12,9 @@ from pydantic import EmailStr, TypeAdapter
 
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import config
+from backend.users.enums.role import Role
 from backend.users.enums.token import Token
-from backend.users.schemas import RefreshTokensResponse
+from backend.users.schemas import RefreshTokensResponse, TokenPayload
 
 
 @pytest.fixture
@@ -40,37 +41,41 @@ def mock_redis():
 
 @pytest.fixture
 def valid_payload():
-    return {
-        "jti": "token_id",
-        "linked_jti": "linked_token_id",
-        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        "sub": "user@example.com",
-        "type": Token.ACCESS.value,
-        "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=30),
-    }
+    return TokenPayload(
+        jti="token_id",
+        linked_jti="linked_token_id",
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        email="user@example.com",
+        type=Token.ACCESS,
+        exp=datetime.now(config.TIMEZONE) + timedelta(minutes=30),
+        role=Role.USER,
+    )
 
 
 @pytest.fixture
 def valid_refresh_payload():
-    return {
-        "jti": "refresh_token_id",
-        "linked_jti": "access_token_id",
-        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        "sub": "user@example.com",
-        "type": Token.REFRESH.value,
-        "exp": datetime.now(config.TIMEZONE) + timedelta(minutes=60),
-    }
+    return TokenPayload(
+        jti="refresh_token_id",
+        linked_jti="access_token_id",
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        email="user@example.com",
+        type=Token.REFRESH,
+        exp=datetime.now(config.TIMEZONE) + timedelta(minutes=60),
+        role=Role.USER,
+    )
 
 
 @pytest.fixture
 def expired_payload():
-    return {
-        "jti": "token_id",
-        "linked_jti": "linked_token_id",
-        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        "sub": "user@example.com",
-        "exp": datetime.now(config.TIMEZONE) - timedelta(minutes=30),
-    }
+    return TokenPayload(
+        jti="token_id",
+        linked_jti="linked_token_id",
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        email="user@example.com",
+        type=Token.ACCESS,
+        exp=datetime.now(config.TIMEZONE) - timedelta(minutes=30),
+        role=Role.USER,
+    )
 
 
 @pytest.fixture
@@ -92,7 +97,7 @@ async def test_create_tokens_success(authorization_service, mock_redis):
     ):
         # when
         access, refresh = await authorization_service.create_tokens(
-            {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a")}
+            {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "role": Role.USER.value},
         )
 
         # then
@@ -141,8 +146,18 @@ async def test_verify_token_expired(authorization_service, credentials):
 @pytest.mark.asyncio
 async def test_refresh_token_success(authorization_service, mock_redis, credentials, valid_refresh_payload):
     # given
+    payload_dict = {
+        "sub": valid_refresh_payload.email,
+        "jti": valid_refresh_payload.jti,
+        "linked_jti": valid_refresh_payload.linked_jti,
+        "id": str(valid_refresh_payload.id),
+        "exp": int(valid_refresh_payload.exp.timestamp()),
+        "type": valid_refresh_payload.type.value,
+        "role": valid_refresh_payload.role.value,
+    }
+
     with (
-        patch("jwt.decode", return_value=valid_refresh_payload) as mock_decode,
+        patch("jwt.decode", return_value=payload_dict) as mock_decode,
         patch("jwt.encode", side_effect=[b"new_access", b"new_refresh"]) as mock_encode,
     ):
         mock_redis.get.return_value = b"valid_token"

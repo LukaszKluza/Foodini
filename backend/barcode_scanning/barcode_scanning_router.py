@@ -5,11 +5,12 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from backend.barcode_scanning.barcode_scanning_service import BarcodeScanningService
 from backend.barcode_scanning.dependencies import get_barcode_scanning_service
+from backend.core.role_sets import user_or_admin
 from backend.meals.enums.meal_type import MealType
 from backend.models import ComposedMealItem
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-barcode_scanning_router = APIRouter(prefix="/v1/barcode_scanning")
+barcode_scanning_router = APIRouter(prefix="/v1/barcode_scanning", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @barcode_scanning_router.patch(

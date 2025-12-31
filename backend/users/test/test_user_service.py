@@ -1,21 +1,24 @@
 import sys
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, TypeAdapter
 
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.models import User
 from backend.settings import config
 from backend.users.enums.language import Language
+from backend.users.enums.role import Role
+from backend.users.enums.token import Token
 from backend.users.schemas import (
     NewPasswordConfirm,
     PasswordResetRequest,
+    TokenPayload,
     UserCreate,
-    UserLogin,
     UserUpdate,
 )
 from backend.users.service.password_service import PasswordService
@@ -90,6 +93,8 @@ def mock_user_repository():
     repo.update_user = AsyncMock()
     repo.delete_user = AsyncMock()
     repo.verify_user = AsyncMock()
+    repo.get_role_id_by_role_name = AsyncMock(return_value=MagicMock(id=uuid.uuid4()))
+    repo.get_role_by_id = AsyncMock(return_value=Role.USER)
     return repo
 
 
@@ -147,15 +152,19 @@ async def test_register_user_new(
 @pytest.mark.asyncio
 async def test_login_user_not_found(user_service, mock_user_validators):
     # Given
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
     mock_user_validators.ensure_user_exists_by_email.side_effect = NotFoundInDatabaseException("User not found")
 
     # When/Then
     with pytest.raises(NotFoundInDatabaseException) as exc_info:
-        await user_service.login(user_login)
+        await user_service.login(form)
 
     assert exc_info.value.detail == "User not found"
 
@@ -164,16 +173,20 @@ async def test_login_user_not_found(user_service, mock_user_validators):
 async def test_login_user_incorrect_password(mock_password_service, mock_user_validators, user_service):
     # Given
     mock_user = MagicMock(password="hashed_password")
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
     mock_user_validators.ensure_user_exists_by_email.return_value = mock_user
     mock_password_service["verify_password"].return_value = False
 
     # When
     with pytest.raises(HTTPException) as exc_info:
-        await user_service.login(user_login)
+        await user_service.login(form)
 
     # Then
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
@@ -197,13 +210,17 @@ async def test_login_user_success(
         b"access_token",
         b"refresh_token",
     )
-    user_login = UserLogin(
-        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+    form = OAuth2PasswordRequestForm(
+        username="test@example.com",
         password="Password123",
+        scope="",
+        grant_type="",
+        client_id=None,
+        client_secret=None,
     )
 
     # When
-    result = await user_service.login(user_login)
+    result = await user_service.login(form)
 
     # Then
     assert result.email == "test@example.com"
@@ -213,7 +230,15 @@ async def test_login_user_success(
 @pytest.mark.asyncio
 async def test_logout_user_success(mock_user_validators, mock_authorization_service, user_service):
     response = await user_service.logout(
-        {"id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"), "jti": "jti", "linked_jti": "linked_jti"}
+        TokenPayload(
+            id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+            jti="jti",
+            linked_jti="linked_jti",
+            email="test@example.com",
+            exp=datetime.now(timezone.utc),
+            type=Token.ACCESS,
+            role=Role.USER,
+        )
     )
 
     # Then
@@ -324,11 +349,16 @@ async def test_delete_account_when_user_exist(
     user_service, mock_user_validators, mock_authorization_service, mock_user_repository
 ):
     # Given
-    token_payload = {
-        "id": uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
-        "jti": "fake_jti",
-        "linked_jti": "fake_linked_jti",
-    }
+    token_payload = TokenPayload(
+        id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
+        jti="fake_jti",
+        linked_jti="fake_linked_jti",
+        email="test@example.com",
+        exp=datetime.now(timezone.utc),
+        type=Token.ACCESS,
+        role=Role.USER,
+    )
+
     mock_authorization_service.revoke_tokens.return_value = True
     mock_user_repository.delete_user.return_value = basic_user
 

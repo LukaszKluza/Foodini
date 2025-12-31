@@ -3,6 +3,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status
 
+from backend.core.role_sets import user_or_admin
 from backend.models import UserDetails
 from backend.user_details.dependencies import get_user_details_service, get_user_weight_service
 from backend.user_details.schemas import (
@@ -15,7 +16,7 @@ from backend.user_details.service.user_details_service import UserDetailsService
 from backend.user_details.service.user_weight_service import UserWeightService
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-user_details_router = APIRouter(prefix="/v1/user-details")
+user_details_router = APIRouter(prefix="/v1/user-details", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @user_details_router.get(

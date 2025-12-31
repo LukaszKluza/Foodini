@@ -1,22 +1,21 @@
 from uuid import UUID
 
 import redis.asyncio as aioredis
-from fastapi import Depends, Query, Security
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Depends, Query
 from fastapi_mail import ConnectionConfig, FastMail
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.core.database import get_db, get_redis
+from backend.core.security import oauth2_scheme
 from backend.core.user_authorisation_service import AuthorizationService
 from backend.settings import MailSettings
 from backend.users.auth_dependencies import AuthDependency
+from backend.users.enums.role import Role
 from backend.users.mail import MailService
 from backend.users.service.email_verification_service import EmailVerificationService
 from backend.users.service.user_service import UserService
 from backend.users.service.user_validation_service import UserValidationService
 from backend.users.user_repository import UserRepository
-
-security = HTTPBearer()
 
 
 async def get_user_repository(db: AsyncSession = Depends(get_db)) -> UserRepository:
@@ -68,17 +67,17 @@ async def get_user_service(
     )
 
 
-async def get_token_payload(
-    authorization_service: AuthorizationService = Depends(get_authorization_service),
-    credentials: HTTPAuthorizationCredentials = Security(security),
-):
-    return await authorization_service.verify_access_token(credentials)
+def require_roles(*roles: Role):
+    async def dependency(authorization_service: AuthDependency = Depends(get_auth_dependency)):
+        await authorization_service.require_roles(list(roles))
+
+    return Depends(dependency)
 
 
 async def get_auth_dependency(
     user_id: UUID = Query(...),
-    credentials: HTTPAuthorizationCredentials = Security(security),
     user_validators: UserValidationService = Depends(get_user_validators),
     authorization_service: AuthorizationService = Depends(get_authorization_service),
+    token: str = Depends(oauth2_scheme),
 ) -> AuthDependency:
-    return AuthDependency(user_id, credentials, user_validators, authorization_service)
+    return AuthDependency(user_id, user_validators, authorization_service, token)

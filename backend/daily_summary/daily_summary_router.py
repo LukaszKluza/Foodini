@@ -2,6 +2,7 @@ from datetime import date
 
 from fastapi import APIRouter, Depends
 
+from backend.core.role_sets import user_or_admin
 from backend.daily_summary.daily_summary_service import DailySummaryService
 from backend.daily_summary.dependencies import get_daily_summary_service
 from backend.daily_summary.schemas import (
@@ -15,7 +16,7 @@ from backend.daily_summary.schemas import (
 from backend.models import ComposedMealItem
 from backend.users.user_gateway import UserGateway, get_user_gateway
 
-daily_summary_router = APIRouter(prefix="/v1/daily-summary")
+daily_summary_router = APIRouter(prefix="/v1/daily-summary", tags=["User", "Admin"], dependencies=[user_or_admin])
 
 
 @daily_summary_router.get(
