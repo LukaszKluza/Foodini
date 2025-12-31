@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/blocs/diet_generation/daily_summary_bloc.dart';
 import 'package:frontend/config/app_config.dart';
-import 'package:frontend/config/constants.dart';
 import 'package:frontend/config/styles.dart';
 import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/models/diet_generation/macros_summary.dart';
 import 'package:frontend/models/diet_generation/meal_info.dart';
-import 'package:frontend/models/diet_generation/meal_item.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
-import 'package:frontend/utils/cache_manager.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
+import 'package:frontend/views/widgets/diet_generation/delete_meal_pop_up.dart';
+import 'package:frontend/views/widgets/diet_generation/edit_meal_pop_up.dart';
 import 'package:frontend/views/widgets/diet_generation/error_box.dart';
 import 'package:frontend/views/widgets/diet_generation/macros_items.dart';
-import 'package:frontend/views/widgets/diet_generation/pop_up.dart';
+import 'package:frontend/views/widgets/diet_generation/new_meal_pop_up.dart';
 import 'package:go_router/go_router.dart';
 
 class MealDetailsScreen extends StatefulWidget {
@@ -49,7 +49,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
         builder: (context, state) {
           final List<MealInfo> mealItems = state.getMealsByMealType(widget.mealType);
           final calculatedMacrosSummary = mealItems.isNotEmpty &&
-              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? calculateTotalMacros(mealItems) : MealTypeMacrosSummary.zero();
+              dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? MacrosSummary.calculateTotalMacros(mealItems) : MacrosSummary.zero();
 
           return Scaffold(
             body: _MealDetails(mealType: widget.mealType, state: state, widgetSelectedDate: widget.selectedDate),
@@ -60,7 +60,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
             ),
             bottomSheet: CustomBottomSheet(
               mealTypeMacrosSummary: calculatedMacrosSummary,
-              selectedDate: widget.selectedDate,
+              mealType: widget.mealType,
             ),
           );
          },
@@ -81,7 +81,7 @@ class _MealDetails extends StatelessWidget {
     final List<MealInfo> mealItems = state.getMealsByMealType(mealType);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 140),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 140),
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
@@ -90,15 +90,24 @@ class _MealDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
              if ((mealItems.isNotEmpty && dateComparator(state.dailySummary!.day, widgetSelectedDate) != 0) || mealItems.isEmpty)
-              buildErrorBox(
-                context,
-                AppLocalizations.of(context)!.noMealData_contactSupport(Constants.supportEmail),
-                buttonText:
-                AppLocalizations.of(context)!.refreshRequest,
-                onButtonPressed: () {
-                  context.read<CacheManager>().clearAllCache();
-                  context.read<DailySummaryBloc>().add(GetDailySummary(widgetSelectedDate));
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    generateMealNameHeader(context, mealType),
+                    const SizedBox(height: 16),
+                    buildErrorBox(
+                      context,
+                      AppLocalizations.of(context)!.noMealData,
+                      button: ActionButton(
+                        onPressed: showNewMealPopUp(context, widgetSelectedDate, mealType),
+                        color: Colors.orangeAccent,
+                        label: AppLocalizations.of(context)!.addNewMeal,
+                      ),
+                    ),
+                  ],
+                ),
               ) else
                 generateMealDetails(context, mealType, mealItems),
               if (state.updatingMealDetails. isFailure)
@@ -118,7 +127,6 @@ class _MealDetails extends StatelessWidget {
   }
 
   Padding generateMealDetails(BuildContext context, MealType mealType, List<MealInfo> mealItems) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
       child: Column(
@@ -136,7 +144,7 @@ class _MealDetails extends StatelessWidget {
               child: Row(
                 children: [
                   ActionButton(
-                    onPressed: showPopUp(context, widgetSelectedDate, mealItems[0].mealId!),
+                    onPressed: showNewMealPopUp(context, widgetSelectedDate, mealType),
                     color: Colors.orangeAccent,
                     label: AppLocalizations.of(context)!.addNewMeal,
                   ),
@@ -161,16 +169,16 @@ class _MealDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          generateMealItemNameHeader(mealInfo.name!),
+          generateMealItemNameHeader(mealInfo.name),
           const SizedBox(height: 12),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildCarbsItem(context, mealInfo.carbs!),
-              buildFatItem(context, mealInfo.fat!),
-              buildProteinItem(context, mealInfo.protein!),
-              buildCaloriesItem(context, mealInfo.calories!),
+              buildCarbsItem(context, mealInfo.plannedCarbs),
+              buildFatItem(context, mealInfo.plannedFat),
+              buildProteinItem(context, mealInfo.plannedProtein),
+              buildCaloriesItem(context, mealInfo.plannedCalories),
             ],
           ),
           const SizedBox(height: 16),
@@ -178,13 +186,19 @@ class _MealDetails extends StatelessWidget {
           Row(
             children: [
               ActionButton(
-                onPressed: showPopUp(context, widgetSelectedDate, mealInfo.mealId!, mealInfo: mealInfo),
+                onPressed: showEditMealPopUp(context, widgetSelectedDate, mealType, mealInfo.mealId, mealInfo),
                 color: Colors.orange[300]!,
                 label: AppLocalizations.of(context)!.edit,
               ),
               const SizedBox(width: 12),
               ActionButton(
-                onPressed: () {},
+                onPressed: showDeleteMealPopUp(
+                context,
+                widgetSelectedDate,
+                mealType,
+                mealInfo.mealId,
+                mealName: mealInfo.name,
+              ),
                 color: Colors.redAccent,
                 label: AppLocalizations.of(context)!.delete,
               ),
@@ -223,25 +237,4 @@ class _MealDetails extends StatelessWidget {
 
 BoxShadow getShadowBox() =>
     BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4));
-
-MealTypeMacrosSummary calculateTotalMacros(List<MealInfo> meals) {
-  double totalProtein = 0;
-  double totalCarbs = 0;
-  double totalFat = 0;
-  int totalCalories = 0;
-
-  for (final meal in meals) {
-    totalProtein += meal.protein!;
-    totalCarbs += meal.carbs!;
-    totalFat += meal.fat!;
-    totalCalories += meal.calories!;
-  }
-
-  return MealTypeMacrosSummary(
-    carbs: double.parse(totalCarbs.toStringAsFixed(2)),
-    fat: double.parse(totalFat.toStringAsFixed(2)),
-    protein: double.parse(totalProtein.toStringAsFixed(2)),
-    calories: totalCalories,
-  );
-}
 

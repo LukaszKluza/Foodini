@@ -10,6 +10,8 @@ class DailySummaryState {
   final ProcessingStatus gettingDailySummaryStatus;
   final ProcessingStatus changingMealStatus;
   final ProcessingStatus updatingMealDetails;
+  final ProcessingStatus removingMealFromSummary;
+  final ProcessingStatus addingScannedProduct;
   final DietGeneratingInfo dietGeneratingInfo;
   final int? errorCode;
   final dynamic errorData;
@@ -21,6 +23,8 @@ class DailySummaryState {
     this.gettingDailySummaryStatus = ProcessingStatus.emptyProcessingStatus,
     this.changingMealStatus = ProcessingStatus.emptyProcessingStatus,
     this.updatingMealDetails = ProcessingStatus.emptyProcessingStatus,
+    this.removingMealFromSummary = ProcessingStatus.emptyProcessingStatus,
+    this.addingScannedProduct = ProcessingStatus.emptyProcessingStatus,
     this.dietGeneratingInfo = const DietGeneratingInfo(),
     this.errorCode,
     this.errorData,
@@ -33,6 +37,8 @@ class DailySummaryState {
     ProcessingStatus? gettingDailySummaryStatus,
     ProcessingStatus? changingMealStatus,
     ProcessingStatus? updatingMealDetails,
+    ProcessingStatus? removingMealFromSummary,
+    ProcessingStatus? addingScannedProduct,
 
     DateTime? day,
     ProcessingStatus? processingStatus,
@@ -47,6 +53,8 @@ class DailySummaryState {
       gettingDailySummaryStatus: gettingDailySummaryStatus ?? this.gettingDailySummaryStatus,
       changingMealStatus: changingMealStatus ?? this.changingMealStatus,
       updatingMealDetails: updatingMealDetails ?? this.updatingMealDetails,
+      removingMealFromSummary: removingMealFromSummary ?? this.removingMealFromSummary,
+      addingScannedProduct: addingScannedProduct ?? this.addingScannedProduct,
       dietGeneratingInfo: processingStatus == null && day == null ? dietGeneratingInfo : dietGeneratingInfo.copyWith(day: day, processingStatus: processingStatus),
       errorCode: errorCode ?? this.errorCode,
       errorData: errorData ?? this.errorData,
@@ -56,7 +64,7 @@ class DailySummaryState {
   }
 
   List<MealInfo> getMealsByMealType(MealType type) {
-    return [if (dailySummary?.meals[type] != null) dailySummary!.meals[type]!];
+    return [if (dailySummary?.meals[type]?.mealItems != null) ...dailySummary!.meals[type]!.mealItems];
   }
 
   @override
@@ -66,6 +74,8 @@ class DailySummaryState {
         'gettingDailySummaryStatus: $gettingDailySummaryStatus, '
         'changingMealStatus: $changingMealStatus, '
         'updatingMeal: $updatingMealDetails, '
+        'removingMeal: $removingMealFromSummary, '
+        'addingScannedProduct: $addingScannedProduct, '
         'dietGeneratingInfo: ${dietGeneratingInfo.toString()}'
         'errorCode: $errorCode'
         ')';

@@ -70,10 +70,11 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     super.dispose();
   }
 
-  int _calculateCalories() {
-    final protein = int.tryParse(_proteinController.text) ?? 0;
-    final fat = int.tryParse(_fatController.text) ?? 0;
-    final carbs = int.tryParse(_carbsController.text) ?? 0;
+  double _calculateCalories() {
+    final protein = double.tryParse(_proteinController.text) ?? 0.0;
+    final fat = double.tryParse(_fatController.text) ?? 0.0;
+    final carbs = double.tryParse(_carbsController.text) ?? 0.0;
+
     return (protein * Constants.proteinEstimator) +
         (fat * Constants.fatEstimator) +
         (carbs * Constants.carbsEstimator);
@@ -81,29 +82,50 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
 
   String? _macrosValidator(String? value, int target) {
     final total = _calculateCalories();
-    const tolerance = 30;
+    const tolerance = 30.0;
 
     if ((total - target).abs() > tolerance) {
-      return '${AppLocalizations.of(context)!.macros} = $total ${AppLocalizations.of(context)!.kcal}, ${AppLocalizations.of(context)!.expected} ~ $target ${AppLocalizations.of(context)!.kcal}';
+      return '${AppLocalizations.of(context)!.macros} = '
+          '${total.round()} ${AppLocalizations.of(context)!.kcal}, '
+          '${AppLocalizations.of(context)!.expected} ~ '
+          '$target ${AppLocalizations.of(context)!.kcal}';
     }
     return null;
   }
 
   Widget _buildMacroField(
-    String label,
-    TextEditingController controller,
-    int target,
+      String label,
+      TextEditingController controller,
+      int target,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
         child: TextFormField(
           controller: controller,
           keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
           decoration: InputDecoration(
             labelText: label,
-            border: const OutlineInputBorder(),
+            labelStyle: TextStyle(
+              color: Colors.orange.shade700,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade700, width: 2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.orange.shade200, width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 16)
           ),
           validator: (value) => _macrosValidator(value, target),
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -115,7 +137,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(35.0),
+      padding: const EdgeInsets.fromLTRB(35, 16, 35, 16),
       child: BlocConsumer<MacrosChangeBloc, MacrosChangeState>(
         listener: (context, state) {
           MacrosChangeListenerHelper.onMacrosChangeSubmitListener(
@@ -171,88 +193,170 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
   }
 
   List<Widget> caloriesPredictionProperties(
-    BuildContext context,
-    MacrosChangeState state,
+      BuildContext context,
+      MacrosChangeState state,
   ) {
-    final targetCalories = state.predictedCalories!.targetCalories;
-    final bmr = state.predictedCalories!.bmr;
-    final tdee = state.predictedCalories!.tdee;
-    final dietDurationDays = state.predictedCalories!.dietDurationDays;
-    final target = state.predictedCalories!.targetCalories;
-    _proteinController.text =
-        state.predictedCalories!.predictedMacros.protein.toString();
-    _fatController.text =
-        state.predictedCalories!.predictedMacros.fat.toString();
-    _carbsController.text =
-        state.predictedCalories!.predictedMacros.carbs.toString();
+    final data = state.predictedCalories!;
+    _proteinController.text = data.predictedMacros.protein.toStringAsFixed(1);
+    _fatController.text = data.predictedMacros.fat.toStringAsFixed(1);
+    _carbsController.text = data.predictedMacros.carbs.toStringAsFixed(1);
 
-    Widget buildField(String label, String value) =>
-        Center(child: Text('$label: $value', textAlign: TextAlign.center));
-
-    List<Widget> fields = [
-      buildField(
-        AppLocalizations.of(context)!.predictedCalories,
-        '$targetCalories ${AppLocalizations.of(context)!.kcal}',
-      ),
-      const SizedBox(height: 16),
-      buildField(
-        AppLocalizations.of(context)!.bmr,
-        '$bmr ${AppLocalizations.of(context)!.kcal}',
-      ),
-      const SizedBox(height: 16),
-      buildField(
-        AppLocalizations.of(context)!.tdee,
-        '$tdee ${AppLocalizations.of(context)!.kcal}',
-      ),
-    ];
-
-    if (dietDurationDays != null && dietDurationDays > 0) {
-      fields.add(const SizedBox(height: 16));
-      fields.add(
-        buildField(
-          AppLocalizations.of(context)!.dietDuration,
-          '$dietDurationDays ${AppLocalizations.of(context)!.days}',
+    return [
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16,8,16,8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade600, Colors.orange.shade400],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withAlpha(80),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            )
+          ],
         ),
-      );
-    }
+        child: Column(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.predictedCalories.toUpperCase(),
+              style: TextStyle(
+                color: Colors.white.withAlpha(230),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${data.targetCalories} ${AppLocalizations.of(context)!.kcal}',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16,8,16,8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade600, Colors.orange.shade400],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withAlpha(80),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            )
+          ],
+        ),
+        child: Column(
+          children: [
+            Text(
+              '${AppLocalizations.of(context)!.dietDuration}: ${data.dietDurationDays} ${AppLocalizations.of(context)!.days}',
+              style: TextStyle(
+                color: Colors.white.withAlpha(230),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 20),
 
-    fields.addAll([
-      const SizedBox(height: 16),
-      Center(
+      IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildInfoCard(
+              AppLocalizations.of(context)!.bmr,
+              '${data.bmr} ${AppLocalizations.of(context)!.kcal}',
+            ),
+            const SizedBox(width: 12),
+            _buildInfoCard(
+              AppLocalizations.of(context)!.tdee,
+              '${data.tdee} ${AppLocalizations.of(context)!.kcal}',
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 30),
+
+      Padding(
+        padding: const EdgeInsets.only(left: 4, bottom: 16),
         child: Text(
           AppLocalizations.of(context)!.predictedMacros,
           style: TextStyle(
             fontSize: 60.sp.clamp(15.0, 20.0),
-            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
-      const SizedBox(height: 8),
-      Center(
-        child: _buildMacroField(
-          AppLocalizations.of(context)!.proteinG,
-          _proteinController,
-          target,
-        ),
-      ),
-      Center(
-        child: _buildMacroField(
-          AppLocalizations.of(context)!.fatG,
-          _fatController,
-          target,
-        ),
-      ),
-      Center(
-        child: _buildMacroField(
-          AppLocalizations.of(context)!.carbsG,
-          _carbsController,
-          target,
-        ),
-      ),
-    ]);
 
-    return fields;
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildMacroField(AppLocalizations.of(context)!.proteinG, _proteinController, data.targetCalories),
+          _buildMacroField(AppLocalizations.of(context)!.fatG, _fatController, data.targetCalories),
+          _buildMacroField(AppLocalizations.of(context)!.carbsG, _carbsController, data.targetCalories),
+        ],
+      ),
+      const SizedBox(height: 32),
+    ];
+  }
+
+  Widget _buildInfoCard(String label, String value) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.orange.shade100, width: 1),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.orange.shade900,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+
+            const Spacer(),
+            const SizedBox(height: 4),
+
+            Text(
+              value,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Center submitButton(BuildContext context) {
@@ -266,9 +370,9 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           context.read<MacrosChangeBloc>().add(
             SubmitMacrosChange(
               Macros(
-                protein: int.tryParse(_proteinController.text)!,
-                fat: int.tryParse(_fatController.text)!,
-                carbs: int.tryParse(_carbsController.text)!,
+                protein: double.tryParse(_proteinController.text)!,
+                fat: double.tryParse(_fatController.text)!,
+                carbs: double.tryParse(_carbsController.text)!,
               ),
             ),
           );
@@ -288,19 +392,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
         context.read<MacrosChangeBloc>().add(LoadInitialMacros());
       },
       Text(AppLocalizations.of(context)!.refreshRequest),
-    );
-  }
-
-  Center redirectToProfileDetailsButton(BuildContext context) {
-    return customRedirectButton(
-      Key('redirect_to_profile_details_button'),
-      () {
-        _message = null;
-        _errorCode = null;
-
-        context.go('/profile-details');
-      },
-      Text(AppLocalizations.of(context)!.redirectToProfileDetails),
     );
   }
 }

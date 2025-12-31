@@ -54,7 +54,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requiredPassword => 'Hasło jest wymagane';
 
   @override
-  String get requiredPasswordConfirmation => 'Potwierdzenie hasła jest wymagane';
+  String get requiredPasswordConfirmation =>
+      'Potwierdzenie hasła jest wymagane';
 
   @override
   String get samePasswords => 'Hasła muszą być takie same';
@@ -63,7 +64,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get passwordLengthMustBeBetween => 'Długość hasła musi być pomiędzy';
 
   @override
-  String get passwordComplexityError => 'Hasło musi zawierać wielkie i małe litery oraz cyfry';
+  String get passwordComplexityError =>
+      'Hasło musi zawierać wielkie i małe litery oraz cyfry';
 
   @override
   String get invalidEmail => 'Podaj poprawny adres e-mail';
@@ -126,16 +128,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get accountActivatedSuccessfully => 'Konto zostało aktywowane';
 
   @override
-  String get accountHasNotBeenConfirmed => 'Twoje konto nie zostało aktywowane.';
+  String get accountHasNotBeenConfirmed =>
+      'Twoje konto nie zostało aktywowane.';
 
   @override
-  String get successfullyResendEmailVerification => 'E-mail weryfikacyjny wysłano pomyślnie';
+  String get successfullyResendEmailVerification =>
+      'E-mail weryfikacyjny wysłano pomyślnie';
 
   @override
-  String get sendVerificationEmailAgain => 'Wyślij e-mail weryfikacyjny ponownie';
+  String get sendVerificationEmailAgain =>
+      'Wyślij e-mail weryfikacyjny ponownie';
 
   @override
-  String get accountDeletionInformation => 'Czy na pewno chcesz usunąć konto? Tej operacji nie można cofnąć.';
+  String get accountDeletionInformation =>
+      'Czy na pewno chcesz usunąć konto? Tej operacji nie można cofnąć.';
 
   @override
   String get confirmAccountDeletion => 'Potwierdź usunięcie konta';
@@ -165,13 +171,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get checkAndConfirmEmailAddress => 'Sprawdź i potwierdź adres e-mail';
 
   @override
-  String get checkEmailAddressToSetNewPassword => 'Sprawdź e-mail, aby ustawić nowe hasło';
+  String get checkEmailAddressToSetNewPassword =>
+      'Sprawdź e-mail, aby ustawić nowe hasło';
 
   @override
   String get passwordSuccessfullyChanged => 'Hasło zostało zmienione';
 
   @override
-  String get wrongChangePasswordUrl => 'Nie możesz otworzyć formularza zmiany hasła';
+  String get wrongChangePasswordUrl =>
+      'Nie możesz otworzyć formularza zmiany hasła';
 
   @override
   String get dietPreferences => 'Preferencje dietetyczne';
@@ -198,13 +206,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weightKg => 'Waga (kg)';
 
   @override
+  String get weightG => 'Waga (g)';
+
+  @override
   String get dietGoalShouldBeBetween => 'Cel diety powinien być pomiędzy';
 
   @override
-  String get muscleGainGoalCantBeLower => 'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
+  String get muscleGainGoalCantBeLower =>
+      'Cel diety dla \'Przyrostu masy mięśniowej\' nie może być mniejszy niż obecna waga';
 
   @override
-  String get fatLossGoalCantBeHigher => 'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
+  String get fatLossGoalCantBeHigher =>
+      'Cel diety dla \'Utraty tłuszczu\' nie może być większy niż obecna waga';
 
   @override
   String get kg => 'kg';
@@ -261,7 +274,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterMusclePercentage => 'Procent mięśni';
 
   @override
-  String get musclePercentageShouldBeBetween => 'Procent mięśni powinien być pomiędzy';
+  String get musclePercentageShouldBeBetween =>
+      'Procent mięśni powinien być pomiędzy';
 
   @override
   String get waterPercentage => 'Procent wody';
@@ -270,7 +284,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterWaterPercentage => 'Wprowadź procent wody';
 
   @override
-  String get waterPercentageShouldBeBetween => 'Procent wody powinien być pomiędzy';
+  String get waterPercentageShouldBeBetween =>
+      'Procent wody powinien być pomiędzy';
 
   @override
   String get fatPercentage => 'Procent tłuszczu';
@@ -279,13 +294,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterFatPercentage => 'Wprowadź procent tłuszczu';
 
   @override
-  String get fatPercentageShouldBeBetween => 'Procent tłuszczu powinien być pomiędzy';
+  String get fatPercentageShouldBeBetween =>
+      'Procent tłuszczu powinien być pomiędzy';
 
   @override
-  String get advancedParametersValidation => 'Suma zaawansowanych parametrów nie może być wyższa niż';
+  String get advancedParametersValidation =>
+      'Suma zaawansowanych parametrów nie może być wyższa niż';
 
   @override
-  String get generateWeeklyDiet => 'Wygeneruj tygodniową dietę';
+  String get savePreferences => 'Zapisz preferencje';
 
   @override
   String get predictedCalories => 'Przewidywana liczba kalorii';
@@ -375,7 +392,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cookingSkills_professional => 'Profesjonalista';
 
   @override
-  String get activityLevel_VeryLow => 'Bardzo niska (1–2 dni w tygodniu lub mniej)';
+  String get activityLevel_VeryLow =>
+      'Bardzo niska (1–2 dni w tygodniu lub mniej)';
 
   @override
   String get activityLevel_Light => 'Niska (2–3 dni w tygodniu)';
@@ -486,7 +504,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get carbsG => 'Węgle (g)';
 
   @override
-  String get fillFormToSeePredictions => 'Proszę wypełnić formularz, aby zobaczyć predykcje';
+  String get fillFormToSeePredictions =>
+      'Proszę wypełnić formularz, aby zobaczyć predykcje';
 
   @override
   String get redirectToProfileDetails => 'Przejdź do szczegółów profilu';
@@ -504,7 +523,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get goToMainPage => 'Idź na stronę główną';
 
   @override
-  String get errorWhileFetchingMealIcon => 'Błąd podczas pobierania ikony posiłku';
+  String get errorWhileFetchingMealIcon =>
+      'Błąd podczas pobierania ikony posiłku';
 
   @override
   String get mealDescriptions => 'Opis posiłku';
@@ -570,7 +590,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cannotEditPastMeals => 'Nie można edytować posiłków z przeszłości';
 
   @override
-  String get noMealsForToday => 'Nie masz zaplanowanych żadnych posiłków na dziś';
+  String get noMealsForToday =>
+      'Nie masz zaplanowanych żadnych posiłków na dziś';
 
   @override
   String get markedAs => 'oznaczone jako';
@@ -579,16 +600,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dailySummary => 'Dzienne podsumowanie';
 
   @override
-  String get fillFormToGenerateMeals => 'Proszę wypełnić formularz, aby móc generować posiłki';
+  String get fillFormToGenerateMeals =>
+      'Proszę wypełnić formularz, aby móc generować posiłki';
 
   @override
   String get dailyMeals => 'Dzienne menu';
 
   @override
-  String get dailyMealsFor => 'Posiłki na dzień ';
+  String get plannedMealsFor => 'Planowane posiłki na';
 
   @override
-  String get macrosSummary => 'Podsumowanie makroskładników';
+  String get macrosSummary => 'Podsumowanie';
 
   @override
   String get calories => 'Kalorie';
@@ -609,33 +631,67 @@ class AppLocalizationsPl extends AppLocalizations {
   String get save => 'Zapisz';
 
   @override
+  String get confirmRemovingMeal => 'Potwierdź, że chcesz usunąć ten posiłek';
+
+  @override
   String get scanProductBarCode => 'Zeskanuj kod kreskowy produktu';
+
+  @override
+  String get productBarCode => 'Kod kreskowy';
+
+  @override
+  String get addProduct => 'Dodaj produkt';
+
+  @override
+  String get uploadBarCodeImage => 'Dodaj zdjęcie kodu kreskowego';
+
+  @override
+  String get readFile => 'Wczytano plik:';
+
+  @override
+  String get barcodeCannotBeEmpty => 'Kod kreskowy nie może być pusty';
+
+  @override
+  String get barcodeMustBeLength => 'Kod kreskowy musi mieć długość';
+
+  @override
+  String get barcodeMustContainOnlyDigits =>
+      'Kod kreskowy może zawierać tylko cyfry';
+
+  @override
+  String get barcodeUploaded => 'Kod kreskowy dodany';
 
   @override
   String get mealName => 'Nazwa posiłku';
 
   @override
-  String get mealItemNameShouldBeBetween => 'Nazwa posiłku powinna mieć długość pomiędzy';
+  String get mealItemNameShouldBeBetween =>
+      'Nazwa posiłku powinna mieć długość pomiędzy';
 
   @override
-  String get valueOfThisMacroShouldBeBetween => 'Wartość tego makroskładnika powinna mieścić się w przedziale';
+  String get valueOfThisMacroShouldBeBetween =>
+      'Wartość tego makroskładnika powinna mieścić się w przedziale';
 
   @override
-  String get valueOfCaloriesMacroShouldBeBetween => 'Wartość kalorii powinna mieścić się w przedziale';
+  String get valueOfCaloriesShouldBeBetween =>
+      'Wartość kalorii powinna mieścić się w przedziale';
+
+  @override
+  String get valueOfWeightShouldBeBetween =>
+      'Wartość kalorii powinna mieścić się w przedziale';
 
   @override
   String get generateNewPlan => 'Generuj posiłki';
 
   @override
-  String noMealData_contactSupport(Object email) {
-    return 'Brak danych dla tego posiłku. Odśwież zapytanie lub skontaktuj się z pomocą techniczną pod adresem $email.';
-  }
+  String get noMealData => 'Brak danych dla tego posiłku.';
 
   @override
   String get regenerateMeals => 'Generuj posiłki ponownie';
 
   @override
-  String get dietOutdatedConsiderRegenerating => 'Menu może być nieaktualne – rozważ regenerację.';
+  String get dietOutdatedConsiderRegenerating =>
+      'Menu może być nieaktualne – rozważ regenerację.';
 
   @override
   String get dietOutdated => 'Menu może być nieaktualne.';
@@ -660,4 +716,28 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get error => 'Błąd';
+
+  @override
+  String get information => 'Informacja';
+
+  @override
+  String get yourStatistics => 'Twoje statystyki';
+
+  @override
+  String get statisticsLoadFailure => 'Nie udało się załadować statystyk';
+
+  @override
+  String get statistsMissing => 'Statystyki niedostępne';
+
+  @override
+  String get calorieConsumptionChartTitle => 'Spożyte kalorie';
+
+  @override
+  String get calorieGoalChartTitle => 'Cel kalorii vs faktyczne spożycie';
+
+  @override
+  String get macrosPer100g => 'Makroskładniki na 100 g';
+
+  @override
+  String get weightChartTitle => 'Historia wagi';
 }

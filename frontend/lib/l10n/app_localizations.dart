@@ -62,7 +62,8 @@ import 'app_localizations_pl.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('pl')
+    Locale('pl'),
   ];
 
   /// No description provided for @foodini.
@@ -473,6 +476,12 @@ abstract class AppLocalizations {
   /// **'Weight (kg)'**
   String get weightKg;
 
+  /// No description provided for @weightG.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (g)'**
+  String get weightG;
+
   /// No description provided for @dietGoalShouldBeBetween.
   ///
   /// In en, this message translates to:
@@ -647,11 +656,11 @@ abstract class AppLocalizations {
   /// **'Sum of advanced parameters can\'t be higher than'**
   String get advancedParametersValidation;
 
-  /// No description provided for @generateWeeklyDiet.
+  /// No description provided for @savePreferences.
   ///
   /// In en, this message translates to:
-  /// **'Generate weekly diet'**
-  String get generateWeeklyDiet;
+  /// **'Save preferences'**
+  String get savePreferences;
 
   /// No description provided for @predictedCalories.
   ///
@@ -1247,16 +1256,16 @@ abstract class AppLocalizations {
   /// **'Daily Menu'**
   String get dailyMeals;
 
-  /// No description provided for @dailyMealsFor.
+  /// No description provided for @plannedMealsFor.
   ///
   /// In en, this message translates to:
-  /// **'Daily Meals for '**
-  String get dailyMealsFor;
+  /// **'Planned meals for'**
+  String get plannedMealsFor;
 
   /// No description provided for @macrosSummary.
   ///
   /// In en, this message translates to:
-  /// **'Macros summary'**
+  /// **'Summary of'**
   String get macrosSummary;
 
   /// No description provided for @calories.
@@ -1295,11 +1304,65 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @confirmRemovingMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm you want to remove that meal'**
+  String get confirmRemovingMeal;
+
   /// No description provided for @scanProductBarCode.
   ///
   /// In en, this message translates to:
-  /// **'Scan product bar code'**
+  /// **'Scan product barcode'**
   String get scanProductBarCode;
+
+  /// No description provided for @productBarCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode'**
+  String get productBarCode;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get addProduct;
+
+  /// No description provided for @uploadBarCodeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload barcode image'**
+  String get uploadBarCodeImage;
+
+  /// No description provided for @readFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Read file:'**
+  String get readFile;
+
+  /// No description provided for @barcodeCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode cannot be empty'**
+  String get barcodeCannotBeEmpty;
+
+  /// No description provided for @barcodeMustBeLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode must be exactly'**
+  String get barcodeMustBeLength;
+
+  /// No description provided for @barcodeMustContainOnlyDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode must contain only digits'**
+  String get barcodeMustContainOnlyDigits;
+
+  /// No description provided for @barcodeUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode uploaded'**
+  String get barcodeUploaded;
 
   /// No description provided for @mealName.
   ///
@@ -1319,11 +1382,17 @@ abstract class AppLocalizations {
   /// **'Value of this macro should be between'**
   String get valueOfThisMacroShouldBeBetween;
 
-  /// No description provided for @valueOfCaloriesMacroShouldBeBetween.
+  /// No description provided for @valueOfCaloriesShouldBeBetween.
   ///
   /// In en, this message translates to:
   /// **'Value of calories should be between'**
-  String get valueOfCaloriesMacroShouldBeBetween;
+  String get valueOfCaloriesShouldBeBetween;
+
+  /// No description provided for @valueOfWeightShouldBeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of weight should be between'**
+  String get valueOfWeightShouldBeBetween;
 
   /// No description provided for @generateNewPlan.
   ///
@@ -1331,11 +1400,11 @@ abstract class AppLocalizations {
   /// **'Generate New Plan'**
   String get generateNewPlan;
 
-  /// No description provided for @noMealData_contactSupport.
+  /// No description provided for @noMealData.
   ///
   /// In en, this message translates to:
-  /// **'No data for this meal. Please refresh request or contact support at {email}.'**
-  String noMealData_contactSupport(Object email);
+  /// **'No data for this meal.'**
+  String get noMealData;
 
   /// No description provided for @regenerateMeals.
   ///
@@ -1396,9 +1465,58 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @information.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get information;
+
+  /// No description provided for @yourStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistics'**
+  String get yourStatistics;
+
+  /// No description provided for @statisticsLoadFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load statistics'**
+  String get statisticsLoadFailure;
+
+  /// No description provided for @statistsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics available'**
+  String get statistsMissing;
+
+  /// No description provided for @calorieConsumptionChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie consumption'**
+  String get calorieConsumptionChartTitle;
+
+  /// No description provided for @calorieGoalChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie Goal vs Actual'**
+  String get calorieGoalChartTitle;
+
+  /// No description provided for @macrosPer100g.
+  ///
+  /// In en, this message translates to:
+  /// **'Macros per 100 g'**
+  String get macrosPer100g;
+
+  /// No description provided for @weightChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight history'**
+  String get weightChartTitle;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1407,25 +1525,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'pl': return AppLocalizationsPl();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'pl':
+      return AppLocalizationsPl();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

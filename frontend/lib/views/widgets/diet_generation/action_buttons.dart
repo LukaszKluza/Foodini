@@ -30,8 +30,13 @@ Center customSubmitButton(
     buttonKey,
     onPressed,
     ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFB2F2BB),
+      backgroundColor: const Color(0xFF3B9B49),
       minimumSize: const Size.fromHeight(48),
+      foregroundColor: Colors.white,
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
     ),
     buttonChild,
   );

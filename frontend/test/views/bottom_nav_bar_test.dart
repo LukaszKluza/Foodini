@@ -46,7 +46,7 @@ void main() {
           additionalRoutes: [
             GoRoute(
               path: '/main-page',
-              builder: (_, __) => const Scaffold(body: Text('Main Page')),
+              builder: (_, _) => const Scaffold(body: Text('Main Page')),
             ),
           ],
           initialLocation: '/profile',
@@ -134,7 +134,7 @@ void main() {
           additionalRoutes: [
             GoRoute(
               path: '/wizard2',
-              builder: (_, __) => const Scaffold(body: Text('Wizard Step 2')),
+              builder: (_, _) => const Scaffold(body: Text('Wizard Step 2')),
             ),
           ],
           initialLocation: '/wizard1',
@@ -172,7 +172,7 @@ void main() {
           additionalRoutes: [
             GoRoute(
               path: '/wizard1',
-              builder: (_, __) => const Scaffold(body: Text('Wizard Step 1')),
+              builder: (_, _) => const Scaffold(body: Text('Wizard Step 1')),
             ),
           ],
           initialLocation: '/wizard2',

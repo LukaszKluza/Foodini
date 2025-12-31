@@ -13,8 +13,10 @@ class Endpoints {
   static const String refreshTokens = '$baseUrl/users/refresh-tokens';
 
   // user-details
-  static const String dietPreferences = '$baseUrl/user-details';
-  static const String userCaloriesPrediction = '$baseUrl/calories-prediction';
+  static const String dietPreferences = '$baseUrl/user-details/';
+  static const String userCaloriesPrediction = '$baseUrl/calories-prediction/';
+  static const String userStatistics = '$baseUrl/user-statistics';
+  static const String userWeightHistory = '$baseUrl/user-details/weight-history';
 
   // diet-prediction
   static const String generateMealPlan = '$baseUrl/diet-generation/generate-meal-plan';
@@ -23,12 +25,14 @@ class Endpoints {
   static const String dailySummary = '$baseUrl/daily-summary';
   static const String dailySummaryMeals = '$baseUrl/daily-summary/meals';
   static const String dailySummaryMacros = '$baseUrl/daily-summary/macros';
-  static const String customMeal = '$baseUrl/daily-summary/meals/custom';
 
   // meals
   static const String meal = '$baseUrl/meals';
   static const String mealRecipe = '$baseUrl/meals/meal-recipes';
   static const String mealIconInfo = '$baseUrl/meals/meal-icon';
+  static const String dailyMeal = '$baseUrl/daily-summary/meals';
+  static const String removeMealFromSummary = '$baseUrl/daily-summary/meal';
+  static const String scannedProduct = '$baseUrl/barcode_scanning/scanned-product';
 
   // static
   static const String mealIcon= '$baseUrl/static/meals-icon';

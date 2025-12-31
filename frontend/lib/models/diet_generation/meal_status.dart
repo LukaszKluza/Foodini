@@ -1,4 +1,4 @@
-import 'package:frontend/models/diet_generation/meal_info.dart';
+import 'package:frontend/models/diet_generation/meal.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 
 enum MealStatus {
@@ -25,7 +25,7 @@ enum MealStatus {
 
   static MealStatus getNextStatus(
       MealType currentType,
-      Map<MealType, MealInfo> allMeals,
+      Map<MealType, Meal> allMeals,
   ) {
       final currentStatus = allMeals[currentType]!.status;
       final statusCycle = [MealStatus.toEat, MealStatus.eaten, MealStatus.skipped];

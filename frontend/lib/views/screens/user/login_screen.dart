@@ -111,7 +111,7 @@ class _LoginFormState extends State<_LoginForm> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(35.0),
+        padding: const EdgeInsets.fromLTRB(35, 16, 35, 16),
         child: Form(
           key: _formKey,
           child: Column(
@@ -183,7 +183,7 @@ class _LoginFormState extends State<_LoginForm> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           final request = LoginRequest(
-                            email: _emailController.text,
+                            username: _emailController.text,
                             password: _passwordController.text,
                           );
                           context.read<LoginBloc>().add(

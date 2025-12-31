@@ -1,33 +1,60 @@
+from contextlib import asynccontextmanager
+
 import psycopg2
+import sqlalchemy
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
-from redis.exceptions import ConnectionError as RedisConnectionError
+from redis.exceptions import RedisError
 from slowapi.errors import RateLimitExceeded
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from backend.barcode_scanning.barcode_scanning_router import barcode_scanning_router
+from backend.core.database import engine, redis_tokens
+from backend.core.health import check_db, check_redis
 from backend.core.limiter import limiter
 from backend.core.logger import logger
 from backend.core.not_found_in_database_exception import NotFoundInDatabaseException
 from backend.core.value_error_exception import ValueErrorException
+from backend.daily_summary.admin_daily_summary_router import admin_daily_summary_router
 from backend.daily_summary.daily_summary_router import daily_summary_router
 from backend.diet_generation.diet_generation_router import diet_generation_router
 from backend.meals.meal_router import meal_router
+from backend.open_food_facts.open_food_facts_router import open_food_facts_router
 from backend.settings import config
 from backend.user_details.calories_prediction_router import calories_prediction_router
 from backend.user_details.user_details_router import user_details_router
+from backend.user_statistics.user_statistics_router import user_statistics_router
 from backend.users.user_router import user_router
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("App startup: DB and Redis ready")
+
+    yield
+
+    logger.info("App shutdown: disposing DB engine and closing Redis")
+
+    await engine.dispose()
+    await redis_tokens.close()
+    await redis_tokens.close()
+
+
+app = FastAPI(lifespan=lifespan, docs_url="/docs", redoc_url=None)
 app.include_router(user_router)
 app.include_router(user_details_router)
 app.include_router(calories_prediction_router)
 app.include_router(diet_generation_router)
 app.include_router(daily_summary_router)
+app.include_router(admin_daily_summary_router)
 app.include_router(meal_router)
+app.include_router(user_statistics_router)
+app.include_router(open_food_facts_router)
+app.include_router(barcode_scanning_router)
 
 
 app.add_middleware(
@@ -89,8 +116,7 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
 
 
 @app.exception_handler(psycopg2.OperationalError)
-@app.exception_handler(OSError)
-async def db_connection_error_handler(request: Request, exc: Exception):
+async def db_connection_error_handler(request: Request, exc: psycopg2.OperationalError):
     logger.error(f"Database connection error: {str(exc)}")
 
     raise HTTPException(
@@ -99,7 +125,27 @@ async def db_connection_error_handler(request: Request, exc: Exception):
     )
 
 
-@app.exception_handler(RedisConnectionError)
+@app.exception_handler(sqlalchemy.exc.OperationalError)
+async def db_operational_error_handler(request: Request, exc: sqlalchemy.exc.OperationalError):
+    logger.error(f"Database connection error: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
+    )
+
+
+@app.exception_handler(sqlalchemy.exc.DBAPIError)
+async def db_api_error_handler(request: Request, exc: sqlalchemy.exc.DBAPIError):
+    logger.error(f"Database connection error: {str(exc)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Server connection failed",
+    )
+
+
+@app.exception_handler(RedisError)
 async def redis_connection_error_handler(request: Request, exc: Exception):
     logger.error(f"Redis connection error: {str(exc)}")
 
@@ -124,6 +170,46 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
+@app.get("/health/live", tags=["health"])
+async def liveness_probe():
+    return {"status": "alive"}
+
+
+@app.get("/health/ready", tags=["health"])
+async def readiness_probe():
+    db = await check_db(engine)
+    redis = await check_redis(redis_tokens)
+
+    healthy = db["status"] == "ok" and redis["status"] == "ok"
+
+    response = {
+        "status": "ok" if healthy else "degraded",
+        "components": {
+            "database": db,
+            "redis": redis,
+        },
+    }
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if healthy else status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=response,
+    )
+
+
+@app.get("/health", tags=["health"])
+async def health():
+    db = await check_db(engine)
+    redis = await check_redis(redis_tokens)
+
+    healthy = db["status"] == "ok" and redis["status"] == "ok"
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if healthy else status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={
+            "status": "ok" if healthy else "degraded",
+            "components": {
+                "database": db,
+                "redis": redis,
+            },
+        },
+    )

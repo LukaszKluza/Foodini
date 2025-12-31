@@ -14,6 +14,7 @@ import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
 import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
@@ -104,7 +105,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<ActivityLevel>(
         key: Key('activity_level'),
         isExpanded: true,
-        value: _selectedActivityLevel,
+        initialValue: _selectedActivityLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.activityLevel,
         ),
@@ -129,7 +130,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<StressLevel>(
         key: Key('stress_level'),
         isExpanded: true,
-        value: _selectedStressLevel,
+        initialValue: _selectedStressLevel,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.stressLevel,
         ),
@@ -154,7 +155,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
       DropdownButtonFormField<SleepQuality>(
         key: Key('sleep_quality'),
         isExpanded: true,
-        value: _selectedSleepQuality,
+        initialValue: _selectedSleepQuality,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
         ),
@@ -282,7 +283,7 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
     ];
 
     return Padding(
-      padding: EdgeInsets.all(35.0),
+      padding: const EdgeInsets.fromLTRB(35, 16, 35, 16),
       child: BlocConsumer<DietFormBloc, DietFormState>(
         listener: (context, state) {
           DietFormListenerHelper.onDietFormSubmitListener(
@@ -303,19 +304,14 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
                 if (state is DietFormSubmit && state.isSubmitting)
                   const Center(child: CircularProgressIndicator())
                 else
-                  ElevatedButton(
-                    key: Key(AppLocalizations.of(context)!.generateWeeklyDiet),
-                    onPressed: () {
+                  customSubmitButton(
+                    Key(AppLocalizations.of(context)!.savePreferences),
+                        () {
                       if (_formKey.currentState!.validate()) {
                         context.read<DietFormBloc>().add(SubmitForm());
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFB2F2BB),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.generateWeeklyDiet,
-                    ),
+                    Text(AppLocalizations.of(context)!.savePreferences),
                   ),
                 if (_message != null)
                   Padding(

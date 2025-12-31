@@ -5,6 +5,7 @@ from backend.meals.enums.unit import Unit
 from backend.models import MealIcon, MealRecipe
 from backend.models.meal_recipe_model import Ingredient, Ingredients, Step
 from backend.users.enums.language import Language
+from backend.users.enums.role import Role
 
 MEAL_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal-icon")
 MEAL_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal")
@@ -17,6 +18,9 @@ LUNCH_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "lunch-icon")
 AFTERNOON_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "afternoon-snack-icon")
 DINNER_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "dinner-icon")
 EVENING_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "evening-snack-icon")
+
+USER_ROLE_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "user-role")
+ADMIN_ROLE_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "admin-role")
 
 BREAKFAST_MEAL_ICON = MealIcon(
     id=BREAKFAST_ICON_ID,
@@ -49,6 +53,17 @@ MEAL_ICONS = [
     },
 ]
 
+USER_ROLES = [
+    {
+        "id": USER_ROLE_ID,
+        "name": Role.USER,
+    },
+    {
+        "id": ADMIN_ROLE_ID,
+        "name": Role.ADMIN,
+    },
+]
+
 CORNFLAKES_EN_RECIPE = MealRecipe(
     id=RECIPE_EN_ID,
     meal_id=MEAL_ID,
@@ -57,6 +72,7 @@ CORNFLAKES_EN_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Crispy cornflakes served with smooth, creamy soy milk. "
     "A light, nutritious breakfast perfect for a quick start to your day",
+    meal_explanation="Meal explanation: Cornflakes with soy milk is a quick and easy breakfast option",
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.EN), name="cornflakes"),
@@ -88,6 +104,8 @@ CORNFLAKES_PL_RECIPE = MealRecipe(
     meal_type=MealType.BREAKFAST,
     meal_description="Chrupiące płatki kukurydziane podawane z gładkim,"
     " kremowym mlekiem sojowym. Lekkie, pożywne śniadanie idealne na szybki start dnia.",
+    meal_explanation="Uzasadnienie posiłku: Płatki kukurydziane z mlekiem sojowym to szybkie i łatwe do przygotowania "
+    "śniadanie",
     ingredients=Ingredients(
         ingredients=[
             Ingredient(volume=1, unit=Unit.CUP.translate(Language.PL), name="płatki kukurydziane"),

@@ -113,7 +113,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(35.0),
+        padding: const EdgeInsets.fromLTRB(35, 16, 35, 16),
         child: Form(
           key: _formKey,
           child: Column(

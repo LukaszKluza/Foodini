@@ -55,15 +55,23 @@ class _MealRecipe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return BlocBuilder<MealRecipeBloc, MealRecipeState>(
       builder: (context, state) {
-        return SingleChildScrollView(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              if (state.processingStatus!.isOngoing)
-                const Center(child: CircularProgressIndicator()),
+        if (state.processingStatus!.isOngoing) {
+          return SizedBox(
+            height: screenHeight * 0.5,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
               if (state.processingStatus!.isSuccess) ...[
                 generateMealRecipe(state, context),
               ],

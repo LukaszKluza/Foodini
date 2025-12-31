@@ -4,6 +4,7 @@ import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
+import 'package:frontend/models/diet_generation/remove_meal_request.dart';
 import 'package:frontend/models/user/change_language_request.dart';
 import 'package:frontend/models/user/change_password_request.dart';
 import 'package:frontend/models/user/language.dart';
@@ -14,6 +15,7 @@ import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/utils/global_error_interceptor.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid_value.dart';
 
 class ApiClient {
@@ -41,7 +43,7 @@ class ApiClient {
     _client.interceptors.add(GlobalErrorInterceptor(this, _tokenStorage));
   }
 
-  get dio => _client;
+  Dio get dio => _client;
 
   Future<Response> getUser(UuidValue userId) {
     return _client.get(
@@ -63,7 +65,7 @@ class ApiClient {
     return _client.post(
       Endpoints.login,
       data: request.toJson(),
-      options: Options(extra: {'requiresAuth': false}),
+      options: Options(contentType: Headers.formUrlEncodedContentType, extra: {'requiresAuth': false}),
     );
   }
 
@@ -139,6 +141,48 @@ class ApiClient {
   }
 
   // user details
+  Future<Response> getUserStatistics(UuidValue userId) {
+    return _client.get(
+      Endpoints.userStatistics,
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
+  Future<Response> getUserWeightForDay(DateTime day, UuidValue userId) {
+    final formattedDate = day.toIso8601String().split('T').first;
+    return _client.get(
+      '${Endpoints.userWeightHistory}/$formattedDate',
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
+  Future<Response> getWeightHistory({
+    required DateTime start,
+    required DateTime end,
+    required UuidValue userId,
+  }) {
+    return dio.get(
+      Endpoints.userWeightHistory,
+      queryParameters: {
+        'start': start.toIso8601String().split('T').first,
+        'end': end.toIso8601String().split('T').first,
+        'user_id': userId.uuid,
+      },
+      options: Options(extra: {'requiresAuth': true, 'cache': false}),
+    );
+  }
+
+  Future<Response> addUserWeight(Map<String, dynamic> body, UuidValue userId) {
+    return _client.post(
+      Endpoints.userWeightHistory,
+      data: body,
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
   Future<Response> getDietPreferences(UuidValue userId) {
     return _client.get(
       Endpoints.dietPreferences,
@@ -256,13 +300,63 @@ class ApiClient {
     );
   }
 
-  Future<Response> addCustomMeal(
+  Future<Response> addMeal(
       CustomMealUpdateRequest customMealUpdateRequest,
       UuidValue userId,
   ) {
-    return _client.patch(
-      Endpoints.customMeal,
+    return _client.post(
+      Endpoints.dailyMeal,
       data: customMealUpdateRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> updateDailyMeal(
+      CustomMealUpdateRequest customMealUpdateRequest,
+      UuidValue userId,
+    ) {
+    return _client.patch(
+      '${Endpoints.dailyMeal}/$userId',
+      data: customMealUpdateRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> removeMealFromSummary(RemoveMealRequest removeMealRequest, UuidValue userId) {
+    return _client.delete(
+      Endpoints.removeMealFromSummary,
+      data: removeMealRequest.toJson(),
+      queryParameters: {'user_id': userId.uuid},
+      options: Options(extra: {'requiresAuth': true}),
+    );
+  }
+
+  Future<Response> addScannedProduct({
+    String? barcode,
+    XFile? uploadedFile,
+    required MealType mealType,
+    required DateTime day,
+    required UuidValue userId
+  }) async {
+    final data = <String, dynamic>{
+      'meal_type': mealType.toJson(),
+      'day': day.toIso8601String().split('T').first,
+    };
+
+    if (barcode != null) data['barcode'] = barcode;
+    if (uploadedFile != null) {
+      final bytes = await uploadedFile.readAsBytes();
+      data['image'] = MultipartFile.fromBytes(
+        bytes,
+        filename: uploadedFile.name,
+      );
+    }
+
+    return _client.patch(
+      Endpoints.scannedProduct,
+      data: FormData.fromMap(data),
       queryParameters: {'user_id': userId.uuid},
       options: Options(extra: {'requiresAuth': true}),
     );
