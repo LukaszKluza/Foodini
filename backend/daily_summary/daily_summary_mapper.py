@@ -9,7 +9,9 @@ from backend.models import DailySummary
 
 class DailySummaryMapper:
     @staticmethod
-    def map_to_daily_meal_type(daily_summary: DailySummary) -> DailyMealTypeSummary:
+    def map_to_daily_meal_type(daily_summary: DailySummary) -> DailyMealTypeSummary | None:
+        if not daily_summary:
+            return None
         meal_type_daily_summary = None
         first_meal = daily_summary.daily_meals[0] if daily_summary.daily_meals else None
         if first_meal:
