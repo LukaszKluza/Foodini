@@ -7,7 +7,7 @@ from backend.meals.enums.meal_type import MealType
 from backend.meals.repositories.meal_icons_repository import MealIconsRepository
 from backend.meals.repositories.meal_recipes_repository import MealRecipesRepository
 from backend.meals.repositories.meal_repository import MealRepository
-from backend.meals.schemas import MealRecipeResponse
+from backend.meals.schemas import MealCreate, MealRecipeResponse
 from backend.models import Meal, MealIcon, MealRecipe
 from backend.users.enums.language import Language
 
@@ -33,8 +33,11 @@ class MealService:
     async def get_meal_icon_path_by_id(self, icon_id: UUID) -> str:
         return await self.meal_icons_repository.get_meal_icon_path_by_id(icon_id)
 
-    async def add_meal(self, meal: Meal) -> Meal:
-        return await self.meal_recipes_repository.add_meal(meal)
+    async def add_meal(self, meal: MealCreate) -> Meal:
+        return await self.meal_repository.add_meal(meal)
+
+    async def get_meal_by_id(self, meal_id: UUID) -> Meal:
+        return await self.meal_repository.get_meal_by_id(meal_id)
 
     async def add_meal_recipe(self, meal_recipe: MealRecipe) -> MealRecipe:
         return await self.meal_recipes_repository.add_meal_recipe(meal_recipe)
@@ -76,6 +79,9 @@ class MealService:
             response = meal_recipes[0]
 
         return response
+
+    async def delete_meal_by_id(self, meal_id: UUID) -> bool:
+        return await self.meal_repository.delete_meal_by_id(meal_id)
 
     async def _enhance_meal_response_by_icon(self, meal_recipe: MealRecipe) -> MealRecipeResponse:
         meal = await self.meal_repository.get_meal_by_id(meal_recipe.meal_id)

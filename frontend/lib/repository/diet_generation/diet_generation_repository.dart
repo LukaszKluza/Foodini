@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
+import 'package:frontend/models/diet_generation/composed_meal_item.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart';
 import 'package:frontend/models/diet_generation/daily_meals_create.dart';
 import 'package:frontend/models/diet_generation/daily_summary.dart';
-import 'package:frontend/models/diet_generation/meal_info.dart';
 import 'package:frontend/models/diet_generation/meal_info_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/remove_meal_request.dart';
@@ -55,14 +55,27 @@ class DietGenerationRepository {
     }
   }
 
-  Future<MealInfo> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
+  Future<ComposedMealItem> addCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
     try {
-      final response = await apiClient.addCustomMeal(customMealUpdateRequest, userId);
-      return MealInfo.fromJson(response.data);
+      final response = await apiClient.addMeal(customMealUpdateRequest, userId);
+      return ComposedMealItem.fromJson(response.data);
     } on DioException catch (e) {
-      throw ApiException(e.response?.data ?? 'Error while editing meals', statusCode: e.response?.statusCode);
+      throw ApiException(e.response?.data ?? 'Error while editing daily meal', statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception('Error while editing meals: $e');
+      throw Exception('Error while editing daily meal: $e');
+    } finally {
+      await cacheManager.clearAllCache();
+    }
+  }
+
+  Future<ComposedMealItem> updateCustomMeal(CustomMealUpdateRequest customMealUpdateRequest, UuidValue userId) async {
+    try {
+      final response = await apiClient.updateDailyMeal(customMealUpdateRequest, userId);
+      return ComposedMealItem.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ApiException(e.response?.data ?? 'Error while adding daily meal', statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw Exception('Error while adding daily meal: $e');
     } finally {
       await cacheManager.clearAllCache();
     }
@@ -81,7 +94,7 @@ class DietGenerationRepository {
     }
   }
 
-  Future<MealInfo> addScannedProduct({
+  Future<ComposedMealItem> addScannedProduct({
     String? barcode,
     XFile? uploadedFile,
     required MealType mealType,
@@ -94,7 +107,7 @@ class DietGenerationRepository {
         barcode = await barcodeScannerService.scanBarcodeFromGallery(uploadedFile);
       }
       final response = await apiClient.addScannedProduct(barcode: barcode, uploadedFile: uploadedFile, mealType: mealType, day: day, userId: userId);
-      return MealInfo.fromJson(response.data);
+      return ComposedMealItem.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data ?? 'Error while adding scanned product:', statusCode: e.response?.statusCode);
     } catch (e) {
