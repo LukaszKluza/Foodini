@@ -1,6 +1,6 @@
 import sys
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from unittest.mock import ANY, AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -71,12 +71,14 @@ def mock_authorization_service():
 @pytest.fixture
 def user_service(
     mock_user_repository,
+    mock_user_role_repository,
     mock_email_verification_service,
     mock_user_validators,
     mock_authorization_service,
 ):
     return UserService(
         user_repository=mock_user_repository,
+        user_role_repository=mock_user_role_repository,
         email_verification_service=mock_email_verification_service,
         user_validators=mock_user_validators,
         authorization_service=mock_authorization_service,
@@ -93,6 +95,12 @@ def mock_user_repository():
     repo.update_user = AsyncMock()
     repo.delete_user = AsyncMock()
     repo.verify_user = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def mock_user_role_repository():
+    repo = MagicMock()
     repo.get_role_id_by_role_name = AsyncMock(return_value=MagicMock(id=uuid.uuid4()))
     repo.get_role_by_id = AsyncMock(return_value=Role.USER)
     return repo
@@ -234,8 +242,8 @@ async def test_logout_user_success(mock_user_validators, mock_authorization_serv
             id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
             jti="jti",
             linked_jti="linked_jti",
-            email="test@example.com",
-            exp=datetime.now(timezone.utc),
+            email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+            exp=datetime.now(config.TIMEZONE) + timedelta(minutes=30),
             type=Token.ACCESS,
             role=Role.USER,
         )
@@ -353,8 +361,8 @@ async def test_delete_account_when_user_exist(
         id=uuid.UUID("6ea7ae4d-fc73-4db0-987d-84e8e2bc2a6a"),
         jti="fake_jti",
         linked_jti="fake_linked_jti",
-        email="test@example.com",
-        exp=datetime.now(timezone.utc),
+        email=TypeAdapter(EmailStr).validate_python("test@example.com"),
+        exp=datetime.now(config.TIMEZONE) + timedelta(minutes=30),
         type=Token.ACCESS,
         role=Role.USER,
     )

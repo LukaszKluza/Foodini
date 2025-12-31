@@ -62,14 +62,10 @@ class ApiClient {
   }
 
   Future<Response> login(LoginRequest request) {
-    final formData = FormData.fromMap({
-      'username': request.email,
-      'password': request.password,
-    });
     return _client.post(
       Endpoints.login,
-      data: formData,
-      options: Options(extra: {'requiresAuth': false}),
+      data: request.toJson(),
+      options: Options(contentType: Headers.formUrlEncodedContentType, extra: {'requiresAuth': false}),
     );
   }
 

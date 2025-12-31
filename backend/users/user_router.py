@@ -180,6 +180,7 @@ async def verify_new_account(url_token: str = Query(None), user_service: UserSer
     return await user_service.confirm_new_account(url_token)
 
 
+# TODO Make email required parameter
 @user_router.get(
     "/confirm/resend-verification-new-account",
     status_code=status.HTTP_204_NO_CONTENT,
