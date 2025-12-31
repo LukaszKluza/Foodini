@@ -9,6 +9,7 @@ from backend.daily_summary.daily_summary_mapper import DailySummaryMapper
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.daily_summary.repositories.daily_summary_repository import DailySummaryRepository
 from backend.daily_summary.repositories.last_generated_meals_repository import LastGeneratedMealsRepository
+from backend.daily_summary.repositories.meal_type_daily_summary_repository import MealTypeDailySummaryRepository
 from backend.daily_summary.schemas import (
     BasicMealInfo,
     ComposedMealUpdateRequest,
@@ -204,6 +205,7 @@ class DailySummaryService:
 
     # TODO Simplify and fix it
     async def get_daily_meals(self, user: Type[User], day: date):
+        print(day)
         daily_meals = await self.daily_summary_repository.get_daily_meals_summary_with_recipes(user.id, day)
         if not daily_meals:
             logger.debug(f"No plan for {day} for user {user.id}")

@@ -628,10 +628,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmRemovingMeal => 'Confirm you want to remove that meal';
 
   @override
-  String get scanProductBarCode => 'Scan product bar code';
+  String get scanProductBarCode => 'Scan product barcode';
 
   @override
-  String get productBarCode => 'Bar code';
+  String get productBarCode => 'Barcode';
 
   @override
   String get addProduct => 'Add product';

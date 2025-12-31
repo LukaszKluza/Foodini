@@ -32,7 +32,9 @@ class DailySummaryMapper:
         )
 
     @staticmethod
-    def map_daily_meal_types_summary_with_items(daily_summary: DailySummary) -> DailyMealTypesSummaryWithItems:
+    def map_daily_meal_types_summary_with_items(daily_summary: DailySummary) -> DailyMealTypesSummaryWithItems | None:
+        if not daily_summary:
+            return None
         meal_type_daily_summaries = {}
 
         for meal in daily_summary.daily_meals:
