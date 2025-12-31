@@ -28,7 +28,7 @@ class DailySummaryMapper:
             target_protein=daily_summary.target_protein,
             target_carbs=daily_summary.target_carbs,
             target_fat=daily_summary.target_fat,
-            meal_type_daily_summary=meal_type_daily_summary,
+            meal_type_details=meal_type_daily_summary,
         )
 
     @staticmethod

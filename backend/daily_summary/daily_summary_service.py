@@ -300,7 +300,7 @@ class DailySummaryService:
         meal_type_daily_summary = DailySummaryMapper.map_to_daily_meal_type(
             await self.daily_summary_repository.get_daily_meal_type_summary(user.id, day, meal_type)
         )
-        if not meal_type_daily_summary or not meal_type_daily_summary.meal_daily_summary_id:
+        if not meal_type_daily_summary or not meal_type_daily_summary.daily_summary_id:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
@@ -310,7 +310,7 @@ class DailySummaryService:
             logger.debug(f"Meal with id {meal_id} does not exist for type {meal_type}, user {user.id} and day {day}")
             raise NotFoundInDatabaseException("Selected meal not assigned to selected meal type.")
 
-        if meal_type_daily_summary.status == MealStatus.EATEN:
+        if meal_type_daily_summary.meal_type_details.status == MealStatus.EATEN:
             macros_to_subtract = DailyMacrosSummaryCreate(
                 day=day,
                 calories=(-1) * composed_meal_item.planned_calories,

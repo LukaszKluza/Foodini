@@ -128,7 +128,7 @@ class DailySummary(BaseModel):
 
 
 class DailyMealTypeSummary(DailySummary):
-    meal_type_daily_summary: MealTypeDailySummaryBase
+    meal_type_details: MealTypeDailySummaryBase
 
 
 class DailyMealTypesSummaryWithItems(DailySummary):
