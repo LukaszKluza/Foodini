@@ -7,6 +7,7 @@ from pydantic import EmailStr
 from backend.models import User
 from backend.users.auth_dependencies import AuthDependency
 from backend.users.dependencies import get_auth_dependency, get_user_validators
+from backend.users.schemas import TokenPayload
 from backend.users.service.user_validation_service import (
     UserValidationService,
 )
@@ -27,7 +28,7 @@ class UserGateway:
     async def ensure_user_exists_by_id(self, user_id: UUID) -> Type[User]:
         return await self.user_validation_service.ensure_user_exists_by_id(user_id)
 
-    async def get_current_user(self) -> tuple[Type[User], dict]:
+    async def get_current_user(self) -> tuple[Type[User], TokenPayload]:
         return await self.auth_dependency.get_current_user()
 
     def check_user_permission(self, user_param_from_token, user_param_from_request) -> None:

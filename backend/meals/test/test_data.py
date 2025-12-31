@@ -5,6 +5,7 @@ from backend.meals.enums.unit import Unit
 from backend.models import MealIcon, MealRecipe
 from backend.models.meal_recipe_model import Ingredient, Ingredients, Step
 from backend.users.enums.language import Language
+from backend.users.enums.role import Role
 
 MEAL_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal-icon")
 MEAL_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "meal")
@@ -17,6 +18,9 @@ LUNCH_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "lunch-icon")
 AFTERNOON_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "afternoon-snack-icon")
 DINNER_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "dinner-icon")
 EVENING_SNACK_ICON_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "evening-snack-icon")
+
+USER_ROLE_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "user-role")
+ADMIN_ROLE_ID = uuid.uuid5(uuid.NAMESPACE_DNS, "admin-role")
 
 BREAKFAST_MEAL_ICON = MealIcon(
     id=BREAKFAST_ICON_ID,
@@ -46,6 +50,17 @@ MEAL_ICONS = [
         "id": EVENING_SNACK_ICON_ID,
         "meal_type": MealType.EVENING_SNACK,
         "icon_path": "/charcuterie-board-with-cold-cuts-fresh-fruits-cheese.webp",
+    },
+]
+
+USER_ROLES = [
+    {
+        "id": USER_ROLE_ID,
+        "name": Role.USER,
+    },
+    {
+        "id": ADMIN_ROLE_ID,
+        "name": Role.ADMIN,
     },
 ]
 

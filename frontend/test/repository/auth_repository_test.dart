@@ -21,7 +21,7 @@ void main() {
 
   test('login returns LoggedUser on success', () async {
     final loginRequest = LoginRequest(
-      email: 'test@example.com',
+      username: 'test@example.com',
       password: 'pass123',
     );
 

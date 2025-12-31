@@ -65,7 +65,7 @@ class ApiClient {
     return _client.post(
       Endpoints.login,
       data: request.toJson(),
-      options: Options(extra: {'requiresAuth': false}),
+      options: Options(contentType: Headers.formUrlEncodedContentType, extra: {'requiresAuth': false}),
     );
   }
 
