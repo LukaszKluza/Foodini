@@ -243,6 +243,39 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           ],
         ),
       ),
+      const SizedBox(height: 8),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16,8,16,8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade600, Colors.orange.shade400],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withAlpha(80),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            )
+          ],
+        ),
+        child: Column(
+          children: [
+            Text(
+              '${AppLocalizations.of(context)!.dietDuration}: ${data.dietDurationDays} ${AppLocalizations.of(context)!.days}',
+              style: TextStyle(
+                color: Colors.white.withAlpha(230),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
       const SizedBox(height: 20),
 
       IntrinsicHeight(
