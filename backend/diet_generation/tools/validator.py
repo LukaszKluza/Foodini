@@ -2,6 +2,7 @@ import json
 from typing import Any, Dict, List
 
 from backend.diet_generation.schemas import AgentState, CompleteMeal
+from backend.diet_generation.tools.to_csv_logger import log_diet_stats
 from backend.meals.enums.meal_type import MealType
 
 """Tool used for validation in LangGraph"""
@@ -15,6 +16,7 @@ class ValidatorTool:
         self.macro_tolerance = macro_tolerance
         self.calorie_tolerance = calorie_tolerance
 
+    @log_diet_stats
     def validate_plan(self, state: AgentState) -> Dict[str, Any]:
         plan_meals = self._ensure_complete_meals(state.current_plan)
 
