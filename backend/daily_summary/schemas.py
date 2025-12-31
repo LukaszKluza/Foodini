@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from backend.daily_summary.enums.meal_status import MealStatus
 from backend.meals.enums.meal_type import MealType
+from backend.models import ComposedMealItem
 
 
 # TODO Review and refine the schemas, rename meal to mealItem
@@ -48,7 +49,7 @@ class DailyMealsCreate(BaseModel):
     target_fat: float
 
 
-class DailySummary(DailyMealsCreate):
+class DailySummaryDTO(DailyMealsCreate):
     meals: Dict[MealType, Meal]
     eaten_calories: int
     eaten_protein: float
@@ -58,21 +59,20 @@ class DailySummary(DailyMealsCreate):
     generated_meals: Dict[MealType, MealInfoWithIconPath]
 
 
-class DailyMacrosSummaryCreate(BaseModel):
-    day: date
+class Macros(BaseModel):
     calories: int = Field(default=0)
     protein: float = Field(default=0)
     carbs: float = Field(default=0)
     fat: float = Field(default=0)
 
 
-class MealMacros(BaseModel):
+class DailyMacrosSummaryCreate(Macros):
+    day: date
+
+
+class MealMacros(Macros):
     day: date
     meal_id: UUID
-    calories: int = Field(default=0)
-    protein: float = Field(default=0)
-    carbs: float = Field(default=0)
-    fat: float = Field(default=0)
 
 
 class MealInfoUpdateRequest(BaseModel):
@@ -104,17 +104,35 @@ class RemoveMealResponse(RemoveMealRequest):
     success: bool
 
 
-class DailyMealTypeSummary(BaseModel):
-    daily_summary_id: UUID
+# -------------------------------------------------------------------
+
+
+class MealTypeDailySummaryBase(BaseModel):
     meal_daily_summary_id: UUID
+    status: MealStatus
+    meal_type: MealType
+
+
+class MealTypeDailySummaryWithItems(MealTypeDailySummaryBase):
+    composed_meal_items: List[ComposedMealItem]
+
+
+class DailySummary(BaseModel):
+    daily_summary_id: UUID
     user_id: UUID
     day: date
     target_calories: int
     target_protein: float
     target_carbs: float
     target_fat: float
-    status: MealStatus
-    meal_type: MealType
+
+
+class DailyMealTypeSummary(DailySummary):
+    meal_type_details: MealTypeDailySummaryBase
+
+
+class DailyMealTypesSummaryWithItems(DailySummary):
+    map_meal_type_daily_summaries: dict[MealType, MealTypeDailySummaryWithItems]
 
 
 class ComposedMealItemUpdateEntity(BaseModel):

@@ -99,7 +99,7 @@ class DailyMealsGeneratorService:
             logger.error(f"Error while generating meal plan: {str(e.detail)}")
             raise
         except Exception as e:
-            logger.error(f"Error while generating meal plan: {str(e.with_traceback())}")
+            logger.error("Error while generating meal plan", exc_info=True)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error while generating meal plan",

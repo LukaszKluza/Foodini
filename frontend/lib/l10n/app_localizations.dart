@@ -1313,13 +1313,13 @@ abstract class AppLocalizations {
   /// No description provided for @scanProductBarCode.
   ///
   /// In en, this message translates to:
-  /// **'Scan product bar code'**
+  /// **'Scan product barcode'**
   String get scanProductBarCode;
 
   /// No description provided for @productBarCode.
   ///
   /// In en, this message translates to:
-  /// **'Bar code'**
+  /// **'Barcode'**
   String get productBarCode;
 
   /// No description provided for @addProduct.

@@ -5,9 +5,9 @@ from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.daily_summary.schemas import ComposedMealItemUpdateEntity
-from backend.models.composed_meal_item import ComposedMealItem
-from backend.models.meals_daily_summary import MealDailySummary
-from backend.models.user_daily_summary_model import DailyMealsSummary
+from backend.models.composed_meal_item_model import ComposedMealItem
+from backend.models.daily_summary_model import DailySummary
+from backend.models.meal_type_daily_summary import MealTypeDailySummary
 
 
 class ComposedMealItemsRepository:
@@ -25,11 +25,11 @@ class ComposedMealItemsRepository:
     async def get_composed_meal_item_with_summary(self, user_id: UUID, meal_id: UUID) -> ComposedMealItem | None:
         query = (
             select(ComposedMealItem)
-            .options(selectinload(ComposedMealItem.daily_meal).selectinload(MealDailySummary.daily_summary))
+            .options(selectinload(ComposedMealItem.daily_meal).selectinload(MealTypeDailySummary.daily_summary))
             .where(
                 ComposedMealItem.meal_id == meal_id,
                 ComposedMealItem.daily_meal.has(
-                    MealDailySummary.daily_summary.has(DailyMealsSummary.user_id == user_id)
+                    MealTypeDailySummary.daily_summary.has(DailySummary.user_id == user_id)
                 ),
             )
         )
@@ -43,13 +43,13 @@ class ComposedMealItemsRepository:
         query = (
             select(ComposedMealItem)
             .options(
-                selectinload(ComposedMealItem.daily_meal).selectinload(MealDailySummary.daily_summary),
+                selectinload(ComposedMealItem.daily_meal).selectinload(MealTypeDailySummary.daily_summary),
                 selectinload(ComposedMealItem.meal),
             )
             .where(
                 ComposedMealItem.meal_id == meal_id,
                 ComposedMealItem.daily_meal.has(
-                    MealDailySummary.daily_summary.has(DailyMealsSummary.user_id == user_id)
+                    MealTypeDailySummary.daily_summary.has(DailySummary.user_id == user_id)
                 ),
             )
         )

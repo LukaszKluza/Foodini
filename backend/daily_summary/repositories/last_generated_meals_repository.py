@@ -5,9 +5,9 @@ from sqlalchemy import UUID, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models import MealRecipe
-from backend.models.composed_meal_item import ComposedMealItem
-from backend.models.meals_daily_summary import MealDailySummary
-from backend.models.user_daily_summary_model import DailyMealsSummary
+from backend.models.composed_meal_item_model import ComposedMealItem
+from backend.models.daily_summary_model import DailySummary
+from backend.models.meal_type_daily_summary import MealTypeDailySummary
 
 
 class LastGeneratedMealsRepository:
@@ -15,8 +15,8 @@ class LastGeneratedMealsRepository:
         self.db = db
 
     async def get_last_generated_meals(self, user_id: UUID, from_date: date, to_date: date) -> List[str]:
-        dms = DailyMealsSummary
-        mds = MealDailySummary
+        dms = DailySummary
+        mds = MealTypeDailySummary
         mr = MealRecipe
         cmi = ComposedMealItem
 

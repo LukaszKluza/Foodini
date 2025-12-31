@@ -7,9 +7,9 @@ from backend.daily_summary.daily_summary_service import DailySummaryService
 from backend.daily_summary.dependencies import get_daily_summary_service
 from backend.daily_summary.schemas import (
     ComposedMealUpdateRequest,
-    DailySummary,
+    DailySummaryDTO,
+    Macros,
     MealInfoUpdateRequest,
-    MealMacros,
     RemoveMealRequest,
     RemoveMealResponse,
 )
@@ -21,7 +21,7 @@ daily_summary_router = APIRouter(prefix="/v1/daily-summary", tags=["User", "Admi
 
 @daily_summary_router.get(
     "/{day}",
-    response_model=DailySummary,
+    response_model=DailySummaryDTO,
     summary="Get daily summary",
     description="Retrieves the daily summary of meals and nutrition for the specified day for the current user.",
 )
@@ -36,7 +36,7 @@ async def get_daily_summary(
 
 @daily_summary_router.patch(
     "/meals",
-    response_model=MealMacros,
+    response_model=Macros,
     summary="Update meal status",
     description="Updates the status of a meal (pending, to eat, eaten, skipped) in the daily summary.",
 )

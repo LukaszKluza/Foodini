@@ -28,7 +28,6 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
     final bloc = context.read<UserStatisticsBloc>();
     bloc.add(LoadUserStatistics());
 
-    // Pobierz historię wagi ostatnich 30 dni
     final now = DateTime.now();
     final start = now.subtract(const Duration(days: 30));
     bloc.add(LoadUserWeightHistory(start, now));
@@ -48,7 +47,6 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // ---- DUŻY PRZYCISK DODAJĄCY WAGĘ ----
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

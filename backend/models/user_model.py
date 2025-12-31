@@ -10,10 +10,11 @@ from backend.settings import config
 from backend.users.enums.language import Language
 
 from ..core.db_listeners import register_timestamp_listeners
+from . import DailySummary
 from .user_role import UserRole
 
 if TYPE_CHECKING:
-    from .user_daily_summary_model import DailyMacrosSummary, DailyMealsSummary
+    from .daily_macros_summary_model import DailyMacrosSummary
     from .user_details_model import UserDetails
     from .user_diet_prediction_model import UserDietPredictions
     from .user_weight_history_model import UserWeightHistory
@@ -45,7 +46,7 @@ class User(SQLModel, table=True):
     diet_predictions: Optional["UserDietPredictions"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
     )
-    daily_meals_summaries: List["DailyMealsSummary"] = Relationship(
+    daily_meals_summaries: List["DailySummary"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"passive_deletes": True}
     )
     daily_macros_summaries: List["DailyMacrosSummary"] = Relationship(
