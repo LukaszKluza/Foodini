@@ -43,7 +43,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = min(MediaQuery.of(context).size.width, 1600.0);
+    final screenWidth = min(MediaQuery.of(context).size.width, 800.0);
 
     final prevDate = widget.selectedDate.subtract(const Duration(days: 1));
     final nextDate = widget.selectedDate.add(const Duration(days: 1));
@@ -56,105 +56,111 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dailySummary),
-        ),
-      ),
-      body: SafeArea(
-        child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
-          builder: (context, state) {
-            if (state.gettingDailySummaryStatus.isFailure) {
-              return Center(
-                child: ErrorMessage(
-                  message: state.getMessage != null
-                      ? state.getMessage!(context)
-                      : AppLocalizations.of(context)!.unknownError,
-                ),
-              );
-            }
-
-            if (state.dietGeneratingInfo.processingStatus.isOngoing
-                && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
-              return const Center(child: CircularProgressIndicator());
-            } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
-                dateComparator(
-                    state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
-                state.gettingDailySummaryStatus.isFailure
-            ) {
-              return Stack(
-                children: [
-                  Center(
-                    child: ErrorMessage(
-                      message: state.getMessage!(context),
-                    ),
-                  ),
-                ],
-              );
-            } else if (state.dailySummary != null && dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-              final summary = state.dailySummary!;
-
-              final meals = summary.meals;
-              final mealTypes = meals.keys.toList()..sort((a, b) => a.value.compareTo(b.value));
-
-              if (mealTypes.isEmpty) {
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noMealsForToday,
-                  ),
-                );
-              }
-
-              selectedMealType ??= meals.entries.firstWhere(
-                    (mealInfo) => mealInfo.value.status == MealStatus.pending,
-                orElse: () => meals.entries.last,
-              ).key;
-              final activeMeal = selectedMealType!;
-              final dailyGoal = summary.targetCalories;
-              final eatenCalories = summary.eatenCalories;
-
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                child: Center(
-                  child: Column(
-                    children: [
-                      _buildCaloriesSummary(
-                        context,
-                        screenWidth,
-                        dailyGoal,
-                        eatenCalories,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Center(
+                child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dailySummary),
+              ),
+            ),
+            body: SafeArea(
+              child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
+                builder: (context, state) {
+                  if (state.gettingDailySummaryStatus.isFailure) {
+                    return Center(
+                      child: ErrorMessage(
+                        message: state.getMessage != null
+                            ? state.getMessage!(context)
+                            : AppLocalizations.of(context)!.unknownError,
                       ),
-                      const SizedBox(height: 16),
-                      _buildMealSelector(
-                        context,
-                        screenWidth,
-                        mealTypes,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildActiveMealCard(
-                        context,
-                        screenWidth,
-                        isActiveDay,
-                        activeMeal,
-                        meals,
-                        widget.selectedDate,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
+                    );
+                  }
 
-            return const SizedBox.shrink();
-          },
-        ),
-      ),
-      bottomNavigationBar: BottomNavBarDate(
-        prevRoute: prevRoute,
-        nextRoute: nextRoute,
-        selectedDate: widget.selectedDate,
-      ),
+                  if (state.dietGeneratingInfo.processingStatus.isOngoing
+                      && dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
+                      dateComparator(
+                          state.dietGeneratingInfo.day!, widget.selectedDate) == 0) ||
+                      state.gettingDailySummaryStatus.isFailure
+                  ) {
+                    return Stack(
+                      children: [
+                        Center(
+                          child: ErrorMessage(
+                            message: state.getMessage!(context),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (state.dailySummary != null && dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
+                    final summary = state.dailySummary!;
+
+                    final meals = summary.meals;
+                    final mealTypes = meals.keys.toList()..sort((a, b) => a.value.compareTo(b.value));
+
+                    if (mealTypes.isEmpty) {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noMealsForToday,
+                        ),
+                      );
+                    }
+
+                    selectedMealType ??= meals.entries.firstWhere(
+                          (mealInfo) => mealInfo.value.status == MealStatus.pending,
+                      orElse: () => meals.entries.last,
+                    ).key;
+                    final activeMeal = selectedMealType!;
+                    final dailyGoal = summary.targetCalories;
+                    final eatenCalories = summary.eatenCalories;
+
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            _buildCaloriesSummary(
+                              context,
+                              screenWidth,
+                              dailyGoal,
+                              eatenCalories,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildMealSelector(
+                              context,
+                              screenWidth,
+                              mealTypes,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildActiveMealCard(
+                              context,
+                              screenWidth,
+                              isActiveDay,
+                              activeMeal,
+                              meals,
+                              widget.selectedDate,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+            bottomNavigationBar: BottomNavBarDate(
+              prevRoute: prevRoute,
+              nextRoute: nextRoute,
+              selectedDate: widget.selectedDate,
+            ),
+          ),
+        )
+      )
     );
   }
 
@@ -176,9 +182,9 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
             (summary.eatenFat / summary.targetFat).toDouble();
 
         final widgetHeight =
-            min(min(40 + screenWidth * 0.25, screenWidth * 0.40), 360.0);
+            min(min(40 + screenWidth * 0.25, screenWidth * 0.40), 300.0);
         final double baseFontSize = widgetHeight * 0.18;
-        final double ringSize = min(screenWidth * 0.40, 500);
+        final double ringSize = min(screenWidth * 0.40, 300);
 
         return Container(
           width: screenWidth,
@@ -304,7 +310,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                       ? Colors.deepOrange
                       : Colors.grey,
                   size: min(MealType.values.length * widgetWidth /
-                      (12 * meals.length), 150),
+                      (12 * meals.length), 70),
                 ),
               ),
             ),

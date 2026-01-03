@@ -273,7 +273,7 @@ class DailySummaryService:
         )
 
         updated_meal_type_daily_summary = await self.meal_type_daily_summary_repository.update_meal_type_status(
-            processing_meal_type_summary.meal_daily_summary_id, new_status
+            processing_meal_type_summary.daily_summary_id, new_status
         )
         if updated_meal_type_daily_summary:
             await self._update_macros_after_status_change(user.id, meal_macros, day, new_status, previous_status)
@@ -412,14 +412,14 @@ class DailySummaryService:
         if target_pending_meal:
             target_pending_meal.status = MealStatus.PENDING
             await self.meal_type_daily_summary_repository.update_meal_type_status(
-                target_pending_meal.meal_daily_summary_id, MealStatus.PENDING
+                target_pending_meal.daily_summary_id, MealStatus.PENDING
             )
 
         for link in map_meal_type_daily_summaries.values():
             if link.status == MealStatus.PENDING and link != target_pending_meal:
                 link.status = MealStatus.TO_EAT
                 await self.meal_type_daily_summary_repository.update_meal_type_status(
-                    link.meal_daily_summary_id, MealStatus.TO_EAT
+                    link.daily_summary_id, MealStatus.TO_EAT
                 )
 
     @staticmethod

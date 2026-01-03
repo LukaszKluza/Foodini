@@ -173,8 +173,10 @@ void main() {
 
     expect(accountBloc.state, isA<AccountInitial>());
 
-    await tester.tap(find.text('Logout'));
-    await tester.pump();
+    final logoutButton = find.text('Logout');
+    await tester.ensureVisible(logoutButton);
+    await tester.tap(logoutButton);
+    await tester.pumpAndSettle();
 
     expect(accountBloc.state, isA<AccountLogoutSuccess>());
 
@@ -219,8 +221,10 @@ void main() {
 
     expect(accountBloc.state, isA<AccountInitial>());
 
-    await tester.tap(find.text('Delete account'));
-    await tester.pump();
+    final deleteButton = find.text('Delete account');
+    await tester.ensureVisible(deleteButton);
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete'));
 
@@ -253,8 +257,10 @@ void main() {
 
     expect(accountBloc.state, isA<AccountInitial>());
 
-    await tester.tap(find.text('Delete account'));
-    await tester.pump();
+    final deleteButton = find.text('Delete account');
+    await tester.ensureVisible(deleteButton);
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Cancel'));
     await tester.pump();

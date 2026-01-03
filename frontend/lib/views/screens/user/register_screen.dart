@@ -12,10 +12,10 @@ import 'package:frontend/models/user/register_request.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/register_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   final RegisterBloc? bloc;
@@ -24,18 +24,28 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<RegisterBloc>.value(
-          value: bloc!,
+    final wrappedScaffold = Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: _buildScaffold(context),
-        )
-        : BlocProvider<RegisterBloc>(
-          create:
-              (_) => RegisterBloc(
-                Provider.of<UserRepository>(context, listen: false),
-              ),
-          child: _buildScaffold(context),
-        );
+        ),
+      ),
+    );
+
+    if (bloc != null) {
+      return BlocProvider<RegisterBloc>.value(
+        value: bloc!,
+        child: wrappedScaffold,
+      );
+    }
+
+    return BlocProvider<RegisterBloc>(
+      create: (_) => RegisterBloc(
+        context.read<UserRepository>(),
+      ),
+      child: wrappedScaffold,
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -181,25 +191,71 @@ class _RegisterFormState extends State<_RegisterForm> {
                   if (state is RegisterLoading) {
                     return CircularProgressIndicator();
                   } else {
-                    return ElevatedButton(
-                      key: Key('register'),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final request = RegisterRequest(
-                            name: _firstNameController.text,
-                            lastName: _lastNameController.text,
-                            country: _selectedCountry ?? '',
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            language: getLanguage(context)
-                          );
-                          context.read<RegisterBloc>().add(
-                            RegisterSubmitted(request),
-                          );
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.register),
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 220),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: customSubmitButton(
+                            Key('register'),
+                                () {
+                              if (_formKey.currentState!.validate()) {
+                                final request = RegisterRequest(
+                                    name: _firstNameController.text,
+                                    lastName: _lastNameController.text,
+                                    country: _selectedCountry ?? '',
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                    language: getLanguage(context)
+                                );
+                                context.read<RegisterBloc>().add(
+                                  RegisterSubmitted(request),
+                                );
+                              }
+                            },
+                            Text(AppLocalizations.of(context)!.register)
+                          ),
+                        ),
+                      ),
                     );
+                    // return customSubmitButton(
+                    //   Key('register'),
+                    //   () {
+                    //     if (_formKey.currentState!.validate()) {
+                    //       final request = RegisterRequest(
+                    //           name: _firstNameController.text,
+                    //           lastName: _lastNameController.text,
+                    //           country: _selectedCountry ?? '',
+                    //           email: _emailController.text,
+                    //           password: _passwordController.text,
+                    //           language: getLanguage(context)
+                    //       );
+                    //       context.read<RegisterBloc>().add(
+                    //         RegisterSubmitted(request),
+                    //       );
+                    //     }
+                    //   },
+                    //   Text(AppLocalizations.of(context)!.register)
+                    // );
+                    // return ElevatedButton(
+                    //   key: Key('register'),
+                    //   onPressed: () {
+                    //     if (_formKey.currentState!.validate()) {
+                    //       final request = RegisterRequest(
+                    //         name: _firstNameController.text,
+                    //         lastName: _lastNameController.text,
+                    //         country: _selectedCountry ?? '',
+                    //         email: _emailController.text,
+                    //         password: _passwordController.text,
+                    //         language: getLanguage(context)
+                    //       );
+                    //       context.read<RegisterBloc>().add(
+                    //         RegisterSubmitted(request),
+                    //       );
+                    //     }
+                    //   },
+                    //   child: Text(AppLocalizations.of(context)!.register),
+                    // );
                   }
                 },
               ),
@@ -211,12 +267,26 @@ class _RegisterFormState extends State<_RegisterForm> {
               TextButton(
                 key: Key('already_have_an_account'),
                 onPressed: () => context.go('/login'),
-                child: Text(AppLocalizations.of(context)!.alreadyHaveAnAccount),
+                child: Text(
+                  AppLocalizations.of(context)!.alreadyHaveAnAccount,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               TextButton(
                 key: Key('home'),
                 onPressed: () => context.go('/'),
-                child: Text(AppLocalizations.of(context)!.home),
+                child: Text(
+                  AppLocalizations.of(context)!.home,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),

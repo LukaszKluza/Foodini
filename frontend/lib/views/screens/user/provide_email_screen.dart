@@ -11,10 +11,10 @@ import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/states/provide_email_states.dart';
 import 'package:frontend/utils/user/user_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class ProvideEmailScreen extends StatelessWidget {
   final ProvideEmailBloc? bloc;
@@ -23,19 +23,29 @@ class ProvideEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<ProvideEmailBloc>.value(
-          value: bloc!,
-          child: _buildScaffold(context),
-        )
-        : BlocProvider<ProvideEmailBloc>(
-          create:
-              (_) => ProvideEmailBloc(
-                Provider.of<UserRepository>(context, listen: false),
-                apiClient: Provider.of<ApiClient>(context, listen: false),
-              ),
-          child: _buildScaffold(context),
-        );
+    final wrappedScaffold = Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+            child: _buildScaffold(context)
+        ),
+      ),
+    );
+
+    if (bloc != null) {
+      return BlocProvider<ProvideEmailBloc>.value(
+        value: bloc!,
+        child: wrappedScaffold,
+      );
+    }
+
+    return BlocProvider<ProvideEmailBloc>(
+      create: (_) => ProvideEmailBloc(
+        context.read<UserRepository>(),
+        apiClient: context.read<ApiClient>(),
+      ),
+      child: wrappedScaffold,
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -114,19 +124,27 @@ class _ProvideEmailFormState extends State<_ProvideEmailForm> {
                   if (state is ProvideEmailLoading) {
                     return const CircularProgressIndicator();
                   } else {
-                    return ElevatedButton(
-                      key: Key('change_password'),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final request = ProvideEmailRequest(
-                            email: _emailController.text,
-                          );
-                          context.read<ProvideEmailBloc>().add(
-                            ProvideEmailSubmitted(request),
-                          );
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.changePassword),
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 220),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: customSubmitButton(
+                            Key('change_password'),
+                            () {
+                              if (_formKey.currentState!.validate()) {
+                                final request = ProvideEmailRequest(
+                                  email: _emailController.text,
+                                );
+                                context.read<ProvideEmailBloc>().add(
+                                  ProvideEmailSubmitted(request),
+                                );
+                              }
+                            },
+                            Text(AppLocalizations.of(context)!.changePassword),
+                          ),
+                        ),
+                      ),
                     );
                   }
                 },

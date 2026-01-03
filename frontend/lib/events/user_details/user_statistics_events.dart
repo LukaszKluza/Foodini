@@ -20,6 +20,8 @@ class LoadUserWeightHistory extends UserStatisticsEvent {
 }
 
 class UpdateUserWeight extends UserStatisticsEvent {
+  final DateTime start;
+  final DateTime end;
   final UserWeightHistory entry;
-  UpdateUserWeight(this.entry);
+  UpdateUserWeight(this.start, this.end, this.entry);
 }

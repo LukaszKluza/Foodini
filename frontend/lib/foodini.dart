@@ -12,7 +12,6 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/repository/api_client.dart';
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart';
-import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
@@ -67,9 +66,6 @@ class Foodini extends StatelessWidget {
         ),
         ProxyProvider2<ApiClient, CacheManager, DietGenerationRepository>(
           update: (_, apiClient, cacheManager, _) => DietGenerationRepository(apiClient, cacheManager),
-        ),
-        ProxyProvider2<ApiClient, CacheManager, DietPredictionRepository>(
-          update: (_, apiClient, cacheManager, _) => DietPredictionRepository(apiClient, cacheManager),
         ),
       ],
       child: MultiBlocProvider(

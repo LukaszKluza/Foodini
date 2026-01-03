@@ -55,7 +55,7 @@
   "checkEmailAddressToSetNewPassword": "Check your email address to set new password",
   "passwordSuccessfullyChanged": "Password successfully changed",
   "wrongChangePasswordUrl": "You can't access change password form",
-  "dietPreferences": "Diet preferences",
+  "dietPreferences": "Diet Preferences",
   "dietType": "Diet type",
   "requiredDietType": "Diet type is required",
   "dietStyle": "Diet style",
@@ -178,7 +178,7 @@
   "fillFormToSeePredictions": "Please fill out the form to see predictions",
   "redirectToProfileDetails": "Redirect to profile details",
   "savePredictedCalories": "Save predicted calories",
-  "changeCaloriesPrediction": "Change calories prediction",
+  "changeCaloriesPrediction": "Change Calories Prediction",
 
   "refreshRequest": "Refresh request",
   "goToMainPage": "Go to main page",
@@ -263,5 +263,13 @@
   "calorieConsumptionChartTitle": "Calorie consumption",
   "calorieGoalChartTitle": "Calorie Goal vs Actual",
   "macrosPer100g": "Macros per 100 g",
-  "weightChartTitle": "Weight history"
+  "weightChartTitle": "Weight history",
+  "noWeightDataAvailable": "No weight data for this period",
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "sun": "Sun"
 }

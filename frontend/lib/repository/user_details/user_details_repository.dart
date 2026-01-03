@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/api_exception.dart';
-import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/user_details/diet_form.dart';
 import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/models/user_details/predicted_calories.dart';
@@ -123,18 +122,6 @@ class UserDetailsRepository {
   Future<UserWeightHistory> addOrUpdateUserWeight(UserWeightHistory request, UuidValue userId) async {
     try {
       final response = await apiClient.addUserWeight(request.toJson(), userId);
-
-      if (cacheManager != null) {
-        try {
-          final statsUri = Uri.parse('${Endpoints.userStatistics}?user_id=${userId.uuid}');
-          final day = request.day.toIso8601String().split('T').first;
-          final weightUri = Uri.parse('${Endpoints.userWeightHistory}/$day?user_id=${userId.uuid}');
-          await cacheManager!.clearCacheFor(statsUri);
-          await cacheManager!.clearCacheFor(weightUri);
-        } catch (_) {
-        }
-      }
-
       return UserWeightHistory.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiException(e.response?.data, statusCode: e.response?.statusCode);

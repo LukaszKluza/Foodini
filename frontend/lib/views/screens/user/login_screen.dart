@@ -13,10 +13,10 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/login_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginBloc? bloc;
@@ -25,19 +25,29 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<LoginBloc>.value(
-          value: bloc!,
+    final wrappedScaffold = Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: _buildScaffold(context),
-        )
-        : BlocProvider<LoginBloc>(
-          create:
-              (_) => LoginBloc(
-                Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageService>(context, listen: false),
-              ),
-          child: _buildScaffold(context),
-        );
+        ),
+      ),
+    );
+
+    if (bloc != null) {
+      return BlocProvider<LoginBloc>.value(
+        value: bloc!,
+        child: wrappedScaffold,
+      );
+    }
+
+    return BlocProvider<LoginBloc>(
+      create: (_) => LoginBloc(
+        context.read<UserRepository>(),
+        context.read<TokenStorageService>(),
+      ),
+      child: wrappedScaffold,
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -162,37 +172,55 @@ class _LoginFormState extends State<_LoginForm> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16),
-                        ElevatedButton(
-                          key: Key('send_verification_email_again'),
-                          onPressed: () {
-                            context.read<LoginBloc>().add(
-                              ResendVerificationEmail(_emailController.text),
-                            );
-                          },
-                          child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.sendVerificationEmailAgain,
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 300),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: customRetryButton(
+                                Key('send_verification_email_again'),
+                                () {
+                                  context.read<LoginBloc>().add(
+                                    ResendVerificationEmail(_emailController.text),
+                                  );
+                                },
+                                Text(
+                                  AppLocalizations.of(context)!.sendVerificationEmailAgain,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     );
                   } else {
-                    return ElevatedButton(
-                      key: Key('login'),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final request = LoginRequest(
-                            username: _emailController.text,
-                            password: _passwordController.text,
-                          );
-                          context.read<LoginBloc>().add(
-                            LoginSubmitted(request),
-                          );
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.login),
-                    );
+                    return
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 220),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: customSubmitButton(
+                              Key('login'),
+                              () {
+                                if (_formKey.currentState!.validate()) {
+                                  final request = LoginRequest(
+                                    username: _emailController.text,
+                                    password: _passwordController.text,
+                                  );
+                                  context.read<LoginBloc>().add(
+                                    LoginSubmitted(request),
+                                  );
+                                }
+                              },
+                              Text(AppLocalizations.of(context)!.login),
+                            ),
+                          ),
+                        ),
+                      );
                   }
                 },
               ),
@@ -204,17 +232,38 @@ class _LoginFormState extends State<_LoginForm> {
               TextButton(
                 key: Key('forgot_password'),
                 onPressed: () => context.go('/provide-email'),
-                child: Text(AppLocalizations.of(context)!.forgotPassword),
+                child: Text(
+                  AppLocalizations.of(context)!.forgotPassword,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               TextButton(
                 key: Key('dont_have_account'),
                 onPressed: () => context.go('/register'),
-                child: Text(AppLocalizations.of(context)!.dontHaveAccount),
+                child: Text(
+                  AppLocalizations.of(context)!.dontHaveAccount,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               TextButton(
                 key: Key('home'),
                 onPressed: () => context.go('/'),
-                child: Text(AppLocalizations.of(context)!.home),
+                child: Text(
+                  AppLocalizations.of(context)!.home,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),

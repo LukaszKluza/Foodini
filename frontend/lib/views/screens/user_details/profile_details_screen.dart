@@ -9,9 +9,9 @@ import 'package:frontend/models/user_details/gender.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/profile_details_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:frontend/views/widgets/height_slider.dart';
 import 'package:frontend/views/widgets/title_text.dart';
-import 'package:frontend/views/widgets/weight_slider.dart';
+import 'package:frontend/views/widgets/user_details/height_slider.dart';
+import 'package:frontend/views/widgets/user_details/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -36,20 +36,27 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.profileDetails),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child:Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Center(
+                child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.profileDetails),
+              ),
+            ),
+            body: _ProfileDetailsForm(onFormValidityChanged: _onFormValidityChanged),
+            bottomNavigationBar: BottomNavBar(
+              currentRoute: GoRouterState.of(context).uri.path,
+              mode: NavBarMode.wizard,
+              prevRoute: '/main-page',
+              nextRoute: '/diet-preferences',
+              isNextRouteEnabled: _isFormValid,
+            ),
+          ),
         ),
-      ),
-      body: _ProfileDetailsForm(onFormValidityChanged: _onFormValidityChanged),
-      bottomNavigationBar: BottomNavBar(
-        currentRoute: GoRouterState.of(context).uri.path,
-        mode: NavBarMode.wizard,
-        prevRoute: '/main-page',
-        nextRoute: '/diet-preferences',
-        isNextRouteEnabled: _isFormValid,
-      ),
+      )
     );
   }
 }
@@ -182,17 +189,16 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
                   labelText: AppLocalizations.of(context)!.gender,
                 ),
                 items:
-                    Gender.values
-                        .map(
-                          (gender) => DropdownMenuItem<Gender>(
-                            value: gender,
-                            child: Text(
-                              AppConfig.genderLabels(context)[gender]!,
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                  Gender.values
+                    .map(
+                      (gender) => DropdownMenuItem<Gender>(
+                        value: gender,
+                        child: Text(
+                          AppConfig.genderLabels(context)[gender]!,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ).toList(),
                 onChanged: _onGenderChanged,
                 validator: (value) => validateGender(value, context),
               ),
@@ -229,25 +235,30 @@ class _ProfileDetailsFormState extends State<_ProfileDetailsForm> {
                   FocusScope.of(context).requestFocus(FocusNode());
 
                   final now = DateTime.now();
-                  final earliestDate = DateTime(
-                    now.year - 120,
-                    now.month,
-                    now.day,
-                  );
-                  final latestDate = DateTime(
-                    now.year - 12,
-                    now.month,
-                    now.day,
-                  );
-
                   final pickedDate = await showDatePicker(
                     context: context,
-                    initialDate:
-                        _selectedDateOfBirth ?? DateTime(now.year - 30),
-                    firstDate: earliestDate,
-                    lastDate: latestDate,
+                    initialDate: _selectedDateOfBirth ?? DateTime(now.year - 30),
+                    firstDate: DateTime(now.year - 120),
+                    lastDate: DateTime(now.year - 12),
                     initialEntryMode: DatePickerEntryMode.calendar,
                     initialDatePickerMode: DatePickerMode.year,
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: ColorScheme.light(
+                            primary: Colors.orange.shade700,
+                            onPrimary: Colors.white,
+                            onSurface: Colors.black87,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.orange.shade800,
+                            ),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
 
                   if (pickedDate != null) {

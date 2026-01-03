@@ -14,9 +14,9 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/change_password_states.dart';
 import 'package:frontend/utils/query_parameters_mapper.dart';
 import 'package:frontend/utils/user/user_validators.dart';
+import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
 import 'package:frontend/views/widgets/title_text.dart';
-import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   final ChangePasswordBloc? bloc;
@@ -25,19 +25,29 @@ class ChangePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<ChangePasswordBloc>.value(
-          value: bloc!,
+    final wrappedScaffold = Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: _buildScaffold(context),
-        )
-        : BlocProvider<ChangePasswordBloc>(
-          create:
-              (_) => ChangePasswordBloc(
-                Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageService>(context, listen: false),
-              ),
-          child: _buildScaffold(context),
-        );
+        ),
+      ),
+    );
+
+    if (bloc != null) {
+      return BlocProvider<ChangePasswordBloc>.value(
+        value: bloc!,
+        child: wrappedScaffold,
+      );
+    }
+
+    return BlocProvider<ChangePasswordBloc>(
+      create: (_) => ChangePasswordBloc(
+        context.read<UserRepository>(),
+        context.read<TokenStorageService>(),
+      ),
+      child: wrappedScaffold,
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -166,22 +176,46 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                   if (state is ChangePasswordLoading) {
                     return const CircularProgressIndicator();
                   } else {
-                    return ElevatedButton(
-                      key: Key('change_password'),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final request = ChangePasswordRequest(
-                            email: _emailController.text,
-                            newPassword: _newPasswordController.text,
-                            token: _token!,
-                          );
-                          context.read<ChangePasswordBloc>().add(
-                            ChangePasswordSubmitted(request),
-                          );
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.changePassword),
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 220),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: customSubmitButton(
+                            Key('change_password'),
+                            () {
+                              if (_formKey.currentState!.validate()) {
+                                final request = ChangePasswordRequest(
+                                  email: _emailController.text,
+                                  newPassword: _newPasswordController.text,
+                                  token: _token!,
+                                );
+                                context.read<ChangePasswordBloc>().add(
+                                  ChangePasswordSubmitted(request),
+                                );
+                              }
+                            },
+                            Text(AppLocalizations.of(context)!.changePassword),
+                          ),
+                        ),
+                      ),
                     );
+                    // return ElevatedButton(
+                    //   key: Key('change_password'),
+                    //   onPressed: () {
+                    //     if (_formKey.currentState!.validate()) {
+                    //       final request = ChangePasswordRequest(
+                    //         email: _emailController.text,
+                    //         newPassword: _newPasswordController.text,
+                    //         token: _token!,
+                    //       );
+                    //       context.read<ChangePasswordBloc>().add(
+                    //         ChangePasswordSubmitted(request),
+                    //       );
+                    //     }
+                    //   },
+                    //   child: Text(AppLocalizations.of(context)!.changePassword),
+                    // );
                   }
                 },
               ),

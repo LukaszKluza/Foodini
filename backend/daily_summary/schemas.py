@@ -108,7 +108,7 @@ class RemoveMealResponse(RemoveMealRequest):
 
 
 class MealTypeDailySummaryBase(BaseModel):
-    meal_daily_summary_id: UUID
+    daily_summary_id: UUID
     status: MealStatus
     meal_type: MealType
 

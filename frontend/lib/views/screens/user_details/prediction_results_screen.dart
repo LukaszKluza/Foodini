@@ -11,7 +11,7 @@ import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
-import 'package:frontend/views/widgets/missing_predictions_alert.dart';
+import 'package:frontend/views/widgets/user_details/missing_predictions_alert.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,20 +21,27 @@ class PredictionResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: TitleTextWidgets.scaledTitle(
-            AppLocalizations.of(context)!.caloriesPrediction,
-            longText: true,
+      body: Center(
+        child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Center(
+                child: TitleTextWidgets.scaledTitle(
+                  AppLocalizations.of(context)!.caloriesPrediction,
+                  longText: true,
+                ),
+              ),
+            ),
+            body: _PredictionResultsForm(),
+            bottomNavigationBar: BottomNavBar(
+              currentRoute: GoRouterState.of(context).uri.path,
+              mode: NavBarMode.wizard,
+            ),
           ),
         ),
-      ),
-      body: _PredictionResultsForm(),
-      bottomNavigationBar: BottomNavBar(
-        currentRoute: GoRouterState.of(context).uri.path,
-        mode: NavBarMode.wizard,
-      ),
+      )
     );
   }
 }
@@ -202,24 +209,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
     _carbsController.text = data.predictedMacros.carbs.toStringAsFixed(1);
 
     return [
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16,8,16,8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange.shade600, Colors.orange.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orange.withAlpha(80),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            )
-          ],
-        ),
+      _buildSummaryCard(
         child: Column(
           children: [
             Text(
@@ -234,7 +224,7 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
             const SizedBox(height: 8),
             Text(
               '${data.targetCalories} ${AppLocalizations.of(context)!.kcal}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
@@ -243,28 +233,12 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           ],
         ),
       ),
-      const SizedBox(height: 8),
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16,8,16,8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange.shade600, Colors.orange.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orange.withAlpha(80),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            )
-          ],
-        ),
-        child: Column(
-          children: [
-            Text(
+
+      if (data.dietDurationDays != null && data.dietDurationDays! > 0) ...[
+        const SizedBox(height: 8),
+        _buildSummaryCard(
+          child: Center(
+            child: Text(
               '${AppLocalizations.of(context)!.dietDuration}: ${data.dietDurationDays} ${AppLocalizations.of(context)!.days}',
               style: TextStyle(
                 color: Colors.white.withAlpha(230),
@@ -273,9 +247,83 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
                 letterSpacing: 1.2,
               ),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
+      // Container(
+      //   width: double.infinity,
+      //   padding: const EdgeInsets.fromLTRB(16,8,16,8),
+      //   decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //       colors: [Colors.orange.shade600, Colors.orange.shade400],
+      //       begin: Alignment.topLeft,
+      //       end: Alignment.bottomRight,
+      //     ),
+      //     borderRadius: BorderRadius.circular(24),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.orange.withAlpha(80),
+      //         blurRadius: 12,
+      //         offset: const Offset(0, 6),
+      //       )
+      //     ],
+      //   ),
+      //   child: Column(
+      //     children: [
+      //       Text(
+      //         AppLocalizations.of(context)!.predictedCalories.toUpperCase(),
+      //         style: TextStyle(
+      //           color: Colors.white.withAlpha(230),
+      //           fontWeight: FontWeight.bold,
+      //           fontSize: 14,
+      //           letterSpacing: 1.2,
+      //         ),
+      //       ),
+      //       const SizedBox(height: 8),
+      //       Text(
+      //         '${data.targetCalories} ${AppLocalizations.of(context)!.kcal}',
+      //         style: TextStyle(
+      //           color: Colors.white,
+      //           fontSize: 36,
+      //           fontWeight: FontWeight.bold,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      // const SizedBox(height: 8),
+      // Container(
+      //   width: double.infinity,
+      //   padding: const EdgeInsets.fromLTRB(16,8,16,8),
+      //   decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //       colors: [Colors.orange.shade600, Colors.orange.shade400],
+      //       begin: Alignment.topLeft,
+      //       end: Alignment.bottomRight,
+      //     ),
+      //     borderRadius: BorderRadius.circular(24),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.orange.withAlpha(80),
+      //         blurRadius: 12,
+      //         offset: const Offset(0, 6),
+      //       )
+      //     ],
+      //   ),
+      //   child: Column(
+      //     children: [
+      //       Text(
+      //         '${AppLocalizations.of(context)!.dietDuration}: ${data.dietDurationDays} ${AppLocalizations.of(context)!.days}',
+      //         style: TextStyle(
+      //           color: Colors.white.withAlpha(230),
+      //           fontWeight: FontWeight.bold,
+      //           fontSize: 14,
+      //           letterSpacing: 1.2,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       const SizedBox(height: 20),
 
       IntrinsicHeight(
@@ -318,6 +366,29 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
       ),
       const SizedBox(height: 32),
     ];
+  }
+
+  Widget _buildSummaryCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orange.shade600, Colors.orange.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withAlpha(80),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          )
+        ],
+      ),
+      child: child,
+    );
   }
 
   Widget _buildInfoCard(String label, String value) {
