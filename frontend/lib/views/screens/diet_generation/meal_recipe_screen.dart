@@ -259,16 +259,6 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Padding _generateRecipeStep(MealRecipeState state, int i, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Text(
-        _getStepText(state.mealRecipe!.steps[i], i, context),
-        style: const TextStyle(fontSize: 16),
-      ),
-    );
-  }
-
   Widget _buildStepCard(MealRecipeStep step, int idx, BuildContext context) {
     return SizedBox(
       width: double.infinity,
@@ -308,13 +298,6 @@ class _MealRecipe extends StatelessWidget {
           .name} (${ingredient.optionalNote})';
     }
     return '• ${ingredient.volume} ${ingredient.unit} ${ingredient.name}';
-  }
-
-  String _getStepText(MealRecipeStep step, int idx, BuildContext context) {
-    if (step.optional == true) {
-      return '${idx + 1}. (${AppLocalizations.of(context)!.optional}) ${step.description}';
-    }
-    return '${idx + 1}. ${step.description}';
   }
 
   Center _retryRequestButton(BuildContext context, MealRecipeState state) {

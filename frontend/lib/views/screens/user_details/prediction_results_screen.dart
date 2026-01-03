@@ -11,8 +11,8 @@ import 'package:frontend/models/user_details/macros.dart';
 import 'package:frontend/states/macros_change_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
-import 'package:frontend/views/widgets/user_details/missing_predictions_alert.dart';
 import 'package:frontend/views/widgets/title_text.dart';
+import 'package:frontend/views/widgets/user_details/missing_predictions_alert.dart';
 import 'package:go_router/go_router.dart';
 
 class PredictionResultsScreen extends StatelessWidget {
@@ -250,80 +250,6 @@ class _PredictionResultsFormState extends State<_PredictionResultsForm> {
           ),
         ),
       ],
-      // Container(
-      //   width: double.infinity,
-      //   padding: const EdgeInsets.fromLTRB(16,8,16,8),
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //       colors: [Colors.orange.shade600, Colors.orange.shade400],
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //     ),
-      //     borderRadius: BorderRadius.circular(24),
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.orange.withAlpha(80),
-      //         blurRadius: 12,
-      //         offset: const Offset(0, 6),
-      //       )
-      //     ],
-      //   ),
-      //   child: Column(
-      //     children: [
-      //       Text(
-      //         AppLocalizations.of(context)!.predictedCalories.toUpperCase(),
-      //         style: TextStyle(
-      //           color: Colors.white.withAlpha(230),
-      //           fontWeight: FontWeight.bold,
-      //           fontSize: 14,
-      //           letterSpacing: 1.2,
-      //         ),
-      //       ),
-      //       const SizedBox(height: 8),
-      //       Text(
-      //         '${data.targetCalories} ${AppLocalizations.of(context)!.kcal}',
-      //         style: TextStyle(
-      //           color: Colors.white,
-      //           fontSize: 36,
-      //           fontWeight: FontWeight.bold,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      // const SizedBox(height: 8),
-      // Container(
-      //   width: double.infinity,
-      //   padding: const EdgeInsets.fromLTRB(16,8,16,8),
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //       colors: [Colors.orange.shade600, Colors.orange.shade400],
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //     ),
-      //     borderRadius: BorderRadius.circular(24),
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.orange.withAlpha(80),
-      //         blurRadius: 12,
-      //         offset: const Offset(0, 6),
-      //       )
-      //     ],
-      //   ),
-      //   child: Column(
-      //     children: [
-      //       Text(
-      //         '${AppLocalizations.of(context)!.dietDuration}: ${data.dietDurationDays} ${AppLocalizations.of(context)!.days}',
-      //         style: TextStyle(
-      //           color: Colors.white.withAlpha(230),
-      //           fontWeight: FontWeight.bold,
-      //           fontSize: 14,
-      //           letterSpacing: 1.2,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       const SizedBox(height: 20),
 
       IntrinsicHeight(

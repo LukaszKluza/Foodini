@@ -12,10 +12,10 @@ import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
-import 'package:frontend/views/widgets/user_details/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/title_text.dart';
+import 'package:frontend/views/widgets/user_details/advanced_option_slider.dart';
 import 'package:go_router/go_router.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
