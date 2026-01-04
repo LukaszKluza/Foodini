@@ -45,14 +45,18 @@ void main() {
     // Given, When
     await tester.pumpWidget(buildTestWidget(MainPageScreen()));
     // Then
-    expect(find.text('My Account'), findsOneWidget);
-    expect(find.byIcon(Icons.person), findsOneWidget);
-    expect(find.text('Diet preferences'), findsOneWidget);
-    expect(find.byIcon(Icons.food_bank_rounded), findsOneWidget);
-    expect(find.text('Change calories prediction'), findsOneWidget);
-    expect(find.byIcon(Icons.change_circle_outlined), findsOneWidget);
+    expect(find.text('Daily Summary'), findsOneWidget);
+    expect(find.byIcon(Icons.analytics_outlined), findsOneWidget);
+    expect(find.text('Daily Menu'), findsOneWidget);
+    expect(find.byIcon(Icons.restaurant_menu), findsOneWidget);
+    expect(find.text('Diet Preferences'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
+    expect(find.text('Change Calories Prediction'), findsOneWidget);
+    expect(find.byIcon(Icons.auto_graph), findsOneWidget);
     expect(find.text('Statistics'), findsOneWidget);
-    expect(find.byIcon(Icons.show_chart_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.query_stats_rounded), findsOneWidget);
+    expect(find.text('My Account'), findsOneWidget);
+    expect(find.byIcon(Icons.person_outline_rounded), findsOneWidget);
   });
 
   testWidgets('Tap on My Account navigates to account screen', (tester) async {
@@ -94,7 +98,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    final dietPreferencesFinder = find.text('Diet preferences');
+    final dietPreferencesFinder = find.text('Diet Preferences');
     await tester.ensureVisible(dietPreferencesFinder);
     await tester.tap(dietPreferencesFinder);
     await tester.pumpAndSettle();
@@ -119,7 +123,7 @@ void main() {
 
     // Then
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Change calories prediction'));
+    await tester.tap(find.text('Change Calories Prediction'));
     await tester.pumpAndSettle();
 
     expect(find.byKey(Key('calories_result')), findsOneWidget);

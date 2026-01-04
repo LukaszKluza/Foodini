@@ -182,7 +182,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongChangePasswordUrl => 'You can\'t access change password form';
 
   @override
-  String get dietPreferences => 'Diet preferences';
+  String get dietPreferences => 'Diet Preferences';
 
   @override
   String get dietType => 'Diet type';
@@ -510,7 +510,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savePredictedCalories => 'Save predicted calories';
 
   @override
-  String get changeCaloriesPrediction => 'Change calories prediction';
+  String get changeCaloriesPrediction => 'Change Calories Prediction';
 
   @override
   String get refreshRequest => 'Refresh request';
@@ -732,4 +732,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weightChartTitle => 'Weight history';
+
+  @override
+  String get noWeightDataAvailable => 'No weight data for this period';
+
+  @override
+  String get mon => 'Mon';
+
+  @override
+  String get tue => 'Tue';
+
+  @override
+  String get wed => 'Wed';
+
+  @override
+  String get thu => 'Thu';
+
+  @override
+  String get fri => 'Fri';
+
+  @override
+  String get sat => 'Sat';
+
+  @override
+  String get sun => 'Sun';
 }

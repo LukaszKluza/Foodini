@@ -18,7 +18,7 @@ import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/diet_preferences_validators.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/title_text.dart';
-import 'package:frontend/views/widgets/weight_slider.dart';
+import 'package:frontend/views/widgets/user_details/weight_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -45,20 +45,27 @@ class _DietPreferencesScreenState extends State<DietPreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dietPreferences),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Center(
+                child: TitleTextWidgets.scaledTitle(AppLocalizations.of(context)!.dietPreferences),
+              ),
+            ),
+            body: _DietPreferencesForm(onFormValidityChanged: _onFormValidityChanged),
+            bottomNavigationBar: BottomNavBar(
+              currentRoute: GoRouterState.of(context).uri.path,
+              mode: NavBarMode.wizard,
+              prevRoute: '/profile-details',
+              nextRoute: '/calories-prediction',
+              isNextRouteEnabled: _isFormValid,
+            ),
+          ),
         ),
-      ),
-      body: _DietPreferencesForm(onFormValidityChanged: _onFormValidityChanged),
-      bottomNavigationBar: BottomNavBar(
-        currentRoute: GoRouterState.of(context).uri.path,
-        mode: NavBarMode.wizard,
-        prevRoute: '/profile-details',
-        nextRoute: '/calories-prediction',
-        isNextRouteEnabled: _isFormValid,
-      ),
+      )
     );
   }
 }
@@ -225,18 +232,17 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
       MultiSelectDialogField<Allergies>(
         initialValue: _selectedAllergies,
         items:
-            Allergies.values
-                .map(
-                  (allergy) => MultiSelectItem<Allergies>(
-                    allergy,
-                    AppConfig.allergiesLabels(context)[allergy]!,
-                  ),
-                )
-                .toList(),
+          Allergies.values
+            .map((allergy) => MultiSelectItem<Allergies>(
+                allergy,
+                AppConfig.allergiesLabels(context)[allergy]!,
+              ),
+            )
+            .toList(),
         title: Text(AppLocalizations.of(context)!.allergies),
-        selectedColor: Colors.purpleAccent,
+        selectedColor: Colors.orange.shade500,
         chipDisplay: MultiSelectChipDisplay(
-          chipColor: Colors.purpleAccent[50],
+          chipColor: Colors.orange.shade100,
           textStyle: const TextStyle(color: Colors.black),
         ),
         buttonText: Text(AppLocalizations.of(context)!.allergies),
@@ -300,6 +306,10 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
             widthFactor: 1,
             child: SegmentedButton<int>(
               showSelectedIcon: true,
+              selectedIcon: Icon(
+                Icons.check,
+                color: Colors.orange.shade800,
+              ),
               style: ButtonStyle(
                   iconSize: WidgetStateProperty.all(min(screenWidth * 0.06, 30)),
                   padding: WidgetStateProperty.all(
@@ -309,8 +319,7 @@ class _DietPreferencesFormState extends State<_DietPreferencesForm> {
                 for (var i = Constants.minMealsPerDay; i <= Constants.maxMealsPerDay; i++)
                   ButtonSegment(
                       value: i,
-                      label: Text('$i', style: TextStyle(
-                          fontSize: min(screenWidth * 0.04, 20)))
+                      label: Text('$i', style: TextStyle(fontSize: min(screenWidth * 0.04, 20)))
                   ),
               ],
               selected: <int>{_selectedMealsPerDay},

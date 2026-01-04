@@ -6,7 +6,7 @@ import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
-import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/animated_button.dart';
 import 'package:frontend/views/widgets/diet_generation/enter_barcode_pop_up.dart';
 
 VoidCallback showNewMealPopUp(

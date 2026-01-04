@@ -11,7 +11,6 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
 import 'package:frontend/models/user/user_response.dart';
-import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/views/screens/diet_generation/meal_recipe_screen.dart';
@@ -22,7 +21,6 @@ import 'package:uuid/uuid_value.dart';
 import '../../mocks/mocks.mocks.dart';
 import '../../wrapper/test_wrapper_builder.dart';
 
-MockDietPredictionRepository mockDietPredictionRepository = MockDietPredictionRepository();
 MockMealsRepository mockMealsRepository = MockMealsRepository();
 
 void main() {
@@ -41,9 +39,6 @@ void main() {
         .addProvider(Provider<LanguageCubit>.value(value: languageCubit))
         .addProvider(BlocProvider<MealRecipeBloc>.value(value: mealRecipeBloc))
         .addProvider(Provider<MealsRepository>.value(value: mockMealsRepository))
-        .addProvider(
-          Provider<DietPredictionRepository>.value(value: mockDietPredictionRepository),
-        )
         .setInitialLocation(initialLocation)
         .build();
   }
@@ -51,7 +46,7 @@ void main() {
   setUp(() {
     languageCubit = LanguageCubit();
     SharedPreferences.setMockInitialValues({});
-    mealRecipeBloc = MealRecipeBloc(mockDietPredictionRepository, mockMealsRepository);
+    mealRecipeBloc = MealRecipeBloc(mockMealsRepository);
     uuidUserId = UuidValue.fromString('user678c3-bb44-5b37-90d9-5b0c9a4f1b87');
     uuidMealId = UuidValue.fromString('meal78c3-bb44-5b37-90d9-5b0c9a4f1b87');
 
@@ -119,7 +114,7 @@ void main() {
   ) async {
     // Given
     when(
-      mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
+      mockMealsRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
     ).thenAnswer((_) async => mealRecipe);
 
     // When
@@ -166,7 +161,7 @@ void main() {
   testWidgets('Meal recipe screen, server error', (WidgetTester tester) async {
     // Given
     when(
-      mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
+      mockMealsRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en),
     ).thenThrow(ApiException({'detail': 'Server error'}, statusCode: 500));
 
     // When
@@ -212,7 +207,7 @@ void main() {
 
   testWidgets('Meal recipe screen, 404 error', (WidgetTester tester) async {
     // Given
-    when(mockDietPredictionRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en)).thenThrow(
+    when(mockMealsRepository.getMealRecipe(uuidUserId, uuidMealId, Language.en)).thenThrow(
       ApiException({'detail': 'Meal recipe not found'}, statusCode: 404),
     );
 

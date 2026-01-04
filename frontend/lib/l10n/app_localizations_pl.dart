@@ -182,7 +182,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie możesz otworzyć formularza zmiany hasła';
 
   @override
-  String get dietPreferences => 'Preferencje dietetyczne';
+  String get dietPreferences => 'Preferencje Dietetyczne';
 
   @override
   String get dietType => 'Typ diety';
@@ -514,7 +514,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get savePredictedCalories => 'Zapisz wygenerowane kalorie';
 
   @override
-  String get changeCaloriesPrediction => 'Zmień przewidywane kalorie';
+  String get changeCaloriesPrediction => 'Zmień Przewidywane Kalorie';
 
   @override
   String get refreshRequest => 'Odśwież żądanie';
@@ -740,4 +740,28 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get weightChartTitle => 'Historia wagi';
+
+  @override
+  String get noWeightDataAvailable => 'Brak danych o wadze dla tego okresu';
+
+  @override
+  String get mon => 'Pon';
+
+  @override
+  String get tue => 'Wt';
+
+  @override
+  String get wed => 'Śr';
+
+  @override
+  String get thu => 'Czw';
+
+  @override
+  String get fri => 'Pt';
+
+  @override
+  String get sat => 'Sob';
+
+  @override
+  String get sun => 'Ndz';
 }

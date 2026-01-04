@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:frontend/views/widgets/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/animated_button.dart';
 
 class DietGenerationInfoButton extends StatelessWidget {
   final VoidCallback? onPressed;

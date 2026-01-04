@@ -43,7 +43,7 @@ class DailySummaryRepository:
 
             for meal in meal_infos:
                 composed_meal = ComposedMealItem(
-                    meal_daily_summary_id=meal_daily_summary_link.id,
+                    meal_type_daily_summary_id=meal_daily_summary_link.id,
                     meal_id=meal.meal_id,
                     planned_calories=meal.calories,
                     planned_protein=meal.protein,
@@ -140,7 +140,7 @@ class DailySummaryRepository:
 
         if meal_summary_ids:
             delete_composed_stmt = delete(ComposedMealItem).where(
-                ComposedMealItem.meal_daily_summary_id.in_(meal_summary_ids)
+                ComposedMealItem.meal_type_daily_summary_id.in_(meal_summary_ids)
             )
             await self.db.execute(delete_composed_stmt)
 
@@ -203,7 +203,7 @@ class DailySummaryRepository:
                 await self.db.flush()
 
             composed_item = ComposedMealItem(
-                meal_daily_summary_id=meal_daily_summary.id,
+                meal_type_daily_summary_id=meal_daily_summary.id,
                 meal_id=meal_info.meal_id,
                 planned_weight=meal_info.planned_weight,
                 planned_calories=meal_info.planned_calories,

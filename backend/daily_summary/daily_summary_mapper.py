@@ -13,12 +13,12 @@ class DailySummaryMapper:
         if not daily_summary:
             return None
         meal_type_daily_summary = None
-        first_meal = daily_summary.daily_meals[0] if daily_summary.daily_meals else None
-        if first_meal:
+        first_meal_type = daily_summary.daily_meals[0] if daily_summary.daily_meals else None
+        if first_meal_type:
             meal_type_daily_summary = MealTypeDailySummaryBase(
-                meal_daily_summary_id=first_meal.id,
-                status=first_meal.status,
-                meal_type=first_meal.meal_type,
+                daily_summary_id=first_meal_type.id,
+                status=first_meal_type.status,
+                meal_type=first_meal_type.meal_type,
             )
         return DailyMealTypeSummary(
             daily_summary_id=daily_summary.id,
@@ -39,7 +39,7 @@ class DailySummaryMapper:
 
         for meal in daily_summary.daily_meals:
             meal_type_daily_summaries[meal.meal_type] = MealTypeDailySummaryWithItems(
-                meal_daily_summary_id=meal.id,
+                daily_summary_id=meal.id,
                 status=meal.status,
                 meal_type=meal.meal_type,
                 composed_meal_items=meal.meal_items,

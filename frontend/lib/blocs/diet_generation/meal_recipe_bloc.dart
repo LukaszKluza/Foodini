@@ -2,21 +2,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api_exception.dart';
 import 'package:frontend/events/diet_generation/meal_recipe_events.dart';
 import 'package:frontend/models/processing_status.dart';
-import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/repository/user/user_storage.dart';
 import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/utils/exception_converter.dart';
 
 class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
-  final DietPredictionRepository dietPredictionRepository;
   final MealsRepository mealsRepository;
 
-  MealRecipeBloc(this.dietPredictionRepository, this.mealsRepository) : super(MealRecipeState()) {
-    on<MealRecipeInit>(_onDietPredictionInit);
+  MealRecipeBloc(this.mealsRepository) : super(MealRecipeState()) {
+    on<MealRecipeInit>(_onMealRecipeInit);
   }
 
-  Future<void> _onDietPredictionInit(
+  Future<void> _onMealRecipeInit(
     MealRecipeInit event,
     Emitter<MealRecipeState> emit,
   ) async {
@@ -31,7 +29,7 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
 
       final userId = UserStorage().getUserId!;
 
-      final mealRecipe = await dietPredictionRepository.getMealRecipe(
+      final mealRecipe = await mealsRepository.getMealRecipe(
         userId,
         event.mealId,
         event.language,
@@ -47,11 +45,11 @@ class MealRecipeBloc extends Bloc<MealRecipeEvent, MealRecipeState> {
     } on ApiException catch (error) {
       emit(
         state.copyWith(
-            getErrorMessage:
-                (context) =>
-                ExceptionConverter.formatErrorMessage(error.data, context),
-            errorCode: error.statusCode,
-            processingStatus: ProcessingStatus.gettingFailure
+          getErrorMessage:
+            (context) =>
+            ExceptionConverter.formatErrorMessage(error.data, context),
+          errorCode: error.statusCode,
+          processingStatus: ProcessingStatus.gettingFailure
         ),
       );
     }

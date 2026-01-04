@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.params import Query
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
@@ -40,6 +40,7 @@ user_router = APIRouter(prefix="/v1/users", tags=["User", "Admin"])
     dependencies=[user_or_admin],
 )
 async def get_user(
+    request: Request,
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
     user, _ = await auth_dependency.get_current_user()
@@ -52,7 +53,11 @@ async def get_user(
     summary="Register new user",
     description="Creates a new user account with the provided information and sends a verification email.",
 )
-async def register_user(user: UserCreate, user_service: UserService = Depends(get_user_service)):
+async def register_user(
+    request: Request,
+    user: UserCreate,
+    user_service: UserService = Depends(get_user_service)
+):
     return await user_service.register(user)
 
 
@@ -64,6 +69,7 @@ async def register_user(user: UserCreate, user_service: UserService = Depends(ge
     dependencies=[user_or_admin],
 )
 async def update_user(
+    request: Request,
     user_update: UserUpdate,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
@@ -80,6 +86,7 @@ async def update_user(
     dependencies=[user_or_admin],
 )
 async def delete_user(
+    request: Request,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
@@ -95,7 +102,9 @@ async def delete_user(
     "tokens upon successful login.",
 )
 async def login_user(
-    form_data: OAuth2PasswordRequestForm = Depends(), user_service: UserService = Depends(get_user_service)
+    request: Request,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    user_service: UserService = Depends(get_user_service)
 ):
     return await user_service.login(form_data)
 
@@ -108,6 +117,7 @@ async def login_user(
     dependencies=[user_or_admin],
 )
 async def logout_user(
+    request: Request,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
@@ -122,6 +132,7 @@ async def logout_user(
     description="Generates new access and refresh tokens using a valid refresh token.",
 )
 async def refresh_tokens(
+    request: Request,
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
     return await auth_dependency.get_refreshed_tokens()
@@ -134,6 +145,7 @@ async def refresh_tokens(
     description="Initiates the password reset process by sending a reset link to the user's email address.",
 )
 async def reset_password(
+    request: Request,
     password_reset_request: PasswordResetRequest,
     form_url: Optional[str] = f"{config.FRONTEND_URL}/#/change_password",
     user_service: UserService = Depends(get_user_service),
@@ -149,12 +161,13 @@ async def reset_password(
     dependencies=[user_or_admin],
 )
 async def update_language(
-    request: ChangeLanguageRequest,
+    request: Request,
+    change_language_request: ChangeLanguageRequest,
     user_service: UserService = Depends(get_user_service),
     auth_dependency: AuthDependency = Depends(get_auth_dependency),
 ):
     user, _ = await auth_dependency.get_current_user()
-    return await user_service.change_language(user, request)
+    return await user_service.change_language(user, change_language_request)
 
 
 @user_router.post(
@@ -164,6 +177,7 @@ async def update_language(
     description="Completes the password reset process by verifying the reset token and setting the new password.",
 )
 async def verify_new_password(
+    request: Request,
     new_password_confirm: NewPasswordConfirm,
     user_service: UserService = Depends(get_user_service),
 ):
@@ -176,7 +190,11 @@ async def verify_new_password(
     summary="Verify new account",
     description="Activates a newly registered account by validating the verification token sent to their email.",
 )
-async def verify_new_account(url_token: str = Query(None), user_service: UserService = Depends(get_user_service)):
+async def verify_new_account(
+    request: Request,
+    url_token: str = Query(None),
+    user_service: UserService = Depends(get_user_service)
+):
     return await user_service.confirm_new_account(url_token)
 
 
@@ -189,6 +207,7 @@ async def verify_new_account(url_token: str = Query(None), user_service: UserSer
     "for account activation.",
 )
 async def resend_verification(
+    request: Request,
     email: Optional[EmailStr] = None,
     email_verification_service: EmailVerificationService = Depends(get_email_verification_service),
 ):

@@ -9,34 +9,34 @@ import 'dart:ui' as _i24;
 import 'package:dio/dio.dart' as _i22;
 import 'package:dio/src/dio_mixin.dart' as _i23;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart' as _i25;
-import 'package:flutter/foundation.dart' as _i48;
+import 'package:flutter/foundation.dart' as _i47;
 import 'package:flutter_bloc/flutter_bloc.dart' as _i35;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i21;
 import 'package:frontend/blocs/user/register_bloc.dart' as _i33;
 import 'package:frontend/events/user/register_events.dart' as _i34;
-import 'package:frontend/foodini.dart' as _i49;
+import 'package:frontend/foodini.dart' as _i48;
 import 'package:frontend/models/diet_generation/composed_meal_item.dart'
-    as _i17;
-import 'package:frontend/models/diet_generation/custom_meal_update_request.dart'
-    as _i43;
-import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart'
-    as _i19;
-import 'package:frontend/models/diet_generation/daily_meals_create.dart'
     as _i16;
-import 'package:frontend/models/diet_generation/daily_summary.dart' as _i15;
-import 'package:frontend/models/diet_generation/meal_create.dart' as _i20;
-import 'package:frontend/models/diet_generation/meal_info_update_request.dart'
-    as _i42;
-import 'package:frontend/models/diet_generation/meal_recipe.dart' as _i14;
-import 'package:frontend/models/diet_generation/meal_type.dart' as _i46;
-import 'package:frontend/models/diet_generation/remove_meal_request.dart'
-    as _i44;
-import 'package:frontend/models/diet_generation/remove_meal_response.dart'
+import 'package:frontend/models/diet_generation/custom_meal_update_request.dart'
+    as _i41;
+import 'package:frontend/models/diet_generation/daily_macros_summary_create.dart'
     as _i18;
+import 'package:frontend/models/diet_generation/daily_meals_create.dart'
+    as _i15;
+import 'package:frontend/models/diet_generation/daily_summary.dart' as _i14;
+import 'package:frontend/models/diet_generation/meal_create.dart' as _i19;
+import 'package:frontend/models/diet_generation/meal_info_update_request.dart'
+    as _i40;
+import 'package:frontend/models/diet_generation/meal_recipe.dart' as _i20;
+import 'package:frontend/models/diet_generation/meal_type.dart' as _i44;
+import 'package:frontend/models/diet_generation/remove_meal_request.dart'
+    as _i42;
+import 'package:frontend/models/diet_generation/remove_meal_response.dart'
+    as _i17;
 import 'package:frontend/models/user/change_language_request.dart' as _i32;
 import 'package:frontend/models/user/change_password_request.dart' as _i31;
 import 'package:frontend/models/user/default_response.dart' as _i5;
-import 'package:frontend/models/user/language.dart' as _i40;
+import 'package:frontend/models/user/language.dart' as _i46;
 import 'package:frontend/models/user/logged_user.dart' as _i4;
 import 'package:frontend/models/user/login_request.dart' as _i28;
 import 'package:frontend/models/user/provide_email_request.dart' as _i30;
@@ -50,18 +50,16 @@ import 'package:frontend/models/user_details/user_statistics.dart' as _i11;
 import 'package:frontend/models/user_details/user_weight_history.dart' as _i12;
 import 'package:frontend/repository/api_client.dart' as _i2;
 import 'package:frontend/repository/diet_generation/diet_generation_repository.dart'
-    as _i41;
-import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart'
     as _i39;
 import 'package:frontend/repository/diet_generation/meals_repository.dart'
-    as _i47;
+    as _i45;
 import 'package:frontend/repository/user/user_repository.dart' as _i7;
 import 'package:frontend/repository/user_details/user_details_repository.dart'
     as _i37;
 import 'package:frontend/services/token_storage_service.dart' as _i36;
 import 'package:frontend/states/register_states.dart' as _i8;
 import 'package:frontend/utils/cache_manager.dart' as _i13;
-import 'package:image_picker/image_picker.dart' as _i45;
+import 'package:image_picker/image_picker.dart' as _i43;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:uuid/uuid_value.dart' as _i27;
 
@@ -146,42 +144,42 @@ class _FakeCacheManager_11 extends _i1.SmartFake implements _i13.CacheManager {
     : super(parent, parentInvocation);
 }
 
-class _FakeMealRecipe_12 extends _i1.SmartFake implements _i14.MealRecipe {
-  _FakeMealRecipe_12(Object parent, Invocation parentInvocation)
+class _FakeDailySummary_12 extends _i1.SmartFake implements _i14.DailySummary {
+  _FakeDailySummary_12(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailySummary_13 extends _i1.SmartFake implements _i15.DailySummary {
-  _FakeDailySummary_13(Object parent, Invocation parentInvocation)
+class _FakeDailyMealsCreate_13 extends _i1.SmartFake
+    implements _i15.DailyMealsCreate {
+  _FakeDailyMealsCreate_13(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailyMealsCreate_14 extends _i1.SmartFake
-    implements _i16.DailyMealsCreate {
-  _FakeDailyMealsCreate_14(Object parent, Invocation parentInvocation)
+class _FakeComposedMealItem_14 extends _i1.SmartFake
+    implements _i16.ComposedMealItem {
+  _FakeComposedMealItem_14(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeComposedMealItem_15 extends _i1.SmartFake
-    implements _i17.ComposedMealItem {
-  _FakeComposedMealItem_15(Object parent, Invocation parentInvocation)
+class _FakeRemoveMealResponse_15 extends _i1.SmartFake
+    implements _i17.RemoveMealResponse {
+  _FakeRemoveMealResponse_15(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeRemoveMealResponse_16 extends _i1.SmartFake
-    implements _i18.RemoveMealResponse {
-  _FakeRemoveMealResponse_16(Object parent, Invocation parentInvocation)
+class _FakeDailyMacrosSummaryCreate_16 extends _i1.SmartFake
+    implements _i18.DailyMacrosSummaryCreate {
+  _FakeDailyMacrosSummaryCreate_16(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDailyMacrosSummaryCreate_17 extends _i1.SmartFake
-    implements _i19.DailyMacrosSummaryCreate {
-  _FakeDailyMacrosSummaryCreate_17(Object parent, Invocation parentInvocation)
+class _FakeMealCreate_17 extends _i1.SmartFake implements _i19.MealCreate {
+  _FakeMealCreate_17(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMealCreate_18 extends _i1.SmartFake implements _i20.MealCreate {
-  _FakeMealCreate_18(Object parent, Invocation parentInvocation)
+class _FakeMealRecipe_18 extends _i1.SmartFake implements _i20.MealRecipe {
+  _FakeMealRecipe_18(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -724,57 +722,11 @@ class MockUserDetailsRepository extends _i1.Mock
           as _i26.Future<_i12.UserWeightHistory>);
 }
 
-/// A class which mocks [DietPredictionRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockDietPredictionRepository extends _i1.Mock
-    implements _i39.DietPredictionRepository {
-  MockDietPredictionRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.ApiClient get apiClient =>
-      (super.noSuchMethod(
-            Invocation.getter(#apiClient),
-            returnValue: _FakeApiClient_0(this, Invocation.getter(#apiClient)),
-          )
-          as _i2.ApiClient);
-
-  @override
-  _i13.CacheManager get cacheManager =>
-      (super.noSuchMethod(
-            Invocation.getter(#cacheManager),
-            returnValue: _FakeCacheManager_11(
-              this,
-              Invocation.getter(#cacheManager),
-            ),
-          )
-          as _i13.CacheManager);
-
-  @override
-  _i26.Future<_i14.MealRecipe> getMealRecipe(
-    _i27.UuidValue? userId,
-    _i27.UuidValue? mealId,
-    _i40.Language? language,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getMealRecipe, [userId, mealId, language]),
-            returnValue: _i26.Future<_i14.MealRecipe>.value(
-              _FakeMealRecipe_12(
-                this,
-                Invocation.method(#getMealRecipe, [userId, mealId, language]),
-              ),
-            ),
-          )
-          as _i26.Future<_i14.MealRecipe>);
-}
-
 /// A class which mocks [DietGenerationRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDietGenerationRepository extends _i1.Mock
-    implements _i41.DietGenerationRepository {
+    implements _i39.DietGenerationRepository {
   MockDietGenerationRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -799,40 +751,40 @@ class MockDietGenerationRepository extends _i1.Mock
           as _i13.CacheManager);
 
   @override
-  _i26.Future<_i15.DailySummary> getDailySummary(
+  _i26.Future<_i14.DailySummary> getDailySummary(
     DateTime? day,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummary, [day, userId]),
-            returnValue: _i26.Future<_i15.DailySummary>.value(
-              _FakeDailySummary_13(
+            returnValue: _i26.Future<_i14.DailySummary>.value(
+              _FakeDailySummary_12(
                 this,
                 Invocation.method(#getDailySummary, [day, userId]),
               ),
             ),
           )
-          as _i26.Future<_i15.DailySummary>);
+          as _i26.Future<_i14.DailySummary>);
 
   @override
-  _i26.Future<_i16.DailyMealsCreate> getDailySummaryMeals(
+  _i26.Future<_i15.DailyMealsCreate> getDailySummaryMeals(
     DateTime? day,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMeals, [day, userId]),
-            returnValue: _i26.Future<_i16.DailyMealsCreate>.value(
-              _FakeDailyMealsCreate_14(
+            returnValue: _i26.Future<_i15.DailyMealsCreate>.value(
+              _FakeDailyMealsCreate_13(
                 this,
                 Invocation.method(#getDailySummaryMeals, [day, userId]),
               ),
             ),
           )
-          as _i26.Future<_i16.DailyMealsCreate>);
+          as _i26.Future<_i15.DailyMealsCreate>);
 
   @override
   _i26.Future<void> updateDailySummaryMeals(
-    _i42.MealInfoUpdateRequest? mealInfoUpdateRequest,
+    _i40.MealInfoUpdateRequest? mealInfoUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -846,8 +798,8 @@ class MockDietGenerationRepository extends _i1.Mock
           as _i26.Future<void>);
 
   @override
-  _i26.Future<_i17.ComposedMealItem> addCustomMeal(
-    _i43.CustomMealUpdateRequest? customMealUpdateRequest,
+  _i26.Future<_i16.ComposedMealItem> addCustomMeal(
+    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -855,8 +807,8 @@ class MockDietGenerationRepository extends _i1.Mock
               customMealUpdateRequest,
               userId,
             ]),
-            returnValue: _i26.Future<_i17.ComposedMealItem>.value(
-              _FakeComposedMealItem_15(
+            returnValue: _i26.Future<_i16.ComposedMealItem>.value(
+              _FakeComposedMealItem_14(
                 this,
                 Invocation.method(#addCustomMeal, [
                   customMealUpdateRequest,
@@ -865,11 +817,11 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i26.Future<_i17.ComposedMealItem>);
+          as _i26.Future<_i16.ComposedMealItem>);
 
   @override
-  _i26.Future<_i17.ComposedMealItem> updateCustomMeal(
-    _i43.CustomMealUpdateRequest? customMealUpdateRequest,
+  _i26.Future<_i16.ComposedMealItem> updateCustomMeal(
+    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -877,8 +829,8 @@ class MockDietGenerationRepository extends _i1.Mock
               customMealUpdateRequest,
               userId,
             ]),
-            returnValue: _i26.Future<_i17.ComposedMealItem>.value(
-              _FakeComposedMealItem_15(
+            returnValue: _i26.Future<_i16.ComposedMealItem>.value(
+              _FakeComposedMealItem_14(
                 this,
                 Invocation.method(#updateCustomMeal, [
                   customMealUpdateRequest,
@@ -887,11 +839,11 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i26.Future<_i17.ComposedMealItem>);
+          as _i26.Future<_i16.ComposedMealItem>);
 
   @override
-  _i26.Future<_i18.RemoveMealResponse> removeMealFromSummary(
-    _i44.RemoveMealRequest? removeMealRequest,
+  _i26.Future<_i17.RemoveMealResponse> removeMealFromSummary(
+    _i42.RemoveMealRequest? removeMealRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -899,8 +851,8 @@ class MockDietGenerationRepository extends _i1.Mock
               removeMealRequest,
               userId,
             ]),
-            returnValue: _i26.Future<_i18.RemoveMealResponse>.value(
-              _FakeRemoveMealResponse_16(
+            returnValue: _i26.Future<_i17.RemoveMealResponse>.value(
+              _FakeRemoveMealResponse_15(
                 this,
                 Invocation.method(#removeMealFromSummary, [
                   removeMealRequest,
@@ -909,13 +861,13 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i26.Future<_i18.RemoveMealResponse>);
+          as _i26.Future<_i17.RemoveMealResponse>);
 
   @override
-  _i26.Future<_i17.ComposedMealItem> addScannedProduct({
+  _i26.Future<_i16.ComposedMealItem> addScannedProduct({
     String? barcode,
-    _i45.XFile? uploadedFile,
-    required _i46.MealType? mealType,
+    _i43.XFile? uploadedFile,
+    required _i44.MealType? mealType,
     required DateTime? day,
     required _i27.UuidValue? userId,
   }) =>
@@ -927,8 +879,8 @@ class MockDietGenerationRepository extends _i1.Mock
               #day: day,
               #userId: userId,
             }),
-            returnValue: _i26.Future<_i17.ComposedMealItem>.value(
-              _FakeComposedMealItem_15(
+            returnValue: _i26.Future<_i16.ComposedMealItem>.value(
+              _FakeComposedMealItem_14(
                 this,
                 Invocation.method(#addScannedProduct, [], {
                   #barcode: barcode,
@@ -940,23 +892,23 @@ class MockDietGenerationRepository extends _i1.Mock
               ),
             ),
           )
-          as _i26.Future<_i17.ComposedMealItem>);
+          as _i26.Future<_i16.ComposedMealItem>);
 
   @override
-  _i26.Future<_i19.DailyMacrosSummaryCreate> getDailySummaryMacros(
+  _i26.Future<_i18.DailyMacrosSummaryCreate> getDailySummaryMacros(
     DateTime? day,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getDailySummaryMacros, [day, userId]),
-            returnValue: _i26.Future<_i19.DailyMacrosSummaryCreate>.value(
-              _FakeDailyMacrosSummaryCreate_17(
+            returnValue: _i26.Future<_i18.DailyMacrosSummaryCreate>.value(
+              _FakeDailyMacrosSummaryCreate_16(
                 this,
                 Invocation.method(#getDailySummaryMacros, [day, userId]),
               ),
             ),
           )
-          as _i26.Future<_i19.DailyMacrosSummaryCreate>);
+          as _i26.Future<_i18.DailyMacrosSummaryCreate>);
 
   @override
   _i26.Future<void> generateMealPlan(_i27.UuidValue? userId, DateTime? day) =>
@@ -971,7 +923,7 @@ class MockDietGenerationRepository extends _i1.Mock
 /// A class which mocks [MealsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMealsRepository extends _i1.Mock implements _i47.MealsRepository {
+class MockMealsRepository extends _i1.Mock implements _i45.MealsRepository {
   MockMealsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -996,20 +948,37 @@ class MockMealsRepository extends _i1.Mock implements _i47.MealsRepository {
           as _i13.CacheManager);
 
   @override
-  _i26.Future<_i20.MealCreate> getMealDetails(
+  _i26.Future<_i19.MealCreate> getMealDetails(
     _i27.UuidValue? mealId,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getMealDetails, [mealId, userId]),
-            returnValue: _i26.Future<_i20.MealCreate>.value(
-              _FakeMealCreate_18(
+            returnValue: _i26.Future<_i19.MealCreate>.value(
+              _FakeMealCreate_17(
                 this,
                 Invocation.method(#getMealDetails, [mealId, userId]),
               ),
             ),
           )
-          as _i26.Future<_i20.MealCreate>);
+          as _i26.Future<_i19.MealCreate>);
+
+  @override
+  _i26.Future<_i20.MealRecipe> getMealRecipe(
+    _i27.UuidValue? userId,
+    _i27.UuidValue? mealId,
+    _i46.Language? language,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getMealRecipe, [userId, mealId, language]),
+            returnValue: _i26.Future<_i20.MealRecipe>.value(
+              _FakeMealRecipe_18(
+                this,
+                Invocation.method(#getMealRecipe, [userId, mealId, language]),
+              ),
+            ),
+          )
+          as _i26.Future<_i20.MealRecipe>);
 }
 
 /// A class which mocks [FlutterSecureStorage].
@@ -1087,7 +1056,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void registerListener({
     required String? key,
-    required _i48.ValueChanged<String?>? listener,
+    required _i47.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -1096,7 +1065,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i48.ValueChanged<String?>? listener,
+    required _i47.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -1594,7 +1563,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   @override
   _i26.Future<_i22.Response<dynamic>> getMealRecipe(
     _i27.UuidValue? mealId,
-    _i40.Language? language,
+    _i46.Language? language,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1658,7 +1627,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i26.Future<_i22.Response<dynamic>> updateDailySummaryMeals(
-    _i42.MealInfoUpdateRequest? mealInfoUpdateRequest,
+    _i40.MealInfoUpdateRequest? mealInfoUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1712,7 +1681,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i26.Future<_i22.Response<dynamic>> getMealIconInfo(
-    _i46.MealType? mealType,
+    _i44.MealType? mealType,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1728,7 +1697,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i26.Future<_i22.Response<dynamic>> addMeal(
-    _i43.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1744,7 +1713,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i26.Future<_i22.Response<dynamic>> updateDailyMeal(
-    _i43.CustomMealUpdateRequest? customMealUpdateRequest,
+    _i41.CustomMealUpdateRequest? customMealUpdateRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1766,7 +1735,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
 
   @override
   _i26.Future<_i22.Response<dynamic>> removeMealFromSummary(
-    _i44.RemoveMealRequest? removeMealRequest,
+    _i42.RemoveMealRequest? removeMealRequest,
     _i27.UuidValue? userId,
   ) =>
       (super.noSuchMethod(
@@ -1789,8 +1758,8 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   @override
   _i26.Future<_i22.Response<dynamic>> addScannedProduct({
     String? barcode,
-    _i45.XFile? uploadedFile,
-    required _i46.MealType? mealType,
+    _i43.XFile? uploadedFile,
+    required _i44.MealType? mealType,
     required DateTime? day,
     required _i27.UuidValue? userId,
   }) =>
@@ -1867,7 +1836,7 @@ class MockErrorInterceptorHandler extends _i1.Mock
 /// A class which mocks [LanguageCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLanguageCubit extends _i1.Mock implements _i49.LanguageCubit {
+class MockLanguageCubit extends _i1.Mock implements _i48.LanguageCubit {
   MockLanguageCubit() {
     _i1.throwOnMissingStub(this);
   }
@@ -1894,7 +1863,7 @@ class MockLanguageCubit extends _i1.Mock implements _i49.LanguageCubit {
           as bool);
 
   @override
-  _i26.Future<void> change(_i40.Language? language) =>
+  _i26.Future<void> change(_i46.Language? language) =>
       (super.noSuchMethod(
             Invocation.method(#change, [language]),
             returnValue: _i26.Future<void>.value(),

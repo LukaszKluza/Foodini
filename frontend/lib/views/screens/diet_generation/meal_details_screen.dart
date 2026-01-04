@@ -12,7 +12,7 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
-import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/animated_button.dart';
 import 'package:frontend/views/widgets/diet_generation/bottom_sheet.dart';
 import 'package:frontend/views/widgets/diet_generation/delete_meal_pop_up.dart';
 import 'package:frontend/views/widgets/diet_generation/edit_meal_pop_up.dart';
@@ -51,19 +51,28 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
           final calculatedMacrosSummary = mealItems.isNotEmpty &&
               dateComparator(state.dailySummary!.day, widget.selectedDate) == 0 ? MacrosSummary.calculateTotalMacros(mealItems) : MacrosSummary.zero();
 
-          return Scaffold(
-            body: _MealDetails(mealType: widget.mealType, state: state, widgetSelectedDate: widget.selectedDate),
-            bottomNavigationBar: BottomNavBar(
-              currentRoute: GoRouterState.of(context).uri.path,
-              mode: NavBarMode.wizard,
-              prevRoute: '/daily-summary/${widget.selectedDate}',
-            ),
-            bottomSheet: CustomBottomSheet(
-              mealTypeMacrosSummary: calculatedMacrosSummary,
-              mealType: widget.mealType,
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Scaffold(
+                body: _MealDetails(
+                  mealType: widget.mealType,
+                  state: state,
+                  widgetSelectedDate: widget.selectedDate
+                ),
+                bottomNavigationBar: BottomNavBar(
+                  currentRoute: GoRouterState.of(context).uri.path,
+                  mode: NavBarMode.wizard,
+                  prevRoute: '/daily-summary/${widget.selectedDate}',
+                ),
+                bottomSheet: CustomBottomSheet(
+                  mealTypeMacrosSummary: calculatedMacrosSummary,
+                  mealType: widget.mealType,
+                ),
+              ),
             ),
           );
-         },
+        },
       ),
     );
   }
@@ -84,44 +93,41 @@ class _MealDetails extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 16, 0, 140),
       child: Align(
         alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-             if ((mealItems.isNotEmpty && dateComparator(state.dailySummary!.day, widgetSelectedDate) != 0) || mealItems.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    generateMealNameHeader(context, mealType),
-                    const SizedBox(height: 16),
-                    buildErrorBox(
-                      context,
-                      AppLocalizations.of(context)!.noMealData,
-                      button: ActionButton(
-                        onPressed: showNewMealPopUp(context, widgetSelectedDate, mealType),
-                        color: Colors.orangeAccent,
-                        label: AppLocalizations.of(context)!.addNewMeal,
-                      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+           if ((mealItems.isNotEmpty && dateComparator(state.dailySummary!.day, widgetSelectedDate) != 0) || mealItems.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  generateMealNameHeader(context, mealType),
+                  const SizedBox(height: 16),
+                  buildErrorBox(
+                    context,
+                    AppLocalizations.of(context)!.noMealData,
+                    button: ActionButton(
+                      onPressed: showNewMealPopUp(context, widgetSelectedDate, mealType),
+                      color: Colors.orangeAccent,
+                      label: AppLocalizations.of(context)!.addNewMeal,
                     ),
-                  ],
-                ),
-              ) else
-                generateMealDetails(context, mealType, mealItems),
-              if (state.updatingMealDetails. isFailure)
-                Text(
-                  state.getMessage!(context),
-                  style: Styles.errorStyle,
-                  textAlign: TextAlign.center,
-                ),
-              if ((state.dietGeneratingInfo.processingStatus.isOngoing && dateComparator(state.dietGeneratingInfo.day!, widgetSelectedDate) == 0) || state.gettingDailySummaryStatus.isOngoing || state.updatingMealDetails. isOngoing)
-                const Center(child: CircularProgressIndicator()),
-              const SizedBox(height: 24),
-            ],
+                  ),
+                ],
+              ),
+            ) else
+              generateMealDetails(context, mealType, mealItems),
+            if (state.updatingMealDetails. isFailure)
+              Text(
+                state.getMessage!(context),
+                style: Styles.errorStyle,
+                textAlign: TextAlign.center,
+              ),
+            if ((state.dietGeneratingInfo.processingStatus.isOngoing && dateComparator(state.dietGeneratingInfo.day!, widgetSelectedDate) == 0) || state.gettingDailySummaryStatus.isOngoing || state.updatingMealDetails. isOngoing)
+              const Center(child: CircularProgressIndicator()),
+            const SizedBox(height: 24),
+          ],
           ),
-        ),
       ),
     );
   }

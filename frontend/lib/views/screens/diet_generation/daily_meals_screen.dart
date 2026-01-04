@@ -11,8 +11,8 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/date_tools.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar_date.dart';
+import 'package:frontend/views/widgets/diet_generation/generate_meals_button.dart';
 import 'package:frontend/views/widgets/error_message.dart';
-import 'package:frontend/views/widgets/generate_meals_button.dart';
 import 'package:frontend/views/widgets/title_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid_value.dart';
@@ -50,110 +50,117 @@ class _DailyMealsScreenState extends State<DailyMealsScreen> {
     final isActiveDay = widget.selectedDate.isAfter(now) || isToDay;
 
     return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
-          builder: (context, state) {
-            generateOnPressed() {
-                context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
-            }
-            if (state.dietGeneratingInfo.processingStatus.isOngoing
-                && state.dietGeneratingInfo.day != null
-                && dateComparator(
-                    state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
-              return const Center(child: CircularProgressIndicator());
-            } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
-                (state.dietGeneratingInfo.day == null ||
-                    dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)) ||
-                state.gettingDailySummaryStatus.isFailure
-            ) {
-              final errorCode = state.errorCode;
-              final errorData = state.errorData;
-              final isMissingPredictions =
-                  errorCode == 404 &&
-                  errorData is Map &&
-                  (errorData['code'] == CustomExceptionCode.missingDietPredictions.toJson());
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child:  Scaffold(
+            body: SafeArea(
+              child: BlocBuilder<DailySummaryBloc, DailySummaryState>(
+                builder: (context, state) {
+                  generateOnPressed() {
+                      context.read<DailySummaryBloc>().add(GenerateMealPlan(day: widget.selectedDate));
+                  }
+                  if (state.dietGeneratingInfo.processingStatus.isOngoing
+                      && state.dietGeneratingInfo.day != null
+                      && dateComparator(
+                          state.dietGeneratingInfo.day!, widget.selectedDate) == 0) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if ((state.dietGeneratingInfo.processingStatus.isFailure &&
+                      (state.dietGeneratingInfo.day == null ||
+                          dateComparator(state.dietGeneratingInfo.day!, widget.selectedDate) == 0)) ||
+                      state.gettingDailySummaryStatus.isFailure
+                  ) {
+                    final errorCode = state.errorCode;
+                    final errorData = state.errorData;
+                    final isMissingPredictions =
+                        errorCode == 404 &&
+                        errorData is Map &&
+                        (errorData['code'] == CustomExceptionCode.missingDietPredictions.toJson());
 
-              return Stack(
-                children: [
-                  Center(
-                    child: ErrorMessage(
-                      message: state.getMessage != null
-                          ? state.getMessage!(context)
-                          : AppLocalizations.of(context)!.unknownError,
-                    ),
-                  ),
-                  if (isActiveDay && !isMissingPredictions)
-                    DietGenerationInfoButton(
-                      selectedDay: widget.selectedDate,
-                      isRegenerateMode: false,
-                      onPressed: generateOnPressed,
-                    ),
-                ],
-              );
-              }
-            if (state.dailySummary != null &&
-                dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
-              final meals = state.dailySummary!.generatedMeals;
-              final bool isRegenerate = meals.isNotEmpty;
-              final sortedEntries =
-                  meals.entries.toList()
-                    ..sort((a, b) => a.key.value.compareTo(b.key.value));
-
-              return Stack(
-                children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    return Stack(
                       children: [
-                        const SizedBox(height: 60),
-                        for (final entry in sortedEntries)
-                          _buildMealSection(
-                            title:
-                                AppConfig.mealTypeLabels(context)[entry.key]!,
-                            color: _getMealColor(entry.key),
-                            imageUrl: entry.value.iconPath!,
-                            mealName: entry.value.name,
-                            description: entry.value.description!,
-                            explanation: entry.value.explanation,
-                            mealId: entry.value.mealId,
-                            context: context,
+                        Center(
+                          child: ErrorMessage(
+                            message: state.getMessage != null
+                                ? state.getMessage!(context)
+                                : AppLocalizations.of(context)!.unknownError,
                           ),
-                        const SizedBox(height: 40),
+                        ),
+                        if (isActiveDay && !isMissingPredictions)
+                          DietGenerationInfoButton(
+                            selectedDay: widget.selectedDate,
+                            isRegenerateMode: false,
+                            onPressed: generateOnPressed,
+                          ),
                       ],
-                    ),
-                  ),
-                  _buildHeader(displayDate),
-                  if (widget.selectedDate.isAfter(now))
-                    DietGenerationInfoButton(
-                      selectedDay: widget.selectedDate,
-                      isRegenerateMode: isRegenerate,
-                      onPressed: generateOnPressed,
-                      label: state.dailySummary!.isOutDated ?
-                        AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
-                        AppLocalizations.of(context)!.regenerateMeals,
-                    )
-                  else if(isToDay && state.dailySummary!.isOutDated)
-                    DietGenerationInfoButton(
-                      selectedDay: widget.selectedDate,
-                      isRegenerateMode: false,
-                      label: AppLocalizations.of(context)!.dietOutdated
-                    )
-                ],
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
-        ),
-      ),
-      bottomNavigationBar: BottomNavBarDate(
-        prevRoute: prevRoute,
-        nextRoute: nextRoute,
-        selectedDate: widget.selectedDate,
-      ),
+                    );
+                    }
+                  if (state.dailySummary != null &&
+                      dateComparator(state.dailySummary!.day, widget.selectedDate) == 0) {
+                    final meals = state.dailySummary!.generatedMeals;
+                    final bool isRegenerate = meals.isNotEmpty;
+                    final sortedEntries =
+                        meals.entries.toList()
+                          ..sort((a, b) => a.key.value.compareTo(b.key.value));
+
+                    return Stack(
+                      children: [
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0,
+                            vertical: 16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 60),
+                              for (final entry in sortedEntries)
+                                _buildMealSection(
+                                  title:
+                                      AppConfig.mealTypeLabels(context)[entry.key]!,
+                                  color: _getMealColor(entry.key),
+                                  imageUrl: entry.value.iconPath!,
+                                  mealName: entry.value.name,
+                                  description: entry.value.description!,
+                                  explanation: entry.value.explanation,
+                                  mealId: entry.value.mealId,
+                                  context: context,
+                                ),
+                              const SizedBox(height: 40),
+                            ],
+                          ),
+                        ),
+                        _buildHeader(displayDate),
+                        if (widget.selectedDate.isAfter(now))
+                          DietGenerationInfoButton(
+                            selectedDay: widget.selectedDate,
+                            isRegenerateMode: isRegenerate,
+                            onPressed: generateOnPressed,
+                            label: state.dailySummary!.isOutDated ?
+                              AppLocalizations.of(context)!.dietOutdatedConsiderRegenerating :
+                              AppLocalizations.of(context)!.regenerateMeals,
+                          )
+                        else if(isToDay && state.dailySummary!.isOutDated)
+                          DietGenerationInfoButton(
+                            selectedDay: widget.selectedDate,
+                            isRegenerateMode: false,
+                            label: AppLocalizations.of(context)!.dietOutdated
+                          )
+                      ],
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
+              ),
+            ),
+            bottomNavigationBar: BottomNavBarDate(
+              prevRoute: prevRoute,
+              nextRoute: nextRoute,
+              selectedDate: widget.selectedDate,
+            ),
+          )
+        )
+      )
     );
   }
 

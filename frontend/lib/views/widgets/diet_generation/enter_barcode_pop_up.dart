@@ -7,7 +7,7 @@ import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/processing_status.dart';
 import 'package:frontend/states/diet_generation/daily_summary_states.dart';
 import 'package:frontend/utils/diet_generation/meal_item_validators.dart';
-import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/animated_button.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EnterBarcodePopup extends StatefulWidget {

@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from backend.core.role_sets import user_or_admin
 from backend.daily_summary.daily_summary_service import DailySummaryService
@@ -26,6 +26,7 @@ daily_summary_router = APIRouter(prefix="/v1/daily-summary", tags=["User", "Admi
     description="Retrieves the daily summary of meals and nutrition for the specified day for the current user.",
 )
 async def get_daily_summary(
+    request: Request,
     day: date,
     diet_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -36,11 +37,12 @@ async def get_daily_summary(
 
 @daily_summary_router.patch(
     "/meals",
-    response_model=Macros,
+    response_model=Macros | None,
     summary="Update meal status",
     description="Updates the status of a meal (pending, to eat, eaten, skipped) in the daily summary.",
 )
 async def update_meal_status(
+    request: Request,
     meal_info_update: MealInfoUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -56,6 +58,7 @@ async def update_meal_status(
     description="Add a custom meal created by the user to their proper daily summary.",
 )
 async def add_meal(
+    request: Request,
     custom_meal: ComposedMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -71,6 +74,7 @@ async def add_meal(
     description="Edit a wight eaten by the user for a specific meal in their daily summary.",
 )
 async def edit_meal(
+    request: Request,
     custom_meal: ComposedMealUpdateRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -86,6 +90,7 @@ async def edit_meal(
     description="Removes a specific meal from the user's daily summary for specified day.",
 )
 async def remove_meal_from_summary(
+    request: Request,
     meal_to_remove: RemoveMealRequest,
     daily_summary_service: DailySummaryService = Depends(get_daily_summary_service),
     user_gateway: UserGateway = Depends(get_user_gateway),

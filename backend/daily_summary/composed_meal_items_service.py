@@ -80,7 +80,7 @@ class ComposedMealItemsService:
         meal_type_daily_summary = DailySummaryMapper.map_to_daily_meal_type(
             await self.daily_summary_repository.get_daily_meal_type_summary(user.id, day, new_composed_meal.meal_type)
         )
-        if not meal_type_daily_summary or meal_type_daily_summary.meal_daily_summary_id is None:
+        if not meal_type_daily_summary or meal_type_daily_summary.meal_type_details is None:
             logger.debug(f"No plan for {day} for user {user.id}")
             raise NotFoundInDatabaseException("Plan for given user and day does not exist.")
 
@@ -91,7 +91,7 @@ class ComposedMealItemsService:
             raise NotFoundInDatabaseException("Error while adding new meal into database.")
 
         composed_meal_item = ComposedMealItem(
-            meal_daily_summary_id=meal_type_daily_summary.meal_daily_summary_id,
+            meal_type_daily_summary_id=meal_type_daily_summary.meal_type_details.daily_summary_id,
             meal_id=new_meal.id,
             planned_weight=new_composed_meal.custom_weight,
             planned_calories=self._calculate_planned_value(
@@ -106,7 +106,7 @@ class ComposedMealItemsService:
             planned_fat=self._calculate_planned_value(new_meal.fat, new_meal.weight, new_composed_meal.custom_weight),
         )
 
-        if meal_type_daily_summary.status == MealStatus.EATEN:
+        if meal_type_daily_summary.meal_type_details.status == MealStatus.EATEN:
             delta = DailyMacrosSummaryCreate(
                 day=day,
                 calories=composed_meal_item.planned_calories,

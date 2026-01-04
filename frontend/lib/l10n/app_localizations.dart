@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @dietPreferences.
   ///
   /// In en, this message translates to:
-  /// **'Diet preferences'**
+  /// **'Diet Preferences'**
   String get dietPreferences;
 
   /// No description provided for @dietType.
@@ -1079,7 +1079,7 @@ abstract class AppLocalizations {
   /// No description provided for @changeCaloriesPrediction.
   ///
   /// In en, this message translates to:
-  /// **'Change calories prediction'**
+  /// **'Change Calories Prediction'**
   String get changeCaloriesPrediction;
 
   /// No description provided for @refreshRequest.
@@ -1513,6 +1513,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Weight history'**
   String get weightChartTitle;
+
+  /// No description provided for @noWeightDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No weight data for this period'**
+  String get noWeightDataAvailable;
+
+  /// No description provided for @mon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get mon;
+
+  /// No description provided for @tue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tue;
+
+  /// No description provided for @wed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wed;
+
+  /// No description provided for @thu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thu;
+
+  /// No description provided for @fri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get fri;
+
+  /// No description provided for @sat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get sat;
+
+  /// No description provided for @sun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sun;
 }
 
 class _AppLocalizationsDelegate

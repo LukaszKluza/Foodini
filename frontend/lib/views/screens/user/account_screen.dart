@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frontend/blocs/user/account_bloc.dart';
 import 'package:frontend/blocs/user_details/diet_form_bloc.dart';
 import 'package:frontend/config/constants.dart';
@@ -14,9 +15,8 @@ import 'package:frontend/services/token_storage_service.dart';
 import 'package:frontend/states/account_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/language_picker.dart';
-import 'package:frontend/views/widgets/rectangular_button.dart';
+import 'package:frontend/views/widgets/menu_card.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class AccountScreen extends StatelessWidget {
   final AccountBloc? bloc;
@@ -25,16 +25,29 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return bloc != null
-        ? BlocProvider<AccountBloc>.value(value: bloc!, child: _AccountBody())
-        : BlocProvider<AccountBloc>(
-          create:
-              (_) => AccountBloc(
-                Provider.of<UserRepository>(context, listen: false),
-                Provider.of<TokenStorageService>(context, listen: false),
-              ),
+    final wrappedScaffold = Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
           child: _AccountBody(),
-        );
+        ),
+      ),
+    );
+
+    if (bloc != null) {
+      return BlocProvider<AccountBloc>.value(
+        value: bloc!,
+        child: wrappedScaffold,
+      );
+    }
+
+    return BlocProvider<AccountBloc>(
+      create: (_) => AccountBloc(
+        context.read<UserRepository>(),
+        context.read<TokenStorageService>(),
+      ),
+      child: wrappedScaffold,
+    );
   }
 }
 
@@ -46,10 +59,8 @@ class _AccountBody extends StatefulWidget {
 class _AccountScreenState extends State<_AccountBody> {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = min(MediaQuery.of(context).size.width, 800.0);
     final screenHeight = MediaQuery.of(context).size.height;
-
-    final horizontalPadding = screenWidth * Constants.horizontalPaddingRatio;
 
     return Scaffold(
       appBar: AppBar(
@@ -71,100 +82,72 @@ class _AccountScreenState extends State<_AccountBody> {
         },
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    bottom: 4.0,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.your,
-                    style: Styles.kaushanScriptStyle(48.sp.clamp(42.0, 86.0)),
+                Text(
+                  '${AppLocalizations.of(context)!.your},',
+                  style: Styles.kaushanScriptStyle(40).copyWith(
+                    color: Colors.orange.shade800,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.account,
-                    style: Styles.kaushanScriptStyle(52.sp.clamp(44.0, 92.0)),
+                Text(
+                  AppLocalizations.of(context)!.account,
+                  style: Styles.kaushanScriptStyle(48).copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          rectangularButton(
-                            AppLocalizations.of(context)!.changePassword,
-                            Icons.settings,
-                            screenWidth,
-                            screenHeight,
-                            () => context.push('/provide-email'),
-                          ),
-                          const SizedBox(height: 16),
-                          Builder(
-                            builder:
-                                (context) => rectangularButton(
-                                  AppLocalizations.of(context)!.logout,
-                                  Icons.logout,
-                                  screenWidth,
-                                  screenHeight,
-                                  () {
-                                    context.read<AccountBloc>().add(
-                                      AccountLogoutRequested(),
-                                    );
-                                    context.read<DietFormBloc>().add(
-                                      DietFormResetRequested(),
-                                    );
-                                  },
-                                ),
-                          ),
-                        ],
+
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: screenWidth > 0.7 * screenHeight ? 1.8 : 1.1,
+                  children: [
+                    buildMenuCard(
+                      context,
+                      title: AppLocalizations.of(context)!.changePassword,
+                      icon: Icons.settings,
+                      color: Colors.orange.shade600,
+                      onTap: () => context.push('/provide-email'),
+                    ),
+                    buildMenuCard(
+                      context,
+                      title: AppLocalizations.of(context)!.changeLanguage,
+                      icon: Icons.translate_rounded,
+                      color: Colors.orange.shade700,
+                      onTap: () => LanguagePicker.show(
+                        context,
+                        isAccountScreen: true,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Builder(
-                            builder:
-                                (context) => rectangularButton(
-                                  AppLocalizations.of(context)!.changeLanguage,
-                                  Icons.translate_rounded,
-                                  screenWidth,
-                                  screenHeight,
-                                  () => LanguagePicker.show(
-                                    context,
-                                    isAccountScreen: true,
-                                  ),
-                                ),
-                          ),
-                          const SizedBox(height: 16),
-                          Builder(
-                            builder:
-                                (context) => rectangularButton(
-                                  AppLocalizations.of(context)!.deleteAccount,
-                                  Icons.auto_delete,
-                                  screenWidth,
-                                  screenHeight,
-                                  () => _showDeleteAccountDialog(context),
-                                ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                    buildMenuCard(
+                      context,
+                      title: AppLocalizations.of(context)!.logout,
+                      icon: Icons.logout,
+                      color: Colors.orange.shade600,
+                      onTap: () {
+                        context.read<AccountBloc>().add(
+                          AccountLogoutRequested(),
+                        );
+                        context.read<DietFormBloc>().add(
+                          DietFormResetRequested(),
+                        );
+                      },
+                    ),
+                    buildMenuCard(
+                      context,
+                      title: AppLocalizations.of(context)!.deleteAccount,
+                      icon: Icons.auto_delete,
+                      color: Colors.orange.shade500,
+                      onTap: () => _showDeleteAccountDialog(context),
+                    ),
+                  ]
                 ),
                 BlocBuilder<AccountBloc, AccountState>(
                   builder: (context, state) {
@@ -189,37 +172,49 @@ class _AccountScreenState extends State<_AccountBody> {
 void _showDeleteAccountDialog(BuildContext mainContext) {
   showDialog(
     context: mainContext,
-    builder:
-        (dialogContext) => Builder(
-          builder:
-              (innerContext) => AlertDialog(
-                title: Text(
-                  AppLocalizations.of(mainContext)!.confirmAccountDeletion,
-                ),
-                content: Text(
-                  AppLocalizations.of(mainContext)!.accountDeletionInformation,
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                    },
-                    child: Text(AppLocalizations.of(mainContext)!.cancel),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                      mainContext.read<AccountBloc>().add(
-                        AccountDeleteRequested(),
-                      );
-                      mainContext.read<DietFormBloc>().add(
-                        DietFormResetRequested(),
-                      );
-                    },
-                    child: Text(AppLocalizations.of(mainContext)!.delete),
-                  ),
-                ],
-              ),
+    builder: (dialogContext) => Builder(
+      builder: (innerContext) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(mainContext)!.confirmAccountDeletion,
         ),
+        content: Text(
+          AppLocalizations.of(mainContext)!.accountDeletionInformation,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: Text(
+              AppLocalizations.of(mainContext)!.cancel,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.orange,
+                  fontWeight: FontWeight.w500,
+                )
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              mainContext.read<AccountBloc>().add(
+                AccountDeleteRequested(),
+              );
+              mainContext.read<DietFormBloc>().add(
+                DietFormResetRequested(),
+              );
+            },
+            child: Text(
+              AppLocalizations.of(mainContext)!.delete,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                )
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }

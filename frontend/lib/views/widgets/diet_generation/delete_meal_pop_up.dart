@@ -5,7 +5,7 @@ import 'package:frontend/events/diet_generation/daily_summary_events.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:frontend/models/diet_generation/meal_type.dart';
 import 'package:frontend/models/diet_generation/remove_meal_request.dart';
-import 'package:frontend/views/widgets/diet_generation/action_button.dart';
+import 'package:frontend/views/widgets/diet_generation/animated_button.dart';
 import 'package:uuid/uuid.dart';
 
 VoidCallback showDeleteMealPopUp(

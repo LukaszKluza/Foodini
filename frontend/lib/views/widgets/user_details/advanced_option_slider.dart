@@ -45,41 +45,40 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(widget.alertDialogTitle),
-            content: Form(
-              key: _formKey,
-              child: TextFormField(
-                key: Key(widget.pupUpKey),
-                controller: controller,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: widget.inputDecorator),
-                validator: widget.validator,
-              ),
-            ),
-            actions: [
-              ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.cancel),
-                onPressed: () => Navigator.pop(context),
-              ),
-              ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.ok),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    final value = double.tryParse(controller.text);
-                    if (value != null) {
-                      setState(() {
-                        _value = value;
-                      });
-                      widget.onChanged(value);
-                      Navigator.pop(context);
-                    }
-                  }
-                },
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(widget.alertDialogTitle),
+        content: Form(
+          key: _formKey,
+          child: TextFormField(
+            key: Key(widget.pupUpKey),
+            controller: controller,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(labelText: widget.inputDecorator),
+            validator: widget.validator,
           ),
+        ),
+        actions: [
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context)!.cancel),
+            onPressed: () => Navigator.pop(context),
+          ),
+          ElevatedButton(
+            child: Text(AppLocalizations.of(context)!.ok),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                final value = double.tryParse(controller.text);
+                if (value != null) {
+                  setState(() {
+                    _value = value;
+                  });
+                  widget.onChanged(value);
+                  Navigator.pop(context);
+                }
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -101,6 +100,9 @@ class PercentageOptionSliderState extends State<PercentageOptionSlider> {
             min: widget.min,
             max: widget.max,
             divisions: (widget.max - widget.min).toInt(),
+            activeColor: Colors.orange.shade400,
+            inactiveColor: Colors.orange.shade100,
+            thumbColor: Colors.orange.shade600,
             label: '${_value.toStringAsFixed(1)}%',
             onChanged: (value) {
               setState(() {

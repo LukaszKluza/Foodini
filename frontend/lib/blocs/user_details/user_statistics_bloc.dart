@@ -96,11 +96,15 @@ class UserStatisticsBloc extends Bloc<UserStatisticsEvent, UserStatisticsState> 
       final userId = UserStorage().getUserId!;
       await userDetailsRepository.addOrUpdateUserWeight(event.entry, userId);
 
-      final stats = await userDetailsRepository.getUserStatistics(userId);
+      final updatedWeightHistory = await userDetailsRepository.getUserWeightHistory(
+        start: event.start,
+        end: event.end,
+        userId: userId,
+      );
 
       emit(
         state.copyWith(
-          statistics: stats,
+          weightHistory: updatedWeightHistory,
           processingStatus: ProcessingStatus.submittingSuccess,
         ),
       );

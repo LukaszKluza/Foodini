@@ -91,7 +91,7 @@ class AuthorizationService:
         access_token_jti = token.linked_jti
 
         new_access_token, new_refresh_token = await self.create_tokens(
-            {"sub": token.email, "id": token.id, "role": token.role}
+            {"sub": token.email, "id": str(token.id), "role": token.role}
         )
 
         await self.revoke_tokens(refresh_token_jti, access_token_jti)
