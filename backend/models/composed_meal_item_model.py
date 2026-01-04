@@ -51,5 +51,7 @@ class ComposedMealItem(SQLModel, table=True):
     meal: Optional["Meal"] = Relationship(back_populates="composed_meal_items")
     daily_meal: Optional["MealTypeDailySummary"] = Relationship(
         back_populates="meal_items",
-        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_type_daily_summary_id == MealTypeDailySummary.id"},
+        sa_relationship_kwargs={
+            "primaryjoin": "ComposedMealItem.meal_type_daily_summary_id == MealTypeDailySummary.id"
+        },
     )

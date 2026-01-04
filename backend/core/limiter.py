@@ -19,4 +19,5 @@ def user_triggered_date_key(request: Request):
     server_date = datetime.now().strftime("%Y-%m-%d")
     return f"{base}|{server_date}"
 
+
 limiter = Limiter(key_func=user_rate_limit_key, default_limits=["5 per second", "1000 per day"])

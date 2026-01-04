@@ -185,12 +185,6 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
       ];
       return labels[ordered[i].day.weekday - 1];
     });
-    final spots = ordered
-        .asMap()
-        .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.calories.toDouble()))
-        .toList();
-
     final values = ordered.map((e) => e.calories).toList();
     final allValues = [...values, stats.targetCalories];
 

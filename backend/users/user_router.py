@@ -53,11 +53,7 @@ async def get_user(
     summary="Register new user",
     description="Creates a new user account with the provided information and sends a verification email.",
 )
-async def register_user(
-    request: Request,
-    user: UserCreate,
-    user_service: UserService = Depends(get_user_service)
-):
+async def register_user(request: Request, user: UserCreate, user_service: UserService = Depends(get_user_service)):
     return await user_service.register(user)
 
 
@@ -104,7 +100,7 @@ async def delete_user(
 async def login_user(
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.login(form_data)
 
@@ -147,7 +143,7 @@ async def refresh_tokens(
 async def reset_password(
     request: Request,
     password_reset_request: PasswordResetRequest,
-    form_url: Optional[str] = f"{config.FRONTEND_URL}/#/change_password",
+    form_url: Optional[str] = f"{config.FRONTEND_URL}/#/change-password",
     user_service: UserService = Depends(get_user_service),
 ):
     return await user_service.reset_password(password_reset_request, form_url)
@@ -191,9 +187,7 @@ async def verify_new_password(
     description="Activates a newly registered account by validating the verification token sent to their email.",
 )
 async def verify_new_account(
-    request: Request,
-    url_token: str = Query(None),
-    user_service: UserService = Depends(get_user_service)
+    request: Request, url_token: str = Query(None), user_service: UserService = Depends(get_user_service)
 ):
     return await user_service.confirm_new_account(url_token)
 

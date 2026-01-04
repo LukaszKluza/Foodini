@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile, Request
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 
 from backend.barcode_scanning.barcode_scanning_service import BarcodeScanningService
 from backend.barcode_scanning.dependencies import get_barcode_scanning_service
