@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, Form, UploadFile, Request
 
 from backend.barcode_scanning.barcode_scanning_service import BarcodeScanningService
 from backend.barcode_scanning.dependencies import get_barcode_scanning_service
@@ -21,6 +21,7 @@ barcode_scanning_router = APIRouter(prefix="/v1/barcode_scanning", tags=["User",
     "proper daily meal summary.",
 )
 async def add_scanned_product(
+    request: Request,
     day: date = Form(...),
     meal_type: MealType = Form(...),
     barcode: Optional[str] = Form(None),

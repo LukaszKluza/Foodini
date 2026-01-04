@@ -1,7 +1,7 @@
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 
 from backend.core.role_sets import user_or_admin
 from backend.meals.dependencies import get_meal_service
@@ -22,6 +22,7 @@ meal_router = APIRouter(prefix="/v1/meals", tags=["User", "Admin"], dependencies
     description="Retrieves icon information for a specific meal type. One icon is assigned to all meals of one type.",
 )
 async def get_meal_icon_info(
+    request: Request,
     meal_type: MealType,
     meal_service: MealService = Depends(get_meal_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -38,6 +39,7 @@ async def get_meal_icon_info(
     description="Retrieves all recipes for a specific meal by its ID. This endpoint is intended for admin use only.",
 )
 async def get_meal_recipe_by_meal_id(
+    request: Request,
     meal_id: UUID,
     language: Optional[Language] = Query(None),
     meal_service: MealService = Depends(get_meal_service),
@@ -55,6 +57,7 @@ async def get_meal_recipe_by_meal_id(
     "filtered by language.",
 )
 async def get_safe_meal_recipe_by_meal_id(
+    request: Request,
     meal_id: UUID,
     language: Optional[Language] = Query(None),
     meal_service: MealService = Depends(get_meal_service),

@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 
 from backend.core.role_sets import user_or_admin
 from backend.models import UserDetails
@@ -26,6 +26,7 @@ user_details_router = APIRouter(prefix="/v1/user-details", tags=["User", "Admin"
     description="Retrieves the detailed information of the currently authenticated user.",
 )
 async def get_user_details(
+    request: Request,
     user_details_service: UserDetailsService = Depends(get_user_details_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
@@ -41,6 +42,7 @@ async def get_user_details(
     description="Creates the detailed information about currently authenticated user and links them to proper account.",
 )
 async def add_user_details(
+    request: Request,
     user_details: UserDetailsCreate,
     user_details_service: UserDetailsService = Depends(get_user_details_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -56,6 +58,7 @@ async def add_user_details(
     description="Updates the detailed information of the currently authenticated user with the provided data.",
 )
 async def update_user_details(
+    request: Request,
     user_details: UserDetailsUpdate,
     user_details_service: UserDetailsService = Depends(get_user_details_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -68,6 +71,7 @@ async def update_user_details(
     "/weight-history", status_code=status.HTTP_201_CREATED, response_model=UserWeightHistoryResponse
 )
 async def add_user_weight(
+    request: Request,
     body: UserWeightHistoryCreate,
     user_weight_service: UserWeightService = Depends(get_user_weight_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -78,6 +82,7 @@ async def add_user_weight(
 
 @user_details_router.get("/weight-history/{day}", response_model=UserWeightHistoryResponse | None)
 async def get_user_weight_history(
+    request: Request,
     day: date,
     user_weight_service: UserWeightService = Depends(get_user_weight_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -88,6 +93,7 @@ async def get_user_weight_history(
 
 @user_details_router.get("/weight-history", response_model=List[UserWeightHistoryResponse])
 async def get_latest_user_weight(
+    request: Request,
     start: date,
     end: date,
     user_weight_service: UserWeightService = Depends(get_user_weight_service),

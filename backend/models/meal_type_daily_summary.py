@@ -39,5 +39,5 @@ class MealTypeDailySummary(SQLModel, table=True):
     )
     meal_items: List["ComposedMealItem"] = Relationship(
         back_populates="daily_meal",
-        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_daily_summary_id==MealTypeDailySummary.id"},
+        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_type_daily_summary_id==MealTypeDailySummary.id"},
     )

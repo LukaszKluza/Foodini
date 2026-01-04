@@ -91,7 +91,7 @@ class ComposedMealItemsService:
             raise NotFoundInDatabaseException("Error while adding new meal into database.")
 
         composed_meal_item = ComposedMealItem(
-            meal_daily_summary_id=meal_type_daily_summary.meal_type_details.daily_summary_id,
+            meal_type_daily_summary_id=meal_type_daily_summary.meal_type_details.daily_summary_id,
             meal_id=new_meal.id,
             planned_weight=new_composed_meal.custom_weight,
             planned_calories=self._calculate_planned_value(

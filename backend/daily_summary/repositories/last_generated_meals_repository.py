@@ -23,7 +23,7 @@ class LastGeneratedMealsRepository:
         query = (
             select(mr.meal_name)
             .join(cmi, cmi.meal_id == mr.meal_id)
-            .join(mds, mds.id == cmi.meal_daily_summary_id)
+            .join(mds, mds.id == cmi.meal_type_daily_summary_id)
             .join(dms, dms.id == mds.daily_summary_id)
             .where(dms.user_id == user_id, dms.day >= from_date, dms.day <= to_date)
             .distinct()

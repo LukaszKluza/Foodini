@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from backend.core.role_sets import user_or_admin
 from backend.user_details.dependencies import get_calories_prediction_service
@@ -18,6 +18,7 @@ calories_prediction_router = APIRouter(
     description="Save calories predicted for the currently authenticated user based on user details.",
 )
 async def calories_prediction(
+    request: Request,
     calories_prediction_service: CaloriesPredictionService = Depends(get_calories_prediction_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):
@@ -33,6 +34,7 @@ async def calories_prediction(
     "and validate they match the predicted calories.",
 )
 async def update_macros_prediction(
+    request: Request,
     changed_macros: PredictedMacros,
     calories_prediction_service: CaloriesPredictionService = Depends(get_calories_prediction_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
@@ -48,6 +50,7 @@ async def update_macros_prediction(
     description="Retrieves calories predicted for the currently authenticated user based on user details.",
 )
 async def get_calories_prediction(
+    request: Request,
     calories_prediction_service: CaloriesPredictionService = Depends(get_calories_prediction_service),
     user_gateway: UserGateway = Depends(get_user_gateway),
 ):

@@ -439,6 +439,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                   AppConfig.mealStatusLabels(context)[allMeals[activeMealType]!.status]!,
                 ),
                 style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 6),
                   backgroundColor: isActive ? Colors.amber.shade600 : Colors.grey,
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.w500,

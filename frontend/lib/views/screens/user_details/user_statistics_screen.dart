@@ -216,8 +216,8 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
       interval = 50.0;
     }
 
-    return LineChart(
-      LineChartData(
+    return BarChart(
+      BarChartData(
         minY: minY,
         maxY: maxY,
         gridData: FlGridData(show: true, drawVerticalLine: false),
@@ -250,24 +250,34 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
           topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: List.generate(days.length, (i) => FlSpot(i.toDouble(), stats.targetCalories.toDouble())),
-            isCurved: false,
-            color: Colors.green,
-            barWidth: 2,
-            dashArray: [5, 5],
-            dotData: FlDotData(show: false),
-          ),
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: Colors.orange,
-            barWidth: 3,
-            dotData: FlDotData(show: true),
-            belowBarData: BarAreaData(show: true, color: Colors.orange.withAlpha(77)),
-          ),
-        ],
+        extraLinesData: ExtraLinesData(
+          horizontalLines: [
+            HorizontalLine(
+              y: stats.targetCalories.toDouble(),
+              color: Colors.green,
+              strokeWidth: 2,
+              dashArray: [5, 5],
+              label: HorizontalLineLabel(
+                show: true,
+                alignment: Alignment.topRight,
+                labelResolver: (line) => line.y.toString(),
+              ),
+            ),
+          ],
+        ),
+        barGroups: List.generate(values.length, (i) {
+          return BarChartGroupData(
+            x: i,
+            barRods: [
+              BarChartRodData(
+                toY: values[i].toDouble(),
+                color: Colors.orange,
+                width: 16,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              ),
+            ],
+          );
+        })
       ),
     );
   }
@@ -277,7 +287,7 @@ class _UserStatisticsScreenState extends State<UserStatisticsScreen> {
 
     if (history.isEmpty) {
       return Container(
-        height: 200, // Stała wysokość, aby pasowała do miejsca na wykresie
+        height: 200,
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey.withAlpha(20),

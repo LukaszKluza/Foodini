@@ -423,8 +423,8 @@ class DailySummaryService:
                 )
 
     @staticmethod
-    async def _find_target_pending_meal(map_meal_type_daily_summaries):
-        sorted_meals = MealType.sorted_meals()
+    async def _find_target_pending_meal(map_meal_type_daily_summaries:  dict[MealType, MealTypeDailySummaryBase]):
+        sorted_meals = MealType.daily_meals(len(map_meal_type_daily_summaries.keys()))
         for meal_type in sorted_meals:
             current_meal_type_summary = map_meal_type_daily_summaries.get(meal_type)
             current_status = current_meal_type_summary.status
