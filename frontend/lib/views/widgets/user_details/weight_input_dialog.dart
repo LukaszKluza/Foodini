@@ -50,8 +50,8 @@ class _WeightInputDialogState extends State<_WeightInputDialog> {
     final picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(now.year - 5),
-      lastDate: DateTime(now.year + 1),
+      firstDate: DateTime.now().subtract(Duration(days: 30)),
+      lastDate: DateTime(now.year, now.month, now.day),
       initialEntryMode: DatePickerEntryMode.calendar,
       initialDatePickerMode: DatePickerMode.day,
       builder: (context, child) {
