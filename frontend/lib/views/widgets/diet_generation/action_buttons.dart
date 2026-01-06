@@ -34,7 +34,7 @@ Center customSubmitButton(
       minimumSize: const Size.fromHeight(48),
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -51,8 +51,13 @@ Center customRetryButton(
     buttonKey,
     onPressed,
     ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFDD9E74),
+      backgroundColor: Colors.red,
       minimumSize: const Size.fromHeight(48),
+      foregroundColor: Colors.white,
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
     ),
     buttonChild,
   );
@@ -67,8 +72,13 @@ Center customRedirectButton(
     buttonKey,
     onPressed,
     ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFF2D8B2),
+      backgroundColor: Colors.orange,
       minimumSize: const Size.fromHeight(48),
+      foregroundColor: Colors.white,
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
     ),
     buttonChild,
   );

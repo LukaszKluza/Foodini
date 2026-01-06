@@ -55,7 +55,7 @@
   "checkEmailAddressToSetNewPassword": "Sprawdź e-mail, aby ustawić nowe hasło",
   "passwordSuccessfullyChanged": "Hasło zostało zmienione",
   "wrongChangePasswordUrl": "Nie możesz otworzyć formularza zmiany hasła",
-  "dietPreferences": "Preferencje dietetyczne",
+  "dietPreferences": "Preferencje Dietetyczne",
   "dietType": "Typ diety",
   "requiredDietType": "Typ diety jest wymagany",
   "dietStyle": "Styl diety",
@@ -178,7 +178,7 @@
   "fillFormToSeePredictions": "Proszę wypełnić formularz, aby zobaczyć predykcje",
   "redirectToProfileDetails": "Przejdź do szczegółów profilu",
   "savePredictedCalories": "Zapisz wygenerowane kalorie",
-  "changeCaloriesPrediction": "Zmień przewidywane kalorie",
+  "changeCaloriesPrediction": "Zmień Przewidywane Kalorie",
 
   "refreshRequest": "Odśwież żądanie",
   "goToMainPage": "Idź na stronę główną",
@@ -263,5 +263,13 @@
   "calorieConsumptionChartTitle": "Spożyte kalorie",
   "calorieGoalChartTitle": "Cel kalorii vs faktyczne spożycie",
   "macrosPer100g": "Makroskładniki na 100 g",
-  "weightChartTitle": "Historia wagi"
+  "weightChartTitle": "Historia wagi",
+  "noWeightDataAvailable": "Brak danych o wadze dla tego okresu",
+  "mon": "Pon",
+  "tue": "Wt",
+  "wed": "Śr",
+  "thu": "Czw",
+  "fri": "Pt",
+  "sat": "Sob",
+  "sun": "Ndz"
 }

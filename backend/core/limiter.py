@@ -1,12 +1,11 @@
+from datetime import datetime
+
 from fastapi import Request
 from slowapi import Limiter
 
 
 def user_rate_limit_key(request: Request):
-    user = getattr(request.state, "user", None)
-    if user and hasattr(user, "id"):
-        return str(user.id)
-    return request.client.host
+    return request.query_params.get("user_id", request.client.host)
 
 
 def user_target_date_key(request: Request):
@@ -15,4 +14,10 @@ def user_target_date_key(request: Request):
     return f"{base}|{target_day}"
 
 
-limiter = Limiter(key_func=user_rate_limit_key)
+def user_triggered_date_key(request: Request):
+    base = user_rate_limit_key(request)
+    server_date = datetime.now().strftime("%Y-%m-%d")
+    return f"{base}|{server_date}"
+
+
+limiter = Limiter(key_func=user_rate_limit_key, default_limits=["5 per second", "1000 per day"])

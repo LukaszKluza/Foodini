@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/config/endpoints.dart';
 import 'package:frontend/models/diet_generation/custom_meal_update_request.dart';
@@ -31,11 +32,22 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final requiresAuth = options.extra['requiresAuth'] == true;
+          final noCache = options.extra['cache'] == false;
 
           if (requiresAuth) {
             final accessToken = await _tokenStorage.getAccessToken();
             options.headers['Authorization'] = 'Bearer $accessToken';
           }
+
+          if (noCache) {
+            final noCacheExtra = CacheOptions(
+                store: MemCacheStore(),
+                policy: CachePolicy.noCache
+            ).toOptions().extra!;
+
+            options.extra.addAll(noCacheExtra);
+          }
+
           return handler.next(options);
         },
       ),

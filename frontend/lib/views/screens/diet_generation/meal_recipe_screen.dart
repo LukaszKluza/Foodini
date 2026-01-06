@@ -11,13 +11,11 @@ import 'package:frontend/models/diet_generation/ingredient.dart';
 import 'package:frontend/models/diet_generation/ingredients.dart';
 import 'package:frontend/models/diet_generation/step.dart';
 import 'package:frontend/models/user/language.dart';
-import 'package:frontend/repository/diet_generation/diet_prediction_repository.dart';
 import 'package:frontend/repository/diet_generation/meals_repository.dart';
 import 'package:frontend/states/diet_generation/meal_recipe_states.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid_value.dart';
 
 class MealRecipeScreen extends StatelessWidget {
@@ -27,23 +25,24 @@ class MealRecipeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.watch<LanguageCubit>().state;
-    var language = Language.fromJson(state.languageCode);
+    final languageState = context.watch<LanguageCubit>().state;
+    final language = Language.fromJson(languageState.languageCode);
+
     return BlocProvider(
       key: ValueKey('bloc_${mealId.uuid}_${language.code}'),
-      create: (_) {
-        final bloc = MealRecipeBloc(
-          Provider.of<DietPredictionRepository>(context, listen: false),
-          Provider.of<MealsRepository>(context, listen: false),
-        );
-        bloc.add(MealRecipeInit(mealId, language));
-        return bloc;
-      },
+      create: (context) => MealRecipeBloc(
+        context.read<MealsRepository>(),
+      )..add(MealRecipeInit(mealId, language)),
       child: Scaffold(
-        body: _MealRecipe(key: ValueKey('body_${mealId.uuid}_${language.code}')),
         bottomNavigationBar: BottomNavBar(
           currentRoute: GoRouterState.of(context).uri.path,
           mode: NavBarMode.normal,
+        ),
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: _MealRecipe(key: ValueKey('body_${mealId.uuid}_${language.code}')),
+          ),
         ),
       ),
     );
@@ -73,15 +72,15 @@ class _MealRecipe extends StatelessWidget {
           child: Column(
             children: [
               if (state.processingStatus!.isSuccess) ...[
-                generateMealRecipe(state, context),
+                _generateMealRecipe(state, context),
               ],
 
               if (state.processingStatus!.isFailure) ...[
                 const Icon(Icons.warning_amber, color: Colors.red, size: 200.0),
                 if (state.errorCode == 404) ...[
-                  redirectToProfileDetailsButton(context),
+                  _redirectToProfileDetailsButton(context),
                 ] else
-                  retryRequestButton(context, state),
+                  _retryRequestButton(context, state),
               ],
 
               if (state.getErrorMessage != null)
@@ -97,46 +96,46 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Padding generateMealRecipe(MealRecipeState state, BuildContext context) {
+  Padding _generateMealRecipe(MealRecipeState state, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Meal name
-          generateMealNameHeader(state),
+          _generateMealNameHeader(state),
           const SizedBox(height: 6),
 
           // Meal icon
-          generateMealIcon(state, context),
+          _generateMealIcon(state, context),
           const SizedBox(height: 6),
 
           // Meal description
-          generateDescriptionHeader(context),
+          _generateDescriptionHeader(context),
           const SizedBox(height: 6),
-          generateMealDescription(state),
+          _generateMealDescription(state),
           const SizedBox(height: 16),
 
           // Groceries
-          generateGroceriesHeader(context),
+          _generateGroceriesHeader(context),
           const SizedBox(height: 6),
           for (var ingredient in state.mealRecipe!.ingredients.ingredients)
-            generateIngredientLine(ingredient),
+            _generateIngredientLine(ingredient),
           if (state.mealRecipe!.ingredients.foodAdditives != null)
-            generateFoodAdditives(state.mealRecipe!.ingredients, context),
+            _generateFoodAdditives(state.mealRecipe!.ingredients, context),
           const SizedBox(height: 16),
 
           // Recipe steps
-          generateRecipeHeader(context),
+          _generateRecipeHeader(context),
           const SizedBox(height: 6),
           for (int i = 0; i < state.mealRecipe!.steps.length; i++)
-            generateRecipeStep(state, i, context),
+            _buildStepCard(state.mealRecipe!.steps[i], i, context),
         ],
       ),
     );
   }
 
-  Text generateMealNameHeader(MealRecipeState state) {
+  Text _generateMealNameHeader(MealRecipeState state) {
     return Text(
       state.mealRecipe!.mealName,
       style: TextStyle(
@@ -147,7 +146,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Text generateRecipeHeader(BuildContext context) {
+  Text _generateRecipeHeader(BuildContext context) {
     return Text(
       AppLocalizations.of(context)!.recipe,
       style: const TextStyle(
@@ -158,7 +157,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Text generateGroceriesHeader(BuildContext context) {
+  Text _generateGroceriesHeader(BuildContext context) {
     return Text(
       AppLocalizations.of(context)!.groceries,
       style: const TextStyle(
@@ -169,17 +168,17 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Padding generateIngredientLine(Ingredient ingredient) {
+  Padding _generateIngredientLine(Ingredient ingredient) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Text(
-        getIngredientText(ingredient),
+        _getIngredientText(ingredient),
         style: const TextStyle(fontSize: 16),
       ),
     );
   }
 
-  Padding generateFoodAdditives(Ingredients ingredients, BuildContext context) {
+  Padding _generateFoodAdditives(Ingredients ingredients, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Text(
@@ -189,7 +188,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Text generateDescriptionHeader(BuildContext context) {
+  Text _generateDescriptionHeader(BuildContext context) {
     return Text(
       AppLocalizations.of(context)!.mealDescriptions,
       style: TextStyle(
@@ -200,7 +199,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Container generateMealDescription(MealRecipeState state) {
+  Container _generateMealDescription(MealRecipeState state) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12.0),
@@ -220,7 +219,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Container generateMealIcon(MealRecipeState state, BuildContext context) {
+  Container _generateMealIcon(MealRecipeState state, BuildContext context) {
     return Container(
       width: 420,
       height: 420,
@@ -252,7 +251,7 @@ class _MealRecipe extends StatelessWidget {
                 AppLocalizations.of(context)!.errorWhileFetchingMealIcon,
                 style: Styles.errorStyle,
               ),
-              retryRequestButton(context, state),
+              _retryRequestButton(context, state),
             ],
           );
         },
@@ -260,17 +259,40 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Padding generateRecipeStep(MealRecipeState state, int i, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Text(
-        getStepText(state.mealRecipe!.steps[i], i, context),
-        style: const TextStyle(fontSize: 16),
+  Widget _buildStepCard(MealRecipeStep step, int idx, BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '${idx + 1}. ',
+              style: TextStyle(
+                color: Colors.orange.shade800,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            if (step.optional == true)
+              TextSpan(
+                text: '(${AppLocalizations.of(context)!.optional}) ',
+                style: TextStyle(
+                  color: Colors.grey.shade400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 16,
+                ),
+              ),
+            TextSpan(
+              text: step.description,
+              style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.black87,),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  String getIngredientText(Ingredient ingredient) {
+  String _getIngredientText(Ingredient ingredient) {
     if (ingredient.optionalNote != null) {
       return '• ${ingredient.volume} ${ingredient.unit} ${ingredient
           .name} (${ingredient.optionalNote})';
@@ -278,14 +300,7 @@ class _MealRecipe extends StatelessWidget {
     return '• ${ingredient.volume} ${ingredient.unit} ${ingredient.name}';
   }
 
-  String getStepText(MealRecipeStep step, int idx, BuildContext context) {
-    if (step.optional == true) {
-      return '${idx + 1}. (${AppLocalizations.of(context)!.optional}) ${step.description}';
-    }
-    return '${idx + 1}. ${step.description}';
-  }
-
-  Center retryRequestButton(BuildContext context, MealRecipeState state) {
+  Center _retryRequestButton(BuildContext context, MealRecipeState state) {
     return customRetryButton(
       Key('refresh_request_button'),
       () => context.read<MealRecipeBloc>().add(
@@ -295,7 +310,7 @@ class _MealRecipe extends StatelessWidget {
     );
   }
 
-  Center redirectToProfileDetailsButton(BuildContext context) {
+  Center _redirectToProfileDetailsButton(BuildContext context) {
     return customRedirectButton(
       Key('redirect_to_main_page_button'),
       () => context.go('/main-page'),

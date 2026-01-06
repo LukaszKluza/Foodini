@@ -1,7 +1,7 @@
 import 'package:uuid/uuid_value.dart';
 
 class ComposedMealItem {
-  final UuidValue mealDailySummaryId;
+  final UuidValue mealTypeDailySummaryId;
   final UuidValue mealId;
   final int plannedCalories;
   final int plannedWeight;
@@ -10,7 +10,7 @@ class ComposedMealItem {
   final double plannedFat;
 
   ComposedMealItem({
-    required this.mealDailySummaryId,
+    required this.mealTypeDailySummaryId,
     required this.mealId,
     required this.plannedCalories,
     required this.plannedWeight,
@@ -21,7 +21,7 @@ class ComposedMealItem {
 
   factory ComposedMealItem.fromJson(Map<String, dynamic> json) {
     return ComposedMealItem(
-      mealDailySummaryId: UuidValue.fromString(json['meal_daily_summary_id']),
+      mealTypeDailySummaryId: UuidValue.fromString(json['meal_type_daily_summary_id']),
       mealId: UuidValue.fromString(json['meal_id']),
       plannedCalories: json['planned_calories'] as int,
       plannedWeight: json['planned_weight'] as int,
@@ -33,7 +33,7 @@ class ComposedMealItem {
 
   Map<String, dynamic> toJson() {
     return {
-      'meal_daily_summary_id': mealDailySummaryId.toString(),
+      'meal_daily_summary_id': mealTypeDailySummaryId.toString(),
       'meal_id': mealId.toString(),
       'planned_calories': plannedCalories,
       'planned_weight': plannedWeight,

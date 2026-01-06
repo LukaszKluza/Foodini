@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from backend.core.role_sets import user_or_admin
 from backend.open_food_facts.dependencies import get_open_food_facts_service
@@ -15,6 +15,7 @@ open_food_facts_router = APIRouter(prefix="/v1/open-food-facts", tags=["User", "
     "from the Open Food Facts database.",
 )
 async def get_meal_recipe_by_meal_id(
+    request: Request,
     product_barcode: str,
     open_food_facts_service: OpenFoodFactsService = Depends(get_open_food_facts_service),
     user_gateway: UserGateway = Depends(get_user_gateway),

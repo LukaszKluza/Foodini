@@ -25,7 +25,7 @@ class ComposedMealItem(SQLModel, table=True):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4, sa_column=Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     )
-    meal_daily_summary_id: uuid.UUID = Field(
+    meal_type_daily_summary_id: uuid.UUID = Field(
         sa_column=Column(
             UUID(as_uuid=True),
             ForeignKey("meal_type_daily_summary.id", ondelete="CASCADE"),
@@ -51,5 +51,7 @@ class ComposedMealItem(SQLModel, table=True):
     meal: Optional["Meal"] = Relationship(back_populates="composed_meal_items")
     daily_meal: Optional["MealTypeDailySummary"] = Relationship(
         back_populates="meal_items",
-        sa_relationship_kwargs={"primaryjoin": "ComposedMealItem.meal_daily_summary_id == MealTypeDailySummary.id"},
+        sa_relationship_kwargs={
+            "primaryjoin": "ComposedMealItem.meal_type_daily_summary_id == MealTypeDailySummary.id"
+        },
     )

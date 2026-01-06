@@ -12,10 +12,10 @@ import 'package:frontend/models/user_details/sleep_quality.dart';
 import 'package:frontend/models/user_details/stress_level.dart';
 import 'package:frontend/states/diet_form_states.dart';
 import 'package:frontend/utils/user_details/calories_prediction_validators.dart';
-import 'package:frontend/views/widgets/advanced_option_slider.dart';
 import 'package:frontend/views/widgets/bottom_nav_bar.dart';
 import 'package:frontend/views/widgets/diet_generation/action_buttons.dart';
 import 'package:frontend/views/widgets/title_text.dart';
+import 'package:frontend/views/widgets/user_details/advanced_option_slider.dart';
 import 'package:go_router/go_router.dart';
 
 class CaloriesPredictionScreen extends StatelessWidget {
@@ -24,20 +24,27 @@ class CaloriesPredictionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: TitleTextWidgets.scaledTitle(
-            AppLocalizations.of(context)!.caloriesPrediction,
-            longText: true,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Scaffold(
+            appBar: AppBar(
+              title: Center(
+                child: TitleTextWidgets.scaledTitle(
+                  AppLocalizations.of(context)!.caloriesPrediction,
+                  longText: true,
+                ),
+              ),
+            ),
+            body: _CaloriesPredictionForm(),
+            bottomNavigationBar: BottomNavBar(
+              currentRoute: GoRouterState.of(context).uri.path,
+              mode: NavBarMode.wizard,
+              prevRoute: '/diet-preferences',
+            ),
           ),
         ),
-      ),
-      body: _CaloriesPredictionForm(),
-      bottomNavigationBar: BottomNavBar(
-        currentRoute: GoRouterState.of(context).uri.path,
-        mode: NavBarMode.wizard,
-        prevRoute: '/diet-preferences',
-      ),
+      )
     );
   }
 }
@@ -159,16 +166,16 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.sleepQuality,
         ),
-        items:
-            SleepQuality.values.map((sleepQuality) {
-              return DropdownMenuItem<SleepQuality>(
-                value: sleepQuality,
-                child: Text(
-                  AppConfig.sleepQualityLabels(context)[sleepQuality]!,
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }).toList(),
+        items: SleepQuality.values.map(
+          (sleepQuality) {
+            return DropdownMenuItem<SleepQuality>(
+              value: sleepQuality,
+              child: Text(
+                AppConfig.sleepQualityLabels(context)[sleepQuality]!,
+                style: TextStyle(color: Colors.black),
+              ),
+            );
+          }).toList(),
         onChanged: (value) {
           setState(() {
             _selectedSleepQuality = value!;
@@ -181,6 +188,8 @@ class _CaloriesPredictionFormState extends State<_CaloriesPredictionForm> {
         padding: const EdgeInsets.symmetric(horizontal: 0),
         child: CheckboxListTile(
           contentPadding: EdgeInsets.zero,
+          activeColor: Colors.orange.shade600,
+          checkColor: Colors.white,
           title: Text(AppLocalizations.of(context)!.advancedBodyParameters),
           value: _isChecked,
           onChanged: (value) {

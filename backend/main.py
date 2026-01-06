@@ -7,6 +7,7 @@ from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from redis.exceptions import RedisError
 from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
@@ -68,6 +69,7 @@ app.add_middleware(
 
 app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
 app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 templates = Jinja2Templates(directory="backend/templates")
 

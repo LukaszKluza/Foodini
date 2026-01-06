@@ -26,8 +26,8 @@ class MealType(str, Enum):
         return orders[self]
 
     @classmethod
-    def sorted_meals(cls):
-        return sorted(cls, key=lambda meal: meal.order)
+    def sorted_meals(cls, meals_list):
+        return sorted(meals_list, key=lambda meal: meal.order)
 
     @classmethod
     def _missing_(cls, value):
