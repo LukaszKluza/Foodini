@@ -21,7 +21,7 @@ diet_generation_router = APIRouter(prefix="/v1/diet-generation", tags=["User", "
 )
 @limiter.limit("10/day", key_func=user_triggered_date_key)
 @limiter.limit("3/day", key_func=user_target_date_key)
-@limiter.limit("1 per 2 minutes", key_func=user_rate_limit_key)
+@limiter.limit("1 per 2 minutes", key_func=user_target_date_key)
 async def generate_meal_plan(
     request: Request,
     day: date,
