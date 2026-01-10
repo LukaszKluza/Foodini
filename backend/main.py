@@ -218,6 +218,7 @@ async def health():
         },
     )
 
+
 @app.get("/redoc", include_in_schema=False)
 async def redoc():
     return get_redoc_html(
