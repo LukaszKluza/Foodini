@@ -5,6 +5,7 @@ import sqlalchemy
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_redoc_html
 from redis.exceptions import RedisError
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -68,6 +69,7 @@ app.add_middleware(
 
 
 app.mount("/v1/static/meals-icon", StaticFiles(directory="db/pictures_meals"), name="static")
+app.mount("/v1/static/redoc", StaticFiles(directory="backend/static"), name="static-redoc")
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
@@ -214,4 +216,13 @@ async def health():
                 "redis": redis,
             },
         },
+    )
+
+
+@app.get("/redoc", include_in_schema=False)
+async def redoc():
+    return get_redoc_html(
+        openapi_url="/openapi.json",
+        title="Foodini API",
+        redoc_js_url="/v1/static/redoc/redoc.standalone.js",
     )
