@@ -5,7 +5,7 @@ from backend.user_details.service.macro_calculator import MacroCalculator
 
 class MaintenanceCalculator(MacroCalculator):
     def calculate(self):
-        protein = self.weight_kg * 2.0
+        protein = self.weight_kg * 1.4
         fat = self.calories * 0.25 / config.FAT_CONVERSION_FACTOR
         carbs = (
             self.calories - (protein * config.PROTEIN_CONVERSION_FACTOR + fat * config.FAT_CONVERSION_FACTOR)
